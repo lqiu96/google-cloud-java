@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ProductSearchSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-vision</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.vision.v1p4beta1</a> &gt; <span class="el_source">ProductSearchSettings.java</span></div><h1>ProductSearchSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.vision.v1p4beta1;
+
+import static com.google.cloud.vision.v1p4beta1.ProductSearchClient.ListProductSetsPagedResponse;
+import static com.google.cloud.vision.v1p4beta1.ProductSearchClient.ListProductsInProductSetPagedResponse;
+import static com.google.cloud.vision.v1p4beta1.ProductSearchClient.ListProductsPagedResponse;
+import static com.google.cloud.vision.v1p4beta1.ProductSearchClient.ListReferenceImagesPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.cloud.vision.v1p4beta1.stub.ProductSearchStubSettings;
+import com.google.longrunning.Operation;
+import com.google.protobuf.Empty;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link ProductSearchClient}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (vision.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of createProductSet to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ProductSearchSettings.Builder productSearchSettingsBuilder = ProductSearchSettings.newBuilder();
+ * productSearchSettingsBuilder
+ *     .createProductSetSettings()
+ *     .setRetrySettings(
+ *         productSearchSettingsBuilder
+ *             .createProductSetSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * ProductSearchSettings productSearchSettings = productSearchSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ProductSearchSettings extends ClientSettings&lt;ProductSearchSettings&gt; {
+
+  /** Returns the object with the settings used for calls to createProductSet. */
+  public UnaryCallSettings&lt;CreateProductSetRequest, ProductSet&gt; createProductSetSettings() {
+<span class="nc" id="L82">    return ((ProductSearchStubSettings) getStubSettings()).createProductSetSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to listProductSets. */
+  public PagedCallSettings&lt;
+          ListProductSetsRequest, ListProductSetsResponse, ListProductSetsPagedResponse&gt;
+      listProductSetsSettings() {
+<span class="nc" id="L89">    return ((ProductSearchStubSettings) getStubSettings()).listProductSetsSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to getProductSet. */
+  public UnaryCallSettings&lt;GetProductSetRequest, ProductSet&gt; getProductSetSettings() {
+<span class="nc" id="L94">    return ((ProductSearchStubSettings) getStubSettings()).getProductSetSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateProductSet. */
+  public UnaryCallSettings&lt;UpdateProductSetRequest, ProductSet&gt; updateProductSetSettings() {
+<span class="nc" id="L99">    return ((ProductSearchStubSettings) getStubSettings()).updateProductSetSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteProductSet. */
+  public UnaryCallSettings&lt;DeleteProductSetRequest, Empty&gt; deleteProductSetSettings() {
+<span class="nc" id="L104">    return ((ProductSearchStubSettings) getStubSettings()).deleteProductSetSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to createProduct. */
+  public UnaryCallSettings&lt;CreateProductRequest, Product&gt; createProductSettings() {
+<span class="nc" id="L109">    return ((ProductSearchStubSettings) getStubSettings()).createProductSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to listProducts. */
+  public PagedCallSettings&lt;ListProductsRequest, ListProductsResponse, ListProductsPagedResponse&gt;
+      listProductsSettings() {
+<span class="nc" id="L115">    return ((ProductSearchStubSettings) getStubSettings()).listProductsSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to getProduct. */
+  public UnaryCallSettings&lt;GetProductRequest, Product&gt; getProductSettings() {
+<span class="nc" id="L120">    return ((ProductSearchStubSettings) getStubSettings()).getProductSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateProduct. */
+  public UnaryCallSettings&lt;UpdateProductRequest, Product&gt; updateProductSettings() {
+<span class="nc" id="L125">    return ((ProductSearchStubSettings) getStubSettings()).updateProductSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteProduct. */
+  public UnaryCallSettings&lt;DeleteProductRequest, Empty&gt; deleteProductSettings() {
+<span class="nc" id="L130">    return ((ProductSearchStubSettings) getStubSettings()).deleteProductSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to createReferenceImage. */
+  public UnaryCallSettings&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+      createReferenceImageSettings() {
+<span class="nc" id="L136">    return ((ProductSearchStubSettings) getStubSettings()).createReferenceImageSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteReferenceImage. */
+  public UnaryCallSettings&lt;DeleteReferenceImageRequest, Empty&gt; deleteReferenceImageSettings() {
+<span class="nc" id="L141">    return ((ProductSearchStubSettings) getStubSettings()).deleteReferenceImageSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to listReferenceImages. */
+  public PagedCallSettings&lt;
+          ListReferenceImagesRequest, ListReferenceImagesResponse, ListReferenceImagesPagedResponse&gt;
+      listReferenceImagesSettings() {
+<span class="nc" id="L148">    return ((ProductSearchStubSettings) getStubSettings()).listReferenceImagesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to getReferenceImage. */
+  public UnaryCallSettings&lt;GetReferenceImageRequest, ReferenceImage&gt; getReferenceImageSettings() {
+<span class="nc" id="L153">    return ((ProductSearchStubSettings) getStubSettings()).getReferenceImageSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to addProductToProductSet. */
+  public UnaryCallSettings&lt;AddProductToProductSetRequest, Empty&gt; addProductToProductSetSettings() {
+<span class="nc" id="L158">    return ((ProductSearchStubSettings) getStubSettings()).addProductToProductSetSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to removeProductFromProductSet. */
+  public UnaryCallSettings&lt;RemoveProductFromProductSetRequest, Empty&gt;
+      removeProductFromProductSetSettings() {
+<span class="nc" id="L164">    return ((ProductSearchStubSettings) getStubSettings()).removeProductFromProductSetSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to listProductsInProductSet. */
+  public PagedCallSettings&lt;
+          ListProductsInProductSetRequest,
+          ListProductsInProductSetResponse,
+          ListProductsInProductSetPagedResponse&gt;
+      listProductsInProductSetSettings() {
+<span class="nc" id="L173">    return ((ProductSearchStubSettings) getStubSettings()).listProductsInProductSetSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to importProductSets. */
+  public UnaryCallSettings&lt;ImportProductSetsRequest, Operation&gt; importProductSetsSettings() {
+<span class="nc" id="L178">    return ((ProductSearchStubSettings) getStubSettings()).importProductSetsSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to importProductSets. */
+  public OperationCallSettings&lt;
+          ImportProductSetsRequest, ImportProductSetsResponse, BatchOperationMetadata&gt;
+      importProductSetsOperationSettings() {
+<span class="nc" id="L185">    return ((ProductSearchStubSettings) getStubSettings()).importProductSetsOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to purgeProducts. */
+  public UnaryCallSettings&lt;PurgeProductsRequest, Operation&gt; purgeProductsSettings() {
+<span class="nc" id="L190">    return ((ProductSearchStubSettings) getStubSettings()).purgeProductsSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to purgeProducts. */
+  public OperationCallSettings&lt;PurgeProductsRequest, Empty, BatchOperationMetadata&gt;
+      purgeProductsOperationSettings() {
+<span class="nc" id="L196">    return ((ProductSearchStubSettings) getStubSettings()).purgeProductsOperationSettings();</span>
+  }
+
+  public static final ProductSearchSettings create(ProductSearchStubSettings stub)
+      throws IOException {
+<span class="nc" id="L201">    return new ProductSearchSettings.Builder(stub.toBuilder()).build();</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L206">    return ProductSearchStubSettings.defaultExecutorProviderBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="nc" id="L211">    return ProductSearchStubSettings.getDefaultEndpoint();</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L216">    return ProductSearchStubSettings.getDefaultServiceScopes();</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="nc" id="L221">    return ProductSearchStubSettings.defaultCredentialsProviderBuilder();</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="nc" id="L226">    return ProductSearchStubSettings.defaultGrpcTransportProviderBuilder();</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="nc" id="L230">    return ProductSearchStubSettings.defaultTransportChannelProvider();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="nc" id="L235">    return ProductSearchStubSettings.defaultApiClientHeaderProviderBuilder();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L240">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L245">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L250">    return new Builder(this);</span>
+  }
+
+  protected ProductSearchSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L254">    super(settingsBuilder);</span>
+<span class="fc" id="L255">  }</span>
+
+  /** Builder for ProductSearchSettings. */
+  public static class Builder extends ClientSettings.Builder&lt;ProductSearchSettings, Builder&gt; {
+
+    protected Builder() throws IOException {
+<span class="nc" id="L261">      this(((ClientContext) null));</span>
+<span class="nc" id="L262">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="nc" id="L265">      super(ProductSearchStubSettings.newBuilder(clientContext));</span>
+<span class="nc" id="L266">    }</span>
+
+    protected Builder(ProductSearchSettings settings) {
+<span class="nc" id="L269">      super(settings.getStubSettings().toBuilder());</span>
+<span class="nc" id="L270">    }</span>
+
+    protected Builder(ProductSearchStubSettings.Builder stubSettings) {
+<span class="fc" id="L273">      super(stubSettings);</span>
+<span class="fc" id="L274">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L277">      return new Builder(ProductSearchStubSettings.newBuilder());</span>
+    }
+
+    public ProductSearchStubSettings.Builder getStubSettingsBuilder() {
+<span class="nc" id="L281">      return ((ProductSearchStubSettings.Builder) getStubSettings());</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L291">      super.applyToAllUnaryMethods(</span>
+<span class="nc" id="L292">          getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);</span>
+<span class="nc" id="L293">      return this;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createProductSet. */
+    public UnaryCallSettings.Builder&lt;CreateProductSetRequest, ProductSet&gt;
+        createProductSetSettings() {
+<span class="nc" id="L299">      return getStubSettingsBuilder().createProductSetSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listProductSets. */
+    public PagedCallSettings.Builder&lt;
+            ListProductSetsRequest, ListProductSetsResponse, ListProductSetsPagedResponse&gt;
+        listProductSetsSettings() {
+<span class="nc" id="L306">      return getStubSettingsBuilder().listProductSetsSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getProductSet. */
+    public UnaryCallSettings.Builder&lt;GetProductSetRequest, ProductSet&gt; getProductSetSettings() {
+<span class="nc" id="L311">      return getStubSettingsBuilder().getProductSetSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateProductSet. */
+    public UnaryCallSettings.Builder&lt;UpdateProductSetRequest, ProductSet&gt;
+        updateProductSetSettings() {
+<span class="nc" id="L317">      return getStubSettingsBuilder().updateProductSetSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteProductSet. */
+    public UnaryCallSettings.Builder&lt;DeleteProductSetRequest, Empty&gt; deleteProductSetSettings() {
+<span class="nc" id="L322">      return getStubSettingsBuilder().deleteProductSetSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createProduct. */
+    public UnaryCallSettings.Builder&lt;CreateProductRequest, Product&gt; createProductSettings() {
+<span class="nc" id="L327">      return getStubSettingsBuilder().createProductSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listProducts. */
+    public PagedCallSettings.Builder&lt;
+            ListProductsRequest, ListProductsResponse, ListProductsPagedResponse&gt;
+        listProductsSettings() {
+<span class="nc" id="L334">      return getStubSettingsBuilder().listProductsSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getProduct. */
+    public UnaryCallSettings.Builder&lt;GetProductRequest, Product&gt; getProductSettings() {
+<span class="nc" id="L339">      return getStubSettingsBuilder().getProductSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateProduct. */
+    public UnaryCallSettings.Builder&lt;UpdateProductRequest, Product&gt; updateProductSettings() {
+<span class="nc" id="L344">      return getStubSettingsBuilder().updateProductSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteProduct. */
+    public UnaryCallSettings.Builder&lt;DeleteProductRequest, Empty&gt; deleteProductSettings() {
+<span class="nc" id="L349">      return getStubSettingsBuilder().deleteProductSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createReferenceImage. */
+    public UnaryCallSettings.Builder&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+        createReferenceImageSettings() {
+<span class="nc" id="L355">      return getStubSettingsBuilder().createReferenceImageSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteReferenceImage. */
+    public UnaryCallSettings.Builder&lt;DeleteReferenceImageRequest, Empty&gt;
+        deleteReferenceImageSettings() {
+<span class="nc" id="L361">      return getStubSettingsBuilder().deleteReferenceImageSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listReferenceImages. */
+    public PagedCallSettings.Builder&lt;
+            ListReferenceImagesRequest,
+            ListReferenceImagesResponse,
+            ListReferenceImagesPagedResponse&gt;
+        listReferenceImagesSettings() {
+<span class="nc" id="L370">      return getStubSettingsBuilder().listReferenceImagesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getReferenceImage. */
+    public UnaryCallSettings.Builder&lt;GetReferenceImageRequest, ReferenceImage&gt;
+        getReferenceImageSettings() {
+<span class="nc" id="L376">      return getStubSettingsBuilder().getReferenceImageSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to addProductToProductSet. */
+    public UnaryCallSettings.Builder&lt;AddProductToProductSetRequest, Empty&gt;
+        addProductToProductSetSettings() {
+<span class="nc" id="L382">      return getStubSettingsBuilder().addProductToProductSetSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to removeProductFromProductSet. */
+    public UnaryCallSettings.Builder&lt;RemoveProductFromProductSetRequest, Empty&gt;
+        removeProductFromProductSetSettings() {
+<span class="nc" id="L388">      return getStubSettingsBuilder().removeProductFromProductSetSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listProductsInProductSet. */
+    public PagedCallSettings.Builder&lt;
+            ListProductsInProductSetRequest,
+            ListProductsInProductSetResponse,
+            ListProductsInProductSetPagedResponse&gt;
+        listProductsInProductSetSettings() {
+<span class="nc" id="L397">      return getStubSettingsBuilder().listProductsInProductSetSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importProductSets. */
+    public UnaryCallSettings.Builder&lt;ImportProductSetsRequest, Operation&gt;
+        importProductSetsSettings() {
+<span class="nc" id="L403">      return getStubSettingsBuilder().importProductSetsSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importProductSets. */
+    public OperationCallSettings.Builder&lt;
+            ImportProductSetsRequest, ImportProductSetsResponse, BatchOperationMetadata&gt;
+        importProductSetsOperationSettings() {
+<span class="nc" id="L410">      return getStubSettingsBuilder().importProductSetsOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to purgeProducts. */
+    public UnaryCallSettings.Builder&lt;PurgeProductsRequest, Operation&gt; purgeProductsSettings() {
+<span class="nc" id="L415">      return getStubSettingsBuilder().purgeProductsSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to purgeProducts. */
+    public OperationCallSettings.Builder&lt;PurgeProductsRequest, Empty, BatchOperationMetadata&gt;
+        purgeProductsOperationSettings() {
+<span class="nc" id="L421">      return getStubSettingsBuilder().purgeProductsOperationSettings();</span>
+    }
+
+    @Override
+    public ProductSearchSettings build() throws IOException {
+<span class="fc" id="L426">      return new ProductSearchSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

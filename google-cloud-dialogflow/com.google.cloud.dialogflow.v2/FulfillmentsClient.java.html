@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>FulfillmentsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2</a> &gt; <span class="el_source">FulfillmentsClient.java</span></div><h1>FulfillmentsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.stub.FulfillmentsStub;
+import com.google.cloud.dialogflow.v2.stub.FulfillmentsStubSettings;
+import com.google.protobuf.FieldMask;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service for managing [Fulfillments][google.cloud.dialogflow.v2.Fulfillment].
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create()) {
+ *   FulfillmentName name = FulfillmentName.ofProjectName(&quot;[PROJECT]&quot;);
+ *   Fulfillment response = fulfillmentsClient.getFulfillment(name);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the FulfillmentsClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of FulfillmentsSettings to
+ * create(). For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * FulfillmentsSettings fulfillmentsSettings =
+ *     FulfillmentsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create(fulfillmentsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * FulfillmentsSettings fulfillmentsSettings =
+ *     FulfillmentsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create(fulfillmentsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class FulfillmentsClient implements BackgroundResource {
+  private final FulfillmentsSettings settings;
+  private final FulfillmentsStub stub;
+
+  /** Constructs an instance of FulfillmentsClient with default settings. */
+  public static final FulfillmentsClient create() throws IOException {
+<span class="nc" id="L101">    return create(FulfillmentsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of FulfillmentsClient, using the given settings. The channels are
+   * created based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final FulfillmentsClient create(FulfillmentsSettings settings) throws IOException {
+<span class="fc" id="L109">    return new FulfillmentsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of FulfillmentsClient, using the given stub for making calls. This is
+   * for advanced usage - prefer using create(FulfillmentsSettings).
+   */
+  public static final FulfillmentsClient create(FulfillmentsStub stub) {
+<span class="nc" id="L117">    return new FulfillmentsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of FulfillmentsClient, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+<span class="fc" id="L125">  protected FulfillmentsClient(FulfillmentsSettings settings) throws IOException {</span>
+<span class="fc" id="L126">    this.settings = settings;</span>
+<span class="fc" id="L127">    this.stub = ((FulfillmentsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L128">  }</span>
+
+<span class="nc" id="L130">  protected FulfillmentsClient(FulfillmentsStub stub) {</span>
+<span class="nc" id="L131">    this.settings = null;</span>
+<span class="nc" id="L132">    this.stub = stub;</span>
+<span class="nc" id="L133">  }</span>
+
+  public final FulfillmentsSettings getSettings() {
+<span class="nc" id="L136">    return settings;</span>
+  }
+
+  public FulfillmentsStub getStub() {
+<span class="nc" id="L140">    return stub;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the fulfillment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create()) {
+   *   FulfillmentName name = FulfillmentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   Fulfillment response = fulfillmentsClient.getFulfillment(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the fulfillment. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/agent/fulfillment`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Fulfillment getFulfillment(FulfillmentName name) {
+    GetFulfillmentRequest request =
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">        GetFulfillmentRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L165">    return getFulfillment(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the fulfillment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create()) {
+   *   String name = FulfillmentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   Fulfillment response = fulfillmentsClient.getFulfillment(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the fulfillment. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/agent/fulfillment`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Fulfillment getFulfillment(String name) {
+<span class="fc" id="L188">    GetFulfillmentRequest request = GetFulfillmentRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L189">    return getFulfillment(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the fulfillment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create()) {
+   *   GetFulfillmentRequest request =
+   *       GetFulfillmentRequest.newBuilder()
+   *           .setName(FulfillmentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .build();
+   *   Fulfillment response = fulfillmentsClient.getFulfillment(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Fulfillment getFulfillment(GetFulfillmentRequest request) {
+<span class="fc" id="L214">    return getFulfillmentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the fulfillment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create()) {
+   *   GetFulfillmentRequest request =
+   *       GetFulfillmentRequest.newBuilder()
+   *           .setName(FulfillmentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Fulfillment&gt; future =
+   *       fulfillmentsClient.getFulfillmentCallable().futureCall(request);
+   *   // Do something.
+   *   Fulfillment response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetFulfillmentRequest, Fulfillment&gt; getFulfillmentCallable() {
+<span class="fc" id="L239">    return stub.getFulfillmentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the fulfillment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create()) {
+   *   Fulfillment fulfillment = Fulfillment.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   Fulfillment response = fulfillmentsClient.updateFulfillment(fulfillment, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param fulfillment Required. The fulfillment to update.
+   * @param updateMask Required. The mask to control which fields get updated. If the mask is not
+   *     present, all fields will be updated.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Fulfillment updateFulfillment(Fulfillment fulfillment, FieldMask updateMask) {
+    UpdateFulfillmentRequest request =
+<span class="fc" id="L265">        UpdateFulfillmentRequest.newBuilder()</span>
+<span class="fc" id="L266">            .setFulfillment(fulfillment)</span>
+<span class="fc" id="L267">            .setUpdateMask(updateMask)</span>
+<span class="fc" id="L268">            .build();</span>
+<span class="fc" id="L269">    return updateFulfillment(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the fulfillment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create()) {
+   *   UpdateFulfillmentRequest request =
+   *       UpdateFulfillmentRequest.newBuilder()
+   *           .setFulfillment(Fulfillment.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   Fulfillment response = fulfillmentsClient.updateFulfillment(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Fulfillment updateFulfillment(UpdateFulfillmentRequest request) {
+<span class="fc" id="L295">    return updateFulfillmentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the fulfillment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (FulfillmentsClient fulfillmentsClient = FulfillmentsClient.create()) {
+   *   UpdateFulfillmentRequest request =
+   *       UpdateFulfillmentRequest.newBuilder()
+   *           .setFulfillment(Fulfillment.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Fulfillment&gt; future =
+   *       fulfillmentsClient.updateFulfillmentCallable().futureCall(request);
+   *   // Do something.
+   *   Fulfillment response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateFulfillmentRequest, Fulfillment&gt; updateFulfillmentCallable() {
+<span class="fc" id="L321">    return stub.updateFulfillmentCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L326">    stub.close();</span>
+<span class="fc" id="L327">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L331">    stub.shutdown();</span>
+<span class="nc" id="L332">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L336">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L341">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L346">    stub.shutdownNow();</span>
+<span class="nc" id="L347">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L351">    return stub.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

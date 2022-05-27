@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcVersionsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcVersionsStub.java</span></div><h1>GrpcVersionsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.VersionsClient.ListVersionsPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.CreateVersionRequest;
+import com.google.cloud.dialogflow.v2.DeleteVersionRequest;
+import com.google.cloud.dialogflow.v2.GetVersionRequest;
+import com.google.cloud.dialogflow.v2.ListVersionsRequest;
+import com.google.cloud.dialogflow.v2.ListVersionsResponse;
+import com.google.cloud.dialogflow.v2.UpdateVersionRequest;
+import com.google.cloud.dialogflow.v2.Version;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the Versions service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcVersionsStub extends VersionsStub {
+  private static final MethodDescriptor&lt;ListVersionsRequest, ListVersionsResponse&gt;
+      listVersionsMethodDescriptor =
+<span class="fc" id="L53">          MethodDescriptor.&lt;ListVersionsRequest, ListVersionsResponse&gt;newBuilder()</span>
+<span class="fc" id="L54">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L55">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Versions/ListVersions&quot;)</span>
+<span class="fc" id="L56">              .setRequestMarshaller(ProtoUtils.marshaller(ListVersionsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L57">              .setResponseMarshaller(</span>
+<span class="fc" id="L58">                  ProtoUtils.marshaller(ListVersionsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L59">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetVersionRequest, Version&gt; getVersionMethodDescriptor =
+<span class="fc" id="L62">      MethodDescriptor.&lt;GetVersionRequest, Version&gt;newBuilder()</span>
+<span class="fc" id="L63">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L64">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Versions/GetVersion&quot;)</span>
+<span class="fc" id="L65">          .setRequestMarshaller(ProtoUtils.marshaller(GetVersionRequest.getDefaultInstance()))</span>
+<span class="fc" id="L66">          .setResponseMarshaller(ProtoUtils.marshaller(Version.getDefaultInstance()))</span>
+<span class="fc" id="L67">          .build();</span>
+
+  private static final MethodDescriptor&lt;CreateVersionRequest, Version&gt;
+      createVersionMethodDescriptor =
+<span class="fc" id="L71">          MethodDescriptor.&lt;CreateVersionRequest, Version&gt;newBuilder()</span>
+<span class="fc" id="L72">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L73">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Versions/CreateVersion&quot;)</span>
+<span class="fc" id="L74">              .setRequestMarshaller(</span>
+<span class="fc" id="L75">                  ProtoUtils.marshaller(CreateVersionRequest.getDefaultInstance()))</span>
+<span class="fc" id="L76">              .setResponseMarshaller(ProtoUtils.marshaller(Version.getDefaultInstance()))</span>
+<span class="fc" id="L77">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateVersionRequest, Version&gt;
+      updateVersionMethodDescriptor =
+<span class="fc" id="L81">          MethodDescriptor.&lt;UpdateVersionRequest, Version&gt;newBuilder()</span>
+<span class="fc" id="L82">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L83">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Versions/UpdateVersion&quot;)</span>
+<span class="fc" id="L84">              .setRequestMarshaller(</span>
+<span class="fc" id="L85">                  ProtoUtils.marshaller(UpdateVersionRequest.getDefaultInstance()))</span>
+<span class="fc" id="L86">              .setResponseMarshaller(ProtoUtils.marshaller(Version.getDefaultInstance()))</span>
+<span class="fc" id="L87">              .build();</span>
+
+<span class="fc" id="L89">  private static final MethodDescriptor&lt;DeleteVersionRequest, Empty&gt; deleteVersionMethodDescriptor =</span>
+<span class="fc" id="L90">      MethodDescriptor.&lt;DeleteVersionRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L91">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L92">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Versions/DeleteVersion&quot;)</span>
+<span class="fc" id="L93">          .setRequestMarshaller(ProtoUtils.marshaller(DeleteVersionRequest.getDefaultInstance()))</span>
+<span class="fc" id="L94">          .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L95">          .build();</span>
+
+  private final UnaryCallable&lt;ListVersionsRequest, ListVersionsResponse&gt; listVersionsCallable;
+  private final UnaryCallable&lt;ListVersionsRequest, ListVersionsPagedResponse&gt;
+      listVersionsPagedCallable;
+  private final UnaryCallable&lt;GetVersionRequest, Version&gt; getVersionCallable;
+  private final UnaryCallable&lt;CreateVersionRequest, Version&gt; createVersionCallable;
+  private final UnaryCallable&lt;UpdateVersionRequest, Version&gt; updateVersionCallable;
+  private final UnaryCallable&lt;DeleteVersionRequest, Empty&gt; deleteVersionCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcVersionsStub create(VersionsStubSettings settings) throws IOException {
+<span class="fc" id="L110">    return new GrpcVersionsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcVersionsStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L114">    return new GrpcVersionsStub(VersionsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcVersionsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L119">    return new GrpcVersionsStub(</span>
+<span class="nc" id="L120">        VersionsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcVersionsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcVersionsStub(VersionsStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L129">    this(settings, clientContext, new GrpcVersionsCallableFactory());</span>
+<span class="fc" id="L130">  }</span>
+
+  /**
+   * Constructs an instance of GrpcVersionsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcVersionsStub(
+      VersionsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L140">      throws IOException {</span>
+<span class="fc" id="L141">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L142">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListVersionsRequest, ListVersionsResponse&gt; listVersionsTransportSettings =
+<span class="fc" id="L145">        GrpcCallSettings.&lt;ListVersionsRequest, ListVersionsResponse&gt;newBuilder()</span>
+<span class="fc" id="L146">            .setMethodDescriptor(listVersionsMethodDescriptor)</span>
+<span class="fc" id="L147">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L149">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L150">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L151">                  return params.build();</span>
+                })
+<span class="fc" id="L153">            .build();</span>
+    GrpcCallSettings&lt;GetVersionRequest, Version&gt; getVersionTransportSettings =
+<span class="fc" id="L155">        GrpcCallSettings.&lt;GetVersionRequest, Version&gt;newBuilder()</span>
+<span class="fc" id="L156">            .setMethodDescriptor(getVersionMethodDescriptor)</span>
+<span class="fc" id="L157">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L159">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L160">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L161">                  return params.build();</span>
+                })
+<span class="fc" id="L163">            .build();</span>
+    GrpcCallSettings&lt;CreateVersionRequest, Version&gt; createVersionTransportSettings =
+<span class="fc" id="L165">        GrpcCallSettings.&lt;CreateVersionRequest, Version&gt;newBuilder()</span>
+<span class="fc" id="L166">            .setMethodDescriptor(createVersionMethodDescriptor)</span>
+<span class="fc" id="L167">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L169">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L170">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L171">                  return params.build();</span>
+                })
+<span class="fc" id="L173">            .build();</span>
+    GrpcCallSettings&lt;UpdateVersionRequest, Version&gt; updateVersionTransportSettings =
+<span class="fc" id="L175">        GrpcCallSettings.&lt;UpdateVersionRequest, Version&gt;newBuilder()</span>
+<span class="fc" id="L176">            .setMethodDescriptor(updateVersionMethodDescriptor)</span>
+<span class="fc" id="L177">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L179">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L180">                  params.put(&quot;version.name&quot;, String.valueOf(request.getVersion().getName()));</span>
+<span class="fc" id="L181">                  return params.build();</span>
+                })
+<span class="fc" id="L183">            .build();</span>
+    GrpcCallSettings&lt;DeleteVersionRequest, Empty&gt; deleteVersionTransportSettings =
+<span class="fc" id="L185">        GrpcCallSettings.&lt;DeleteVersionRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L186">            .setMethodDescriptor(deleteVersionMethodDescriptor)</span>
+<span class="fc" id="L187">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L189">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L190">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L191">                  return params.build();</span>
+                })
+<span class="fc" id="L193">            .build();</span>
+
+<span class="fc" id="L195">    this.listVersionsCallable =</span>
+<span class="fc" id="L196">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L197">            listVersionsTransportSettings, settings.listVersionsSettings(), clientContext);</span>
+<span class="fc" id="L198">    this.listVersionsPagedCallable =</span>
+<span class="fc" id="L199">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L200">            listVersionsTransportSettings, settings.listVersionsSettings(), clientContext);</span>
+<span class="fc" id="L201">    this.getVersionCallable =</span>
+<span class="fc" id="L202">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L203">            getVersionTransportSettings, settings.getVersionSettings(), clientContext);</span>
+<span class="fc" id="L204">    this.createVersionCallable =</span>
+<span class="fc" id="L205">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L206">            createVersionTransportSettings, settings.createVersionSettings(), clientContext);</span>
+<span class="fc" id="L207">    this.updateVersionCallable =</span>
+<span class="fc" id="L208">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L209">            updateVersionTransportSettings, settings.updateVersionSettings(), clientContext);</span>
+<span class="fc" id="L210">    this.deleteVersionCallable =</span>
+<span class="fc" id="L211">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L212">            deleteVersionTransportSettings, settings.deleteVersionSettings(), clientContext);</span>
+
+<span class="fc" id="L214">    this.backgroundResources =</span>
+<span class="fc" id="L215">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L216">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L219">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListVersionsRequest, ListVersionsResponse&gt; listVersionsCallable() {
+<span class="nc" id="L224">    return listVersionsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListVersionsRequest, ListVersionsPagedResponse&gt; listVersionsPagedCallable() {
+<span class="fc" id="L229">    return listVersionsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetVersionRequest, Version&gt; getVersionCallable() {
+<span class="fc" id="L234">    return getVersionCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateVersionRequest, Version&gt; createVersionCallable() {
+<span class="fc" id="L239">    return createVersionCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateVersionRequest, Version&gt; updateVersionCallable() {
+<span class="fc" id="L244">    return updateVersionCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteVersionRequest, Empty&gt; deleteVersionCallable() {
+<span class="fc" id="L249">    return deleteVersionCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L255">      backgroundResources.close();</span>
+<span class="nc" id="L256">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L257">      throw e;</span>
+<span class="nc" id="L258">    } catch (Exception e) {</span>
+<span class="nc" id="L259">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L260">    }</span>
+<span class="fc" id="L261">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L265">    backgroundResources.shutdown();</span>
+<span class="nc" id="L266">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L270">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L275">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L280">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L281">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L285">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

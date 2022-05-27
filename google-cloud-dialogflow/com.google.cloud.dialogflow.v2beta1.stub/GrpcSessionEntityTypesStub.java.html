@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcSessionEntityTypesStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1.stub</a> &gt; <span class="el_source">GrpcSessionEntityTypesStub.java</span></div><h1>GrpcSessionEntityTypesStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1.stub;
+
+import static com.google.cloud.dialogflow.v2beta1.SessionEntityTypesClient.ListSessionEntityTypesPagedResponse;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2beta1.CreateSessionEntityTypeRequest;
+import com.google.cloud.dialogflow.v2beta1.DeleteSessionEntityTypeRequest;
+import com.google.cloud.dialogflow.v2beta1.GetSessionEntityTypeRequest;
+import com.google.cloud.dialogflow.v2beta1.ListSessionEntityTypesRequest;
+import com.google.cloud.dialogflow.v2beta1.ListSessionEntityTypesResponse;
+import com.google.cloud.dialogflow.v2beta1.SessionEntityType;
+import com.google.cloud.dialogflow.v2beta1.UpdateSessionEntityTypeRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the SessionEntityTypes service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcSessionEntityTypesStub extends SessionEntityTypesStub {
+  private static final MethodDescriptor&lt;
+          ListSessionEntityTypesRequest, ListSessionEntityTypesResponse&gt;
+      listSessionEntityTypesMethodDescriptor =
+          MethodDescriptor
+<span class="fc" id="L57">              .&lt;ListSessionEntityTypesRequest, ListSessionEntityTypesResponse&gt;newBuilder()</span>
+<span class="fc" id="L58">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L59">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2beta1.SessionEntityTypes/ListSessionEntityTypes&quot;)
+<span class="fc" id="L61">              .setRequestMarshaller(</span>
+<span class="fc" id="L62">                  ProtoUtils.marshaller(ListSessionEntityTypesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L63">              .setResponseMarshaller(</span>
+<span class="fc" id="L64">                  ProtoUtils.marshaller(ListSessionEntityTypesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L65">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetSessionEntityTypeRequest, SessionEntityType&gt;
+      getSessionEntityTypeMethodDescriptor =
+<span class="fc" id="L69">          MethodDescriptor.&lt;GetSessionEntityTypeRequest, SessionEntityType&gt;newBuilder()</span>
+<span class="fc" id="L70">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L71">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2beta1.SessionEntityTypes/GetSessionEntityType&quot;)
+<span class="fc" id="L73">              .setRequestMarshaller(</span>
+<span class="fc" id="L74">                  ProtoUtils.marshaller(GetSessionEntityTypeRequest.getDefaultInstance()))</span>
+<span class="fc" id="L75">              .setResponseMarshaller(ProtoUtils.marshaller(SessionEntityType.getDefaultInstance()))</span>
+<span class="fc" id="L76">              .build();</span>
+
+  private static final MethodDescriptor&lt;CreateSessionEntityTypeRequest, SessionEntityType&gt;
+      createSessionEntityTypeMethodDescriptor =
+<span class="fc" id="L80">          MethodDescriptor.&lt;CreateSessionEntityTypeRequest, SessionEntityType&gt;newBuilder()</span>
+<span class="fc" id="L81">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L82">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2beta1.SessionEntityTypes/CreateSessionEntityType&quot;)
+<span class="fc" id="L84">              .setRequestMarshaller(</span>
+<span class="fc" id="L85">                  ProtoUtils.marshaller(CreateSessionEntityTypeRequest.getDefaultInstance()))</span>
+<span class="fc" id="L86">              .setResponseMarshaller(ProtoUtils.marshaller(SessionEntityType.getDefaultInstance()))</span>
+<span class="fc" id="L87">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateSessionEntityTypeRequest, SessionEntityType&gt;
+      updateSessionEntityTypeMethodDescriptor =
+<span class="fc" id="L91">          MethodDescriptor.&lt;UpdateSessionEntityTypeRequest, SessionEntityType&gt;newBuilder()</span>
+<span class="fc" id="L92">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L93">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2beta1.SessionEntityTypes/UpdateSessionEntityType&quot;)
+<span class="fc" id="L95">              .setRequestMarshaller(</span>
+<span class="fc" id="L96">                  ProtoUtils.marshaller(UpdateSessionEntityTypeRequest.getDefaultInstance()))</span>
+<span class="fc" id="L97">              .setResponseMarshaller(ProtoUtils.marshaller(SessionEntityType.getDefaultInstance()))</span>
+<span class="fc" id="L98">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteSessionEntityTypeRequest, Empty&gt;
+<span class="fc" id="L101">      deleteSessionEntityTypeMethodDescriptor =</span>
+<span class="fc" id="L102">          MethodDescriptor.&lt;DeleteSessionEntityTypeRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L103">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L104">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2beta1.SessionEntityTypes/DeleteSessionEntityType&quot;)
+<span class="fc" id="L106">              .setRequestMarshaller(</span>
+<span class="fc" id="L107">                  ProtoUtils.marshaller(DeleteSessionEntityTypeRequest.getDefaultInstance()))</span>
+<span class="fc" id="L108">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L109">              .build();</span>
+
+  private final UnaryCallable&lt;ListSessionEntityTypesRequest, ListSessionEntityTypesResponse&gt;
+      listSessionEntityTypesCallable;
+  private final UnaryCallable&lt;ListSessionEntityTypesRequest, ListSessionEntityTypesPagedResponse&gt;
+      listSessionEntityTypesPagedCallable;
+  private final UnaryCallable&lt;GetSessionEntityTypeRequest, SessionEntityType&gt;
+      getSessionEntityTypeCallable;
+  private final UnaryCallable&lt;CreateSessionEntityTypeRequest, SessionEntityType&gt;
+      createSessionEntityTypeCallable;
+  private final UnaryCallable&lt;UpdateSessionEntityTypeRequest, SessionEntityType&gt;
+      updateSessionEntityTypeCallable;
+  private final UnaryCallable&lt;DeleteSessionEntityTypeRequest, Empty&gt;
+      deleteSessionEntityTypeCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcSessionEntityTypesStub create(SessionEntityTypesStubSettings settings)
+      throws IOException {
+<span class="fc" id="L130">    return new GrpcSessionEntityTypesStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcSessionEntityTypesStub create(ClientContext clientContext)
+      throws IOException {
+<span class="nc" id="L135">    return new GrpcSessionEntityTypesStub(</span>
+<span class="nc" id="L136">        SessionEntityTypesStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcSessionEntityTypesStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L141">    return new GrpcSessionEntityTypesStub(</span>
+<span class="nc" id="L142">        SessionEntityTypesStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcSessionEntityTypesStub, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+  protected GrpcSessionEntityTypesStub(
+      SessionEntityTypesStubSettings settings, ClientContext clientContext) throws IOException {
+<span class="fc" id="L152">    this(settings, clientContext, new GrpcSessionEntityTypesCallableFactory());</span>
+<span class="fc" id="L153">  }</span>
+
+  /**
+   * Constructs an instance of GrpcSessionEntityTypesStub, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+  protected GrpcSessionEntityTypesStub(
+      SessionEntityTypesStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L164">      throws IOException {</span>
+<span class="fc" id="L165">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L166">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListSessionEntityTypesRequest, ListSessionEntityTypesResponse&gt;
+        listSessionEntityTypesTransportSettings =
+            GrpcCallSettings
+<span class="fc" id="L171">                .&lt;ListSessionEntityTypesRequest, ListSessionEntityTypesResponse&gt;newBuilder()</span>
+<span class="fc" id="L172">                .setMethodDescriptor(listSessionEntityTypesMethodDescriptor)</span>
+<span class="fc" id="L173">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L175">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L176">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L177">                      return params.build();</span>
+                    })
+<span class="fc" id="L179">                .build();</span>
+    GrpcCallSettings&lt;GetSessionEntityTypeRequest, SessionEntityType&gt;
+        getSessionEntityTypeTransportSettings =
+<span class="fc" id="L182">            GrpcCallSettings.&lt;GetSessionEntityTypeRequest, SessionEntityType&gt;newBuilder()</span>
+<span class="fc" id="L183">                .setMethodDescriptor(getSessionEntityTypeMethodDescriptor)</span>
+<span class="fc" id="L184">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L186">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L187">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L188">                      return params.build();</span>
+                    })
+<span class="fc" id="L190">                .build();</span>
+    GrpcCallSettings&lt;CreateSessionEntityTypeRequest, SessionEntityType&gt;
+        createSessionEntityTypeTransportSettings =
+<span class="fc" id="L193">            GrpcCallSettings.&lt;CreateSessionEntityTypeRequest, SessionEntityType&gt;newBuilder()</span>
+<span class="fc" id="L194">                .setMethodDescriptor(createSessionEntityTypeMethodDescriptor)</span>
+<span class="fc" id="L195">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L197">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L198">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L199">                      return params.build();</span>
+                    })
+<span class="fc" id="L201">                .build();</span>
+    GrpcCallSettings&lt;UpdateSessionEntityTypeRequest, SessionEntityType&gt;
+        updateSessionEntityTypeTransportSettings =
+<span class="fc" id="L204">            GrpcCallSettings.&lt;UpdateSessionEntityTypeRequest, SessionEntityType&gt;newBuilder()</span>
+<span class="fc" id="L205">                .setMethodDescriptor(updateSessionEntityTypeMethodDescriptor)</span>
+<span class="fc" id="L206">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L208">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L209">                      params.put(</span>
+                          &quot;session_entity_type.name&quot;,
+<span class="fc" id="L211">                          String.valueOf(request.getSessionEntityType().getName()));</span>
+<span class="fc" id="L212">                      return params.build();</span>
+                    })
+<span class="fc" id="L214">                .build();</span>
+    GrpcCallSettings&lt;DeleteSessionEntityTypeRequest, Empty&gt;
+        deleteSessionEntityTypeTransportSettings =
+<span class="fc" id="L217">            GrpcCallSettings.&lt;DeleteSessionEntityTypeRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L218">                .setMethodDescriptor(deleteSessionEntityTypeMethodDescriptor)</span>
+<span class="fc" id="L219">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L221">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L222">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L223">                      return params.build();</span>
+                    })
+<span class="fc" id="L225">                .build();</span>
+
+<span class="fc" id="L227">    this.listSessionEntityTypesCallable =</span>
+<span class="fc" id="L228">        callableFactory.createUnaryCallable(</span>
+            listSessionEntityTypesTransportSettings,
+<span class="fc" id="L230">            settings.listSessionEntityTypesSettings(),</span>
+            clientContext);
+<span class="fc" id="L232">    this.listSessionEntityTypesPagedCallable =</span>
+<span class="fc" id="L233">        callableFactory.createPagedCallable(</span>
+            listSessionEntityTypesTransportSettings,
+<span class="fc" id="L235">            settings.listSessionEntityTypesSettings(),</span>
+            clientContext);
+<span class="fc" id="L237">    this.getSessionEntityTypeCallable =</span>
+<span class="fc" id="L238">        callableFactory.createUnaryCallable(</span>
+            getSessionEntityTypeTransportSettings,
+<span class="fc" id="L240">            settings.getSessionEntityTypeSettings(),</span>
+            clientContext);
+<span class="fc" id="L242">    this.createSessionEntityTypeCallable =</span>
+<span class="fc" id="L243">        callableFactory.createUnaryCallable(</span>
+            createSessionEntityTypeTransportSettings,
+<span class="fc" id="L245">            settings.createSessionEntityTypeSettings(),</span>
+            clientContext);
+<span class="fc" id="L247">    this.updateSessionEntityTypeCallable =</span>
+<span class="fc" id="L248">        callableFactory.createUnaryCallable(</span>
+            updateSessionEntityTypeTransportSettings,
+<span class="fc" id="L250">            settings.updateSessionEntityTypeSettings(),</span>
+            clientContext);
+<span class="fc" id="L252">    this.deleteSessionEntityTypeCallable =</span>
+<span class="fc" id="L253">        callableFactory.createUnaryCallable(</span>
+            deleteSessionEntityTypeTransportSettings,
+<span class="fc" id="L255">            settings.deleteSessionEntityTypeSettings(),</span>
+            clientContext);
+
+<span class="fc" id="L258">    this.backgroundResources =</span>
+<span class="fc" id="L259">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L260">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L263">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListSessionEntityTypesRequest, ListSessionEntityTypesResponse&gt;
+      listSessionEntityTypesCallable() {
+<span class="nc" id="L269">    return listSessionEntityTypesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListSessionEntityTypesRequest, ListSessionEntityTypesPagedResponse&gt;
+      listSessionEntityTypesPagedCallable() {
+<span class="fc" id="L275">    return listSessionEntityTypesPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetSessionEntityTypeRequest, SessionEntityType&gt;
+      getSessionEntityTypeCallable() {
+<span class="fc" id="L281">    return getSessionEntityTypeCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateSessionEntityTypeRequest, SessionEntityType&gt;
+      createSessionEntityTypeCallable() {
+<span class="fc" id="L287">    return createSessionEntityTypeCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateSessionEntityTypeRequest, SessionEntityType&gt;
+      updateSessionEntityTypeCallable() {
+<span class="fc" id="L293">    return updateSessionEntityTypeCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteSessionEntityTypeRequest, Empty&gt; deleteSessionEntityTypeCallable() {
+<span class="fc" id="L298">    return deleteSessionEntityTypeCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L304">      backgroundResources.close();</span>
+<span class="nc" id="L305">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L306">      throw e;</span>
+<span class="nc" id="L307">    } catch (Exception e) {</span>
+<span class="nc" id="L308">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L309">    }</span>
+<span class="fc" id="L310">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L314">    backgroundResources.shutdown();</span>
+<span class="nc" id="L315">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L319">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L324">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L329">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L330">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L334">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

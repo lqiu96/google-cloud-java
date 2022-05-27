@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ParticipantsSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2</a> &gt; <span class="el_source">ParticipantsSettings.java</span></div><h1>ParticipantsSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2;
+
+import static com.google.cloud.dialogflow.v2.ParticipantsClient.ListParticipantsPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.cloud.dialogflow.v2.stub.ParticipantsStubSettings;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link ParticipantsClient}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (dialogflow.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of createParticipant to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ParticipantsSettings.Builder participantsSettingsBuilder = ParticipantsSettings.newBuilder();
+ * participantsSettingsBuilder
+ *     .createParticipantSettings()
+ *     .setRetrySettings(
+ *         participantsSettingsBuilder
+ *             .createParticipantSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * ParticipantsSettings participantsSettings = participantsSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ParticipantsSettings extends ClientSettings&lt;ParticipantsSettings&gt; {
+
+  /** Returns the object with the settings used for calls to createParticipant. */
+  public UnaryCallSettings&lt;CreateParticipantRequest, Participant&gt; createParticipantSettings() {
+<span class="nc" id="L75">    return ((ParticipantsStubSettings) getStubSettings()).createParticipantSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to getParticipant. */
+  public UnaryCallSettings&lt;GetParticipantRequest, Participant&gt; getParticipantSettings() {
+<span class="nc" id="L80">    return ((ParticipantsStubSettings) getStubSettings()).getParticipantSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to listParticipants. */
+  public PagedCallSettings&lt;
+          ListParticipantsRequest, ListParticipantsResponse, ListParticipantsPagedResponse&gt;
+      listParticipantsSettings() {
+<span class="nc" id="L87">    return ((ParticipantsStubSettings) getStubSettings()).listParticipantsSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateParticipant. */
+  public UnaryCallSettings&lt;UpdateParticipantRequest, Participant&gt; updateParticipantSettings() {
+<span class="nc" id="L92">    return ((ParticipantsStubSettings) getStubSettings()).updateParticipantSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to analyzeContent. */
+  public UnaryCallSettings&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt; analyzeContentSettings() {
+<span class="nc" id="L97">    return ((ParticipantsStubSettings) getStubSettings()).analyzeContentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to suggestArticles. */
+  public UnaryCallSettings&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt;
+      suggestArticlesSettings() {
+<span class="nc" id="L103">    return ((ParticipantsStubSettings) getStubSettings()).suggestArticlesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to suggestFaqAnswers. */
+  public UnaryCallSettings&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;
+      suggestFaqAnswersSettings() {
+<span class="nc" id="L109">    return ((ParticipantsStubSettings) getStubSettings()).suggestFaqAnswersSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to suggestSmartReplies. */
+  public UnaryCallSettings&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;
+      suggestSmartRepliesSettings() {
+<span class="nc" id="L115">    return ((ParticipantsStubSettings) getStubSettings()).suggestSmartRepliesSettings();</span>
+  }
+
+  public static final ParticipantsSettings create(ParticipantsStubSettings stub)
+      throws IOException {
+<span class="nc" id="L120">    return new ParticipantsSettings.Builder(stub.toBuilder()).build();</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L125">    return ParticipantsStubSettings.defaultExecutorProviderBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="nc" id="L130">    return ParticipantsStubSettings.getDefaultEndpoint();</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L135">    return ParticipantsStubSettings.getDefaultServiceScopes();</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="nc" id="L140">    return ParticipantsStubSettings.defaultCredentialsProviderBuilder();</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="nc" id="L145">    return ParticipantsStubSettings.defaultGrpcTransportProviderBuilder();</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="nc" id="L149">    return ParticipantsStubSettings.defaultTransportChannelProvider();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="nc" id="L154">    return ParticipantsStubSettings.defaultApiClientHeaderProviderBuilder();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L159">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L164">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L169">    return new Builder(this);</span>
+  }
+
+  protected ParticipantsSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L173">    super(settingsBuilder);</span>
+<span class="fc" id="L174">  }</span>
+
+  /** Builder for ParticipantsSettings. */
+  public static class Builder extends ClientSettings.Builder&lt;ParticipantsSettings, Builder&gt; {
+
+    protected Builder() throws IOException {
+<span class="nc" id="L180">      this(((ClientContext) null));</span>
+<span class="nc" id="L181">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="nc" id="L184">      super(ParticipantsStubSettings.newBuilder(clientContext));</span>
+<span class="nc" id="L185">    }</span>
+
+    protected Builder(ParticipantsSettings settings) {
+<span class="nc" id="L188">      super(settings.getStubSettings().toBuilder());</span>
+<span class="nc" id="L189">    }</span>
+
+    protected Builder(ParticipantsStubSettings.Builder stubSettings) {
+<span class="fc" id="L192">      super(stubSettings);</span>
+<span class="fc" id="L193">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L196">      return new Builder(ParticipantsStubSettings.newBuilder());</span>
+    }
+
+    public ParticipantsStubSettings.Builder getStubSettingsBuilder() {
+<span class="nc" id="L200">      return ((ParticipantsStubSettings.Builder) getStubSettings());</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L210">      super.applyToAllUnaryMethods(</span>
+<span class="nc" id="L211">          getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);</span>
+<span class="nc" id="L212">      return this;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createParticipant. */
+    public UnaryCallSettings.Builder&lt;CreateParticipantRequest, Participant&gt;
+        createParticipantSettings() {
+<span class="nc" id="L218">      return getStubSettingsBuilder().createParticipantSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getParticipant. */
+    public UnaryCallSettings.Builder&lt;GetParticipantRequest, Participant&gt; getParticipantSettings() {
+<span class="nc" id="L223">      return getStubSettingsBuilder().getParticipantSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listParticipants. */
+    public PagedCallSettings.Builder&lt;
+            ListParticipantsRequest, ListParticipantsResponse, ListParticipantsPagedResponse&gt;
+        listParticipantsSettings() {
+<span class="nc" id="L230">      return getStubSettingsBuilder().listParticipantsSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateParticipant. */
+    public UnaryCallSettings.Builder&lt;UpdateParticipantRequest, Participant&gt;
+        updateParticipantSettings() {
+<span class="nc" id="L236">      return getStubSettingsBuilder().updateParticipantSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to analyzeContent. */
+    public UnaryCallSettings.Builder&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt;
+        analyzeContentSettings() {
+<span class="nc" id="L242">      return getStubSettingsBuilder().analyzeContentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to suggestArticles. */
+    public UnaryCallSettings.Builder&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt;
+        suggestArticlesSettings() {
+<span class="nc" id="L248">      return getStubSettingsBuilder().suggestArticlesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to suggestFaqAnswers. */
+    public UnaryCallSettings.Builder&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;
+        suggestFaqAnswersSettings() {
+<span class="nc" id="L254">      return getStubSettingsBuilder().suggestFaqAnswersSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to suggestSmartReplies. */
+    public UnaryCallSettings.Builder&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;
+        suggestSmartRepliesSettings() {
+<span class="nc" id="L260">      return getStubSettingsBuilder().suggestSmartRepliesSettings();</span>
+    }
+
+    @Override
+    public ParticipantsSettings build() throws IOException {
+<span class="fc" id="L265">      return new ParticipantsSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

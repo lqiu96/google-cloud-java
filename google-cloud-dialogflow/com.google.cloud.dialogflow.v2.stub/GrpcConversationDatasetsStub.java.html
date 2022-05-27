@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcConversationDatasetsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcConversationDatasetsStub.java</span></div><h1>GrpcConversationDatasetsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.ConversationDatasetsClient.ListConversationDatasetsPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.ConversationDataset;
+import com.google.cloud.dialogflow.v2.CreateConversationDatasetOperationMetadata;
+import com.google.cloud.dialogflow.v2.CreateConversationDatasetRequest;
+import com.google.cloud.dialogflow.v2.DeleteConversationDatasetOperationMetadata;
+import com.google.cloud.dialogflow.v2.DeleteConversationDatasetRequest;
+import com.google.cloud.dialogflow.v2.GetConversationDatasetRequest;
+import com.google.cloud.dialogflow.v2.ImportConversationDataOperationMetadata;
+import com.google.cloud.dialogflow.v2.ImportConversationDataOperationResponse;
+import com.google.cloud.dialogflow.v2.ImportConversationDataRequest;
+import com.google.cloud.dialogflow.v2.ListConversationDatasetsRequest;
+import com.google.cloud.dialogflow.v2.ListConversationDatasetsResponse;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the ConversationDatasets service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcConversationDatasetsStub extends ConversationDatasetsStub {
+  private static final MethodDescriptor&lt;CreateConversationDatasetRequest, Operation&gt;
+      createConversationDatasetMethodDescriptor =
+<span class="fc" id="L59">          MethodDescriptor.&lt;CreateConversationDatasetRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L60">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L61">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationDatasets/CreateConversationDataset&quot;)
+<span class="fc" id="L63">              .setRequestMarshaller(</span>
+<span class="fc" id="L64">                  ProtoUtils.marshaller(CreateConversationDatasetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L65">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L66">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetConversationDatasetRequest, ConversationDataset&gt;
+      getConversationDatasetMethodDescriptor =
+<span class="fc" id="L70">          MethodDescriptor.&lt;GetConversationDatasetRequest, ConversationDataset&gt;newBuilder()</span>
+<span class="fc" id="L71">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L72">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationDatasets/GetConversationDataset&quot;)
+<span class="fc" id="L74">              .setRequestMarshaller(</span>
+<span class="fc" id="L75">                  ProtoUtils.marshaller(GetConversationDatasetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L76">              .setResponseMarshaller(</span>
+<span class="fc" id="L77">                  ProtoUtils.marshaller(ConversationDataset.getDefaultInstance()))</span>
+<span class="fc" id="L78">              .build();</span>
+
+  private static final MethodDescriptor&lt;
+          ListConversationDatasetsRequest, ListConversationDatasetsResponse&gt;
+      listConversationDatasetsMethodDescriptor =
+          MethodDescriptor
+<span class="fc" id="L84">              .&lt;ListConversationDatasetsRequest, ListConversationDatasetsResponse&gt;newBuilder()</span>
+<span class="fc" id="L85">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L86">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationDatasets/ListConversationDatasets&quot;)
+<span class="fc" id="L88">              .setRequestMarshaller(</span>
+<span class="fc" id="L89">                  ProtoUtils.marshaller(ListConversationDatasetsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L90">              .setResponseMarshaller(</span>
+<span class="fc" id="L91">                  ProtoUtils.marshaller(ListConversationDatasetsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L92">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteConversationDatasetRequest, Operation&gt;
+      deleteConversationDatasetMethodDescriptor =
+<span class="fc" id="L96">          MethodDescriptor.&lt;DeleteConversationDatasetRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L97">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L98">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationDatasets/DeleteConversationDataset&quot;)
+<span class="fc" id="L100">              .setRequestMarshaller(</span>
+<span class="fc" id="L101">                  ProtoUtils.marshaller(DeleteConversationDatasetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L102">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L103">              .build();</span>
+
+  private static final MethodDescriptor&lt;ImportConversationDataRequest, Operation&gt;
+<span class="fc" id="L106">      importConversationDataMethodDescriptor =</span>
+<span class="fc" id="L107">          MethodDescriptor.&lt;ImportConversationDataRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L108">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L109">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationDatasets/ImportConversationData&quot;)
+<span class="fc" id="L111">              .setRequestMarshaller(</span>
+<span class="fc" id="L112">                  ProtoUtils.marshaller(ImportConversationDataRequest.getDefaultInstance()))</span>
+<span class="fc" id="L113">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L114">              .build();</span>
+
+  private final UnaryCallable&lt;CreateConversationDatasetRequest, Operation&gt;
+      createConversationDatasetCallable;
+  private final OperationCallable&lt;
+          CreateConversationDatasetRequest,
+          ConversationDataset,
+          CreateConversationDatasetOperationMetadata&gt;
+      createConversationDatasetOperationCallable;
+  private final UnaryCallable&lt;GetConversationDatasetRequest, ConversationDataset&gt;
+      getConversationDatasetCallable;
+  private final UnaryCallable&lt;ListConversationDatasetsRequest, ListConversationDatasetsResponse&gt;
+      listConversationDatasetsCallable;
+  private final UnaryCallable&lt;
+          ListConversationDatasetsRequest, ListConversationDatasetsPagedResponse&gt;
+      listConversationDatasetsPagedCallable;
+  private final UnaryCallable&lt;DeleteConversationDatasetRequest, Operation&gt;
+      deleteConversationDatasetCallable;
+  private final OperationCallable&lt;
+          DeleteConversationDatasetRequest, Empty, DeleteConversationDatasetOperationMetadata&gt;
+      deleteConversationDatasetOperationCallable;
+  private final UnaryCallable&lt;ImportConversationDataRequest, Operation&gt;
+      importConversationDataCallable;
+  private final OperationCallable&lt;
+          ImportConversationDataRequest,
+          ImportConversationDataOperationResponse,
+          ImportConversationDataOperationMetadata&gt;
+      importConversationDataOperationCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcConversationDatasetsStub create(ConversationDatasetsStubSettings settings)
+      throws IOException {
+<span class="fc" id="L149">    return new GrpcConversationDatasetsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcConversationDatasetsStub create(ClientContext clientContext)
+      throws IOException {
+<span class="nc" id="L154">    return new GrpcConversationDatasetsStub(</span>
+<span class="nc" id="L155">        ConversationDatasetsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcConversationDatasetsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L160">    return new GrpcConversationDatasetsStub(</span>
+<span class="nc" id="L161">        ConversationDatasetsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcConversationDatasetsStub, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+  protected GrpcConversationDatasetsStub(
+      ConversationDatasetsStubSettings settings, ClientContext clientContext) throws IOException {
+<span class="fc" id="L171">    this(settings, clientContext, new GrpcConversationDatasetsCallableFactory());</span>
+<span class="fc" id="L172">  }</span>
+
+  /**
+   * Constructs an instance of GrpcConversationDatasetsStub, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+  protected GrpcConversationDatasetsStub(
+      ConversationDatasetsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L183">      throws IOException {</span>
+<span class="fc" id="L184">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L185">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;CreateConversationDatasetRequest, Operation&gt;
+        createConversationDatasetTransportSettings =
+<span class="fc" id="L189">            GrpcCallSettings.&lt;CreateConversationDatasetRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L190">                .setMethodDescriptor(createConversationDatasetMethodDescriptor)</span>
+<span class="fc" id="L191">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L193">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L194">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L195">                      return params.build();</span>
+                    })
+<span class="fc" id="L197">                .build();</span>
+    GrpcCallSettings&lt;GetConversationDatasetRequest, ConversationDataset&gt;
+        getConversationDatasetTransportSettings =
+<span class="fc" id="L200">            GrpcCallSettings.&lt;GetConversationDatasetRequest, ConversationDataset&gt;newBuilder()</span>
+<span class="fc" id="L201">                .setMethodDescriptor(getConversationDatasetMethodDescriptor)</span>
+<span class="fc" id="L202">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L204">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L205">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L206">                      return params.build();</span>
+                    })
+<span class="fc" id="L208">                .build();</span>
+    GrpcCallSettings&lt;ListConversationDatasetsRequest, ListConversationDatasetsResponse&gt;
+        listConversationDatasetsTransportSettings =
+            GrpcCallSettings
+<span class="fc" id="L212">                .&lt;ListConversationDatasetsRequest, ListConversationDatasetsResponse&gt;newBuilder()</span>
+<span class="fc" id="L213">                .setMethodDescriptor(listConversationDatasetsMethodDescriptor)</span>
+<span class="fc" id="L214">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L216">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L217">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L218">                      return params.build();</span>
+                    })
+<span class="fc" id="L220">                .build();</span>
+    GrpcCallSettings&lt;DeleteConversationDatasetRequest, Operation&gt;
+        deleteConversationDatasetTransportSettings =
+<span class="fc" id="L223">            GrpcCallSettings.&lt;DeleteConversationDatasetRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L224">                .setMethodDescriptor(deleteConversationDatasetMethodDescriptor)</span>
+<span class="fc" id="L225">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L227">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L228">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L229">                      return params.build();</span>
+                    })
+<span class="fc" id="L231">                .build();</span>
+    GrpcCallSettings&lt;ImportConversationDataRequest, Operation&gt;
+        importConversationDataTransportSettings =
+<span class="fc" id="L234">            GrpcCallSettings.&lt;ImportConversationDataRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L235">                .setMethodDescriptor(importConversationDataMethodDescriptor)</span>
+<span class="fc" id="L236">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L238">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L239">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L240">                      return params.build();</span>
+                    })
+<span class="fc" id="L242">                .build();</span>
+
+<span class="fc" id="L244">    this.createConversationDatasetCallable =</span>
+<span class="fc" id="L245">        callableFactory.createUnaryCallable(</span>
+            createConversationDatasetTransportSettings,
+<span class="fc" id="L247">            settings.createConversationDatasetSettings(),</span>
+            clientContext);
+<span class="fc" id="L249">    this.createConversationDatasetOperationCallable =</span>
+<span class="fc" id="L250">        callableFactory.createOperationCallable(</span>
+            createConversationDatasetTransportSettings,
+<span class="fc" id="L252">            settings.createConversationDatasetOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L255">    this.getConversationDatasetCallable =</span>
+<span class="fc" id="L256">        callableFactory.createUnaryCallable(</span>
+            getConversationDatasetTransportSettings,
+<span class="fc" id="L258">            settings.getConversationDatasetSettings(),</span>
+            clientContext);
+<span class="fc" id="L260">    this.listConversationDatasetsCallable =</span>
+<span class="fc" id="L261">        callableFactory.createUnaryCallable(</span>
+            listConversationDatasetsTransportSettings,
+<span class="fc" id="L263">            settings.listConversationDatasetsSettings(),</span>
+            clientContext);
+<span class="fc" id="L265">    this.listConversationDatasetsPagedCallable =</span>
+<span class="fc" id="L266">        callableFactory.createPagedCallable(</span>
+            listConversationDatasetsTransportSettings,
+<span class="fc" id="L268">            settings.listConversationDatasetsSettings(),</span>
+            clientContext);
+<span class="fc" id="L270">    this.deleteConversationDatasetCallable =</span>
+<span class="fc" id="L271">        callableFactory.createUnaryCallable(</span>
+            deleteConversationDatasetTransportSettings,
+<span class="fc" id="L273">            settings.deleteConversationDatasetSettings(),</span>
+            clientContext);
+<span class="fc" id="L275">    this.deleteConversationDatasetOperationCallable =</span>
+<span class="fc" id="L276">        callableFactory.createOperationCallable(</span>
+            deleteConversationDatasetTransportSettings,
+<span class="fc" id="L278">            settings.deleteConversationDatasetOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L281">    this.importConversationDataCallable =</span>
+<span class="fc" id="L282">        callableFactory.createUnaryCallable(</span>
+            importConversationDataTransportSettings,
+<span class="fc" id="L284">            settings.importConversationDataSettings(),</span>
+            clientContext);
+<span class="fc" id="L286">    this.importConversationDataOperationCallable =</span>
+<span class="fc" id="L287">        callableFactory.createOperationCallable(</span>
+            importConversationDataTransportSettings,
+<span class="fc" id="L289">            settings.importConversationDataOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+
+<span class="fc" id="L293">    this.backgroundResources =</span>
+<span class="fc" id="L294">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L295">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="fc" id="L298">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateConversationDatasetRequest, Operation&gt;
+      createConversationDatasetCallable() {
+<span class="nc" id="L304">    return createConversationDatasetCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          CreateConversationDatasetRequest,
+          ConversationDataset,
+          CreateConversationDatasetOperationMetadata&gt;
+      createConversationDatasetOperationCallable() {
+<span class="fc" id="L313">    return createConversationDatasetOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetConversationDatasetRequest, ConversationDataset&gt;
+      getConversationDatasetCallable() {
+<span class="fc" id="L319">    return getConversationDatasetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListConversationDatasetsRequest, ListConversationDatasetsResponse&gt;
+      listConversationDatasetsCallable() {
+<span class="nc" id="L325">    return listConversationDatasetsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListConversationDatasetsRequest, ListConversationDatasetsPagedResponse&gt;
+      listConversationDatasetsPagedCallable() {
+<span class="fc" id="L331">    return listConversationDatasetsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteConversationDatasetRequest, Operation&gt;
+      deleteConversationDatasetCallable() {
+<span class="nc" id="L337">    return deleteConversationDatasetCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          DeleteConversationDatasetRequest, Empty, DeleteConversationDatasetOperationMetadata&gt;
+      deleteConversationDatasetOperationCallable() {
+<span class="fc" id="L344">    return deleteConversationDatasetOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ImportConversationDataRequest, Operation&gt; importConversationDataCallable() {
+<span class="nc" id="L349">    return importConversationDataCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          ImportConversationDataRequest,
+          ImportConversationDataOperationResponse,
+          ImportConversationDataOperationMetadata&gt;
+      importConversationDataOperationCallable() {
+<span class="fc" id="L358">    return importConversationDataOperationCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L364">      backgroundResources.close();</span>
+<span class="nc" id="L365">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L366">      throw e;</span>
+<span class="nc" id="L367">    } catch (Exception e) {</span>
+<span class="nc" id="L368">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L369">    }</span>
+<span class="fc" id="L370">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L374">    backgroundResources.shutdown();</span>
+<span class="nc" id="L375">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L379">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L384">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L389">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L390">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L394">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcEntityTypesStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcEntityTypesStub.java</span></div><h1>GrpcEntityTypesStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.EntityTypesClient.ListEntityTypesPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.BatchCreateEntitiesRequest;
+import com.google.cloud.dialogflow.v2.BatchDeleteEntitiesRequest;
+import com.google.cloud.dialogflow.v2.BatchDeleteEntityTypesRequest;
+import com.google.cloud.dialogflow.v2.BatchUpdateEntitiesRequest;
+import com.google.cloud.dialogflow.v2.BatchUpdateEntityTypesRequest;
+import com.google.cloud.dialogflow.v2.BatchUpdateEntityTypesResponse;
+import com.google.cloud.dialogflow.v2.CreateEntityTypeRequest;
+import com.google.cloud.dialogflow.v2.DeleteEntityTypeRequest;
+import com.google.cloud.dialogflow.v2.EntityType;
+import com.google.cloud.dialogflow.v2.GetEntityTypeRequest;
+import com.google.cloud.dialogflow.v2.ListEntityTypesRequest;
+import com.google.cloud.dialogflow.v2.ListEntityTypesResponse;
+import com.google.cloud.dialogflow.v2.UpdateEntityTypeRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import com.google.protobuf.Struct;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the EntityTypes service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcEntityTypesStub extends EntityTypesStub {
+  private static final MethodDescriptor&lt;ListEntityTypesRequest, ListEntityTypesResponse&gt;
+      listEntityTypesMethodDescriptor =
+<span class="fc" id="L62">          MethodDescriptor.&lt;ListEntityTypesRequest, ListEntityTypesResponse&gt;newBuilder()</span>
+<span class="fc" id="L63">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L64">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/ListEntityTypes&quot;)</span>
+<span class="fc" id="L65">              .setRequestMarshaller(</span>
+<span class="fc" id="L66">                  ProtoUtils.marshaller(ListEntityTypesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L67">              .setResponseMarshaller(</span>
+<span class="fc" id="L68">                  ProtoUtils.marshaller(ListEntityTypesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L69">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetEntityTypeRequest, EntityType&gt;
+      getEntityTypeMethodDescriptor =
+<span class="fc" id="L73">          MethodDescriptor.&lt;GetEntityTypeRequest, EntityType&gt;newBuilder()</span>
+<span class="fc" id="L74">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L75">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/GetEntityType&quot;)</span>
+<span class="fc" id="L76">              .setRequestMarshaller(</span>
+<span class="fc" id="L77">                  ProtoUtils.marshaller(GetEntityTypeRequest.getDefaultInstance()))</span>
+<span class="fc" id="L78">              .setResponseMarshaller(ProtoUtils.marshaller(EntityType.getDefaultInstance()))</span>
+<span class="fc" id="L79">              .build();</span>
+
+  private static final MethodDescriptor&lt;CreateEntityTypeRequest, EntityType&gt;
+      createEntityTypeMethodDescriptor =
+<span class="fc" id="L83">          MethodDescriptor.&lt;CreateEntityTypeRequest, EntityType&gt;newBuilder()</span>
+<span class="fc" id="L84">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L85">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/CreateEntityType&quot;)</span>
+<span class="fc" id="L86">              .setRequestMarshaller(</span>
+<span class="fc" id="L87">                  ProtoUtils.marshaller(CreateEntityTypeRequest.getDefaultInstance()))</span>
+<span class="fc" id="L88">              .setResponseMarshaller(ProtoUtils.marshaller(EntityType.getDefaultInstance()))</span>
+<span class="fc" id="L89">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateEntityTypeRequest, EntityType&gt;
+      updateEntityTypeMethodDescriptor =
+<span class="fc" id="L93">          MethodDescriptor.&lt;UpdateEntityTypeRequest, EntityType&gt;newBuilder()</span>
+<span class="fc" id="L94">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L95">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/UpdateEntityType&quot;)</span>
+<span class="fc" id="L96">              .setRequestMarshaller(</span>
+<span class="fc" id="L97">                  ProtoUtils.marshaller(UpdateEntityTypeRequest.getDefaultInstance()))</span>
+<span class="fc" id="L98">              .setResponseMarshaller(ProtoUtils.marshaller(EntityType.getDefaultInstance()))</span>
+<span class="fc" id="L99">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteEntityTypeRequest, Empty&gt;
+      deleteEntityTypeMethodDescriptor =
+<span class="fc" id="L103">          MethodDescriptor.&lt;DeleteEntityTypeRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L104">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L105">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/DeleteEntityType&quot;)</span>
+<span class="fc" id="L106">              .setRequestMarshaller(</span>
+<span class="fc" id="L107">                  ProtoUtils.marshaller(DeleteEntityTypeRequest.getDefaultInstance()))</span>
+<span class="fc" id="L108">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L109">              .build();</span>
+
+  private static final MethodDescriptor&lt;BatchUpdateEntityTypesRequest, Operation&gt;
+      batchUpdateEntityTypesMethodDescriptor =
+<span class="fc" id="L113">          MethodDescriptor.&lt;BatchUpdateEntityTypesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L114">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L115">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/BatchUpdateEntityTypes&quot;)</span>
+<span class="fc" id="L116">              .setRequestMarshaller(</span>
+<span class="fc" id="L117">                  ProtoUtils.marshaller(BatchUpdateEntityTypesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L118">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L119">              .build();</span>
+
+  private static final MethodDescriptor&lt;BatchDeleteEntityTypesRequest, Operation&gt;
+      batchDeleteEntityTypesMethodDescriptor =
+<span class="fc" id="L123">          MethodDescriptor.&lt;BatchDeleteEntityTypesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L124">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L125">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/BatchDeleteEntityTypes&quot;)</span>
+<span class="fc" id="L126">              .setRequestMarshaller(</span>
+<span class="fc" id="L127">                  ProtoUtils.marshaller(BatchDeleteEntityTypesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L128">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L129">              .build();</span>
+
+  private static final MethodDescriptor&lt;BatchCreateEntitiesRequest, Operation&gt;
+      batchCreateEntitiesMethodDescriptor =
+<span class="fc" id="L133">          MethodDescriptor.&lt;BatchCreateEntitiesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L134">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L135">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/BatchCreateEntities&quot;)</span>
+<span class="fc" id="L136">              .setRequestMarshaller(</span>
+<span class="fc" id="L137">                  ProtoUtils.marshaller(BatchCreateEntitiesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L138">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L139">              .build();</span>
+
+  private static final MethodDescriptor&lt;BatchUpdateEntitiesRequest, Operation&gt;
+      batchUpdateEntitiesMethodDescriptor =
+<span class="fc" id="L143">          MethodDescriptor.&lt;BatchUpdateEntitiesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L144">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L145">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/BatchUpdateEntities&quot;)</span>
+<span class="fc" id="L146">              .setRequestMarshaller(</span>
+<span class="fc" id="L147">                  ProtoUtils.marshaller(BatchUpdateEntitiesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L148">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L149">              .build();</span>
+
+  private static final MethodDescriptor&lt;BatchDeleteEntitiesRequest, Operation&gt;
+<span class="fc" id="L152">      batchDeleteEntitiesMethodDescriptor =</span>
+<span class="fc" id="L153">          MethodDescriptor.&lt;BatchDeleteEntitiesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L154">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L155">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.EntityTypes/BatchDeleteEntities&quot;)</span>
+<span class="fc" id="L156">              .setRequestMarshaller(</span>
+<span class="fc" id="L157">                  ProtoUtils.marshaller(BatchDeleteEntitiesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L158">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L159">              .build();</span>
+
+  private final UnaryCallable&lt;ListEntityTypesRequest, ListEntityTypesResponse&gt;
+      listEntityTypesCallable;
+  private final UnaryCallable&lt;ListEntityTypesRequest, ListEntityTypesPagedResponse&gt;
+      listEntityTypesPagedCallable;
+  private final UnaryCallable&lt;GetEntityTypeRequest, EntityType&gt; getEntityTypeCallable;
+  private final UnaryCallable&lt;CreateEntityTypeRequest, EntityType&gt; createEntityTypeCallable;
+  private final UnaryCallable&lt;UpdateEntityTypeRequest, EntityType&gt; updateEntityTypeCallable;
+  private final UnaryCallable&lt;DeleteEntityTypeRequest, Empty&gt; deleteEntityTypeCallable;
+  private final UnaryCallable&lt;BatchUpdateEntityTypesRequest, Operation&gt;
+      batchUpdateEntityTypesCallable;
+  private final OperationCallable&lt;
+          BatchUpdateEntityTypesRequest, BatchUpdateEntityTypesResponse, Struct&gt;
+      batchUpdateEntityTypesOperationCallable;
+  private final UnaryCallable&lt;BatchDeleteEntityTypesRequest, Operation&gt;
+      batchDeleteEntityTypesCallable;
+  private final OperationCallable&lt;BatchDeleteEntityTypesRequest, Empty, Struct&gt;
+      batchDeleteEntityTypesOperationCallable;
+  private final UnaryCallable&lt;BatchCreateEntitiesRequest, Operation&gt; batchCreateEntitiesCallable;
+  private final OperationCallable&lt;BatchCreateEntitiesRequest, Empty, Struct&gt;
+      batchCreateEntitiesOperationCallable;
+  private final UnaryCallable&lt;BatchUpdateEntitiesRequest, Operation&gt; batchUpdateEntitiesCallable;
+  private final OperationCallable&lt;BatchUpdateEntitiesRequest, Empty, Struct&gt;
+      batchUpdateEntitiesOperationCallable;
+  private final UnaryCallable&lt;BatchDeleteEntitiesRequest, Operation&gt; batchDeleteEntitiesCallable;
+  private final OperationCallable&lt;BatchDeleteEntitiesRequest, Empty, Struct&gt;
+      batchDeleteEntitiesOperationCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcEntityTypesStub create(EntityTypesStubSettings settings)
+      throws IOException {
+<span class="fc" id="L194">    return new GrpcEntityTypesStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcEntityTypesStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L198">    return new GrpcEntityTypesStub(EntityTypesStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcEntityTypesStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L203">    return new GrpcEntityTypesStub(</span>
+<span class="nc" id="L204">        EntityTypesStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcEntityTypesStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcEntityTypesStub(EntityTypesStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L214">    this(settings, clientContext, new GrpcEntityTypesCallableFactory());</span>
+<span class="fc" id="L215">  }</span>
+
+  /**
+   * Constructs an instance of GrpcEntityTypesStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcEntityTypesStub(
+      EntityTypesStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L226">      throws IOException {</span>
+<span class="fc" id="L227">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L228">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListEntityTypesRequest, ListEntityTypesResponse&gt;
+        listEntityTypesTransportSettings =
+<span class="fc" id="L232">            GrpcCallSettings.&lt;ListEntityTypesRequest, ListEntityTypesResponse&gt;newBuilder()</span>
+<span class="fc" id="L233">                .setMethodDescriptor(listEntityTypesMethodDescriptor)</span>
+<span class="fc" id="L234">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L236">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L237">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L238">                      return params.build();</span>
+                    })
+<span class="fc" id="L240">                .build();</span>
+    GrpcCallSettings&lt;GetEntityTypeRequest, EntityType&gt; getEntityTypeTransportSettings =
+<span class="fc" id="L242">        GrpcCallSettings.&lt;GetEntityTypeRequest, EntityType&gt;newBuilder()</span>
+<span class="fc" id="L243">            .setMethodDescriptor(getEntityTypeMethodDescriptor)</span>
+<span class="fc" id="L244">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L246">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L247">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L248">                  return params.build();</span>
+                })
+<span class="fc" id="L250">            .build();</span>
+    GrpcCallSettings&lt;CreateEntityTypeRequest, EntityType&gt; createEntityTypeTransportSettings =
+<span class="fc" id="L252">        GrpcCallSettings.&lt;CreateEntityTypeRequest, EntityType&gt;newBuilder()</span>
+<span class="fc" id="L253">            .setMethodDescriptor(createEntityTypeMethodDescriptor)</span>
+<span class="fc" id="L254">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L256">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L257">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L258">                  return params.build();</span>
+                })
+<span class="fc" id="L260">            .build();</span>
+    GrpcCallSettings&lt;UpdateEntityTypeRequest, EntityType&gt; updateEntityTypeTransportSettings =
+<span class="fc" id="L262">        GrpcCallSettings.&lt;UpdateEntityTypeRequest, EntityType&gt;newBuilder()</span>
+<span class="fc" id="L263">            .setMethodDescriptor(updateEntityTypeMethodDescriptor)</span>
+<span class="fc" id="L264">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L266">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L267">                  params.put(&quot;entity_type.name&quot;, String.valueOf(request.getEntityType().getName()));</span>
+<span class="fc" id="L268">                  return params.build();</span>
+                })
+<span class="fc" id="L270">            .build();</span>
+    GrpcCallSettings&lt;DeleteEntityTypeRequest, Empty&gt; deleteEntityTypeTransportSettings =
+<span class="fc" id="L272">        GrpcCallSettings.&lt;DeleteEntityTypeRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L273">            .setMethodDescriptor(deleteEntityTypeMethodDescriptor)</span>
+<span class="fc" id="L274">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L276">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L277">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L278">                  return params.build();</span>
+                })
+<span class="fc" id="L280">            .build();</span>
+    GrpcCallSettings&lt;BatchUpdateEntityTypesRequest, Operation&gt;
+        batchUpdateEntityTypesTransportSettings =
+<span class="fc" id="L283">            GrpcCallSettings.&lt;BatchUpdateEntityTypesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L284">                .setMethodDescriptor(batchUpdateEntityTypesMethodDescriptor)</span>
+<span class="fc" id="L285">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L287">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L288">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L289">                      return params.build();</span>
+                    })
+<span class="fc" id="L291">                .build();</span>
+    GrpcCallSettings&lt;BatchDeleteEntityTypesRequest, Operation&gt;
+        batchDeleteEntityTypesTransportSettings =
+<span class="fc" id="L294">            GrpcCallSettings.&lt;BatchDeleteEntityTypesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L295">                .setMethodDescriptor(batchDeleteEntityTypesMethodDescriptor)</span>
+<span class="fc" id="L296">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L298">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L299">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L300">                      return params.build();</span>
+                    })
+<span class="fc" id="L302">                .build();</span>
+    GrpcCallSettings&lt;BatchCreateEntitiesRequest, Operation&gt; batchCreateEntitiesTransportSettings =
+<span class="fc" id="L304">        GrpcCallSettings.&lt;BatchCreateEntitiesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L305">            .setMethodDescriptor(batchCreateEntitiesMethodDescriptor)</span>
+<span class="fc" id="L306">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L308">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L309">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L310">                  return params.build();</span>
+                })
+<span class="fc" id="L312">            .build();</span>
+    GrpcCallSettings&lt;BatchUpdateEntitiesRequest, Operation&gt; batchUpdateEntitiesTransportSettings =
+<span class="fc" id="L314">        GrpcCallSettings.&lt;BatchUpdateEntitiesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L315">            .setMethodDescriptor(batchUpdateEntitiesMethodDescriptor)</span>
+<span class="fc" id="L316">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L318">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L319">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L320">                  return params.build();</span>
+                })
+<span class="fc" id="L322">            .build();</span>
+    GrpcCallSettings&lt;BatchDeleteEntitiesRequest, Operation&gt; batchDeleteEntitiesTransportSettings =
+<span class="fc" id="L324">        GrpcCallSettings.&lt;BatchDeleteEntitiesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L325">            .setMethodDescriptor(batchDeleteEntitiesMethodDescriptor)</span>
+<span class="fc" id="L326">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L328">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L329">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L330">                  return params.build();</span>
+                })
+<span class="fc" id="L332">            .build();</span>
+
+<span class="fc" id="L334">    this.listEntityTypesCallable =</span>
+<span class="fc" id="L335">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L336">            listEntityTypesTransportSettings, settings.listEntityTypesSettings(), clientContext);</span>
+<span class="fc" id="L337">    this.listEntityTypesPagedCallable =</span>
+<span class="fc" id="L338">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L339">            listEntityTypesTransportSettings, settings.listEntityTypesSettings(), clientContext);</span>
+<span class="fc" id="L340">    this.getEntityTypeCallable =</span>
+<span class="fc" id="L341">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L342">            getEntityTypeTransportSettings, settings.getEntityTypeSettings(), clientContext);</span>
+<span class="fc" id="L343">    this.createEntityTypeCallable =</span>
+<span class="fc" id="L344">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L345">            createEntityTypeTransportSettings, settings.createEntityTypeSettings(), clientContext);</span>
+<span class="fc" id="L346">    this.updateEntityTypeCallable =</span>
+<span class="fc" id="L347">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L348">            updateEntityTypeTransportSettings, settings.updateEntityTypeSettings(), clientContext);</span>
+<span class="fc" id="L349">    this.deleteEntityTypeCallable =</span>
+<span class="fc" id="L350">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L351">            deleteEntityTypeTransportSettings, settings.deleteEntityTypeSettings(), clientContext);</span>
+<span class="fc" id="L352">    this.batchUpdateEntityTypesCallable =</span>
+<span class="fc" id="L353">        callableFactory.createUnaryCallable(</span>
+            batchUpdateEntityTypesTransportSettings,
+<span class="fc" id="L355">            settings.batchUpdateEntityTypesSettings(),</span>
+            clientContext);
+<span class="fc" id="L357">    this.batchUpdateEntityTypesOperationCallable =</span>
+<span class="fc" id="L358">        callableFactory.createOperationCallable(</span>
+            batchUpdateEntityTypesTransportSettings,
+<span class="fc" id="L360">            settings.batchUpdateEntityTypesOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L363">    this.batchDeleteEntityTypesCallable =</span>
+<span class="fc" id="L364">        callableFactory.createUnaryCallable(</span>
+            batchDeleteEntityTypesTransportSettings,
+<span class="fc" id="L366">            settings.batchDeleteEntityTypesSettings(),</span>
+            clientContext);
+<span class="fc" id="L368">    this.batchDeleteEntityTypesOperationCallable =</span>
+<span class="fc" id="L369">        callableFactory.createOperationCallable(</span>
+            batchDeleteEntityTypesTransportSettings,
+<span class="fc" id="L371">            settings.batchDeleteEntityTypesOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L374">    this.batchCreateEntitiesCallable =</span>
+<span class="fc" id="L375">        callableFactory.createUnaryCallable(</span>
+            batchCreateEntitiesTransportSettings,
+<span class="fc" id="L377">            settings.batchCreateEntitiesSettings(),</span>
+            clientContext);
+<span class="fc" id="L379">    this.batchCreateEntitiesOperationCallable =</span>
+<span class="fc" id="L380">        callableFactory.createOperationCallable(</span>
+            batchCreateEntitiesTransportSettings,
+<span class="fc" id="L382">            settings.batchCreateEntitiesOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L385">    this.batchUpdateEntitiesCallable =</span>
+<span class="fc" id="L386">        callableFactory.createUnaryCallable(</span>
+            batchUpdateEntitiesTransportSettings,
+<span class="fc" id="L388">            settings.batchUpdateEntitiesSettings(),</span>
+            clientContext);
+<span class="fc" id="L390">    this.batchUpdateEntitiesOperationCallable =</span>
+<span class="fc" id="L391">        callableFactory.createOperationCallable(</span>
+            batchUpdateEntitiesTransportSettings,
+<span class="fc" id="L393">            settings.batchUpdateEntitiesOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L396">    this.batchDeleteEntitiesCallable =</span>
+<span class="fc" id="L397">        callableFactory.createUnaryCallable(</span>
+            batchDeleteEntitiesTransportSettings,
+<span class="fc" id="L399">            settings.batchDeleteEntitiesSettings(),</span>
+            clientContext);
+<span class="fc" id="L401">    this.batchDeleteEntitiesOperationCallable =</span>
+<span class="fc" id="L402">        callableFactory.createOperationCallable(</span>
+            batchDeleteEntitiesTransportSettings,
+<span class="fc" id="L404">            settings.batchDeleteEntitiesOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+
+<span class="fc" id="L408">    this.backgroundResources =</span>
+<span class="fc" id="L409">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L410">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="fc" id="L413">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListEntityTypesRequest, ListEntityTypesResponse&gt; listEntityTypesCallable() {
+<span class="nc" id="L418">    return listEntityTypesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListEntityTypesRequest, ListEntityTypesPagedResponse&gt;
+      listEntityTypesPagedCallable() {
+<span class="fc" id="L424">    return listEntityTypesPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetEntityTypeRequest, EntityType&gt; getEntityTypeCallable() {
+<span class="fc" id="L429">    return getEntityTypeCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateEntityTypeRequest, EntityType&gt; createEntityTypeCallable() {
+<span class="fc" id="L434">    return createEntityTypeCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateEntityTypeRequest, EntityType&gt; updateEntityTypeCallable() {
+<span class="fc" id="L439">    return updateEntityTypeCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteEntityTypeRequest, Empty&gt; deleteEntityTypeCallable() {
+<span class="fc" id="L444">    return deleteEntityTypeCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;BatchUpdateEntityTypesRequest, Operation&gt; batchUpdateEntityTypesCallable() {
+<span class="nc" id="L449">    return batchUpdateEntityTypesCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;BatchUpdateEntityTypesRequest, BatchUpdateEntityTypesResponse, Struct&gt;
+      batchUpdateEntityTypesOperationCallable() {
+<span class="fc" id="L455">    return batchUpdateEntityTypesOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;BatchDeleteEntityTypesRequest, Operation&gt; batchDeleteEntityTypesCallable() {
+<span class="nc" id="L460">    return batchDeleteEntityTypesCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;BatchDeleteEntityTypesRequest, Empty, Struct&gt;
+      batchDeleteEntityTypesOperationCallable() {
+<span class="fc" id="L466">    return batchDeleteEntityTypesOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;BatchCreateEntitiesRequest, Operation&gt; batchCreateEntitiesCallable() {
+<span class="nc" id="L471">    return batchCreateEntitiesCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;BatchCreateEntitiesRequest, Empty, Struct&gt;
+      batchCreateEntitiesOperationCallable() {
+<span class="fc" id="L477">    return batchCreateEntitiesOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;BatchUpdateEntitiesRequest, Operation&gt; batchUpdateEntitiesCallable() {
+<span class="nc" id="L482">    return batchUpdateEntitiesCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;BatchUpdateEntitiesRequest, Empty, Struct&gt;
+      batchUpdateEntitiesOperationCallable() {
+<span class="fc" id="L488">    return batchUpdateEntitiesOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;BatchDeleteEntitiesRequest, Operation&gt; batchDeleteEntitiesCallable() {
+<span class="nc" id="L493">    return batchDeleteEntitiesCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;BatchDeleteEntitiesRequest, Empty, Struct&gt;
+      batchDeleteEntitiesOperationCallable() {
+<span class="fc" id="L499">    return batchDeleteEntitiesOperationCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L505">      backgroundResources.close();</span>
+<span class="nc" id="L506">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L507">      throw e;</span>
+<span class="nc" id="L508">    } catch (Exception e) {</span>
+<span class="nc" id="L509">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L510">    }</span>
+<span class="fc" id="L511">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L515">    backgroundResources.shutdown();</span>
+<span class="nc" id="L516">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L520">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L525">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L530">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L531">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L535">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

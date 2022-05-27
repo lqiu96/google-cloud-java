@@ -1,0 +1,1719 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ParticipantsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1</a> &gt; <span class="el_source">ParticipantsClient.java</span></div><h1>ParticipantsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2beta1.stub.ParticipantsStub;
+import com.google.cloud.dialogflow.v2beta1.stub.ParticipantsStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.protobuf.FieldMask;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service for managing
+ * [Participants][google.cloud.dialogflow.v2beta1.Participant].
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+ *   ConversationName parent =
+ *       ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;);
+ *   Participant participant = Participant.newBuilder().build();
+ *   Participant response = participantsClient.createParticipant(parent, participant);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the ParticipantsClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of ParticipantsSettings to
+ * create(). For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ParticipantsSettings participantsSettings =
+ *     ParticipantsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * ParticipantsClient participantsClient = ParticipantsClient.create(participantsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ParticipantsSettings participantsSettings =
+ *     ParticipantsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * ParticipantsClient participantsClient = ParticipantsClient.create(participantsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ParticipantsClient implements BackgroundResource {
+  private final ParticipantsSettings settings;
+  private final ParticipantsStub stub;
+
+  /** Constructs an instance of ParticipantsClient with default settings. */
+  public static final ParticipantsClient create() throws IOException {
+<span class="nc" id="L115">    return create(ParticipantsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of ParticipantsClient, using the given settings. The channels are
+   * created based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final ParticipantsClient create(ParticipantsSettings settings) throws IOException {
+<span class="fc" id="L123">    return new ParticipantsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of ParticipantsClient, using the given stub for making calls. This is
+   * for advanced usage - prefer using create(ParticipantsSettings).
+   */
+  public static final ParticipantsClient create(ParticipantsStub stub) {
+<span class="nc" id="L131">    return new ParticipantsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of ParticipantsClient, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+<span class="fc" id="L139">  protected ParticipantsClient(ParticipantsSettings settings) throws IOException {</span>
+<span class="fc" id="L140">    this.settings = settings;</span>
+<span class="fc" id="L141">    this.stub = ((ParticipantsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L142">  }</span>
+
+<span class="nc" id="L144">  protected ParticipantsClient(ParticipantsStub stub) {</span>
+<span class="nc" id="L145">    this.settings = null;</span>
+<span class="nc" id="L146">    this.stub = stub;</span>
+<span class="nc" id="L147">  }</span>
+
+  public final ParticipantsSettings getSettings() {
+<span class="nc" id="L150">    return settings;</span>
+  }
+
+  public ParticipantsStub getStub() {
+<span class="nc" id="L154">    return stub;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new participant in a conversation.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ConversationName parent =
+   *       ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;);
+   *   Participant participant = Participant.newBuilder().build();
+   *   Participant response = participantsClient.createParticipant(parent, participant);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. Resource identifier of the conversation adding the participant. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;`.
+   * @param participant Required. The participant to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Participant createParticipant(ConversationName parent, Participant participant) {
+    CreateParticipantRequest request =
+<span class="fc" id="L182">        CreateParticipantRequest.newBuilder()</span>
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L184">            .setParticipant(participant)</span>
+<span class="fc" id="L185">            .build();</span>
+<span class="fc" id="L186">    return createParticipant(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new participant in a conversation.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   String parent =
+   *       ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;).toString();
+   *   Participant participant = Participant.newBuilder().build();
+   *   Participant response = participantsClient.createParticipant(parent, participant);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. Resource identifier of the conversation adding the participant. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;`.
+   * @param participant Required. The participant to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Participant createParticipant(String parent, Participant participant) {
+    CreateParticipantRequest request =
+<span class="fc" id="L214">        CreateParticipantRequest.newBuilder().setParent(parent).setParticipant(participant).build();</span>
+<span class="fc" id="L215">    return createParticipant(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new participant in a conversation.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   CreateParticipantRequest request =
+   *       CreateParticipantRequest.newBuilder()
+   *           .setParent(
+   *               ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;)
+   *                   .toString())
+   *           .setParticipant(Participant.newBuilder().build())
+   *           .build();
+   *   Participant response = participantsClient.createParticipant(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Participant createParticipant(CreateParticipantRequest request) {
+<span class="fc" id="L243">    return createParticipantCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new participant in a conversation.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   CreateParticipantRequest request =
+   *       CreateParticipantRequest.newBuilder()
+   *           .setParent(
+   *               ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;)
+   *                   .toString())
+   *           .setParticipant(Participant.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Participant&gt; future =
+   *       participantsClient.createParticipantCallable().futureCall(request);
+   *   // Do something.
+   *   Participant response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateParticipantRequest, Participant&gt; createParticipantCallable() {
+<span class="fc" id="L271">    return stub.createParticipantCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves a conversation participant.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ParticipantName name =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *           &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;);
+   *   Participant response = participantsClient.getParticipant(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the participant. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Participant getParticipant(ParticipantName name) {
+    GetParticipantRequest request =
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">        GetParticipantRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L299">    return getParticipant(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves a conversation participant.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   String name =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *               &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *           .toString();
+   *   Participant response = participantsClient.getParticipant(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the participant. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Participant getParticipant(String name) {
+<span class="fc" id="L326">    GetParticipantRequest request = GetParticipantRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L327">    return getParticipant(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves a conversation participant.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   GetParticipantRequest request =
+   *       GetParticipantRequest.newBuilder()
+   *           .setName(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .build();
+   *   Participant response = participantsClient.getParticipant(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Participant getParticipant(GetParticipantRequest request) {
+<span class="fc" id="L355">    return getParticipantCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves a conversation participant.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   GetParticipantRequest request =
+   *       GetParticipantRequest.newBuilder()
+   *           .setName(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ApiFuture&lt;Participant&gt; future =
+   *       participantsClient.getParticipantCallable().futureCall(request);
+   *   // Do something.
+   *   Participant response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetParticipantRequest, Participant&gt; getParticipantCallable() {
+<span class="fc" id="L383">    return stub.getParticipantCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all participants in the specified conversation.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ConversationName parent =
+   *       ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;);
+   *   for (Participant element : participantsClient.listParticipants(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The conversation to list all participants from. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListParticipantsPagedResponse listParticipants(ConversationName parent) {
+    ListParticipantsRequest request =
+<span class="fc" id="L411">        ListParticipantsRequest.newBuilder()</span>
+<span class="pc bpc" id="L412" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L413">            .build();</span>
+<span class="fc" id="L414">    return listParticipants(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all participants in the specified conversation.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   String parent =
+   *       ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;).toString();
+   *   for (Participant element : participantsClient.listParticipants(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The conversation to list all participants from. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListParticipantsPagedResponse listParticipants(String parent) {
+    ListParticipantsRequest request =
+<span class="fc" id="L442">        ListParticipantsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L443">    return listParticipants(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all participants in the specified conversation.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ListParticipantsRequest request =
+   *       ListParticipantsRequest.newBuilder()
+   *           .setParent(
+   *               ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;)
+   *                   .toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (Participant element : participantsClient.listParticipants(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListParticipantsPagedResponse listParticipants(ListParticipantsRequest request) {
+<span class="fc" id="L474">    return listParticipantsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all participants in the specified conversation.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ListParticipantsRequest request =
+   *       ListParticipantsRequest.newBuilder()
+   *           .setParent(
+   *               ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;)
+   *                   .toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;Participant&gt; future =
+   *       participantsClient.listParticipantsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (Participant element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListParticipantsRequest, ListParticipantsPagedResponse&gt;
+      listParticipantsPagedCallable() {
+<span class="fc" id="L506">    return stub.listParticipantsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all participants in the specified conversation.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ListParticipantsRequest request =
+   *       ListParticipantsRequest.newBuilder()
+   *           .setParent(
+   *               ConversationName.ofProjectConversationName(&quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;)
+   *                   .toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListParticipantsResponse response =
+   *         participantsClient.listParticipantsCallable().call(request);
+   *     for (Participant element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListParticipantsRequest, ListParticipantsResponse&gt;
+      listParticipantsCallable() {
+<span class="nc" id="L545">    return stub.listParticipantsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified participant.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   Participant participant = Participant.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   Participant response = participantsClient.updateParticipant(participant, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param participant Required. The participant to update.
+   * @param updateMask Required. The mask to specify which fields to update.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Participant updateParticipant(Participant participant, FieldMask updateMask) {
+    UpdateParticipantRequest request =
+<span class="fc" id="L570">        UpdateParticipantRequest.newBuilder()</span>
+<span class="fc" id="L571">            .setParticipant(participant)</span>
+<span class="fc" id="L572">            .setUpdateMask(updateMask)</span>
+<span class="fc" id="L573">            .build();</span>
+<span class="fc" id="L574">    return updateParticipant(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified participant.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   UpdateParticipantRequest request =
+   *       UpdateParticipantRequest.newBuilder()
+   *           .setParticipant(Participant.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   Participant response = participantsClient.updateParticipant(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Participant updateParticipant(UpdateParticipantRequest request) {
+<span class="fc" id="L600">    return updateParticipantCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified participant.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   UpdateParticipantRequest request =
+   *       UpdateParticipantRequest.newBuilder()
+   *           .setParticipant(Participant.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Participant&gt; future =
+   *       participantsClient.updateParticipantCallable().futureCall(request);
+   *   // Do something.
+   *   Participant response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateParticipantRequest, Participant&gt; updateParticipantCallable() {
+<span class="fc" id="L626">    return stub.updateParticipantCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a text (chat, for example), or audio (phone recording, for example) message from a
+   * participant into the conversation.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic sent to virtual agents. See [Versions
+   * and environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ParticipantName participant =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *           &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;);
+   *   EventInput eventInput = EventInput.newBuilder().build();
+   *   AnalyzeContentResponse response = participantsClient.analyzeContent(participant, eventInput);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param participant Required. The name of the participant this text comes from. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @param eventInput An input event to send to Dialogflow.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final AnalyzeContentResponse analyzeContent(
+      ParticipantName participant, EventInput eventInput) {
+    AnalyzeContentRequest request =
+<span class="fc" id="L660">        AnalyzeContentRequest.newBuilder()</span>
+<span class="pc bpc" id="L661" title="1 of 2 branches missed.">            .setParticipant(participant == null ? null : participant.toString())</span>
+<span class="fc" id="L662">            .setEventInput(eventInput)</span>
+<span class="fc" id="L663">            .build();</span>
+<span class="fc" id="L664">    return analyzeContent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a text (chat, for example), or audio (phone recording, for example) message from a
+   * participant into the conversation.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic sent to virtual agents. See [Versions
+   * and environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ParticipantName participant =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *           &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;);
+   *   TextInput textInput = TextInput.newBuilder().build();
+   *   AnalyzeContentResponse response = participantsClient.analyzeContent(participant, textInput);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param participant Required. The name of the participant this text comes from. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @param textInput The natural language text to be processed.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final AnalyzeContentResponse analyzeContent(
+      ParticipantName participant, TextInput textInput) {
+    AnalyzeContentRequest request =
+<span class="fc" id="L698">        AnalyzeContentRequest.newBuilder()</span>
+<span class="pc bpc" id="L699" title="1 of 2 branches missed.">            .setParticipant(participant == null ? null : participant.toString())</span>
+<span class="fc" id="L700">            .setTextInput(textInput)</span>
+<span class="fc" id="L701">            .build();</span>
+<span class="fc" id="L702">    return analyzeContent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a text (chat, for example), or audio (phone recording, for example) message from a
+   * participant into the conversation.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic sent to virtual agents. See [Versions
+   * and environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   String participant =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *               &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *           .toString();
+   *   EventInput eventInput = EventInput.newBuilder().build();
+   *   AnalyzeContentResponse response = participantsClient.analyzeContent(participant, eventInput);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param participant Required. The name of the participant this text comes from. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @param eventInput An input event to send to Dialogflow.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final AnalyzeContentResponse analyzeContent(String participant, EventInput eventInput) {
+    AnalyzeContentRequest request =
+<span class="fc" id="L736">        AnalyzeContentRequest.newBuilder()</span>
+<span class="fc" id="L737">            .setParticipant(participant)</span>
+<span class="fc" id="L738">            .setEventInput(eventInput)</span>
+<span class="fc" id="L739">            .build();</span>
+<span class="fc" id="L740">    return analyzeContent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a text (chat, for example), or audio (phone recording, for example) message from a
+   * participant into the conversation.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic sent to virtual agents. See [Versions
+   * and environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   String participant =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *               &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *           .toString();
+   *   TextInput textInput = TextInput.newBuilder().build();
+   *   AnalyzeContentResponse response = participantsClient.analyzeContent(participant, textInput);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param participant Required. The name of the participant this text comes from. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @param textInput The natural language text to be processed.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final AnalyzeContentResponse analyzeContent(String participant, TextInput textInput) {
+    AnalyzeContentRequest request =
+<span class="fc" id="L774">        AnalyzeContentRequest.newBuilder()</span>
+<span class="fc" id="L775">            .setParticipant(participant)</span>
+<span class="fc" id="L776">            .setTextInput(textInput)</span>
+<span class="fc" id="L777">            .build();</span>
+<span class="fc" id="L778">    return analyzeContent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a text (chat, for example), or audio (phone recording, for example) message from a
+   * participant into the conversation.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic sent to virtual agents. See [Versions
+   * and environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   AnalyzeContentRequest request =
+   *       AnalyzeContentRequest.newBuilder()
+   *           .setParticipant(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .setReplyAudioConfig(OutputAudioConfig.newBuilder().build())
+   *           .setQueryParams(QueryParameters.newBuilder().build())
+   *           .setAssistQueryParams(AssistQueryParameters.newBuilder().build())
+   *           .setCxParameters(Struct.newBuilder().build())
+   *           .setMessageSendTime(Timestamp.newBuilder().build())
+   *           .setRequestId(&quot;requestId693933066&quot;)
+   *           .build();
+   *   AnalyzeContentResponse response = participantsClient.analyzeContent(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final AnalyzeContentResponse analyzeContent(AnalyzeContentRequest request) {
+<span class="fc" id="L816">    return analyzeContentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a text (chat, for example), or audio (phone recording, for example) message from a
+   * participant into the conversation.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic sent to virtual agents. See [Versions
+   * and environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   AnalyzeContentRequest request =
+   *       AnalyzeContentRequest.newBuilder()
+   *           .setParticipant(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .setReplyAudioConfig(OutputAudioConfig.newBuilder().build())
+   *           .setQueryParams(QueryParameters.newBuilder().build())
+   *           .setAssistQueryParams(AssistQueryParameters.newBuilder().build())
+   *           .setCxParameters(Struct.newBuilder().build())
+   *           .setMessageSendTime(Timestamp.newBuilder().build())
+   *           .setRequestId(&quot;requestId693933066&quot;)
+   *           .build();
+   *   ApiFuture&lt;AnalyzeContentResponse&gt; future =
+   *       participantsClient.analyzeContentCallable().futureCall(request);
+   *   // Do something.
+   *   AnalyzeContentResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt;
+      analyzeContentCallable() {
+<span class="fc" id="L855">    return stub.analyzeContentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a text (e.g., chat) or audio (e.g., phone recording) message from a participant into the
+   * conversation. Note: This method is only available through the gRPC API (not REST).
+   *
+   * &lt;p&gt;The top-level message sent to the client by the server is `StreamingAnalyzeContentResponse`.
+   * Multiple response messages can be returned in order. The first one or more messages contain the
+   * `recognition_result` field. Each result represents a more complete transcript of what the user
+   * said. The next message contains the `reply_text` field, and potentially the `reply_audio`
+   * and/or the `automated_agent_reply` fields.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic sent to virtual agents. See [Versions
+   * and environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   BidiStream&lt;StreamingAnalyzeContentRequest, StreamingAnalyzeContentResponse&gt; bidiStream =
+   *       participantsClient.streamingAnalyzeContentCallable().call();
+   *   StreamingAnalyzeContentRequest request =
+   *       StreamingAnalyzeContentRequest.newBuilder()
+   *           .setParticipant(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .setReplyAudioConfig(OutputAudioConfig.newBuilder().build())
+   *           .setQueryParams(QueryParameters.newBuilder().build())
+   *           .setAssistQueryParams(AssistQueryParameters.newBuilder().build())
+   *           .setCxParameters(Struct.newBuilder().build())
+   *           .setEnablePartialAutomatedAgentReply(true)
+   *           .build();
+   *   bidiStream.send(request);
+   *   for (StreamingAnalyzeContentResponse response : bidiStream) {
+   *     // Do something when a response is received.
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final BidiStreamingCallable&lt;
+          StreamingAnalyzeContentRequest, StreamingAnalyzeContentResponse&gt;
+      streamingAnalyzeContentCallable() {
+<span class="fc" id="L902">    return stub.streamingAnalyzeContentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets suggested articles for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Note that [ListSuggestions][google.cloud.dialogflow.v2beta1.Participants.ListSuggestions]
+   * will only list the auto-generated suggestions, while
+   * [CompileSuggestion][google.cloud.dialogflow.v2beta1.Participants.CompileSuggestion] will try to
+   * compile suggestion based on the provided conversation context in the real time.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ParticipantName parent =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *           &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;);
+   *   SuggestArticlesResponse response = participantsClient.suggestArticles(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the participant to fetch suggestion for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SuggestArticlesResponse suggestArticles(ParticipantName parent) {
+    SuggestArticlesRequest request =
+<span class="fc" id="L934">        SuggestArticlesRequest.newBuilder()</span>
+<span class="pc bpc" id="L935" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L936">            .build();</span>
+<span class="fc" id="L937">    return suggestArticles(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets suggested articles for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Note that [ListSuggestions][google.cloud.dialogflow.v2beta1.Participants.ListSuggestions]
+   * will only list the auto-generated suggestions, while
+   * [CompileSuggestion][google.cloud.dialogflow.v2beta1.Participants.CompileSuggestion] will try to
+   * compile suggestion based on the provided conversation context in the real time.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   String parent =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *               &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *           .toString();
+   *   SuggestArticlesResponse response = participantsClient.suggestArticles(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the participant to fetch suggestion for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SuggestArticlesResponse suggestArticles(String parent) {
+<span class="fc" id="L969">    SuggestArticlesRequest request = SuggestArticlesRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L970">    return suggestArticles(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets suggested articles for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Note that [ListSuggestions][google.cloud.dialogflow.v2beta1.Participants.ListSuggestions]
+   * will only list the auto-generated suggestions, while
+   * [CompileSuggestion][google.cloud.dialogflow.v2beta1.Participants.CompileSuggestion] will try to
+   * compile suggestion based on the provided conversation context in the real time.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   SuggestArticlesRequest request =
+   *       SuggestArticlesRequest.newBuilder()
+   *           .setParent(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .setLatestMessage(
+   *               MessageName.ofProjectConversationMessageName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[MESSAGE]&quot;)
+   *                   .toString())
+   *           .setContextSize(1116903569)
+   *           .setAssistQueryParams(AssistQueryParameters.newBuilder().build())
+   *           .build();
+   *   SuggestArticlesResponse response = participantsClient.suggestArticles(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SuggestArticlesResponse suggestArticles(SuggestArticlesRequest request) {
+<span class="fc" id="L1009">    return suggestArticlesCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets suggested articles for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Note that [ListSuggestions][google.cloud.dialogflow.v2beta1.Participants.ListSuggestions]
+   * will only list the auto-generated suggestions, while
+   * [CompileSuggestion][google.cloud.dialogflow.v2beta1.Participants.CompileSuggestion] will try to
+   * compile suggestion based on the provided conversation context in the real time.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   SuggestArticlesRequest request =
+   *       SuggestArticlesRequest.newBuilder()
+   *           .setParent(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .setLatestMessage(
+   *               MessageName.ofProjectConversationMessageName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[MESSAGE]&quot;)
+   *                   .toString())
+   *           .setContextSize(1116903569)
+   *           .setAssistQueryParams(AssistQueryParameters.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;SuggestArticlesResponse&gt; future =
+   *       participantsClient.suggestArticlesCallable().futureCall(request);
+   *   // Do something.
+   *   SuggestArticlesResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt;
+      suggestArticlesCallable() {
+<span class="fc" id="L1049">    return stub.suggestArticlesCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets suggested faq answers for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ParticipantName parent =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *           &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;);
+   *   SuggestFaqAnswersResponse response = participantsClient.suggestFaqAnswers(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the participant to fetch suggestion for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SuggestFaqAnswersResponse suggestFaqAnswers(ParticipantName parent) {
+    SuggestFaqAnswersRequest request =
+<span class="fc" id="L1076">        SuggestFaqAnswersRequest.newBuilder()</span>
+<span class="pc bpc" id="L1077" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1078">            .build();</span>
+<span class="fc" id="L1079">    return suggestFaqAnswers(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets suggested faq answers for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   String parent =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *               &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *           .toString();
+   *   SuggestFaqAnswersResponse response = participantsClient.suggestFaqAnswers(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the participant to fetch suggestion for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SuggestFaqAnswersResponse suggestFaqAnswers(String parent) {
+    SuggestFaqAnswersRequest request =
+<span class="fc" id="L1107">        SuggestFaqAnswersRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L1108">    return suggestFaqAnswers(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets suggested faq answers for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   SuggestFaqAnswersRequest request =
+   *       SuggestFaqAnswersRequest.newBuilder()
+   *           .setParent(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .setLatestMessage(
+   *               MessageName.ofProjectConversationMessageName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[MESSAGE]&quot;)
+   *                   .toString())
+   *           .setContextSize(1116903569)
+   *           .setAssistQueryParams(AssistQueryParameters.newBuilder().build())
+   *           .build();
+   *   SuggestFaqAnswersResponse response = participantsClient.suggestFaqAnswers(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SuggestFaqAnswersResponse suggestFaqAnswers(SuggestFaqAnswersRequest request) {
+<span class="fc" id="L1142">    return suggestFaqAnswersCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets suggested faq answers for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   SuggestFaqAnswersRequest request =
+   *       SuggestFaqAnswersRequest.newBuilder()
+   *           .setParent(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .setLatestMessage(
+   *               MessageName.ofProjectConversationMessageName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[MESSAGE]&quot;)
+   *                   .toString())
+   *           .setContextSize(1116903569)
+   *           .setAssistQueryParams(AssistQueryParameters.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;SuggestFaqAnswersResponse&gt; future =
+   *       participantsClient.suggestFaqAnswersCallable().futureCall(request);
+   *   // Do something.
+   *   SuggestFaqAnswersResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;
+      suggestFaqAnswersCallable() {
+<span class="fc" id="L1177">    return stub.suggestFaqAnswersCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets smart replies for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ParticipantName parent =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *           &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;);
+   *   SuggestSmartRepliesResponse response = participantsClient.suggestSmartReplies(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the participant to fetch suggestion for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SuggestSmartRepliesResponse suggestSmartReplies(ParticipantName parent) {
+    SuggestSmartRepliesRequest request =
+<span class="fc" id="L1204">        SuggestSmartRepliesRequest.newBuilder()</span>
+<span class="pc bpc" id="L1205" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1206">            .build();</span>
+<span class="fc" id="L1207">    return suggestSmartReplies(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets smart replies for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   String parent =
+   *       ParticipantName.ofProjectConversationParticipantName(
+   *               &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *           .toString();
+   *   SuggestSmartRepliesResponse response = participantsClient.suggestSmartReplies(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the participant to fetch suggestion for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversations/&amp;lt;Conversation
+   *     ID&amp;gt;/participants/&amp;lt;Participant ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SuggestSmartRepliesResponse suggestSmartReplies(String parent) {
+    SuggestSmartRepliesRequest request =
+<span class="fc" id="L1235">        SuggestSmartRepliesRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L1236">    return suggestSmartReplies(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets smart replies for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   SuggestSmartRepliesRequest request =
+   *       SuggestSmartRepliesRequest.newBuilder()
+   *           .setParent(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .setCurrentTextInput(TextInput.newBuilder().build())
+   *           .setLatestMessage(
+   *               MessageName.ofProjectConversationMessageName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[MESSAGE]&quot;)
+   *                   .toString())
+   *           .setContextSize(1116903569)
+   *           .build();
+   *   SuggestSmartRepliesResponse response = participantsClient.suggestSmartReplies(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SuggestSmartRepliesResponse suggestSmartReplies(SuggestSmartRepliesRequest request) {
+<span class="fc" id="L1270">    return suggestSmartRepliesCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets smart replies for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   SuggestSmartRepliesRequest request =
+   *       SuggestSmartRepliesRequest.newBuilder()
+   *           .setParent(
+   *               ParticipantName.ofProjectConversationParticipantName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[PARTICIPANT]&quot;)
+   *                   .toString())
+   *           .setCurrentTextInput(TextInput.newBuilder().build())
+   *           .setLatestMessage(
+   *               MessageName.ofProjectConversationMessageName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION]&quot;, &quot;[MESSAGE]&quot;)
+   *                   .toString())
+   *           .setContextSize(1116903569)
+   *           .build();
+   *   ApiFuture&lt;SuggestSmartRepliesResponse&gt; future =
+   *       participantsClient.suggestSmartRepliesCallable().futureCall(request);
+   *   // Do something.
+   *   SuggestSmartRepliesResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;
+      suggestSmartRepliesCallable() {
+<span class="fc" id="L1305">    return stub.suggestSmartRepliesCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deprecated: Use inline suggestion, event based suggestion or Suggestion&amp;#42; API instead. See
+   * [HumanAgentAssistantConfig.name][google.cloud.dialogflow.v2beta1.HumanAgentAssistantConfig.name]
+   * for more details. Removal Date: 2020-09-01.
+   *
+   * &lt;p&gt;Retrieves suggestions for live agents.
+   *
+   * &lt;p&gt;This method should be used by human agent client software to fetch auto generated
+   * suggestions in real-time, while the conversation with an end user is in progress. The
+   * functionality is implemented in terms of the [list
+   * pagination](https://cloud.google.com/apis/design/design_patterns#list_pagination) design
+   * pattern. The client app should use the `next_page_token` field to fetch the next batch of
+   * suggestions. `suggestions` are sorted by `create_time` in descending order. To fetch latest
+   * suggestion, just set `page_size` to 1. To fetch new suggestions without duplication, send
+   * request with filter `create_time_epoch_microseconds &amp;gt; [first item's create_time of previous
+   * request]` and empty page_token.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ListSuggestionsRequest request =
+   *       ListSuggestionsRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .setFilter(&quot;filter-1274492040&quot;)
+   *           .build();
+   *   for (Suggestion element : participantsClient.listSuggestions(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   * @deprecated This method is deprecated and will be removed in the next major version update.
+   */
+  @Deprecated
+  public final ListSuggestionsPagedResponse listSuggestions(ListSuggestionsRequest request) {
+<span class="fc" id="L1351">    return listSuggestionsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deprecated: Use inline suggestion, event based suggestion or Suggestion&amp;#42; API instead. See
+   * [HumanAgentAssistantConfig.name][google.cloud.dialogflow.v2beta1.HumanAgentAssistantConfig.name]
+   * for more details. Removal Date: 2020-09-01.
+   *
+   * &lt;p&gt;Retrieves suggestions for live agents.
+   *
+   * &lt;p&gt;This method should be used by human agent client software to fetch auto generated
+   * suggestions in real-time, while the conversation with an end user is in progress. The
+   * functionality is implemented in terms of the [list
+   * pagination](https://cloud.google.com/apis/design/design_patterns#list_pagination) design
+   * pattern. The client app should use the `next_page_token` field to fetch the next batch of
+   * suggestions. `suggestions` are sorted by `create_time` in descending order. To fetch latest
+   * suggestion, just set `page_size` to 1. To fetch new suggestions without duplication, send
+   * request with filter `create_time_epoch_microseconds &amp;gt; [first item's create_time of previous
+   * request]` and empty page_token.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ListSuggestionsRequest request =
+   *       ListSuggestionsRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .setFilter(&quot;filter-1274492040&quot;)
+   *           .build();
+   *   ApiFuture&lt;Suggestion&gt; future =
+   *       participantsClient.listSuggestionsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (Suggestion element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @deprecated This method is deprecated and will be removed in the next major version update.
+   */
+  @Deprecated
+  public final UnaryCallable&lt;ListSuggestionsRequest, ListSuggestionsPagedResponse&gt;
+      listSuggestionsPagedCallable() {
+<span class="fc" id="L1399">    return stub.listSuggestionsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deprecated: Use inline suggestion, event based suggestion or Suggestion&amp;#42; API instead. See
+   * [HumanAgentAssistantConfig.name][google.cloud.dialogflow.v2beta1.HumanAgentAssistantConfig.name]
+   * for more details. Removal Date: 2020-09-01.
+   *
+   * &lt;p&gt;Retrieves suggestions for live agents.
+   *
+   * &lt;p&gt;This method should be used by human agent client software to fetch auto generated
+   * suggestions in real-time, while the conversation with an end user is in progress. The
+   * functionality is implemented in terms of the [list
+   * pagination](https://cloud.google.com/apis/design/design_patterns#list_pagination) design
+   * pattern. The client app should use the `next_page_token` field to fetch the next batch of
+   * suggestions. `suggestions` are sorted by `create_time` in descending order. To fetch latest
+   * suggestion, just set `page_size` to 1. To fetch new suggestions without duplication, send
+   * request with filter `create_time_epoch_microseconds &amp;gt; [first item's create_time of previous
+   * request]` and empty page_token.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   ListSuggestionsRequest request =
+   *       ListSuggestionsRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .setFilter(&quot;filter-1274492040&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListSuggestionsResponse response =
+   *         participantsClient.listSuggestionsCallable().call(request);
+   *     for (Suggestion element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @deprecated This method is deprecated and will be removed in the next major version update.
+   */
+  @Deprecated
+  public final UnaryCallable&lt;ListSuggestionsRequest, ListSuggestionsResponse&gt;
+      listSuggestionsCallable() {
+<span class="nc" id="L1454">    return stub.listSuggestionsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deprecated. use [SuggestArticles][google.cloud.dialogflow.v2beta1.Participants.SuggestArticles]
+   * and [SuggestFaqAnswers][google.cloud.dialogflow.v2beta1.Participants.SuggestFaqAnswers]
+   * instead.
+   *
+   * &lt;p&gt;Gets suggestions for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Note that [ListSuggestions][google.cloud.dialogflow.v2beta1.Participants.ListSuggestions]
+   * will only list the auto-generated suggestions, while
+   * [CompileSuggestion][google.cloud.dialogflow.v2beta1.Participants.CompileSuggestion] will try to
+   * compile suggestion based on the provided conversation context in the real time.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   CompileSuggestionRequest request =
+   *       CompileSuggestionRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setLatestMessage(&quot;latestMessage-1424305536&quot;)
+   *           .setContextSize(1116903569)
+   *           .build();
+   *   CompileSuggestionResponse response = participantsClient.compileSuggestion(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   * @deprecated This method is deprecated and will be removed in the next major version update.
+   */
+  @Deprecated
+  public final CompileSuggestionResponse compileSuggestion(CompileSuggestionRequest request) {
+<span class="fc" id="L1492">    return compileSuggestionCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deprecated. use [SuggestArticles][google.cloud.dialogflow.v2beta1.Participants.SuggestArticles]
+   * and [SuggestFaqAnswers][google.cloud.dialogflow.v2beta1.Participants.SuggestFaqAnswers]
+   * instead.
+   *
+   * &lt;p&gt;Gets suggestions for a participant based on specific historical messages.
+   *
+   * &lt;p&gt;Note that [ListSuggestions][google.cloud.dialogflow.v2beta1.Participants.ListSuggestions]
+   * will only list the auto-generated suggestions, while
+   * [CompileSuggestion][google.cloud.dialogflow.v2beta1.Participants.CompileSuggestion] will try to
+   * compile suggestion based on the provided conversation context in the real time.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ParticipantsClient participantsClient = ParticipantsClient.create()) {
+   *   CompileSuggestionRequest request =
+   *       CompileSuggestionRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setLatestMessage(&quot;latestMessage-1424305536&quot;)
+   *           .setContextSize(1116903569)
+   *           .build();
+   *   ApiFuture&lt;CompileSuggestionResponse&gt; future =
+   *       participantsClient.compileSuggestionCallable().futureCall(request);
+   *   // Do something.
+   *   CompileSuggestionResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @deprecated This method is deprecated and will be removed in the next major version update.
+   */
+  @Deprecated
+  public final UnaryCallable&lt;CompileSuggestionRequest, CompileSuggestionResponse&gt;
+      compileSuggestionCallable() {
+<span class="fc" id="L1532">    return stub.compileSuggestionCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L1537">    stub.close();</span>
+<span class="fc" id="L1538">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L1542">    stub.shutdown();</span>
+<span class="nc" id="L1543">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L1547">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L1552">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L1557">    stub.shutdownNow();</span>
+<span class="nc" id="L1558">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L1562">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListParticipantsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListParticipantsRequest,
+          ListParticipantsResponse,
+          Participant,
+          ListParticipantsPage,
+          ListParticipantsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListParticipantsPagedResponse&gt; createAsync(
+        PageContext&lt;ListParticipantsRequest, ListParticipantsResponse, Participant&gt; context,
+        ApiFuture&lt;ListParticipantsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListParticipantsPage&gt; futurePage =
+<span class="fc" id="L1577">          ListParticipantsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1578">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L1580">          input -&gt; new ListParticipantsPagedResponse(input),</span>
+<span class="fc" id="L1581">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListParticipantsPagedResponse(ListParticipantsPage page) {
+<span class="fc" id="L1585">      super(page, ListParticipantsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1586">    }</span>
+  }
+
+  public static class ListParticipantsPage
+      extends AbstractPage&lt;
+          ListParticipantsRequest, ListParticipantsResponse, Participant, ListParticipantsPage&gt; {
+
+    private ListParticipantsPage(
+        PageContext&lt;ListParticipantsRequest, ListParticipantsResponse, Participant&gt; context,
+        ListParticipantsResponse response) {
+<span class="fc" id="L1596">      super(context, response);</span>
+<span class="fc" id="L1597">    }</span>
+
+    private static ListParticipantsPage createEmptyPage() {
+<span class="fc" id="L1600">      return new ListParticipantsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListParticipantsPage createPage(
+        PageContext&lt;ListParticipantsRequest, ListParticipantsResponse, Participant&gt; context,
+        ListParticipantsResponse response) {
+<span class="fc" id="L1607">      return new ListParticipantsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListParticipantsPage&gt; createPageAsync(
+        PageContext&lt;ListParticipantsRequest, ListParticipantsResponse, Participant&gt; context,
+        ApiFuture&lt;ListParticipantsResponse&gt; futureResponse) {
+<span class="fc" id="L1614">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListParticipantsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListParticipantsRequest,
+          ListParticipantsResponse,
+          Participant,
+          ListParticipantsPage,
+          ListParticipantsFixedSizeCollection&gt; {
+
+    private ListParticipantsFixedSizeCollection(
+        List&lt;ListParticipantsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1628">      super(pages, collectionSize);</span>
+<span class="fc" id="L1629">    }</span>
+
+    private static ListParticipantsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1632">      return new ListParticipantsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListParticipantsFixedSizeCollection createCollection(
+        List&lt;ListParticipantsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1638">      return new ListParticipantsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+
+  public static class ListSuggestionsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListSuggestionsRequest,
+          ListSuggestionsResponse,
+          Suggestion,
+          ListSuggestionsPage,
+          ListSuggestionsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListSuggestionsPagedResponse&gt; createAsync(
+        PageContext&lt;ListSuggestionsRequest, ListSuggestionsResponse, Suggestion&gt; context,
+        ApiFuture&lt;ListSuggestionsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListSuggestionsPage&gt; futurePage =
+<span class="fc" id="L1654">          ListSuggestionsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1655">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L1657">          input -&gt; new ListSuggestionsPagedResponse(input),</span>
+<span class="fc" id="L1658">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListSuggestionsPagedResponse(ListSuggestionsPage page) {
+<span class="fc" id="L1662">      super(page, ListSuggestionsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1663">    }</span>
+  }
+
+  public static class ListSuggestionsPage
+      extends AbstractPage&lt;
+          ListSuggestionsRequest, ListSuggestionsResponse, Suggestion, ListSuggestionsPage&gt; {
+
+    private ListSuggestionsPage(
+        PageContext&lt;ListSuggestionsRequest, ListSuggestionsResponse, Suggestion&gt; context,
+        ListSuggestionsResponse response) {
+<span class="fc" id="L1673">      super(context, response);</span>
+<span class="fc" id="L1674">    }</span>
+
+    private static ListSuggestionsPage createEmptyPage() {
+<span class="fc" id="L1677">      return new ListSuggestionsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListSuggestionsPage createPage(
+        PageContext&lt;ListSuggestionsRequest, ListSuggestionsResponse, Suggestion&gt; context,
+        ListSuggestionsResponse response) {
+<span class="fc" id="L1684">      return new ListSuggestionsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListSuggestionsPage&gt; createPageAsync(
+        PageContext&lt;ListSuggestionsRequest, ListSuggestionsResponse, Suggestion&gt; context,
+        ApiFuture&lt;ListSuggestionsResponse&gt; futureResponse) {
+<span class="fc" id="L1691">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListSuggestionsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListSuggestionsRequest,
+          ListSuggestionsResponse,
+          Suggestion,
+          ListSuggestionsPage,
+          ListSuggestionsFixedSizeCollection&gt; {
+
+    private ListSuggestionsFixedSizeCollection(
+        List&lt;ListSuggestionsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1705">      super(pages, collectionSize);</span>
+<span class="fc" id="L1706">    }</span>
+
+    private static ListSuggestionsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1709">      return new ListSuggestionsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListSuggestionsFixedSizeCollection createCollection(
+        List&lt;ListSuggestionsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1715">      return new ListSuggestionsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,1075 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ProductSearchStubSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-vision</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.vision.v1p3beta1.stub</a> &gt; <span class="el_source">ProductSearchStubSettings.java</span></div><h1>ProductSearchStubSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.vision.v1p3beta1.stub;
+
+import static com.google.cloud.vision.v1p3beta1.ProductSearchClient.ListProductSetsPagedResponse;
+import static com.google.cloud.vision.v1p3beta1.ProductSearchClient.ListProductsInProductSetPagedResponse;
+import static com.google.cloud.vision.v1p3beta1.ProductSearchClient.ListProductsPagedResponse;
+import static com.google.cloud.vision.v1p3beta1.ProductSearchClient.ListReferenceImagesPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.grpc.ProtoOperationTransformers;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.PagedListDescriptor;
+import com.google.api.gax.rpc.PagedListResponseFactory;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StubSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.vision.v1p3beta1.AddProductToProductSetRequest;
+import com.google.cloud.vision.v1p3beta1.BatchOperationMetadata;
+import com.google.cloud.vision.v1p3beta1.CreateProductRequest;
+import com.google.cloud.vision.v1p3beta1.CreateProductSetRequest;
+import com.google.cloud.vision.v1p3beta1.CreateReferenceImageRequest;
+import com.google.cloud.vision.v1p3beta1.DeleteProductRequest;
+import com.google.cloud.vision.v1p3beta1.DeleteProductSetRequest;
+import com.google.cloud.vision.v1p3beta1.DeleteReferenceImageRequest;
+import com.google.cloud.vision.v1p3beta1.GetProductRequest;
+import com.google.cloud.vision.v1p3beta1.GetProductSetRequest;
+import com.google.cloud.vision.v1p3beta1.GetReferenceImageRequest;
+import com.google.cloud.vision.v1p3beta1.ImportProductSetsRequest;
+import com.google.cloud.vision.v1p3beta1.ImportProductSetsResponse;
+import com.google.cloud.vision.v1p3beta1.ListProductSetsRequest;
+import com.google.cloud.vision.v1p3beta1.ListProductSetsResponse;
+import com.google.cloud.vision.v1p3beta1.ListProductsInProductSetRequest;
+import com.google.cloud.vision.v1p3beta1.ListProductsInProductSetResponse;
+import com.google.cloud.vision.v1p3beta1.ListProductsRequest;
+import com.google.cloud.vision.v1p3beta1.ListProductsResponse;
+import com.google.cloud.vision.v1p3beta1.ListReferenceImagesRequest;
+import com.google.cloud.vision.v1p3beta1.ListReferenceImagesResponse;
+import com.google.cloud.vision.v1p3beta1.Product;
+import com.google.cloud.vision.v1p3beta1.ProductSet;
+import com.google.cloud.vision.v1p3beta1.ReferenceImage;
+import com.google.cloud.vision.v1p3beta1.RemoveProductFromProductSetRequest;
+import com.google.cloud.vision.v1p3beta1.UpdateProductRequest;
+import com.google.cloud.vision.v1p3beta1.UpdateProductSetRequest;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.longrunning.Operation;
+import com.google.protobuf.Empty;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link ProductSearchStub}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (vision.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of createProductSet to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ProductSearchStubSettings.Builder productSearchSettingsBuilder =
+ *     ProductSearchStubSettings.newBuilder();
+ * productSearchSettingsBuilder
+ *     .createProductSetSettings()
+ *     .setRetrySettings(
+ *         productSearchSettingsBuilder
+ *             .createProductSetSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * ProductSearchStubSettings productSearchSettings = productSearchSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ProductSearchStubSettings extends StubSettings&lt;ProductSearchStubSettings&gt; {
+  /** The default scopes of the service. */
+  private static final ImmutableList&lt;String&gt; DEFAULT_SERVICE_SCOPES =
+<span class="fc" id="L127">      ImmutableList.&lt;String&gt;builder()</span>
+<span class="fc" id="L128">          .add(&quot;https://www.googleapis.com/auth/cloud-platform&quot;)</span>
+<span class="fc" id="L129">          .add(&quot;https://www.googleapis.com/auth/cloud-vision&quot;)</span>
+<span class="fc" id="L130">          .build();</span>
+
+  private final UnaryCallSettings&lt;CreateProductSetRequest, ProductSet&gt; createProductSetSettings;
+  private final PagedCallSettings&lt;
+          ListProductSetsRequest, ListProductSetsResponse, ListProductSetsPagedResponse&gt;
+      listProductSetsSettings;
+  private final UnaryCallSettings&lt;GetProductSetRequest, ProductSet&gt; getProductSetSettings;
+  private final UnaryCallSettings&lt;UpdateProductSetRequest, ProductSet&gt; updateProductSetSettings;
+  private final UnaryCallSettings&lt;DeleteProductSetRequest, Empty&gt; deleteProductSetSettings;
+  private final UnaryCallSettings&lt;CreateProductRequest, Product&gt; createProductSettings;
+  private final PagedCallSettings&lt;
+          ListProductsRequest, ListProductsResponse, ListProductsPagedResponse&gt;
+      listProductsSettings;
+  private final UnaryCallSettings&lt;GetProductRequest, Product&gt; getProductSettings;
+  private final UnaryCallSettings&lt;UpdateProductRequest, Product&gt; updateProductSettings;
+  private final UnaryCallSettings&lt;DeleteProductRequest, Empty&gt; deleteProductSettings;
+  private final UnaryCallSettings&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+      createReferenceImageSettings;
+  private final UnaryCallSettings&lt;DeleteReferenceImageRequest, Empty&gt; deleteReferenceImageSettings;
+  private final PagedCallSettings&lt;
+          ListReferenceImagesRequest, ListReferenceImagesResponse, ListReferenceImagesPagedResponse&gt;
+      listReferenceImagesSettings;
+  private final UnaryCallSettings&lt;GetReferenceImageRequest, ReferenceImage&gt;
+      getReferenceImageSettings;
+  private final UnaryCallSettings&lt;AddProductToProductSetRequest, Empty&gt;
+      addProductToProductSetSettings;
+  private final UnaryCallSettings&lt;RemoveProductFromProductSetRequest, Empty&gt;
+      removeProductFromProductSetSettings;
+  private final PagedCallSettings&lt;
+          ListProductsInProductSetRequest,
+          ListProductsInProductSetResponse,
+          ListProductsInProductSetPagedResponse&gt;
+      listProductsInProductSetSettings;
+  private final UnaryCallSettings&lt;ImportProductSetsRequest, Operation&gt; importProductSetsSettings;
+  private final OperationCallSettings&lt;
+          ImportProductSetsRequest, ImportProductSetsResponse, BatchOperationMetadata&gt;
+      importProductSetsOperationSettings;
+
+  private static final PagedListDescriptor&lt;
+          ListProductSetsRequest, ListProductSetsResponse, ProductSet&gt;
+<span class="fc" id="L170">      LIST_PRODUCT_SETS_PAGE_STR_DESC =</span>
+<span class="fc" id="L171">          new PagedListDescriptor&lt;ListProductSetsRequest, ListProductSetsResponse, ProductSet&gt;() {</span>
+            @Override
+            public String emptyToken() {
+<span class="fc" id="L174">              return &quot;&quot;;</span>
+            }
+
+            @Override
+            public ListProductSetsRequest injectToken(
+                ListProductSetsRequest payload, String token) {
+<span class="nc" id="L180">              return ListProductSetsRequest.newBuilder(payload).setPageToken(token).build();</span>
+            }
+
+            @Override
+            public ListProductSetsRequest injectPageSize(
+                ListProductSetsRequest payload, int pageSize) {
+<span class="nc" id="L186">              return ListProductSetsRequest.newBuilder(payload).setPageSize(pageSize).build();</span>
+            }
+
+            @Override
+            public Integer extractPageSize(ListProductSetsRequest payload) {
+<span class="nc" id="L191">              return payload.getPageSize();</span>
+            }
+
+            @Override
+            public String extractNextToken(ListProductSetsResponse payload) {
+<span class="fc" id="L196">              return payload.getNextPageToken();</span>
+            }
+
+            @Override
+            public Iterable&lt;ProductSet&gt; extractResources(ListProductSetsResponse payload) {
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">              return payload.getProductSetsList() == null</span>
+<span class="nc" id="L202">                  ? ImmutableList.&lt;ProductSet&gt;of()</span>
+<span class="fc" id="L203">                  : payload.getProductSetsList();</span>
+            }
+          };
+
+  private static final PagedListDescriptor&lt;ListProductsRequest, ListProductsResponse, Product&gt;
+<span class="fc" id="L208">      LIST_PRODUCTS_PAGE_STR_DESC =</span>
+<span class="fc" id="L209">          new PagedListDescriptor&lt;ListProductsRequest, ListProductsResponse, Product&gt;() {</span>
+            @Override
+            public String emptyToken() {
+<span class="fc" id="L212">              return &quot;&quot;;</span>
+            }
+
+            @Override
+            public ListProductsRequest injectToken(ListProductsRequest payload, String token) {
+<span class="nc" id="L217">              return ListProductsRequest.newBuilder(payload).setPageToken(token).build();</span>
+            }
+
+            @Override
+            public ListProductsRequest injectPageSize(ListProductsRequest payload, int pageSize) {
+<span class="nc" id="L222">              return ListProductsRequest.newBuilder(payload).setPageSize(pageSize).build();</span>
+            }
+
+            @Override
+            public Integer extractPageSize(ListProductsRequest payload) {
+<span class="nc" id="L227">              return payload.getPageSize();</span>
+            }
+
+            @Override
+            public String extractNextToken(ListProductsResponse payload) {
+<span class="fc" id="L232">              return payload.getNextPageToken();</span>
+            }
+
+            @Override
+            public Iterable&lt;Product&gt; extractResources(ListProductsResponse payload) {
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">              return payload.getProductsList() == null</span>
+<span class="nc" id="L238">                  ? ImmutableList.&lt;Product&gt;of()</span>
+<span class="fc" id="L239">                  : payload.getProductsList();</span>
+            }
+          };
+
+  private static final PagedListDescriptor&lt;
+          ListReferenceImagesRequest, ListReferenceImagesResponse, ReferenceImage&gt;
+<span class="fc" id="L245">      LIST_REFERENCE_IMAGES_PAGE_STR_DESC =</span>
+          new PagedListDescriptor&lt;
+<span class="fc" id="L247">              ListReferenceImagesRequest, ListReferenceImagesResponse, ReferenceImage&gt;() {</span>
+            @Override
+            public String emptyToken() {
+<span class="fc" id="L250">              return &quot;&quot;;</span>
+            }
+
+            @Override
+            public ListReferenceImagesRequest injectToken(
+                ListReferenceImagesRequest payload, String token) {
+<span class="nc" id="L256">              return ListReferenceImagesRequest.newBuilder(payload).setPageToken(token).build();</span>
+            }
+
+            @Override
+            public ListReferenceImagesRequest injectPageSize(
+                ListReferenceImagesRequest payload, int pageSize) {
+<span class="nc" id="L262">              return ListReferenceImagesRequest.newBuilder(payload).setPageSize(pageSize).build();</span>
+            }
+
+            @Override
+            public Integer extractPageSize(ListReferenceImagesRequest payload) {
+<span class="nc" id="L267">              return payload.getPageSize();</span>
+            }
+
+            @Override
+            public String extractNextToken(ListReferenceImagesResponse payload) {
+<span class="fc" id="L272">              return payload.getNextPageToken();</span>
+            }
+
+            @Override
+            public Iterable&lt;ReferenceImage&gt; extractResources(ListReferenceImagesResponse payload) {
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">              return payload.getReferenceImagesList() == null</span>
+<span class="nc" id="L278">                  ? ImmutableList.&lt;ReferenceImage&gt;of()</span>
+<span class="fc" id="L279">                  : payload.getReferenceImagesList();</span>
+            }
+          };
+
+  private static final PagedListDescriptor&lt;
+          ListProductsInProductSetRequest, ListProductsInProductSetResponse, Product&gt;
+<span class="fc" id="L285">      LIST_PRODUCTS_IN_PRODUCT_SET_PAGE_STR_DESC =</span>
+          new PagedListDescriptor&lt;
+<span class="fc" id="L287">              ListProductsInProductSetRequest, ListProductsInProductSetResponse, Product&gt;() {</span>
+            @Override
+            public String emptyToken() {
+<span class="fc" id="L290">              return &quot;&quot;;</span>
+            }
+
+            @Override
+            public ListProductsInProductSetRequest injectToken(
+                ListProductsInProductSetRequest payload, String token) {
+<span class="nc" id="L296">              return ListProductsInProductSetRequest.newBuilder(payload)</span>
+<span class="nc" id="L297">                  .setPageToken(token)</span>
+<span class="nc" id="L298">                  .build();</span>
+            }
+
+            @Override
+            public ListProductsInProductSetRequest injectPageSize(
+                ListProductsInProductSetRequest payload, int pageSize) {
+<span class="nc" id="L304">              return ListProductsInProductSetRequest.newBuilder(payload)</span>
+<span class="nc" id="L305">                  .setPageSize(pageSize)</span>
+<span class="nc" id="L306">                  .build();</span>
+            }
+
+            @Override
+            public Integer extractPageSize(ListProductsInProductSetRequest payload) {
+<span class="nc" id="L311">              return payload.getPageSize();</span>
+            }
+
+            @Override
+            public String extractNextToken(ListProductsInProductSetResponse payload) {
+<span class="fc" id="L316">              return payload.getNextPageToken();</span>
+            }
+
+            @Override
+            public Iterable&lt;Product&gt; extractResources(ListProductsInProductSetResponse payload) {
+<span class="pc bpc" id="L321" title="1 of 2 branches missed.">              return payload.getProductsList() == null</span>
+<span class="nc" id="L322">                  ? ImmutableList.&lt;Product&gt;of()</span>
+<span class="fc" id="L323">                  : payload.getProductsList();</span>
+            }
+          };
+
+  private static final PagedListResponseFactory&lt;
+          ListProductSetsRequest, ListProductSetsResponse, ListProductSetsPagedResponse&gt;
+<span class="fc" id="L329">      LIST_PRODUCT_SETS_PAGE_STR_FACT =</span>
+          new PagedListResponseFactory&lt;
+<span class="fc" id="L331">              ListProductSetsRequest, ListProductSetsResponse, ListProductSetsPagedResponse&gt;() {</span>
+            @Override
+            public ApiFuture&lt;ListProductSetsPagedResponse&gt; getFuturePagedResponse(
+                UnaryCallable&lt;ListProductSetsRequest, ListProductSetsResponse&gt; callable,
+                ListProductSetsRequest request,
+                ApiCallContext context,
+                ApiFuture&lt;ListProductSetsResponse&gt; futureResponse) {
+<span class="fc" id="L338">              PageContext&lt;ListProductSetsRequest, ListProductSetsResponse, ProductSet&gt; pageContext =</span>
+<span class="fc" id="L339">                  PageContext.create(callable, LIST_PRODUCT_SETS_PAGE_STR_DESC, request, context);</span>
+<span class="fc" id="L340">              return ListProductSetsPagedResponse.createAsync(pageContext, futureResponse);</span>
+            }
+          };
+
+  private static final PagedListResponseFactory&lt;
+          ListProductsRequest, ListProductsResponse, ListProductsPagedResponse&gt;
+<span class="fc" id="L346">      LIST_PRODUCTS_PAGE_STR_FACT =</span>
+          new PagedListResponseFactory&lt;
+<span class="fc" id="L348">              ListProductsRequest, ListProductsResponse, ListProductsPagedResponse&gt;() {</span>
+            @Override
+            public ApiFuture&lt;ListProductsPagedResponse&gt; getFuturePagedResponse(
+                UnaryCallable&lt;ListProductsRequest, ListProductsResponse&gt; callable,
+                ListProductsRequest request,
+                ApiCallContext context,
+                ApiFuture&lt;ListProductsResponse&gt; futureResponse) {
+<span class="fc" id="L355">              PageContext&lt;ListProductsRequest, ListProductsResponse, Product&gt; pageContext =</span>
+<span class="fc" id="L356">                  PageContext.create(callable, LIST_PRODUCTS_PAGE_STR_DESC, request, context);</span>
+<span class="fc" id="L357">              return ListProductsPagedResponse.createAsync(pageContext, futureResponse);</span>
+            }
+          };
+
+  private static final PagedListResponseFactory&lt;
+          ListReferenceImagesRequest, ListReferenceImagesResponse, ListReferenceImagesPagedResponse&gt;
+<span class="fc" id="L363">      LIST_REFERENCE_IMAGES_PAGE_STR_FACT =</span>
+          new PagedListResponseFactory&lt;
+              ListReferenceImagesRequest,
+              ListReferenceImagesResponse,
+<span class="fc" id="L367">              ListReferenceImagesPagedResponse&gt;() {</span>
+            @Override
+            public ApiFuture&lt;ListReferenceImagesPagedResponse&gt; getFuturePagedResponse(
+                UnaryCallable&lt;ListReferenceImagesRequest, ListReferenceImagesResponse&gt; callable,
+                ListReferenceImagesRequest request,
+                ApiCallContext context,
+                ApiFuture&lt;ListReferenceImagesResponse&gt; futureResponse) {
+              PageContext&lt;ListReferenceImagesRequest, ListReferenceImagesResponse, ReferenceImage&gt;
+<span class="fc" id="L375">                  pageContext =</span>
+<span class="fc" id="L376">                      PageContext.create(</span>
+<span class="fc" id="L377">                          callable, LIST_REFERENCE_IMAGES_PAGE_STR_DESC, request, context);</span>
+<span class="fc" id="L378">              return ListReferenceImagesPagedResponse.createAsync(pageContext, futureResponse);</span>
+            }
+          };
+
+  private static final PagedListResponseFactory&lt;
+          ListProductsInProductSetRequest,
+          ListProductsInProductSetResponse,
+          ListProductsInProductSetPagedResponse&gt;
+<span class="fc" id="L386">      LIST_PRODUCTS_IN_PRODUCT_SET_PAGE_STR_FACT =</span>
+          new PagedListResponseFactory&lt;
+              ListProductsInProductSetRequest,
+              ListProductsInProductSetResponse,
+<span class="fc" id="L390">              ListProductsInProductSetPagedResponse&gt;() {</span>
+            @Override
+            public ApiFuture&lt;ListProductsInProductSetPagedResponse&gt; getFuturePagedResponse(
+                UnaryCallable&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse&gt;
+                    callable,
+                ListProductsInProductSetRequest request,
+                ApiCallContext context,
+                ApiFuture&lt;ListProductsInProductSetResponse&gt; futureResponse) {
+              PageContext&lt;
+                      ListProductsInProductSetRequest, ListProductsInProductSetResponse, Product&gt;
+<span class="fc" id="L400">                  pageContext =</span>
+<span class="fc" id="L401">                      PageContext.create(</span>
+<span class="fc" id="L402">                          callable, LIST_PRODUCTS_IN_PRODUCT_SET_PAGE_STR_DESC, request, context);</span>
+<span class="fc" id="L403">              return ListProductsInProductSetPagedResponse.createAsync(pageContext, futureResponse);</span>
+            }
+          };
+
+  /** Returns the object with the settings used for calls to createProductSet. */
+  public UnaryCallSettings&lt;CreateProductSetRequest, ProductSet&gt; createProductSetSettings() {
+<span class="fc" id="L409">    return createProductSetSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to listProductSets. */
+  public PagedCallSettings&lt;
+          ListProductSetsRequest, ListProductSetsResponse, ListProductSetsPagedResponse&gt;
+      listProductSetsSettings() {
+<span class="fc" id="L416">    return listProductSetsSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to getProductSet. */
+  public UnaryCallSettings&lt;GetProductSetRequest, ProductSet&gt; getProductSetSettings() {
+<span class="fc" id="L421">    return getProductSetSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateProductSet. */
+  public UnaryCallSettings&lt;UpdateProductSetRequest, ProductSet&gt; updateProductSetSettings() {
+<span class="fc" id="L426">    return updateProductSetSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteProductSet. */
+  public UnaryCallSettings&lt;DeleteProductSetRequest, Empty&gt; deleteProductSetSettings() {
+<span class="fc" id="L431">    return deleteProductSetSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to createProduct. */
+  public UnaryCallSettings&lt;CreateProductRequest, Product&gt; createProductSettings() {
+<span class="fc" id="L436">    return createProductSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to listProducts. */
+  public PagedCallSettings&lt;ListProductsRequest, ListProductsResponse, ListProductsPagedResponse&gt;
+      listProductsSettings() {
+<span class="fc" id="L442">    return listProductsSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to getProduct. */
+  public UnaryCallSettings&lt;GetProductRequest, Product&gt; getProductSettings() {
+<span class="fc" id="L447">    return getProductSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateProduct. */
+  public UnaryCallSettings&lt;UpdateProductRequest, Product&gt; updateProductSettings() {
+<span class="fc" id="L452">    return updateProductSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteProduct. */
+  public UnaryCallSettings&lt;DeleteProductRequest, Empty&gt; deleteProductSettings() {
+<span class="fc" id="L457">    return deleteProductSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to createReferenceImage. */
+  public UnaryCallSettings&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+      createReferenceImageSettings() {
+<span class="fc" id="L463">    return createReferenceImageSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteReferenceImage. */
+  public UnaryCallSettings&lt;DeleteReferenceImageRequest, Empty&gt; deleteReferenceImageSettings() {
+<span class="fc" id="L468">    return deleteReferenceImageSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to listReferenceImages. */
+  public PagedCallSettings&lt;
+          ListReferenceImagesRequest, ListReferenceImagesResponse, ListReferenceImagesPagedResponse&gt;
+      listReferenceImagesSettings() {
+<span class="fc" id="L475">    return listReferenceImagesSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to getReferenceImage. */
+  public UnaryCallSettings&lt;GetReferenceImageRequest, ReferenceImage&gt; getReferenceImageSettings() {
+<span class="fc" id="L480">    return getReferenceImageSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to addProductToProductSet. */
+  public UnaryCallSettings&lt;AddProductToProductSetRequest, Empty&gt; addProductToProductSetSettings() {
+<span class="fc" id="L485">    return addProductToProductSetSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to removeProductFromProductSet. */
+  public UnaryCallSettings&lt;RemoveProductFromProductSetRequest, Empty&gt;
+      removeProductFromProductSetSettings() {
+<span class="fc" id="L491">    return removeProductFromProductSetSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to listProductsInProductSet. */
+  public PagedCallSettings&lt;
+          ListProductsInProductSetRequest,
+          ListProductsInProductSetResponse,
+          ListProductsInProductSetPagedResponse&gt;
+      listProductsInProductSetSettings() {
+<span class="fc" id="L500">    return listProductsInProductSetSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to importProductSets. */
+  public UnaryCallSettings&lt;ImportProductSetsRequest, Operation&gt; importProductSetsSettings() {
+<span class="fc" id="L505">    return importProductSetsSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to importProductSets. */
+  public OperationCallSettings&lt;
+          ImportProductSetsRequest, ImportProductSetsResponse, BatchOperationMetadata&gt;
+      importProductSetsOperationSettings() {
+<span class="fc" id="L512">    return importProductSetsOperationSettings;</span>
+  }
+
+  @BetaApi(&quot;A restructuring of stub classes is planned, so this may break in the future&quot;)
+  public ProductSearchStub createStub() throws IOException {
+<span class="fc" id="L517">    if (getTransportChannelProvider()</span>
+<span class="fc" id="L518">        .getTransportName()</span>
+<span class="pc bpc" id="L519" title="1 of 2 branches missed.">        .equals(GrpcTransportChannel.getGrpcTransportName())) {</span>
+<span class="fc" id="L520">      return GrpcProductSearchStub.create(this);</span>
+    }
+<span class="nc" id="L522">    throw new UnsupportedOperationException(</span>
+<span class="nc" id="L523">        String.format(</span>
+<span class="nc" id="L524">            &quot;Transport not supported: %s&quot;, getTransportChannelProvider().getTransportName()));</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L529">    return InstantiatingExecutorProvider.newBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="fc" id="L534">    return &quot;vision.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default mTLS service endpoint. */
+  public static String getDefaultMtlsEndpoint() {
+<span class="fc" id="L539">    return &quot;vision.mtls.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L544">    return DEFAULT_SERVICE_SCOPES;</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="fc" id="L549">    return GoogleCredentialsProvider.newBuilder()</span>
+<span class="fc" id="L550">        .setScopesToApply(DEFAULT_SERVICE_SCOPES)</span>
+<span class="fc" id="L551">        .setUseJwtAccessWithScope(true);</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="fc" id="L556">    return InstantiatingGrpcChannelProvider.newBuilder()</span>
+<span class="fc" id="L557">        .setMaxInboundMessageSize(Integer.MAX_VALUE);</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="fc" id="L561">    return defaultGrpcTransportProviderBuilder().build();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="fc" id="L566">    return ApiClientHeaderProvider.newBuilder()</span>
+<span class="fc" id="L567">        .setGeneratedLibToken(</span>
+<span class="fc" id="L568">            &quot;gapic&quot;, GaxProperties.getLibraryVersion(ProductSearchStubSettings.class))</span>
+<span class="fc" id="L569">        .setTransportToken(</span>
+<span class="fc" id="L570">            GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L575">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L580">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L585">    return new Builder(this);</span>
+  }
+
+  protected ProductSearchStubSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L589">    super(settingsBuilder);</span>
+
+<span class="fc" id="L591">    createProductSetSettings = settingsBuilder.createProductSetSettings().build();</span>
+<span class="fc" id="L592">    listProductSetsSettings = settingsBuilder.listProductSetsSettings().build();</span>
+<span class="fc" id="L593">    getProductSetSettings = settingsBuilder.getProductSetSettings().build();</span>
+<span class="fc" id="L594">    updateProductSetSettings = settingsBuilder.updateProductSetSettings().build();</span>
+<span class="fc" id="L595">    deleteProductSetSettings = settingsBuilder.deleteProductSetSettings().build();</span>
+<span class="fc" id="L596">    createProductSettings = settingsBuilder.createProductSettings().build();</span>
+<span class="fc" id="L597">    listProductsSettings = settingsBuilder.listProductsSettings().build();</span>
+<span class="fc" id="L598">    getProductSettings = settingsBuilder.getProductSettings().build();</span>
+<span class="fc" id="L599">    updateProductSettings = settingsBuilder.updateProductSettings().build();</span>
+<span class="fc" id="L600">    deleteProductSettings = settingsBuilder.deleteProductSettings().build();</span>
+<span class="fc" id="L601">    createReferenceImageSettings = settingsBuilder.createReferenceImageSettings().build();</span>
+<span class="fc" id="L602">    deleteReferenceImageSettings = settingsBuilder.deleteReferenceImageSettings().build();</span>
+<span class="fc" id="L603">    listReferenceImagesSettings = settingsBuilder.listReferenceImagesSettings().build();</span>
+<span class="fc" id="L604">    getReferenceImageSettings = settingsBuilder.getReferenceImageSettings().build();</span>
+<span class="fc" id="L605">    addProductToProductSetSettings = settingsBuilder.addProductToProductSetSettings().build();</span>
+<span class="fc" id="L606">    removeProductFromProductSetSettings =</span>
+<span class="fc" id="L607">        settingsBuilder.removeProductFromProductSetSettings().build();</span>
+<span class="fc" id="L608">    listProductsInProductSetSettings = settingsBuilder.listProductsInProductSetSettings().build();</span>
+<span class="fc" id="L609">    importProductSetsSettings = settingsBuilder.importProductSetsSettings().build();</span>
+<span class="fc" id="L610">    importProductSetsOperationSettings =</span>
+<span class="fc" id="L611">        settingsBuilder.importProductSetsOperationSettings().build();</span>
+<span class="fc" id="L612">  }</span>
+
+  /** Builder for ProductSearchStubSettings. */
+  public static class Builder extends StubSettings.Builder&lt;ProductSearchStubSettings, Builder&gt; {
+    private final ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders;
+    private final UnaryCallSettings.Builder&lt;CreateProductSetRequest, ProductSet&gt;
+        createProductSetSettings;
+    private final PagedCallSettings.Builder&lt;
+            ListProductSetsRequest, ListProductSetsResponse, ListProductSetsPagedResponse&gt;
+        listProductSetsSettings;
+    private final UnaryCallSettings.Builder&lt;GetProductSetRequest, ProductSet&gt; getProductSetSettings;
+    private final UnaryCallSettings.Builder&lt;UpdateProductSetRequest, ProductSet&gt;
+        updateProductSetSettings;
+    private final UnaryCallSettings.Builder&lt;DeleteProductSetRequest, Empty&gt;
+        deleteProductSetSettings;
+    private final UnaryCallSettings.Builder&lt;CreateProductRequest, Product&gt; createProductSettings;
+    private final PagedCallSettings.Builder&lt;
+            ListProductsRequest, ListProductsResponse, ListProductsPagedResponse&gt;
+        listProductsSettings;
+    private final UnaryCallSettings.Builder&lt;GetProductRequest, Product&gt; getProductSettings;
+    private final UnaryCallSettings.Builder&lt;UpdateProductRequest, Product&gt; updateProductSettings;
+    private final UnaryCallSettings.Builder&lt;DeleteProductRequest, Empty&gt; deleteProductSettings;
+    private final UnaryCallSettings.Builder&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+        createReferenceImageSettings;
+    private final UnaryCallSettings.Builder&lt;DeleteReferenceImageRequest, Empty&gt;
+        deleteReferenceImageSettings;
+    private final PagedCallSettings.Builder&lt;
+            ListReferenceImagesRequest,
+            ListReferenceImagesResponse,
+            ListReferenceImagesPagedResponse&gt;
+        listReferenceImagesSettings;
+    private final UnaryCallSettings.Builder&lt;GetReferenceImageRequest, ReferenceImage&gt;
+        getReferenceImageSettings;
+    private final UnaryCallSettings.Builder&lt;AddProductToProductSetRequest, Empty&gt;
+        addProductToProductSetSettings;
+    private final UnaryCallSettings.Builder&lt;RemoveProductFromProductSetRequest, Empty&gt;
+        removeProductFromProductSetSettings;
+    private final PagedCallSettings.Builder&lt;
+            ListProductsInProductSetRequest,
+            ListProductsInProductSetResponse,
+            ListProductsInProductSetPagedResponse&gt;
+        listProductsInProductSetSettings;
+    private final UnaryCallSettings.Builder&lt;ImportProductSetsRequest, Operation&gt;
+        importProductSetsSettings;
+    private final OperationCallSettings.Builder&lt;
+            ImportProductSetsRequest, ImportProductSetsResponse, BatchOperationMetadata&gt;
+        importProductSetsOperationSettings;
+    private static final ImmutableMap&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt;
+        RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt; definitions =
+<span class="fc" id="L664">          ImmutableMap.builder();</span>
+<span class="fc" id="L665">      definitions.put(</span>
+<span class="fc" id="L666">          &quot;retry_policy_1_codes&quot;, ImmutableSet.copyOf(Lists.&lt;StatusCode.Code&gt;newArrayList()));</span>
+<span class="fc" id="L667">      definitions.put(</span>
+          &quot;retry_policy_2_codes&quot;,
+<span class="fc" id="L669">          ImmutableSet.copyOf(</span>
+<span class="fc" id="L670">              Lists.&lt;StatusCode.Code&gt;newArrayList(</span>
+                  StatusCode.Code.UNAVAILABLE, StatusCode.Code.DEADLINE_EXCEEDED)));
+<span class="fc" id="L672">      RETRYABLE_CODE_DEFINITIONS = definitions.build();</span>
+    }
+
+    private static final ImmutableMap&lt;String, RetrySettings&gt; RETRY_PARAM_DEFINITIONS;
+
+    static {
+<span class="fc" id="L678">      ImmutableMap.Builder&lt;String, RetrySettings&gt; definitions = ImmutableMap.builder();</span>
+<span class="fc" id="L679">      RetrySettings settings = null;</span>
+      settings =
+<span class="fc" id="L681">          RetrySettings.newBuilder()</span>
+<span class="fc" id="L682">              .setInitialRetryDelay(Duration.ofMillis(100L))</span>
+<span class="fc" id="L683">              .setRetryDelayMultiplier(1.3)</span>
+<span class="fc" id="L684">              .setMaxRetryDelay(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L685">              .setInitialRpcTimeout(Duration.ofMillis(600000L))</span>
+<span class="fc" id="L686">              .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L687">              .setMaxRpcTimeout(Duration.ofMillis(600000L))</span>
+<span class="fc" id="L688">              .setTotalTimeout(Duration.ofMillis(600000L))</span>
+<span class="fc" id="L689">              .build();</span>
+<span class="fc" id="L690">      definitions.put(&quot;retry_policy_1_params&quot;, settings);</span>
+      settings =
+<span class="fc" id="L692">          RetrySettings.newBuilder()</span>
+<span class="fc" id="L693">              .setInitialRetryDelay(Duration.ofMillis(100L))</span>
+<span class="fc" id="L694">              .setRetryDelayMultiplier(1.3)</span>
+<span class="fc" id="L695">              .setMaxRetryDelay(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L696">              .setInitialRpcTimeout(Duration.ofMillis(600000L))</span>
+<span class="fc" id="L697">              .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L698">              .setMaxRpcTimeout(Duration.ofMillis(600000L))</span>
+<span class="fc" id="L699">              .setTotalTimeout(Duration.ofMillis(600000L))</span>
+<span class="fc" id="L700">              .build();</span>
+<span class="fc" id="L701">      definitions.put(&quot;retry_policy_2_params&quot;, settings);</span>
+<span class="fc" id="L702">      RETRY_PARAM_DEFINITIONS = definitions.build();</span>
+<span class="fc" id="L703">    }</span>
+
+    protected Builder() {
+<span class="nc" id="L706">      this(((ClientContext) null));</span>
+<span class="nc" id="L707">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="fc" id="L710">      super(clientContext);</span>
+
+<span class="fc" id="L712">      createProductSetSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L713">      listProductSetsSettings = PagedCallSettings.newBuilder(LIST_PRODUCT_SETS_PAGE_STR_FACT);</span>
+<span class="fc" id="L714">      getProductSetSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L715">      updateProductSetSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L716">      deleteProductSetSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L717">      createProductSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L718">      listProductsSettings = PagedCallSettings.newBuilder(LIST_PRODUCTS_PAGE_STR_FACT);</span>
+<span class="fc" id="L719">      getProductSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L720">      updateProductSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L721">      deleteProductSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L722">      createReferenceImageSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L723">      deleteReferenceImageSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L724">      listReferenceImagesSettings =</span>
+<span class="fc" id="L725">          PagedCallSettings.newBuilder(LIST_REFERENCE_IMAGES_PAGE_STR_FACT);</span>
+<span class="fc" id="L726">      getReferenceImageSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L727">      addProductToProductSetSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L728">      removeProductFromProductSetSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L729">      listProductsInProductSetSettings =</span>
+<span class="fc" id="L730">          PagedCallSettings.newBuilder(LIST_PRODUCTS_IN_PRODUCT_SET_PAGE_STR_FACT);</span>
+<span class="fc" id="L731">      importProductSetsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L732">      importProductSetsOperationSettings = OperationCallSettings.newBuilder();</span>
+
+<span class="fc" id="L734">      unaryMethodSettingsBuilders =</span>
+<span class="fc" id="L735">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              createProductSetSettings,
+              listProductSetsSettings,
+              getProductSetSettings,
+              updateProductSetSettings,
+              deleteProductSetSettings,
+              createProductSettings,
+              listProductsSettings,
+              getProductSettings,
+              updateProductSettings,
+              deleteProductSettings,
+              createReferenceImageSettings,
+              deleteReferenceImageSettings,
+              listReferenceImagesSettings,
+              getReferenceImageSettings,
+              addProductToProductSetSettings,
+              removeProductFromProductSetSettings,
+              listProductsInProductSetSettings,
+              importProductSetsSettings);
+<span class="fc" id="L754">      initDefaults(this);</span>
+<span class="fc" id="L755">    }</span>
+
+    protected Builder(ProductSearchStubSettings settings) {
+<span class="nc" id="L758">      super(settings);</span>
+
+<span class="nc" id="L760">      createProductSetSettings = settings.createProductSetSettings.toBuilder();</span>
+<span class="nc" id="L761">      listProductSetsSettings = settings.listProductSetsSettings.toBuilder();</span>
+<span class="nc" id="L762">      getProductSetSettings = settings.getProductSetSettings.toBuilder();</span>
+<span class="nc" id="L763">      updateProductSetSettings = settings.updateProductSetSettings.toBuilder();</span>
+<span class="nc" id="L764">      deleteProductSetSettings = settings.deleteProductSetSettings.toBuilder();</span>
+<span class="nc" id="L765">      createProductSettings = settings.createProductSettings.toBuilder();</span>
+<span class="nc" id="L766">      listProductsSettings = settings.listProductsSettings.toBuilder();</span>
+<span class="nc" id="L767">      getProductSettings = settings.getProductSettings.toBuilder();</span>
+<span class="nc" id="L768">      updateProductSettings = settings.updateProductSettings.toBuilder();</span>
+<span class="nc" id="L769">      deleteProductSettings = settings.deleteProductSettings.toBuilder();</span>
+<span class="nc" id="L770">      createReferenceImageSettings = settings.createReferenceImageSettings.toBuilder();</span>
+<span class="nc" id="L771">      deleteReferenceImageSettings = settings.deleteReferenceImageSettings.toBuilder();</span>
+<span class="nc" id="L772">      listReferenceImagesSettings = settings.listReferenceImagesSettings.toBuilder();</span>
+<span class="nc" id="L773">      getReferenceImageSettings = settings.getReferenceImageSettings.toBuilder();</span>
+<span class="nc" id="L774">      addProductToProductSetSettings = settings.addProductToProductSetSettings.toBuilder();</span>
+<span class="nc" id="L775">      removeProductFromProductSetSettings =</span>
+<span class="nc" id="L776">          settings.removeProductFromProductSetSettings.toBuilder();</span>
+<span class="nc" id="L777">      listProductsInProductSetSettings = settings.listProductsInProductSetSettings.toBuilder();</span>
+<span class="nc" id="L778">      importProductSetsSettings = settings.importProductSetsSettings.toBuilder();</span>
+<span class="nc" id="L779">      importProductSetsOperationSettings = settings.importProductSetsOperationSettings.toBuilder();</span>
+
+<span class="nc" id="L781">      unaryMethodSettingsBuilders =</span>
+<span class="nc" id="L782">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              createProductSetSettings,
+              listProductSetsSettings,
+              getProductSetSettings,
+              updateProductSetSettings,
+              deleteProductSetSettings,
+              createProductSettings,
+              listProductsSettings,
+              getProductSettings,
+              updateProductSettings,
+              deleteProductSettings,
+              createReferenceImageSettings,
+              deleteReferenceImageSettings,
+              listReferenceImagesSettings,
+              getReferenceImageSettings,
+              addProductToProductSetSettings,
+              removeProductFromProductSetSettings,
+              listProductsInProductSetSettings,
+              importProductSetsSettings);
+<span class="nc" id="L801">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L804">      Builder builder = new Builder(((ClientContext) null));</span>
+
+<span class="fc" id="L806">      builder.setTransportChannelProvider(defaultTransportChannelProvider());</span>
+<span class="fc" id="L807">      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());</span>
+<span class="fc" id="L808">      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());</span>
+<span class="fc" id="L809">      builder.setEndpoint(getDefaultEndpoint());</span>
+<span class="fc" id="L810">      builder.setMtlsEndpoint(getDefaultMtlsEndpoint());</span>
+<span class="fc" id="L811">      builder.setSwitchToMtlsEndpointAllowed(true);</span>
+
+<span class="fc" id="L813">      return initDefaults(builder);</span>
+    }
+
+    private static Builder initDefaults(Builder builder) {
+<span class="fc" id="L817">      builder</span>
+<span class="fc" id="L818">          .createProductSetSettings()</span>
+<span class="fc" id="L819">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_1_codes&quot;))</span>
+<span class="fc" id="L820">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_1_params&quot;));</span>
+
+<span class="fc" id="L822">      builder</span>
+<span class="fc" id="L823">          .listProductSetsSettings()</span>
+<span class="fc" id="L824">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L825">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L827">      builder</span>
+<span class="fc" id="L828">          .getProductSetSettings()</span>
+<span class="fc" id="L829">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L830">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L832">      builder</span>
+<span class="fc" id="L833">          .updateProductSetSettings()</span>
+<span class="fc" id="L834">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_1_codes&quot;))</span>
+<span class="fc" id="L835">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_1_params&quot;));</span>
+
+<span class="fc" id="L837">      builder</span>
+<span class="fc" id="L838">          .deleteProductSetSettings()</span>
+<span class="fc" id="L839">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L840">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L842">      builder</span>
+<span class="fc" id="L843">          .createProductSettings()</span>
+<span class="fc" id="L844">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_1_codes&quot;))</span>
+<span class="fc" id="L845">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_1_params&quot;));</span>
+
+<span class="fc" id="L847">      builder</span>
+<span class="fc" id="L848">          .listProductsSettings()</span>
+<span class="fc" id="L849">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L850">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L852">      builder</span>
+<span class="fc" id="L853">          .getProductSettings()</span>
+<span class="fc" id="L854">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L855">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L857">      builder</span>
+<span class="fc" id="L858">          .updateProductSettings()</span>
+<span class="fc" id="L859">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_1_codes&quot;))</span>
+<span class="fc" id="L860">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_1_params&quot;));</span>
+
+<span class="fc" id="L862">      builder</span>
+<span class="fc" id="L863">          .deleteProductSettings()</span>
+<span class="fc" id="L864">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L865">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L867">      builder</span>
+<span class="fc" id="L868">          .createReferenceImageSettings()</span>
+<span class="fc" id="L869">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_1_codes&quot;))</span>
+<span class="fc" id="L870">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_1_params&quot;));</span>
+
+<span class="fc" id="L872">      builder</span>
+<span class="fc" id="L873">          .deleteReferenceImageSettings()</span>
+<span class="fc" id="L874">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L875">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L877">      builder</span>
+<span class="fc" id="L878">          .listReferenceImagesSettings()</span>
+<span class="fc" id="L879">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L880">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L882">      builder</span>
+<span class="fc" id="L883">          .getReferenceImageSettings()</span>
+<span class="fc" id="L884">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L885">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L887">      builder</span>
+<span class="fc" id="L888">          .addProductToProductSetSettings()</span>
+<span class="fc" id="L889">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_1_codes&quot;))</span>
+<span class="fc" id="L890">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_1_params&quot;));</span>
+
+<span class="fc" id="L892">      builder</span>
+<span class="fc" id="L893">          .removeProductFromProductSetSettings()</span>
+<span class="fc" id="L894">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_1_codes&quot;))</span>
+<span class="fc" id="L895">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_1_params&quot;));</span>
+
+<span class="fc" id="L897">      builder</span>
+<span class="fc" id="L898">          .listProductsInProductSetSettings()</span>
+<span class="fc" id="L899">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_2_codes&quot;))</span>
+<span class="fc" id="L900">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_2_params&quot;));</span>
+
+<span class="fc" id="L902">      builder</span>
+<span class="fc" id="L903">          .importProductSetsSettings()</span>
+<span class="fc" id="L904">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_1_codes&quot;))</span>
+<span class="fc" id="L905">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_1_params&quot;));</span>
+
+<span class="fc" id="L907">      builder</span>
+<span class="fc" id="L908">          .importProductSetsOperationSettings()</span>
+<span class="fc" id="L909">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L911">                  .&lt;ImportProductSetsRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L912">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_1_codes&quot;))</span>
+<span class="fc" id="L913">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_1_params&quot;))</span>
+<span class="fc" id="L914">                  .build())</span>
+<span class="fc" id="L915">          .setResponseTransformer(</span>
+<span class="fc" id="L916">              ProtoOperationTransformers.ResponseTransformer.create(</span>
+                  ImportProductSetsResponse.class))
+<span class="fc" id="L918">          .setMetadataTransformer(</span>
+<span class="fc" id="L919">              ProtoOperationTransformers.MetadataTransformer.create(BatchOperationMetadata.class))</span>
+<span class="fc" id="L920">          .setPollingAlgorithm(</span>
+<span class="fc" id="L921">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L922">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L923">                      .setInitialRetryDelay(Duration.ofMillis(20000L))</span>
+<span class="fc" id="L924">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L925">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L926">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L927">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L928">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L929">                      .setTotalTimeout(Duration.ofMillis(86400000L))</span>
+<span class="fc" id="L930">                      .build()));</span>
+
+<span class="fc" id="L932">      return builder;</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L942">      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);</span>
+<span class="nc" id="L943">      return this;</span>
+    }
+
+    public ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders() {
+<span class="nc" id="L947">      return unaryMethodSettingsBuilders;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createProductSet. */
+    public UnaryCallSettings.Builder&lt;CreateProductSetRequest, ProductSet&gt;
+        createProductSetSettings() {
+<span class="fc" id="L953">      return createProductSetSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listProductSets. */
+    public PagedCallSettings.Builder&lt;
+            ListProductSetsRequest, ListProductSetsResponse, ListProductSetsPagedResponse&gt;
+        listProductSetsSettings() {
+<span class="fc" id="L960">      return listProductSetsSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getProductSet. */
+    public UnaryCallSettings.Builder&lt;GetProductSetRequest, ProductSet&gt; getProductSetSettings() {
+<span class="fc" id="L965">      return getProductSetSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateProductSet. */
+    public UnaryCallSettings.Builder&lt;UpdateProductSetRequest, ProductSet&gt;
+        updateProductSetSettings() {
+<span class="fc" id="L971">      return updateProductSetSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteProductSet. */
+    public UnaryCallSettings.Builder&lt;DeleteProductSetRequest, Empty&gt; deleteProductSetSettings() {
+<span class="fc" id="L976">      return deleteProductSetSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createProduct. */
+    public UnaryCallSettings.Builder&lt;CreateProductRequest, Product&gt; createProductSettings() {
+<span class="fc" id="L981">      return createProductSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listProducts. */
+    public PagedCallSettings.Builder&lt;
+            ListProductsRequest, ListProductsResponse, ListProductsPagedResponse&gt;
+        listProductsSettings() {
+<span class="fc" id="L988">      return listProductsSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getProduct. */
+    public UnaryCallSettings.Builder&lt;GetProductRequest, Product&gt; getProductSettings() {
+<span class="fc" id="L993">      return getProductSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateProduct. */
+    public UnaryCallSettings.Builder&lt;UpdateProductRequest, Product&gt; updateProductSettings() {
+<span class="fc" id="L998">      return updateProductSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteProduct. */
+    public UnaryCallSettings.Builder&lt;DeleteProductRequest, Empty&gt; deleteProductSettings() {
+<span class="fc" id="L1003">      return deleteProductSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createReferenceImage. */
+    public UnaryCallSettings.Builder&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+        createReferenceImageSettings() {
+<span class="fc" id="L1009">      return createReferenceImageSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteReferenceImage. */
+    public UnaryCallSettings.Builder&lt;DeleteReferenceImageRequest, Empty&gt;
+        deleteReferenceImageSettings() {
+<span class="fc" id="L1015">      return deleteReferenceImageSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listReferenceImages. */
+    public PagedCallSettings.Builder&lt;
+            ListReferenceImagesRequest,
+            ListReferenceImagesResponse,
+            ListReferenceImagesPagedResponse&gt;
+        listReferenceImagesSettings() {
+<span class="fc" id="L1024">      return listReferenceImagesSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getReferenceImage. */
+    public UnaryCallSettings.Builder&lt;GetReferenceImageRequest, ReferenceImage&gt;
+        getReferenceImageSettings() {
+<span class="fc" id="L1030">      return getReferenceImageSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to addProductToProductSet. */
+    public UnaryCallSettings.Builder&lt;AddProductToProductSetRequest, Empty&gt;
+        addProductToProductSetSettings() {
+<span class="fc" id="L1036">      return addProductToProductSetSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to removeProductFromProductSet. */
+    public UnaryCallSettings.Builder&lt;RemoveProductFromProductSetRequest, Empty&gt;
+        removeProductFromProductSetSettings() {
+<span class="fc" id="L1042">      return removeProductFromProductSetSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listProductsInProductSet. */
+    public PagedCallSettings.Builder&lt;
+            ListProductsInProductSetRequest,
+            ListProductsInProductSetResponse,
+            ListProductsInProductSetPagedResponse&gt;
+        listProductsInProductSetSettings() {
+<span class="fc" id="L1051">      return listProductsInProductSetSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importProductSets. */
+    public UnaryCallSettings.Builder&lt;ImportProductSetsRequest, Operation&gt;
+        importProductSetsSettings() {
+<span class="fc" id="L1057">      return importProductSetsSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importProductSets. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            ImportProductSetsRequest, ImportProductSetsResponse, BatchOperationMetadata&gt;
+        importProductSetsOperationSettings() {
+<span class="fc" id="L1066">      return importProductSetsOperationSettings;</span>
+    }
+
+    @Override
+    public ProductSearchStubSettings build() throws IOException {
+<span class="fc" id="L1071">      return new ProductSearchStubSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

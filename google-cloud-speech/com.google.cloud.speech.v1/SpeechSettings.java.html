@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SpeechSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-speech</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.speech.v1</a> &gt; <span class="el_source">SpeechSettings.java</span></div><h1>SpeechSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.speech.v1;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.cloud.speech.v1.stub.SpeechStubSettings;
+import com.google.longrunning.Operation;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link SpeechClient}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (speech.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of recognize to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * SpeechSettings.Builder speechSettingsBuilder = SpeechSettings.newBuilder();
+ * speechSettingsBuilder
+ *     .recognizeSettings()
+ *     .setRetrySettings(
+ *         speechSettingsBuilder
+ *             .recognizeSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * SpeechSettings speechSettings = speechSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class SpeechSettings extends ClientSettings&lt;SpeechSettings&gt; {
+
+  /** Returns the object with the settings used for calls to recognize. */
+  public UnaryCallSettings&lt;RecognizeRequest, RecognizeResponse&gt; recognizeSettings() {
+<span class="nc" id="L75">    return ((SpeechStubSettings) getStubSettings()).recognizeSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to longRunningRecognize. */
+  public UnaryCallSettings&lt;LongRunningRecognizeRequest, Operation&gt; longRunningRecognizeSettings() {
+<span class="nc" id="L80">    return ((SpeechStubSettings) getStubSettings()).longRunningRecognizeSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to longRunningRecognize. */
+  public OperationCallSettings&lt;
+          LongRunningRecognizeRequest, LongRunningRecognizeResponse, LongRunningRecognizeMetadata&gt;
+      longRunningRecognizeOperationSettings() {
+<span class="nc" id="L87">    return ((SpeechStubSettings) getStubSettings()).longRunningRecognizeOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to streamingRecognize. */
+  public StreamingCallSettings&lt;StreamingRecognizeRequest, StreamingRecognizeResponse&gt;
+      streamingRecognizeSettings() {
+<span class="nc" id="L93">    return ((SpeechStubSettings) getStubSettings()).streamingRecognizeSettings();</span>
+  }
+
+  public static final SpeechSettings create(SpeechStubSettings stub) throws IOException {
+<span class="nc" id="L97">    return new SpeechSettings.Builder(stub.toBuilder()).build();</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L102">    return SpeechStubSettings.defaultExecutorProviderBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="nc" id="L107">    return SpeechStubSettings.getDefaultEndpoint();</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L112">    return SpeechStubSettings.getDefaultServiceScopes();</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="nc" id="L117">    return SpeechStubSettings.defaultCredentialsProviderBuilder();</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="nc" id="L122">    return SpeechStubSettings.defaultGrpcTransportProviderBuilder();</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="nc" id="L126">    return SpeechStubSettings.defaultTransportChannelProvider();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="nc" id="L131">    return SpeechStubSettings.defaultApiClientHeaderProviderBuilder();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L136">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L141">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L146">    return new Builder(this);</span>
+  }
+
+  protected SpeechSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L150">    super(settingsBuilder);</span>
+<span class="fc" id="L151">  }</span>
+
+  /** Builder for SpeechSettings. */
+  public static class Builder extends ClientSettings.Builder&lt;SpeechSettings, Builder&gt; {
+
+    protected Builder() throws IOException {
+<span class="nc" id="L157">      this(((ClientContext) null));</span>
+<span class="nc" id="L158">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="nc" id="L161">      super(SpeechStubSettings.newBuilder(clientContext));</span>
+<span class="nc" id="L162">    }</span>
+
+    protected Builder(SpeechSettings settings) {
+<span class="nc" id="L165">      super(settings.getStubSettings().toBuilder());</span>
+<span class="nc" id="L166">    }</span>
+
+    protected Builder(SpeechStubSettings.Builder stubSettings) {
+<span class="fc" id="L169">      super(stubSettings);</span>
+<span class="fc" id="L170">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L173">      return new Builder(SpeechStubSettings.newBuilder());</span>
+    }
+
+    public SpeechStubSettings.Builder getStubSettingsBuilder() {
+<span class="nc" id="L177">      return ((SpeechStubSettings.Builder) getStubSettings());</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L187">      super.applyToAllUnaryMethods(</span>
+<span class="nc" id="L188">          getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);</span>
+<span class="nc" id="L189">      return this;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to recognize. */
+    public UnaryCallSettings.Builder&lt;RecognizeRequest, RecognizeResponse&gt; recognizeSettings() {
+<span class="nc" id="L194">      return getStubSettingsBuilder().recognizeSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to longRunningRecognize. */
+    public UnaryCallSettings.Builder&lt;LongRunningRecognizeRequest, Operation&gt;
+        longRunningRecognizeSettings() {
+<span class="nc" id="L200">      return getStubSettingsBuilder().longRunningRecognizeSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to longRunningRecognize. */
+    public OperationCallSettings.Builder&lt;
+            LongRunningRecognizeRequest, LongRunningRecognizeResponse, LongRunningRecognizeMetadata&gt;
+        longRunningRecognizeOperationSettings() {
+<span class="nc" id="L207">      return getStubSettingsBuilder().longRunningRecognizeOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to streamingRecognize. */
+    public StreamingCallSettings.Builder&lt;StreamingRecognizeRequest, StreamingRecognizeResponse&gt;
+        streamingRecognizeSettings() {
+<span class="nc" id="L213">      return getStubSettingsBuilder().streamingRecognizeSettings();</span>
+    }
+
+    @Override
+    public SpeechSettings build() throws IOException {
+<span class="fc" id="L218">      return new SpeechSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,3781 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ProductSearchClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-vision</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.vision.v1</a> &gt; <span class="el_source">ProductSearchClient.java</span></div><h1>ProductSearchClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.vision.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.cloud.vision.v1.stub.ProductSearchStub;
+import com.google.cloud.vision.v1.stub.ProductSearchStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Manages Products and ProductSets of reference images for use in product
+ * search. It uses the following resource model:
+ *
+ * &lt;p&gt;- The API has a collection of [ProductSet][google.cloud.vision.v1.ProductSet] resources, named
+ * `projects/&amp;#42;/locations/&amp;#42;/productSets/&amp;#42;`, which acts as a way to put different products
+ * into groups to limit identification.
+ *
+ * &lt;p&gt;In parallel,
+ *
+ * &lt;p&gt;- The API has a collection of [Product][google.cloud.vision.v1.Product] resources, named
+ * `projects/&amp;#42;/locations/&amp;#42;/products/&amp;#42;`
+ *
+ * &lt;p&gt;- Each [Product][google.cloud.vision.v1.Product] has a collection of
+ * [ReferenceImage][google.cloud.vision.v1.ReferenceImage] resources, named
+ * `projects/&amp;#42;/locations/&amp;#42;/products/&amp;#42;/referenceImages/&amp;#42;`
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+ *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+ *   ProductSet productSet = ProductSet.newBuilder().build();
+ *   String productSetId = &quot;productSetId1003042158&quot;;
+ *   ProductSet response = productSearchClient.createProductSet(parent, productSet, productSetId);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the ProductSearchClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of ProductSearchSettings to
+ * create(). For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ProductSearchSettings productSearchSettings =
+ *     ProductSearchSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * ProductSearchClient productSearchClient = ProductSearchClient.create(productSearchSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ProductSearchSettings productSearchSettings =
+ *     ProductSearchSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * ProductSearchClient productSearchClient = ProductSearchClient.create(productSearchSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ProductSearchClient implements BackgroundResource {
+  private final ProductSearchSettings settings;
+  private final ProductSearchStub stub;
+  private final OperationsClient operationsClient;
+
+<span class="fc" id="L131">  private static final PathTemplate LOCATION_PATH_TEMPLATE =</span>
+<span class="fc" id="L132">      PathTemplate.createWithoutUrlEncoding(&quot;projects/{project}/locations/{location}&quot;);</span>
+
+<span class="fc" id="L134">  private static final PathTemplate PRODUCT_PATH_TEMPLATE =</span>
+<span class="fc" id="L135">      PathTemplate.createWithoutUrlEncoding(</span>
+          &quot;projects/{project}/locations/{location}/products/{product}&quot;);
+
+<span class="fc" id="L138">  private static final PathTemplate PRODUCT_SET_PATH_TEMPLATE =</span>
+<span class="fc" id="L139">      PathTemplate.createWithoutUrlEncoding(</span>
+          &quot;projects/{project}/locations/{location}/productSets/{product_set}&quot;);
+
+<span class="fc" id="L142">  private static final PathTemplate REFERENCE_IMAGE_PATH_TEMPLATE =</span>
+<span class="fc" id="L143">      PathTemplate.createWithoutUrlEncoding(</span>
+          &quot;projects/{project}/locations/{location}/products/{product}/referenceImages/{reference_image}&quot;);
+
+  /**
+   * Formats a string containing the fully-qualified path to represent a location resource.
+   *
+   * @deprecated Use the {@link LocationName} class instead.
+   */
+  @Deprecated
+  public static final String formatLocationName(String project, String location) {
+<span class="nc" id="L153">    return LOCATION_PATH_TEMPLATE.instantiate(</span>
+        &quot;project&quot;, project,
+        &quot;location&quot;, location);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent a product resource.
+   *
+   * @deprecated Use the {@link ProductName} class instead.
+   */
+  @Deprecated
+  public static final String formatProductName(String project, String location, String product) {
+<span class="nc" id="L165">    return PRODUCT_PATH_TEMPLATE.instantiate(</span>
+        &quot;project&quot;, project,
+        &quot;location&quot;, location,
+        &quot;product&quot;, product);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent a product_set resource.
+   *
+   * @deprecated Use the {@link ProductSetName} class instead.
+   */
+  @Deprecated
+  public static final String formatProductSetName(
+      String project, String location, String productSet) {
+<span class="nc" id="L179">    return PRODUCT_SET_PATH_TEMPLATE.instantiate(</span>
+        &quot;project&quot;, project,
+        &quot;location&quot;, location,
+        &quot;product_set&quot;, productSet);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent a reference_image resource.
+   *
+   * @deprecated Use the {@link ReferenceImageName} class instead.
+   */
+  @Deprecated
+  public static final String formatReferenceImageName(
+      String project, String location, String product, String referenceImage) {
+<span class="nc" id="L193">    return REFERENCE_IMAGE_PATH_TEMPLATE.instantiate(</span>
+        &quot;project&quot;, project,
+        &quot;location&quot;, location,
+        &quot;product&quot;, product,
+        &quot;reference_image&quot;, referenceImage);
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which represents a location resource.
+   *
+   * @deprecated Use the {@link LocationName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromLocationName(String locationName) {
+<span class="nc" id="L207">    return LOCATION_PATH_TEMPLATE.parse(locationName).get(&quot;project&quot;);</span>
+  }
+
+  /**
+   * Parses the location from the given fully-qualified path which represents a location resource.
+   *
+   * @deprecated Use the {@link LocationName} class instead.
+   */
+  @Deprecated
+  public static final String parseLocationFromLocationName(String locationName) {
+<span class="nc" id="L217">    return LOCATION_PATH_TEMPLATE.parse(locationName).get(&quot;location&quot;);</span>
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which represents a product resource.
+   *
+   * @deprecated Use the {@link ProductName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromProductName(String productName) {
+<span class="nc" id="L227">    return PRODUCT_PATH_TEMPLATE.parse(productName).get(&quot;project&quot;);</span>
+  }
+
+  /**
+   * Parses the location from the given fully-qualified path which represents a product resource.
+   *
+   * @deprecated Use the {@link ProductName} class instead.
+   */
+  @Deprecated
+  public static final String parseLocationFromProductName(String productName) {
+<span class="nc" id="L237">    return PRODUCT_PATH_TEMPLATE.parse(productName).get(&quot;location&quot;);</span>
+  }
+
+  /**
+   * Parses the product from the given fully-qualified path which represents a product resource.
+   *
+   * @deprecated Use the {@link ProductName} class instead.
+   */
+  @Deprecated
+  public static final String parseProductFromProductName(String productName) {
+<span class="nc" id="L247">    return PRODUCT_PATH_TEMPLATE.parse(productName).get(&quot;product&quot;);</span>
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which represents a product_set resource.
+   *
+   * @deprecated Use the {@link ProductSetName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromProductSetName(String productSetName) {
+<span class="nc" id="L257">    return PRODUCT_SET_PATH_TEMPLATE.parse(productSetName).get(&quot;project&quot;);</span>
+  }
+
+  /**
+   * Parses the location from the given fully-qualified path which represents a product_set
+   * resource.
+   *
+   * @deprecated Use the {@link ProductSetName} class instead.
+   */
+  @Deprecated
+  public static final String parseLocationFromProductSetName(String productSetName) {
+<span class="nc" id="L268">    return PRODUCT_SET_PATH_TEMPLATE.parse(productSetName).get(&quot;location&quot;);</span>
+  }
+
+  /**
+   * Parses the product_set from the given fully-qualified path which represents a product_set
+   * resource.
+   *
+   * @deprecated Use the {@link ProductSetName} class instead.
+   */
+  @Deprecated
+  public static final String parseProductSetFromProductSetName(String productSetName) {
+<span class="nc" id="L279">    return PRODUCT_SET_PATH_TEMPLATE.parse(productSetName).get(&quot;product_set&quot;);</span>
+  }
+
+  /**
+   * Parses the project from the given fully-qualified path which represents a reference_image
+   * resource.
+   *
+   * @deprecated Use the {@link ReferenceImageName} class instead.
+   */
+  @Deprecated
+  public static final String parseProjectFromReferenceImageName(String referenceImageName) {
+<span class="nc" id="L290">    return REFERENCE_IMAGE_PATH_TEMPLATE.parse(referenceImageName).get(&quot;project&quot;);</span>
+  }
+
+  /**
+   * Parses the location from the given fully-qualified path which represents a reference_image
+   * resource.
+   *
+   * @deprecated Use the {@link ReferenceImageName} class instead.
+   */
+  @Deprecated
+  public static final String parseLocationFromReferenceImageName(String referenceImageName) {
+<span class="nc" id="L301">    return REFERENCE_IMAGE_PATH_TEMPLATE.parse(referenceImageName).get(&quot;location&quot;);</span>
+  }
+
+  /**
+   * Parses the product from the given fully-qualified path which represents a reference_image
+   * resource.
+   *
+   * @deprecated Use the {@link ReferenceImageName} class instead.
+   */
+  @Deprecated
+  public static final String parseProductFromReferenceImageName(String referenceImageName) {
+<span class="nc" id="L312">    return REFERENCE_IMAGE_PATH_TEMPLATE.parse(referenceImageName).get(&quot;product&quot;);</span>
+  }
+
+  /**
+   * Parses the reference_image from the given fully-qualified path which represents a
+   * reference_image resource.
+   *
+   * @deprecated Use the {@link ReferenceImageName} class instead.
+   */
+  @Deprecated
+  public static final String parseReferenceImageFromReferenceImageName(String referenceImageName) {
+<span class="nc" id="L323">    return REFERENCE_IMAGE_PATH_TEMPLATE.parse(referenceImageName).get(&quot;reference_image&quot;);</span>
+  }
+
+  /** Constructs an instance of ProductSearchClient with default settings. */
+  public static final ProductSearchClient create() throws IOException {
+<span class="nc" id="L328">    return create(ProductSearchSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of ProductSearchClient, using the given settings. The channels are
+   * created based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final ProductSearchClient create(ProductSearchSettings settings)
+      throws IOException {
+<span class="fc" id="L337">    return new ProductSearchClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of ProductSearchClient, using the given stub for making calls. This is
+   * for advanced usage - prefer using create(ProductSearchSettings).
+   */
+  @BetaApi(&quot;A restructuring of stub classes is planned, so this may break in the future&quot;)
+  public static final ProductSearchClient create(ProductSearchStub stub) {
+<span class="nc" id="L346">    return new ProductSearchClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of ProductSearchClient, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+<span class="fc" id="L354">  protected ProductSearchClient(ProductSearchSettings settings) throws IOException {</span>
+<span class="fc" id="L355">    this.settings = settings;</span>
+<span class="fc" id="L356">    this.stub = ((ProductSearchStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L357">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="fc" id="L358">  }</span>
+
+  @BetaApi(&quot;A restructuring of stub classes is planned, so this may break in the future&quot;)
+<span class="nc" id="L361">  protected ProductSearchClient(ProductSearchStub stub) {</span>
+<span class="nc" id="L362">    this.settings = null;</span>
+<span class="nc" id="L363">    this.stub = stub;</span>
+<span class="nc" id="L364">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="nc" id="L365">  }</span>
+
+  public final ProductSearchSettings getSettings() {
+<span class="nc" id="L368">    return settings;</span>
+  }
+
+  @BetaApi(&quot;A restructuring of stub classes is planned, so this may break in the future&quot;)
+  public ProductSearchStub getStub() {
+<span class="nc" id="L373">    return stub;</span>
+  }
+
+  /**
+   * Returns the OperationsClient that can be used to query the status of a long-running operation
+   * returned by another API method call.
+   */
+  public final OperationsClient getOperationsClient() {
+<span class="nc" id="L381">    return operationsClient;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new ProductSet resource.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is missing, or is longer than 4096 characters.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   ProductSet productSet = ProductSet.newBuilder().build();
+   *   String productSetId = &quot;productSetId1003042158&quot;;
+   *   ProductSet response = productSearchClient.createProductSet(parent, productSet, productSetId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project in which the ProductSet should be created.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @param productSet Required. The ProductSet to create.
+   * @param productSetId A user-supplied resource id for this ProductSet. If set, the server will
+   *     attempt to use this value as the resource id. If it is already in use, an error is returned
+   *     with code ALREADY_EXISTS. Must be at most 128 characters long. It cannot contain the
+   *     character `/`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ProductSet createProductSet(
+      LocationName parent, ProductSet productSet, String productSetId) {
+    CreateProductSetRequest request =
+<span class="fc" id="L419">        CreateProductSetRequest.newBuilder()</span>
+<span class="pc bpc" id="L420" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L421">            .setProductSet(productSet)</span>
+<span class="fc" id="L422">            .setProductSetId(productSetId)</span>
+<span class="fc" id="L423">            .build();</span>
+<span class="fc" id="L424">    return createProductSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new ProductSet resource.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is missing, or is longer than 4096 characters.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   ProductSet productSet = ProductSet.newBuilder().build();
+   *   String productSetId = &quot;productSetId1003042158&quot;;
+   *   ProductSet response = productSearchClient.createProductSet(parent, productSet, productSetId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project in which the ProductSet should be created.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @param productSet Required. The ProductSet to create.
+   * @param productSetId A user-supplied resource id for this ProductSet. If set, the server will
+   *     attempt to use this value as the resource id. If it is already in use, an error is returned
+   *     with code ALREADY_EXISTS. Must be at most 128 characters long. It cannot contain the
+   *     character `/`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ProductSet createProductSet(
+      String parent, ProductSet productSet, String productSetId) {
+    CreateProductSetRequest request =
+<span class="fc" id="L462">        CreateProductSetRequest.newBuilder()</span>
+<span class="fc" id="L463">            .setParent(parent)</span>
+<span class="fc" id="L464">            .setProductSet(productSet)</span>
+<span class="fc" id="L465">            .setProductSetId(productSetId)</span>
+<span class="fc" id="L466">            .build();</span>
+<span class="fc" id="L467">    return createProductSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new ProductSet resource.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is missing, or is longer than 4096 characters.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   CreateProductSetRequest request =
+   *       CreateProductSetRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setProductSet(ProductSet.newBuilder().build())
+   *           .setProductSetId(&quot;productSetId1003042158&quot;)
+   *           .build();
+   *   ProductSet response = productSearchClient.createProductSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ProductSet createProductSet(CreateProductSetRequest request) {
+<span class="fc" id="L500">    return createProductSetCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new ProductSet resource.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is missing, or is longer than 4096 characters.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   CreateProductSetRequest request =
+   *       CreateProductSetRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setProductSet(ProductSet.newBuilder().build())
+   *           .setProductSetId(&quot;productSetId1003042158&quot;)
+   *           .build();
+   *   ApiFuture&lt;ProductSet&gt; future =
+   *       productSearchClient.createProductSetCallable().futureCall(request);
+   *   // Do something.
+   *   ProductSet response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateProductSetRequest, ProductSet&gt; createProductSetCallable() {
+<span class="fc" id="L533">    return stub.createProductSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists ProductSets in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   for (ProductSet element : productSearchClient.listProductSets(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project from which ProductSets should be listed.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListProductSetsPagedResponse listProductSets(LocationName parent) {
+    ListProductSetsRequest request =
+<span class="fc" id="L565">        ListProductSetsRequest.newBuilder()</span>
+<span class="pc bpc" id="L566" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L567">            .build();</span>
+<span class="fc" id="L568">    return listProductSets(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists ProductSets in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   for (ProductSet element : productSearchClient.listProductSets(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project from which ProductSets should be listed.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListProductSetsPagedResponse listProductSets(String parent) {
+<span class="fc" id="L599">    ListProductSetsRequest request = ListProductSetsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L600">    return listProductSets(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists ProductSets in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListProductSetsRequest request =
+   *       ListProductSetsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (ProductSet element : productSearchClient.listProductSets(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListProductSetsPagedResponse listProductSets(ListProductSetsRequest request) {
+<span class="fc" id="L635">    return listProductSetsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists ProductSets in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListProductSetsRequest request =
+   *       ListProductSetsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;ProductSet&gt; future =
+   *       productSearchClient.listProductSetsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (ProductSet element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListProductSetsRequest, ListProductSetsPagedResponse&gt;
+      listProductSetsPagedCallable() {
+<span class="fc" id="L671">    return stub.listProductSetsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists ProductSets in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListProductSetsRequest request =
+   *       ListProductSetsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListProductSetsResponse response =
+   *         productSearchClient.listProductSetsCallable().call(request);
+   *     for (ProductSet element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListProductSetsRequest, ListProductSetsResponse&gt;
+      listProductSetsCallable() {
+<span class="nc" id="L714">    return stub.listProductSetsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a ProductSet.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the ProductSet does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductSetName name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;);
+   *   ProductSet response = productSearchClient.getProductSet(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. Resource name of the ProductSet to get.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ProductSet getProductSet(ProductSetName name) {
+    GetProductSetRequest request =
+<span class="pc bpc" id="L744" title="1 of 2 branches missed.">        GetProductSetRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L745">    return getProductSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a ProductSet.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the ProductSet does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString();
+   *   ProductSet response = productSearchClient.getProductSet(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. Resource name of the ProductSet to get.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ProductSet getProductSet(String name) {
+<span class="fc" id="L774">    GetProductSetRequest request = GetProductSetRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L775">    return getProductSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a ProductSet.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the ProductSet does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   GetProductSetRequest request =
+   *       GetProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .build();
+   *   ProductSet response = productSearchClient.getProductSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ProductSet getProductSet(GetProductSetRequest request) {
+<span class="fc" id="L806">    return getProductSetCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a ProductSet.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the ProductSet does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   GetProductSetRequest request =
+   *       GetProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;ProductSet&gt; future =
+   *       productSearchClient.getProductSetCallable().futureCall(request);
+   *   // Do something.
+   *   ProductSet response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetProductSetRequest, ProductSet&gt; getProductSetCallable() {
+<span class="fc" id="L837">    return stub.getProductSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Makes changes to a ProductSet resource. Only display_name can be updated currently.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the ProductSet does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is present in update_mask but missing from the
+   *       request or longer than 4096 characters.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductSet productSet = ProductSet.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   ProductSet response = productSearchClient.updateProductSet(productSet, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param productSet Required. The ProductSet resource which replaces the one on the server.
+   * @param updateMask The [FieldMask][google.protobuf.FieldMask] that specifies which fields to
+   *     update. If update_mask isn't specified, all mutable fields are to be updated. Valid mask
+   *     path is `display_name`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ProductSet updateProductSet(ProductSet productSet, FieldMask updateMask) {
+    UpdateProductSetRequest request =
+<span class="fc" id="L872">        UpdateProductSetRequest.newBuilder()</span>
+<span class="fc" id="L873">            .setProductSet(productSet)</span>
+<span class="fc" id="L874">            .setUpdateMask(updateMask)</span>
+<span class="fc" id="L875">            .build();</span>
+<span class="fc" id="L876">    return updateProductSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Makes changes to a ProductSet resource. Only display_name can be updated currently.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the ProductSet does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is present in update_mask but missing from the
+   *       request or longer than 4096 characters.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   UpdateProductSetRequest request =
+   *       UpdateProductSetRequest.newBuilder()
+   *           .setProductSet(ProductSet.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ProductSet response = productSearchClient.updateProductSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ProductSet updateProductSet(UpdateProductSetRequest request) {
+<span class="fc" id="L910">    return updateProductSetCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Makes changes to a ProductSet resource. Only display_name can be updated currently.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the ProductSet does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is present in update_mask but missing from the
+   *       request or longer than 4096 characters.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   UpdateProductSetRequest request =
+   *       UpdateProductSetRequest.newBuilder()
+   *           .setProductSet(ProductSet.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;ProductSet&gt; future =
+   *       productSearchClient.updateProductSetCallable().futureCall(request);
+   *   // Do something.
+   *   ProductSet response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateProductSetRequest, ProductSet&gt; updateProductSetCallable() {
+<span class="fc" id="L944">    return stub.updateProductSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a ProductSet. Products and ReferenceImages in the ProductSet are not
+   * deleted.
+   *
+   * &lt;p&gt;The actual image files are not deleted from Google Cloud Storage.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductSetName name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;);
+   *   productSearchClient.deleteProductSet(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. Resource name of the ProductSet to delete.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteProductSet(ProductSetName name) {
+    DeleteProductSetRequest request =
+<span class="pc bpc" id="L971" title="1 of 2 branches missed.">        DeleteProductSetRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L972">    deleteProductSet(request);</span>
+<span class="fc" id="L973">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a ProductSet. Products and ReferenceImages in the ProductSet are not
+   * deleted.
+   *
+   * &lt;p&gt;The actual image files are not deleted from Google Cloud Storage.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString();
+   *   productSearchClient.deleteProductSet(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. Resource name of the ProductSet to delete.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteProductSet(String name) {
+<span class="fc" id="L998">    DeleteProductSetRequest request = DeleteProductSetRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L999">    deleteProductSet(request);</span>
+<span class="fc" id="L1000">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a ProductSet. Products and ReferenceImages in the ProductSet are not
+   * deleted.
+   *
+   * &lt;p&gt;The actual image files are not deleted from Google Cloud Storage.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   DeleteProductSetRequest request =
+   *       DeleteProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .build();
+   *   productSearchClient.deleteProductSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteProductSet(DeleteProductSetRequest request) {
+<span class="fc" id="L1027">    deleteProductSetCallable().call(request);</span>
+<span class="fc" id="L1028">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a ProductSet. Products and ReferenceImages in the ProductSet are not
+   * deleted.
+   *
+   * &lt;p&gt;The actual image files are not deleted from Google Cloud Storage.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   DeleteProductSetRequest request =
+   *       DeleteProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future = productSearchClient.deleteProductSetCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteProductSetRequest, Empty&gt; deleteProductSetCallable() {
+<span class="fc" id="L1054">    return stub.deleteProductSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new product resource.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is missing or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if description is longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if product_category is missing or invalid.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   Product product = Product.newBuilder().build();
+   *   String productId = &quot;productId-1051830678&quot;;
+   *   Product response = productSearchClient.createProduct(parent, product, productId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project in which the Product should be created.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @param product Required. The product to create.
+   * @param productId A user-supplied resource id for this Product. If set, the server will attempt
+   *     to use this value as the resource id. If it is already in use, an error is returned with
+   *     code ALREADY_EXISTS. Must be at most 128 characters long. It cannot contain the character
+   *     `/`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Product createProduct(LocationName parent, Product product, String productId) {
+    CreateProductRequest request =
+<span class="fc" id="L1093">        CreateProductRequest.newBuilder()</span>
+<span class="pc bpc" id="L1094" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1095">            .setProduct(product)</span>
+<span class="fc" id="L1096">            .setProductId(productId)</span>
+<span class="fc" id="L1097">            .build();</span>
+<span class="fc" id="L1098">    return createProduct(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new product resource.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is missing or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if description is longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if product_category is missing or invalid.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   Product product = Product.newBuilder().build();
+   *   String productId = &quot;productId-1051830678&quot;;
+   *   Product response = productSearchClient.createProduct(parent, product, productId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project in which the Product should be created.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @param product Required. The product to create.
+   * @param productId A user-supplied resource id for this Product. If set, the server will attempt
+   *     to use this value as the resource id. If it is already in use, an error is returned with
+   *     code ALREADY_EXISTS. Must be at most 128 characters long. It cannot contain the character
+   *     `/`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Product createProduct(String parent, Product product, String productId) {
+    CreateProductRequest request =
+<span class="fc" id="L1137">        CreateProductRequest.newBuilder()</span>
+<span class="fc" id="L1138">            .setParent(parent)</span>
+<span class="fc" id="L1139">            .setProduct(product)</span>
+<span class="fc" id="L1140">            .setProductId(productId)</span>
+<span class="fc" id="L1141">            .build();</span>
+<span class="fc" id="L1142">    return createProduct(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new product resource.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is missing or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if description is longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if product_category is missing or invalid.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   CreateProductRequest request =
+   *       CreateProductRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setProduct(Product.newBuilder().build())
+   *           .setProductId(&quot;productId-1051830678&quot;)
+   *           .build();
+   *   Product response = productSearchClient.createProduct(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Product createProduct(CreateProductRequest request) {
+<span class="fc" id="L1177">    return createProductCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new product resource.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is missing or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if description is longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if product_category is missing or invalid.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   CreateProductRequest request =
+   *       CreateProductRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setProduct(Product.newBuilder().build())
+   *           .setProductId(&quot;productId-1051830678&quot;)
+   *           .build();
+   *   ApiFuture&lt;Product&gt; future = productSearchClient.createProductCallable().futureCall(request);
+   *   // Do something.
+   *   Product response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateProductRequest, Product&gt; createProductCallable() {
+<span class="fc" id="L1211">    return stub.createProductCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists products in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   for (Product element : productSearchClient.listProducts(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project OR ProductSet from which Products should be listed.
+   *     &lt;p&gt;Format: `projects/PROJECT_ID/locations/LOC_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListProductsPagedResponse listProducts(LocationName parent) {
+    ListProductsRequest request =
+<span class="fc" id="L1243">        ListProductsRequest.newBuilder()</span>
+<span class="pc bpc" id="L1244" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1245">            .build();</span>
+<span class="fc" id="L1246">    return listProducts(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists products in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   for (Product element : productSearchClient.listProducts(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project OR ProductSet from which Products should be listed.
+   *     &lt;p&gt;Format: `projects/PROJECT_ID/locations/LOC_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListProductsPagedResponse listProducts(String parent) {
+<span class="fc" id="L1277">    ListProductsRequest request = ListProductsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L1278">    return listProducts(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists products in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListProductsRequest request =
+   *       ListProductsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (Product element : productSearchClient.listProducts(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListProductsPagedResponse listProducts(ListProductsRequest request) {
+<span class="fc" id="L1313">    return listProductsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists products in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListProductsRequest request =
+   *       ListProductsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;Product&gt; future =
+   *       productSearchClient.listProductsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (Product element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListProductsRequest, ListProductsPagedResponse&gt;
+      listProductsPagedCallable() {
+<span class="fc" id="L1349">    return stub.listProductsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists products in an unspecified order.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListProductsRequest request =
+   *       ListProductsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListProductsResponse response = productSearchClient.listProductsCallable().call(request);
+   *     for (Product element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListProductsRequest, ListProductsResponse&gt; listProductsCallable() {
+<span class="nc" id="L1390">    return stub.listProductsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a Product.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductName name = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;);
+   *   Product response = productSearchClient.getProduct(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. Resource name of the Product to get.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Product getProduct(ProductName name) {
+    GetProductRequest request =
+<span class="pc bpc" id="L1420" title="1 of 2 branches missed.">        GetProductRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L1421">    return getProduct(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a Product.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString();
+   *   Product response = productSearchClient.getProduct(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. Resource name of the Product to get.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Product getProduct(String name) {
+<span class="fc" id="L1450">    GetProductRequest request = GetProductRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L1451">    return getProduct(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a Product.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   GetProductRequest request =
+   *       GetProductRequest.newBuilder()
+   *           .setName(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .build();
+   *   Product response = productSearchClient.getProduct(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Product getProduct(GetProductRequest request) {
+<span class="fc" id="L1482">    return getProductCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a Product.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   GetProductRequest request =
+   *       GetProductRequest.newBuilder()
+   *           .setName(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Product&gt; future = productSearchClient.getProductCallable().futureCall(request);
+   *   // Do something.
+   *   Product response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetProductRequest, Product&gt; getProductCallable() {
+<span class="fc" id="L1512">    return stub.getProductCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Makes changes to a Product resource. Only the `display_name`, `description`, and `labels`
+   * fields can be updated right now.
+   *
+   * &lt;p&gt;If labels are updated, the change will not be reflected in queries until the next index
+   * time.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is present in update_mask but is missing from
+   *       the request or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if description is present in update_mask but is longer than 4096
+   *       characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if product_category is present in update_mask.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   Product product = Product.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   Product response = productSearchClient.updateProduct(product, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param product Required. The Product resource which replaces the one on the server.
+   *     product.name is immutable.
+   * @param updateMask The [FieldMask][google.protobuf.FieldMask] that specifies which fields to
+   *     update. If update_mask isn't specified, all mutable fields are to be updated. Valid mask
+   *     paths include `product_labels`, `display_name`, and `description`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Product updateProduct(Product product, FieldMask updateMask) {
+    UpdateProductRequest request =
+<span class="fc" id="L1555">        UpdateProductRequest.newBuilder().setProduct(product).setUpdateMask(updateMask).build();</span>
+<span class="fc" id="L1556">    return updateProduct(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Makes changes to a Product resource. Only the `display_name`, `description`, and `labels`
+   * fields can be updated right now.
+   *
+   * &lt;p&gt;If labels are updated, the change will not be reflected in queries until the next index
+   * time.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is present in update_mask but is missing from
+   *       the request or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if description is present in update_mask but is longer than 4096
+   *       characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if product_category is present in update_mask.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   UpdateProductRequest request =
+   *       UpdateProductRequest.newBuilder()
+   *           .setProduct(Product.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   Product response = productSearchClient.updateProduct(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Product updateProduct(UpdateProductRequest request) {
+<span class="fc" id="L1597">    return updateProductCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Makes changes to a Product resource. Only the `display_name`, `description`, and `labels`
+   * fields can be updated right now.
+   *
+   * &lt;p&gt;If labels are updated, the change will not be reflected in queries until the next index
+   * time.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if display_name is present in update_mask but is missing from
+   *       the request or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if description is present in update_mask but is longer than 4096
+   *       characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if product_category is present in update_mask.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   UpdateProductRequest request =
+   *       UpdateProductRequest.newBuilder()
+   *           .setProduct(Product.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Product&gt; future = productSearchClient.updateProductCallable().futureCall(request);
+   *   // Do something.
+   *   Product response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateProductRequest, Product&gt; updateProductCallable() {
+<span class="fc" id="L1637">    return stub.updateProductCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a product and its reference images.
+   *
+   * &lt;p&gt;Metadata of the product and all its images will be deleted right away, but search queries
+   * against ProductSets containing the product may still work until all related caches are
+   * refreshed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductName name = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;);
+   *   productSearchClient.deleteProduct(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. Resource name of product to delete.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteProduct(ProductName name) {
+    DeleteProductRequest request =
+<span class="pc bpc" id="L1665" title="1 of 2 branches missed.">        DeleteProductRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L1666">    deleteProduct(request);</span>
+<span class="fc" id="L1667">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a product and its reference images.
+   *
+   * &lt;p&gt;Metadata of the product and all its images will be deleted right away, but search queries
+   * against ProductSets containing the product may still work until all related caches are
+   * refreshed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString();
+   *   productSearchClient.deleteProduct(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. Resource name of product to delete.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteProduct(String name) {
+<span class="fc" id="L1693">    DeleteProductRequest request = DeleteProductRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L1694">    deleteProduct(request);</span>
+<span class="fc" id="L1695">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a product and its reference images.
+   *
+   * &lt;p&gt;Metadata of the product and all its images will be deleted right away, but search queries
+   * against ProductSets containing the product may still work until all related caches are
+   * refreshed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   DeleteProductRequest request =
+   *       DeleteProductRequest.newBuilder()
+   *           .setName(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .build();
+   *   productSearchClient.deleteProduct(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteProduct(DeleteProductRequest request) {
+<span class="fc" id="L1723">    deleteProductCallable().call(request);</span>
+<span class="fc" id="L1724">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a product and its reference images.
+   *
+   * &lt;p&gt;Metadata of the product and all its images will be deleted right away, but search queries
+   * against ProductSets containing the product may still work until all related caches are
+   * refreshed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   DeleteProductRequest request =
+   *       DeleteProductRequest.newBuilder()
+   *           .setName(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future = productSearchClient.deleteProductCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteProductRequest, Empty&gt; deleteProductCallable() {
+<span class="fc" id="L1751">    return stub.deleteProductCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new ReferenceImage resource.
+   *
+   * &lt;p&gt;The `bounding_poly` field is optional. If `bounding_poly` is not specified, the system will
+   * try to detect regions of interest in the image that are compatible with the product_category on
+   * the parent product. If it is specified, detection is ALWAYS skipped. The system converts
+   * polygons into non-rotated rectangles.
+   *
+   * &lt;p&gt;Note that the pipeline will resize the image if the image resolution is too large to process
+   * (above 50MP).
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the image_uri is missing or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if bounding_poly is not provided, and nothing compatible with
+   *       the parent product's product_category is detected.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if bounding_poly contains more than 10 polygons.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductName parent = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;);
+   *   ReferenceImage referenceImage = ReferenceImage.newBuilder().build();
+   *   String referenceImageId = &quot;referenceImageId1224107531&quot;;
+   *   ReferenceImage response =
+   *       productSearchClient.createReferenceImage(parent, referenceImage, referenceImageId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. Resource name of the product in which to create the reference image.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`.
+   * @param referenceImage Required. The reference image to create. If an image ID is specified, it
+   *     is ignored.
+   * @param referenceImageId A user-supplied resource id for the ReferenceImage to be added. If set,
+   *     the server will attempt to use this value as the resource id. If it is already in use, an
+   *     error is returned with code ALREADY_EXISTS. Must be at most 128 characters long. It cannot
+   *     contain the character `/`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ReferenceImage createReferenceImage(
+      ProductName parent, ReferenceImage referenceImage, String referenceImageId) {
+    CreateReferenceImageRequest request =
+<span class="fc" id="L1803">        CreateReferenceImageRequest.newBuilder()</span>
+<span class="pc bpc" id="L1804" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1805">            .setReferenceImage(referenceImage)</span>
+<span class="fc" id="L1806">            .setReferenceImageId(referenceImageId)</span>
+<span class="fc" id="L1807">            .build();</span>
+<span class="fc" id="L1808">    return createReferenceImage(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new ReferenceImage resource.
+   *
+   * &lt;p&gt;The `bounding_poly` field is optional. If `bounding_poly` is not specified, the system will
+   * try to detect regions of interest in the image that are compatible with the product_category on
+   * the parent product. If it is specified, detection is ALWAYS skipped. The system converts
+   * polygons into non-rotated rectangles.
+   *
+   * &lt;p&gt;Note that the pipeline will resize the image if the image resolution is too large to process
+   * (above 50MP).
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the image_uri is missing or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if bounding_poly is not provided, and nothing compatible with
+   *       the parent product's product_category is detected.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if bounding_poly contains more than 10 polygons.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String parent = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString();
+   *   ReferenceImage referenceImage = ReferenceImage.newBuilder().build();
+   *   String referenceImageId = &quot;referenceImageId1224107531&quot;;
+   *   ReferenceImage response =
+   *       productSearchClient.createReferenceImage(parent, referenceImage, referenceImageId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. Resource name of the product in which to create the reference image.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`.
+   * @param referenceImage Required. The reference image to create. If an image ID is specified, it
+   *     is ignored.
+   * @param referenceImageId A user-supplied resource id for the ReferenceImage to be added. If set,
+   *     the server will attempt to use this value as the resource id. If it is already in use, an
+   *     error is returned with code ALREADY_EXISTS. Must be at most 128 characters long. It cannot
+   *     contain the character `/`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ReferenceImage createReferenceImage(
+      String parent, ReferenceImage referenceImage, String referenceImageId) {
+    CreateReferenceImageRequest request =
+<span class="fc" id="L1860">        CreateReferenceImageRequest.newBuilder()</span>
+<span class="fc" id="L1861">            .setParent(parent)</span>
+<span class="fc" id="L1862">            .setReferenceImage(referenceImage)</span>
+<span class="fc" id="L1863">            .setReferenceImageId(referenceImageId)</span>
+<span class="fc" id="L1864">            .build();</span>
+<span class="fc" id="L1865">    return createReferenceImage(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new ReferenceImage resource.
+   *
+   * &lt;p&gt;The `bounding_poly` field is optional. If `bounding_poly` is not specified, the system will
+   * try to detect regions of interest in the image that are compatible with the product_category on
+   * the parent product. If it is specified, detection is ALWAYS skipped. The system converts
+   * polygons into non-rotated rectangles.
+   *
+   * &lt;p&gt;Note that the pipeline will resize the image if the image resolution is too large to process
+   * (above 50MP).
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the image_uri is missing or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if bounding_poly is not provided, and nothing compatible with
+   *       the parent product's product_category is detected.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if bounding_poly contains more than 10 polygons.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   CreateReferenceImageRequest request =
+   *       CreateReferenceImageRequest.newBuilder()
+   *           .setParent(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .setReferenceImage(ReferenceImage.newBuilder().build())
+   *           .setReferenceImageId(&quot;referenceImageId1224107531&quot;)
+   *           .build();
+   *   ReferenceImage response = productSearchClient.createReferenceImage(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ReferenceImage createReferenceImage(CreateReferenceImageRequest request) {
+<span class="fc" id="L1910">    return createReferenceImageCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates and returns a new ReferenceImage resource.
+   *
+   * &lt;p&gt;The `bounding_poly` field is optional. If `bounding_poly` is not specified, the system will
+   * try to detect regions of interest in the image that are compatible with the product_category on
+   * the parent product. If it is specified, detection is ALWAYS skipped. The system converts
+   * polygons into non-rotated rectangles.
+   *
+   * &lt;p&gt;Note that the pipeline will resize the image if the image resolution is too large to process
+   * (above 50MP).
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the image_uri is missing or longer than 4096 characters.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if bounding_poly is not provided, and nothing compatible with
+   *       the parent product's product_category is detected.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if bounding_poly contains more than 10 polygons.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   CreateReferenceImageRequest request =
+   *       CreateReferenceImageRequest.newBuilder()
+   *           .setParent(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .setReferenceImage(ReferenceImage.newBuilder().build())
+   *           .setReferenceImageId(&quot;referenceImageId1224107531&quot;)
+   *           .build();
+   *   ApiFuture&lt;ReferenceImage&gt; future =
+   *       productSearchClient.createReferenceImageCallable().futureCall(request);
+   *   // Do something.
+   *   ReferenceImage response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+      createReferenceImageCallable() {
+<span class="fc" id="L1956">    return stub.createReferenceImageCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a reference image.
+   *
+   * &lt;p&gt;The image metadata will be deleted right away, but search queries against ProductSets
+   * containing the image may still work until all related caches are refreshed.
+   *
+   * &lt;p&gt;The actual image files are not deleted from Google Cloud Storage.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ReferenceImageName name =
+   *       ReferenceImageName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;, &quot;[REFERENCE_IMAGE]&quot;);
+   *   productSearchClient.deleteReferenceImage(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name of the reference image to delete.
+   *     &lt;p&gt;Format is:
+   *     `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID/referenceImages/IMAGE_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteReferenceImage(ReferenceImageName name) {
+    DeleteReferenceImageRequest request =
+<span class="fc" id="L1987">        DeleteReferenceImageRequest.newBuilder()</span>
+<span class="pc bpc" id="L1988" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L1989">            .build();</span>
+<span class="fc" id="L1990">    deleteReferenceImage(request);</span>
+<span class="fc" id="L1991">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a reference image.
+   *
+   * &lt;p&gt;The image metadata will be deleted right away, but search queries against ProductSets
+   * containing the image may still work until all related caches are refreshed.
+   *
+   * &lt;p&gt;The actual image files are not deleted from Google Cloud Storage.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name =
+   *       ReferenceImageName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;, &quot;[REFERENCE_IMAGE]&quot;)
+   *           .toString();
+   *   productSearchClient.deleteReferenceImage(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name of the reference image to delete.
+   *     &lt;p&gt;Format is:
+   *     `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID/referenceImages/IMAGE_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteReferenceImage(String name) {
+    DeleteReferenceImageRequest request =
+<span class="fc" id="L2022">        DeleteReferenceImageRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L2023">    deleteReferenceImage(request);</span>
+<span class="fc" id="L2024">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a reference image.
+   *
+   * &lt;p&gt;The image metadata will be deleted right away, but search queries against ProductSets
+   * containing the image may still work until all related caches are refreshed.
+   *
+   * &lt;p&gt;The actual image files are not deleted from Google Cloud Storage.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   DeleteReferenceImageRequest request =
+   *       DeleteReferenceImageRequest.newBuilder()
+   *           .setName(
+   *               ReferenceImageName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;, &quot;[REFERENCE_IMAGE]&quot;)
+   *                   .toString())
+   *           .build();
+   *   productSearchClient.deleteReferenceImage(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteReferenceImage(DeleteReferenceImageRequest request) {
+<span class="fc" id="L2055">    deleteReferenceImageCallable().call(request);</span>
+<span class="fc" id="L2056">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Permanently deletes a reference image.
+   *
+   * &lt;p&gt;The image metadata will be deleted right away, but search queries against ProductSets
+   * containing the image may still work until all related caches are refreshed.
+   *
+   * &lt;p&gt;The actual image files are not deleted from Google Cloud Storage.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   DeleteReferenceImageRequest request =
+   *       DeleteReferenceImageRequest.newBuilder()
+   *           .setName(
+   *               ReferenceImageName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;, &quot;[REFERENCE_IMAGE]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future =
+   *       productSearchClient.deleteReferenceImageCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteReferenceImageRequest, Empty&gt; deleteReferenceImageCallable() {
+<span class="fc" id="L2087">    return stub.deleteReferenceImageCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists reference images.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the parent product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductName parent = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;);
+   *   for (ReferenceImage element : productSearchClient.listReferenceImages(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. Resource name of the product containing the reference images.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListReferenceImagesPagedResponse listReferenceImages(ProductName parent) {
+    ListReferenceImagesRequest request =
+<span class="fc" id="L2120">        ListReferenceImagesRequest.newBuilder()</span>
+<span class="pc bpc" id="L2121" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L2122">            .build();</span>
+<span class="fc" id="L2123">    return listReferenceImages(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists reference images.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the parent product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String parent = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString();
+   *   for (ReferenceImage element : productSearchClient.listReferenceImages(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. Resource name of the product containing the reference images.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListReferenceImagesPagedResponse listReferenceImages(String parent) {
+    ListReferenceImagesRequest request =
+<span class="fc" id="L2156">        ListReferenceImagesRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L2157">    return listReferenceImages(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists reference images.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the parent product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListReferenceImagesRequest request =
+   *       ListReferenceImagesRequest.newBuilder()
+   *           .setParent(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (ReferenceImage element : productSearchClient.listReferenceImages(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListReferenceImagesPagedResponse listReferenceImages(
+      ListReferenceImagesRequest request) {
+<span class="fc" id="L2194">    return listReferenceImagesPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists reference images.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the parent product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListReferenceImagesRequest request =
+   *       ListReferenceImagesRequest.newBuilder()
+   *           .setParent(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;ReferenceImage&gt; future =
+   *       productSearchClient.listReferenceImagesPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (ReferenceImage element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListReferenceImagesRequest, ListReferenceImagesPagedResponse&gt;
+      listReferenceImagesPagedCallable() {
+<span class="fc" id="L2231">    return stub.listReferenceImagesPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists reference images.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the parent product does not exist.
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if the page_size is greater than 100, or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListReferenceImagesRequest request =
+   *       ListReferenceImagesRequest.newBuilder()
+   *           .setParent(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListReferenceImagesResponse response =
+   *         productSearchClient.listReferenceImagesCallable().call(request);
+   *     for (ReferenceImage element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListReferenceImagesRequest, ListReferenceImagesResponse&gt;
+      listReferenceImagesCallable() {
+<span class="nc" id="L2275">    return stub.listReferenceImagesCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a ReferenceImage.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the specified image does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ReferenceImageName name =
+   *       ReferenceImageName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;, &quot;[REFERENCE_IMAGE]&quot;);
+   *   ReferenceImage response = productSearchClient.getReferenceImage(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name of the ReferenceImage to get.
+   *     &lt;p&gt;Format is:
+   *     `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID/referenceImages/IMAGE_ID`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ReferenceImage getReferenceImage(ReferenceImageName name) {
+    GetReferenceImageRequest request =
+<span class="fc" id="L2307">        GetReferenceImageRequest.newBuilder()</span>
+<span class="pc bpc" id="L2308" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L2309">            .build();</span>
+<span class="fc" id="L2310">    return getReferenceImage(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a ReferenceImage.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the specified image does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name =
+   *       ReferenceImageName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;, &quot;[REFERENCE_IMAGE]&quot;)
+   *           .toString();
+   *   ReferenceImage response = productSearchClient.getReferenceImage(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name of the ReferenceImage to get.
+   *     &lt;p&gt;Format is:
+   *     `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID/referenceImages/IMAGE_ID`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ReferenceImage getReferenceImage(String name) {
+<span class="fc" id="L2342">    GetReferenceImageRequest request = GetReferenceImageRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L2343">    return getReferenceImage(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a ReferenceImage.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the specified image does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   GetReferenceImageRequest request =
+   *       GetReferenceImageRequest.newBuilder()
+   *           .setName(
+   *               ReferenceImageName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;, &quot;[REFERENCE_IMAGE]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ReferenceImage response = productSearchClient.getReferenceImage(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ReferenceImage getReferenceImage(GetReferenceImageRequest request) {
+<span class="fc" id="L2376">    return getReferenceImageCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets information associated with a ReferenceImage.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the specified image does not exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   GetReferenceImageRequest request =
+   *       GetReferenceImageRequest.newBuilder()
+   *           .setName(
+   *               ReferenceImageName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;, &quot;[REFERENCE_IMAGE]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ApiFuture&lt;ReferenceImage&gt; future =
+   *       productSearchClient.getReferenceImageCallable().futureCall(request);
+   *   // Do something.
+   *   ReferenceImage response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetReferenceImageRequest, ReferenceImage&gt; getReferenceImageCallable() {
+<span class="fc" id="L2409">    return stub.getReferenceImageCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a Product to the specified ProductSet. If the Product is already present, no change is
+   * made.
+   *
+   * &lt;p&gt;One Product can be added to at most 100 ProductSets.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product or the ProductSet doesn't exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductSetName name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;);
+   *   ProductName product = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;);
+   *   productSearchClient.addProductToProductSet(name, product);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name for the ProductSet to modify.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @param product Required. The resource name for the Product to be added to this ProductSet.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addProductToProductSet(ProductSetName name, ProductName product) {
+    AddProductToProductSetRequest request =
+<span class="fc" id="L2445">        AddProductToProductSetRequest.newBuilder()</span>
+<span class="pc bpc" id="L2446" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="pc bpc" id="L2447" title="1 of 2 branches missed.">            .setProduct(product == null ? null : product.toString())</span>
+<span class="fc" id="L2448">            .build();</span>
+<span class="fc" id="L2449">    addProductToProductSet(request);</span>
+<span class="fc" id="L2450">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a Product to the specified ProductSet. If the Product is already present, no change is
+   * made.
+   *
+   * &lt;p&gt;One Product can be added to at most 100 ProductSets.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product or the ProductSet doesn't exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductSetName name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;);
+   *   String product = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString();
+   *   productSearchClient.addProductToProductSet(name, product);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name for the ProductSet to modify.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @param product Required. The resource name for the Product to be added to this ProductSet.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addProductToProductSet(ProductSetName name, String product) {
+    AddProductToProductSetRequest request =
+<span class="fc" id="L2485">        AddProductToProductSetRequest.newBuilder()</span>
+<span class="pc bpc" id="L2486" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L2487">            .setProduct(product)</span>
+<span class="fc" id="L2488">            .build();</span>
+<span class="fc" id="L2489">    addProductToProductSet(request);</span>
+<span class="fc" id="L2490">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a Product to the specified ProductSet. If the Product is already present, no change is
+   * made.
+   *
+   * &lt;p&gt;One Product can be added to at most 100 ProductSets.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product or the ProductSet doesn't exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString();
+   *   ProductName product = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;);
+   *   productSearchClient.addProductToProductSet(name, product);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name for the ProductSet to modify.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @param product Required. The resource name for the Product to be added to this ProductSet.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addProductToProductSet(String name, ProductName product) {
+    AddProductToProductSetRequest request =
+<span class="fc" id="L2525">        AddProductToProductSetRequest.newBuilder()</span>
+<span class="fc" id="L2526">            .setName(name)</span>
+<span class="pc bpc" id="L2527" title="1 of 2 branches missed.">            .setProduct(product == null ? null : product.toString())</span>
+<span class="fc" id="L2528">            .build();</span>
+<span class="fc" id="L2529">    addProductToProductSet(request);</span>
+<span class="fc" id="L2530">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a Product to the specified ProductSet. If the Product is already present, no change is
+   * made.
+   *
+   * &lt;p&gt;One Product can be added to at most 100 ProductSets.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product or the ProductSet doesn't exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString();
+   *   String product = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString();
+   *   productSearchClient.addProductToProductSet(name, product);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name for the ProductSet to modify.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @param product Required. The resource name for the Product to be added to this ProductSet.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addProductToProductSet(String name, String product) {
+    AddProductToProductSetRequest request =
+<span class="fc" id="L2565">        AddProductToProductSetRequest.newBuilder().setName(name).setProduct(product).build();</span>
+<span class="fc" id="L2566">    addProductToProductSet(request);</span>
+<span class="fc" id="L2567">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a Product to the specified ProductSet. If the Product is already present, no change is
+   * made.
+   *
+   * &lt;p&gt;One Product can be added to at most 100 ProductSets.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product or the ProductSet doesn't exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   AddProductToProductSetRequest request =
+   *       AddProductToProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .setProduct(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .build();
+   *   productSearchClient.addProductToProductSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void addProductToProductSet(AddProductToProductSetRequest request) {
+<span class="fc" id="L2601">    addProductToProductSetCallable().call(request);</span>
+<span class="fc" id="L2602">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds a Product to the specified ProductSet. If the Product is already present, no change is
+   * made.
+   *
+   * &lt;p&gt;One Product can be added to at most 100 ProductSets.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns NOT_FOUND if the Product or the ProductSet doesn't exist.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   AddProductToProductSetRequest request =
+   *       AddProductToProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .setProduct(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future =
+   *       productSearchClient.addProductToProductSetCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;AddProductToProductSetRequest, Empty&gt;
+      addProductToProductSetCallable() {
+<span class="fc" id="L2637">    return stub.addProductToProductSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Removes a Product from the specified ProductSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductSetName name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;);
+   *   ProductName product = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;);
+   *   productSearchClient.removeProductFromProductSet(name, product);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name for the ProductSet to modify.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @param product Required. The resource name for the Product to be removed from this ProductSet.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void removeProductFromProductSet(ProductSetName name, ProductName product) {
+    RemoveProductFromProductSetRequest request =
+<span class="fc" id="L2664">        RemoveProductFromProductSetRequest.newBuilder()</span>
+<span class="pc bpc" id="L2665" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="pc bpc" id="L2666" title="1 of 2 branches missed.">            .setProduct(product == null ? null : product.toString())</span>
+<span class="fc" id="L2667">            .build();</span>
+<span class="fc" id="L2668">    removeProductFromProductSet(request);</span>
+<span class="fc" id="L2669">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Removes a Product from the specified ProductSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductSetName name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;);
+   *   String product = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString();
+   *   productSearchClient.removeProductFromProductSet(name, product);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name for the ProductSet to modify.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @param product Required. The resource name for the Product to be removed from this ProductSet.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void removeProductFromProductSet(ProductSetName name, String product) {
+    RemoveProductFromProductSetRequest request =
+<span class="fc" id="L2695">        RemoveProductFromProductSetRequest.newBuilder()</span>
+<span class="pc bpc" id="L2696" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L2697">            .setProduct(product)</span>
+<span class="fc" id="L2698">            .build();</span>
+<span class="fc" id="L2699">    removeProductFromProductSet(request);</span>
+<span class="fc" id="L2700">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Removes a Product from the specified ProductSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString();
+   *   ProductName product = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;);
+   *   productSearchClient.removeProductFromProductSet(name, product);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name for the ProductSet to modify.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @param product Required. The resource name for the Product to be removed from this ProductSet.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void removeProductFromProductSet(String name, ProductName product) {
+    RemoveProductFromProductSetRequest request =
+<span class="fc" id="L2726">        RemoveProductFromProductSetRequest.newBuilder()</span>
+<span class="fc" id="L2727">            .setName(name)</span>
+<span class="pc bpc" id="L2728" title="1 of 2 branches missed.">            .setProduct(product == null ? null : product.toString())</span>
+<span class="fc" id="L2729">            .build();</span>
+<span class="fc" id="L2730">    removeProductFromProductSet(request);</span>
+<span class="fc" id="L2731">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Removes a Product from the specified ProductSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString();
+   *   String product = ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString();
+   *   productSearchClient.removeProductFromProductSet(name, product);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name for the ProductSet to modify.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @param product Required. The resource name for the Product to be removed from this ProductSet.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/products/PRODUCT_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void removeProductFromProductSet(String name, String product) {
+    RemoveProductFromProductSetRequest request =
+<span class="fc" id="L2757">        RemoveProductFromProductSetRequest.newBuilder().setName(name).setProduct(product).build();</span>
+<span class="fc" id="L2758">    removeProductFromProductSet(request);</span>
+<span class="fc" id="L2759">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Removes a Product from the specified ProductSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   RemoveProductFromProductSetRequest request =
+   *       RemoveProductFromProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .setProduct(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .build();
+   *   productSearchClient.removeProductFromProductSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void removeProductFromProductSet(RemoveProductFromProductSetRequest request) {
+<span class="fc" id="L2784">    removeProductFromProductSetCallable().call(request);</span>
+<span class="fc" id="L2785">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Removes a Product from the specified ProductSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   RemoveProductFromProductSetRequest request =
+   *       RemoveProductFromProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .setProduct(ProductName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future =
+   *       productSearchClient.removeProductFromProductSetCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;RemoveProductFromProductSetRequest, Empty&gt;
+      removeProductFromProductSetCallable() {
+<span class="fc" id="L2811">    return stub.removeProductFromProductSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists the Products in a ProductSet, in an unspecified order. If the ProductSet does not exist,
+   * the products field of the response will be empty.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ProductSetName name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;);
+   *   for (Product element : productSearchClient.listProductsInProductSet(name).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The ProductSet resource for which to retrieve Products.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListProductsInProductSetPagedResponse listProductsInProductSet(ProductSetName name) {
+    ListProductsInProductSetRequest request =
+<span class="fc" id="L2844">        ListProductsInProductSetRequest.newBuilder()</span>
+<span class="pc bpc" id="L2845" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L2846">            .build();</span>
+<span class="fc" id="L2847">    return listProductsInProductSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists the Products in a ProductSet, in an unspecified order. If the ProductSet does not exist,
+   * the products field of the response will be empty.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String name = ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString();
+   *   for (Product element : productSearchClient.listProductsInProductSet(name).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The ProductSet resource for which to retrieve Products.
+   *     &lt;p&gt;Format is: `projects/PROJECT_ID/locations/LOC_ID/productSets/PRODUCT_SET_ID`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListProductsInProductSetPagedResponse listProductsInProductSet(String name) {
+    ListProductsInProductSetRequest request =
+<span class="fc" id="L2880">        ListProductsInProductSetRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L2881">    return listProductsInProductSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists the Products in a ProductSet, in an unspecified order. If the ProductSet does not exist,
+   * the products field of the response will be empty.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListProductsInProductSetRequest request =
+   *       ListProductsInProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (Product element : productSearchClient.listProductsInProductSet(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListProductsInProductSetPagedResponse listProductsInProductSet(
+      ListProductsInProductSetRequest request) {
+<span class="fc" id="L2918">    return listProductsInProductSetPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists the Products in a ProductSet, in an unspecified order. If the ProductSet does not exist,
+   * the products field of the response will be empty.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListProductsInProductSetRequest request =
+   *       ListProductsInProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;Product&gt; future =
+   *       productSearchClient.listProductsInProductSetPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (Product element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListProductsInProductSetRequest, ListProductsInProductSetPagedResponse&gt;
+      listProductsInProductSetPagedCallable() {
+<span class="fc" id="L2955">    return stub.listProductsInProductSetPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists the Products in a ProductSet, in an unspecified order. If the ProductSet does not exist,
+   * the products field of the response will be empty.
+   *
+   * &lt;p&gt;Possible errors:
+   *
+   * &lt;ul&gt;
+   *   &lt;li&gt;Returns INVALID_ARGUMENT if page_size is greater than 100 or less than 1.
+   * &lt;/ul&gt;
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ListProductsInProductSetRequest request =
+   *       ListProductsInProductSetRequest.newBuilder()
+   *           .setName(ProductSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PRODUCT_SET]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListProductsInProductSetResponse response =
+   *         productSearchClient.listProductsInProductSetCallable().call(request);
+   *     for (Product element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse&gt;
+      listProductsInProductSetCallable() {
+<span class="nc" id="L2999">    return stub.listProductsInProductSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API that imports a list of reference images to specified product sets based on a
+   * list of image information.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress) `Operation.response` contains `ImportProductSetsResponse`.
+   * (results)
+   *
+   * &lt;p&gt;The input source of this method is a csv file on Google Cloud Storage. For the format of the
+   * csv file please see
+   * [ImportProductSetsGcsSource.csv_file_uri][google.cloud.vision.v1.ImportProductSetsGcsSource.csv_file_uri].
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   ImportProductSetsInputConfig inputConfig = ImportProductSetsInputConfig.newBuilder().build();
+   *   ImportProductSetsResponse response =
+   *       productSearchClient.importProductSetsAsync(parent, inputConfig).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project in which the ProductSets should be imported.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @param inputConfig Required. The input content for the list of requests.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ImportProductSetsResponse, BatchOperationMetadata&gt;
+      importProductSetsAsync(LocationName parent, ImportProductSetsInputConfig inputConfig) {
+    ImportProductSetsRequest request =
+<span class="fc" id="L3037">        ImportProductSetsRequest.newBuilder()</span>
+<span class="pc bpc" id="L3038" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L3039">            .setInputConfig(inputConfig)</span>
+<span class="fc" id="L3040">            .build();</span>
+<span class="fc" id="L3041">    return importProductSetsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API that imports a list of reference images to specified product sets based on a
+   * list of image information.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress) `Operation.response` contains `ImportProductSetsResponse`.
+   * (results)
+   *
+   * &lt;p&gt;The input source of this method is a csv file on Google Cloud Storage. For the format of the
+   * csv file please see
+   * [ImportProductSetsGcsSource.csv_file_uri][google.cloud.vision.v1.ImportProductSetsGcsSource.csv_file_uri].
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   ImportProductSetsInputConfig inputConfig = ImportProductSetsInputConfig.newBuilder().build();
+   *   ImportProductSetsResponse response =
+   *       productSearchClient.importProductSetsAsync(parent, inputConfig).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project in which the ProductSets should be imported.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @param inputConfig Required. The input content for the list of requests.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ImportProductSetsResponse, BatchOperationMetadata&gt;
+      importProductSetsAsync(String parent, ImportProductSetsInputConfig inputConfig) {
+    ImportProductSetsRequest request =
+<span class="fc" id="L3079">        ImportProductSetsRequest.newBuilder().setParent(parent).setInputConfig(inputConfig).build();</span>
+<span class="fc" id="L3080">    return importProductSetsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API that imports a list of reference images to specified product sets based on a
+   * list of image information.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress) `Operation.response` contains `ImportProductSetsResponse`.
+   * (results)
+   *
+   * &lt;p&gt;The input source of this method is a csv file on Google Cloud Storage. For the format of the
+   * csv file please see
+   * [ImportProductSetsGcsSource.csv_file_uri][google.cloud.vision.v1.ImportProductSetsGcsSource.csv_file_uri].
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ImportProductSetsRequest request =
+   *       ImportProductSetsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setInputConfig(ImportProductSetsInputConfig.newBuilder().build())
+   *           .build();
+   *   ImportProductSetsResponse response =
+   *       productSearchClient.importProductSetsAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ImportProductSetsResponse, BatchOperationMetadata&gt;
+      importProductSetsAsync(ImportProductSetsRequest request) {
+<span class="fc" id="L3118">    return importProductSetsOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API that imports a list of reference images to specified product sets based on a
+   * list of image information.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress) `Operation.response` contains `ImportProductSetsResponse`.
+   * (results)
+   *
+   * &lt;p&gt;The input source of this method is a csv file on Google Cloud Storage. For the format of the
+   * csv file please see
+   * [ImportProductSetsGcsSource.csv_file_uri][google.cloud.vision.v1.ImportProductSetsGcsSource.csv_file_uri].
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ImportProductSetsRequest request =
+   *       ImportProductSetsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setInputConfig(ImportProductSetsInputConfig.newBuilder().build())
+   *           .build();
+   *   OperationFuture&lt;ImportProductSetsResponse, BatchOperationMetadata&gt; future =
+   *       productSearchClient.importProductSetsOperationCallable().futureCall(request);
+   *   // Do something.
+   *   ImportProductSetsResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          ImportProductSetsRequest, ImportProductSetsResponse, BatchOperationMetadata&gt;
+      importProductSetsOperationCallable() {
+<span class="fc" id="L3156">    return stub.importProductSetsOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API that imports a list of reference images to specified product sets based on a
+   * list of image information.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress) `Operation.response` contains `ImportProductSetsResponse`.
+   * (results)
+   *
+   * &lt;p&gt;The input source of this method is a csv file on Google Cloud Storage. For the format of the
+   * csv file please see
+   * [ImportProductSetsGcsSource.csv_file_uri][google.cloud.vision.v1.ImportProductSetsGcsSource.csv_file_uri].
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   ImportProductSetsRequest request =
+   *       ImportProductSetsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setInputConfig(ImportProductSetsInputConfig.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       productSearchClient.importProductSetsCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ImportProductSetsRequest, Operation&gt; importProductSetsCallable() {
+<span class="nc" id="L3192">    return stub.importProductSetsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API to delete all Products in a ProductSet or all Products that are in no
+   * ProductSet.
+   *
+   * &lt;p&gt;If a Product is a member of the specified ProductSet in addition to other ProductSets, the
+   * Product will still be deleted.
+   *
+   * &lt;p&gt;It is recommended to not delete the specified ProductSet until after this operation has
+   * completed. It is also recommended to not add any of the Products involved in the batch delete
+   * to a new ProductSet while this operation is running because those Products may still end up
+   * deleted.
+   *
+   * &lt;p&gt;It's not possible to undo the PurgeProducts operation. Therefore, it is recommended to keep
+   * the csv files used in ImportProductSets (if that was how you originally built the Product Set)
+   * before starting PurgeProducts, in case you need to re-import the data after deletion.
+   *
+   * &lt;p&gt;If the plan is to purge all of the Products from a ProductSet and then re-use the empty
+   * ProductSet to re-import new Products into the empty ProductSet, you must wait until the
+   * PurgeProducts operation has finished for that ProductSet.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   productSearchClient.purgeProductsAsync(parent).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project and location in which the Products should be deleted.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, BatchOperationMetadata&gt; purgeProductsAsync(
+      LocationName parent) {
+    PurgeProductsRequest request =
+<span class="fc" id="L3238">        PurgeProductsRequest.newBuilder()</span>
+<span class="pc bpc" id="L3239" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L3240">            .build();</span>
+<span class="fc" id="L3241">    return purgeProductsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API to delete all Products in a ProductSet or all Products that are in no
+   * ProductSet.
+   *
+   * &lt;p&gt;If a Product is a member of the specified ProductSet in addition to other ProductSets, the
+   * Product will still be deleted.
+   *
+   * &lt;p&gt;It is recommended to not delete the specified ProductSet until after this operation has
+   * completed. It is also recommended to not add any of the Products involved in the batch delete
+   * to a new ProductSet while this operation is running because those Products may still end up
+   * deleted.
+   *
+   * &lt;p&gt;It's not possible to undo the PurgeProducts operation. Therefore, it is recommended to keep
+   * the csv files used in ImportProductSets (if that was how you originally built the Product Set)
+   * before starting PurgeProducts, in case you need to re-import the data after deletion.
+   *
+   * &lt;p&gt;If the plan is to purge all of the Products from a ProductSet and then re-use the empty
+   * ProductSet to re-import new Products into the empty ProductSet, you must wait until the
+   * PurgeProducts operation has finished for that ProductSet.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   productSearchClient.purgeProductsAsync(parent).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project and location in which the Products should be deleted.
+   *     &lt;p&gt;Format is `projects/PROJECT_ID/locations/LOC_ID`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, BatchOperationMetadata&gt; purgeProductsAsync(String parent) {
+<span class="fc" id="L3285">    PurgeProductsRequest request = PurgeProductsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L3286">    return purgeProductsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API to delete all Products in a ProductSet or all Products that are in no
+   * ProductSet.
+   *
+   * &lt;p&gt;If a Product is a member of the specified ProductSet in addition to other ProductSets, the
+   * Product will still be deleted.
+   *
+   * &lt;p&gt;It is recommended to not delete the specified ProductSet until after this operation has
+   * completed. It is also recommended to not add any of the Products involved in the batch delete
+   * to a new ProductSet while this operation is running because those Products may still end up
+   * deleted.
+   *
+   * &lt;p&gt;It's not possible to undo the PurgeProducts operation. Therefore, it is recommended to keep
+   * the csv files used in ImportProductSets (if that was how you originally built the Product Set)
+   * before starting PurgeProducts, in case you need to re-import the data after deletion.
+   *
+   * &lt;p&gt;If the plan is to purge all of the Products from a ProductSet and then re-use the empty
+   * ProductSet to re-import new Products into the empty ProductSet, you must wait until the
+   * PurgeProducts operation has finished for that ProductSet.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   PurgeProductsRequest request =
+   *       PurgeProductsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setForce(true)
+   *           .build();
+   *   productSearchClient.purgeProductsAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, BatchOperationMetadata&gt; purgeProductsAsync(
+      PurgeProductsRequest request) {
+<span class="fc" id="L3334">    return purgeProductsOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API to delete all Products in a ProductSet or all Products that are in no
+   * ProductSet.
+   *
+   * &lt;p&gt;If a Product is a member of the specified ProductSet in addition to other ProductSets, the
+   * Product will still be deleted.
+   *
+   * &lt;p&gt;It is recommended to not delete the specified ProductSet until after this operation has
+   * completed. It is also recommended to not add any of the Products involved in the batch delete
+   * to a new ProductSet while this operation is running because those Products may still end up
+   * deleted.
+   *
+   * &lt;p&gt;It's not possible to undo the PurgeProducts operation. Therefore, it is recommended to keep
+   * the csv files used in ImportProductSets (if that was how you originally built the Product Set)
+   * before starting PurgeProducts, in case you need to re-import the data after deletion.
+   *
+   * &lt;p&gt;If the plan is to purge all of the Products from a ProductSet and then re-use the empty
+   * ProductSet to re-import new Products into the empty ProductSet, you must wait until the
+   * PurgeProducts operation has finished for that ProductSet.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   PurgeProductsRequest request =
+   *       PurgeProductsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setForce(true)
+   *           .build();
+   *   OperationFuture&lt;Empty, BatchOperationMetadata&gt; future =
+   *       productSearchClient.purgeProductsOperationCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;PurgeProductsRequest, Empty, BatchOperationMetadata&gt;
+      purgeProductsOperationCallable() {
+<span class="fc" id="L3382">    return stub.purgeProductsOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Asynchronous API to delete all Products in a ProductSet or all Products that are in no
+   * ProductSet.
+   *
+   * &lt;p&gt;If a Product is a member of the specified ProductSet in addition to other ProductSets, the
+   * Product will still be deleted.
+   *
+   * &lt;p&gt;It is recommended to not delete the specified ProductSet until after this operation has
+   * completed. It is also recommended to not add any of the Products involved in the batch delete
+   * to a new ProductSet while this operation is running because those Products may still end up
+   * deleted.
+   *
+   * &lt;p&gt;It's not possible to undo the PurgeProducts operation. Therefore, it is recommended to keep
+   * the csv files used in ImportProductSets (if that was how you originally built the Product Set)
+   * before starting PurgeProducts, in case you need to re-import the data after deletion.
+   *
+   * &lt;p&gt;If the plan is to purge all of the Products from a ProductSet and then re-use the empty
+   * ProductSet to re-import new Products into the empty ProductSet, you must wait until the
+   * PurgeProducts operation has finished for that ProductSet.
+   *
+   * &lt;p&gt;The [google.longrunning.Operation][google.longrunning.Operation] API can be used to keep
+   * track of the progress and results of the request. `Operation.metadata` contains
+   * `BatchOperationMetadata`. (progress)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ProductSearchClient productSearchClient = ProductSearchClient.create()) {
+   *   PurgeProductsRequest request =
+   *       PurgeProductsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setForce(true)
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = productSearchClient.purgeProductsCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;PurgeProductsRequest, Operation&gt; purgeProductsCallable() {
+<span class="nc" id="L3428">    return stub.purgeProductsCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L3433">    stub.close();</span>
+<span class="fc" id="L3434">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L3438">    stub.shutdown();</span>
+<span class="nc" id="L3439">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L3443">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L3448">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L3453">    stub.shutdownNow();</span>
+<span class="nc" id="L3454">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L3458">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListProductSetsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListProductSetsRequest,
+          ListProductSetsResponse,
+          ProductSet,
+          ListProductSetsPage,
+          ListProductSetsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListProductSetsPagedResponse&gt; createAsync(
+        PageContext&lt;ListProductSetsRequest, ListProductSetsResponse, ProductSet&gt; context,
+        ApiFuture&lt;ListProductSetsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListProductSetsPage&gt; futurePage =
+<span class="fc" id="L3473">          ListProductSetsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L3474">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L3476">          input -&gt; new ListProductSetsPagedResponse(input),</span>
+<span class="fc" id="L3477">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListProductSetsPagedResponse(ListProductSetsPage page) {
+<span class="fc" id="L3481">      super(page, ListProductSetsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L3482">    }</span>
+  }
+
+  public static class ListProductSetsPage
+      extends AbstractPage&lt;
+          ListProductSetsRequest, ListProductSetsResponse, ProductSet, ListProductSetsPage&gt; {
+
+    private ListProductSetsPage(
+        PageContext&lt;ListProductSetsRequest, ListProductSetsResponse, ProductSet&gt; context,
+        ListProductSetsResponse response) {
+<span class="fc" id="L3492">      super(context, response);</span>
+<span class="fc" id="L3493">    }</span>
+
+    private static ListProductSetsPage createEmptyPage() {
+<span class="fc" id="L3496">      return new ListProductSetsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListProductSetsPage createPage(
+        PageContext&lt;ListProductSetsRequest, ListProductSetsResponse, ProductSet&gt; context,
+        ListProductSetsResponse response) {
+<span class="fc" id="L3503">      return new ListProductSetsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListProductSetsPage&gt; createPageAsync(
+        PageContext&lt;ListProductSetsRequest, ListProductSetsResponse, ProductSet&gt; context,
+        ApiFuture&lt;ListProductSetsResponse&gt; futureResponse) {
+<span class="fc" id="L3510">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListProductSetsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListProductSetsRequest,
+          ListProductSetsResponse,
+          ProductSet,
+          ListProductSetsPage,
+          ListProductSetsFixedSizeCollection&gt; {
+
+    private ListProductSetsFixedSizeCollection(
+        List&lt;ListProductSetsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L3524">      super(pages, collectionSize);</span>
+<span class="fc" id="L3525">    }</span>
+
+    private static ListProductSetsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L3528">      return new ListProductSetsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListProductSetsFixedSizeCollection createCollection(
+        List&lt;ListProductSetsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L3534">      return new ListProductSetsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+
+  public static class ListProductsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListProductsRequest,
+          ListProductsResponse,
+          Product,
+          ListProductsPage,
+          ListProductsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListProductsPagedResponse&gt; createAsync(
+        PageContext&lt;ListProductsRequest, ListProductsResponse, Product&gt; context,
+        ApiFuture&lt;ListProductsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListProductsPage&gt; futurePage =
+<span class="fc" id="L3550">          ListProductsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L3551">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L3553">          input -&gt; new ListProductsPagedResponse(input),</span>
+<span class="fc" id="L3554">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListProductsPagedResponse(ListProductsPage page) {
+<span class="fc" id="L3558">      super(page, ListProductsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L3559">    }</span>
+  }
+
+  public static class ListProductsPage
+      extends AbstractPage&lt;ListProductsRequest, ListProductsResponse, Product, ListProductsPage&gt; {
+
+    private ListProductsPage(
+        PageContext&lt;ListProductsRequest, ListProductsResponse, Product&gt; context,
+        ListProductsResponse response) {
+<span class="fc" id="L3568">      super(context, response);</span>
+<span class="fc" id="L3569">    }</span>
+
+    private static ListProductsPage createEmptyPage() {
+<span class="fc" id="L3572">      return new ListProductsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListProductsPage createPage(
+        PageContext&lt;ListProductsRequest, ListProductsResponse, Product&gt; context,
+        ListProductsResponse response) {
+<span class="fc" id="L3579">      return new ListProductsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListProductsPage&gt; createPageAsync(
+        PageContext&lt;ListProductsRequest, ListProductsResponse, Product&gt; context,
+        ApiFuture&lt;ListProductsResponse&gt; futureResponse) {
+<span class="fc" id="L3586">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListProductsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListProductsRequest,
+          ListProductsResponse,
+          Product,
+          ListProductsPage,
+          ListProductsFixedSizeCollection&gt; {
+
+    private ListProductsFixedSizeCollection(List&lt;ListProductsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L3599">      super(pages, collectionSize);</span>
+<span class="fc" id="L3600">    }</span>
+
+    private static ListProductsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L3603">      return new ListProductsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListProductsFixedSizeCollection createCollection(
+        List&lt;ListProductsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L3609">      return new ListProductsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+
+  public static class ListReferenceImagesPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListReferenceImagesRequest,
+          ListReferenceImagesResponse,
+          ReferenceImage,
+          ListReferenceImagesPage,
+          ListReferenceImagesFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListReferenceImagesPagedResponse&gt; createAsync(
+        PageContext&lt;ListReferenceImagesRequest, ListReferenceImagesResponse, ReferenceImage&gt;
+            context,
+        ApiFuture&lt;ListReferenceImagesResponse&gt; futureResponse) {
+      ApiFuture&lt;ListReferenceImagesPage&gt; futurePage =
+<span class="fc" id="L3626">          ListReferenceImagesPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L3627">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L3629">          input -&gt; new ListReferenceImagesPagedResponse(input),</span>
+<span class="fc" id="L3630">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListReferenceImagesPagedResponse(ListReferenceImagesPage page) {
+<span class="fc" id="L3634">      super(page, ListReferenceImagesFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L3635">    }</span>
+  }
+
+  public static class ListReferenceImagesPage
+      extends AbstractPage&lt;
+          ListReferenceImagesRequest,
+          ListReferenceImagesResponse,
+          ReferenceImage,
+          ListReferenceImagesPage&gt; {
+
+    private ListReferenceImagesPage(
+        PageContext&lt;ListReferenceImagesRequest, ListReferenceImagesResponse, ReferenceImage&gt;
+            context,
+        ListReferenceImagesResponse response) {
+<span class="fc" id="L3649">      super(context, response);</span>
+<span class="fc" id="L3650">    }</span>
+
+    private static ListReferenceImagesPage createEmptyPage() {
+<span class="fc" id="L3653">      return new ListReferenceImagesPage(null, null);</span>
+    }
+
+    @Override
+    protected ListReferenceImagesPage createPage(
+        PageContext&lt;ListReferenceImagesRequest, ListReferenceImagesResponse, ReferenceImage&gt;
+            context,
+        ListReferenceImagesResponse response) {
+<span class="fc" id="L3661">      return new ListReferenceImagesPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListReferenceImagesPage&gt; createPageAsync(
+        PageContext&lt;ListReferenceImagesRequest, ListReferenceImagesResponse, ReferenceImage&gt;
+            context,
+        ApiFuture&lt;ListReferenceImagesResponse&gt; futureResponse) {
+<span class="fc" id="L3669">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListReferenceImagesFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListReferenceImagesRequest,
+          ListReferenceImagesResponse,
+          ReferenceImage,
+          ListReferenceImagesPage,
+          ListReferenceImagesFixedSizeCollection&gt; {
+
+    private ListReferenceImagesFixedSizeCollection(
+        List&lt;ListReferenceImagesPage&gt; pages, int collectionSize) {
+<span class="fc" id="L3683">      super(pages, collectionSize);</span>
+<span class="fc" id="L3684">    }</span>
+
+    private static ListReferenceImagesFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L3687">      return new ListReferenceImagesFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListReferenceImagesFixedSizeCollection createCollection(
+        List&lt;ListReferenceImagesPage&gt; pages, int collectionSize) {
+<span class="nc" id="L3693">      return new ListReferenceImagesFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+
+  public static class ListProductsInProductSetPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListProductsInProductSetRequest,
+          ListProductsInProductSetResponse,
+          Product,
+          ListProductsInProductSetPage,
+          ListProductsInProductSetFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListProductsInProductSetPagedResponse&gt; createAsync(
+        PageContext&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse, Product&gt;
+            context,
+        ApiFuture&lt;ListProductsInProductSetResponse&gt; futureResponse) {
+      ApiFuture&lt;ListProductsInProductSetPage&gt; futurePage =
+<span class="fc" id="L3710">          ListProductsInProductSetPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L3711">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L3713">          input -&gt; new ListProductsInProductSetPagedResponse(input),</span>
+<span class="fc" id="L3714">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListProductsInProductSetPagedResponse(ListProductsInProductSetPage page) {
+<span class="fc" id="L3718">      super(page, ListProductsInProductSetFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L3719">    }</span>
+  }
+
+  public static class ListProductsInProductSetPage
+      extends AbstractPage&lt;
+          ListProductsInProductSetRequest,
+          ListProductsInProductSetResponse,
+          Product,
+          ListProductsInProductSetPage&gt; {
+
+    private ListProductsInProductSetPage(
+        PageContext&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse, Product&gt;
+            context,
+        ListProductsInProductSetResponse response) {
+<span class="fc" id="L3733">      super(context, response);</span>
+<span class="fc" id="L3734">    }</span>
+
+    private static ListProductsInProductSetPage createEmptyPage() {
+<span class="fc" id="L3737">      return new ListProductsInProductSetPage(null, null);</span>
+    }
+
+    @Override
+    protected ListProductsInProductSetPage createPage(
+        PageContext&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse, Product&gt;
+            context,
+        ListProductsInProductSetResponse response) {
+<span class="fc" id="L3745">      return new ListProductsInProductSetPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListProductsInProductSetPage&gt; createPageAsync(
+        PageContext&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse, Product&gt;
+            context,
+        ApiFuture&lt;ListProductsInProductSetResponse&gt; futureResponse) {
+<span class="fc" id="L3753">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListProductsInProductSetFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListProductsInProductSetRequest,
+          ListProductsInProductSetResponse,
+          Product,
+          ListProductsInProductSetPage,
+          ListProductsInProductSetFixedSizeCollection&gt; {
+
+    private ListProductsInProductSetFixedSizeCollection(
+        List&lt;ListProductsInProductSetPage&gt; pages, int collectionSize) {
+<span class="fc" id="L3767">      super(pages, collectionSize);</span>
+<span class="fc" id="L3768">    }</span>
+
+    private static ListProductsInProductSetFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L3771">      return new ListProductsInProductSetFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListProductsInProductSetFixedSizeCollection createCollection(
+        List&lt;ListProductsInProductSetPage&gt; pages, int collectionSize) {
+<span class="nc" id="L3777">      return new ListProductsInProductSetFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

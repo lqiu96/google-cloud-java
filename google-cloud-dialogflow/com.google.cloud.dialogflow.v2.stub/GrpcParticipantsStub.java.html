@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcParticipantsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcParticipantsStub.java</span></div><h1>GrpcParticipantsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.ParticipantsClient.ListParticipantsPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.AnalyzeContentRequest;
+import com.google.cloud.dialogflow.v2.AnalyzeContentResponse;
+import com.google.cloud.dialogflow.v2.CreateParticipantRequest;
+import com.google.cloud.dialogflow.v2.GetParticipantRequest;
+import com.google.cloud.dialogflow.v2.ListParticipantsRequest;
+import com.google.cloud.dialogflow.v2.ListParticipantsResponse;
+import com.google.cloud.dialogflow.v2.Participant;
+import com.google.cloud.dialogflow.v2.SuggestArticlesRequest;
+import com.google.cloud.dialogflow.v2.SuggestArticlesResponse;
+import com.google.cloud.dialogflow.v2.SuggestFaqAnswersRequest;
+import com.google.cloud.dialogflow.v2.SuggestFaqAnswersResponse;
+import com.google.cloud.dialogflow.v2.SuggestSmartRepliesRequest;
+import com.google.cloud.dialogflow.v2.SuggestSmartRepliesResponse;
+import com.google.cloud.dialogflow.v2.UpdateParticipantRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the Participants service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcParticipantsStub extends ParticipantsStub {
+  private static final MethodDescriptor&lt;CreateParticipantRequest, Participant&gt;
+      createParticipantMethodDescriptor =
+<span class="fc" id="L59">          MethodDescriptor.&lt;CreateParticipantRequest, Participant&gt;newBuilder()</span>
+<span class="fc" id="L60">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L61">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Participants/CreateParticipant&quot;)</span>
+<span class="fc" id="L62">              .setRequestMarshaller(</span>
+<span class="fc" id="L63">                  ProtoUtils.marshaller(CreateParticipantRequest.getDefaultInstance()))</span>
+<span class="fc" id="L64">              .setResponseMarshaller(ProtoUtils.marshaller(Participant.getDefaultInstance()))</span>
+<span class="fc" id="L65">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetParticipantRequest, Participant&gt;
+      getParticipantMethodDescriptor =
+<span class="fc" id="L69">          MethodDescriptor.&lt;GetParticipantRequest, Participant&gt;newBuilder()</span>
+<span class="fc" id="L70">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L71">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Participants/GetParticipant&quot;)</span>
+<span class="fc" id="L72">              .setRequestMarshaller(</span>
+<span class="fc" id="L73">                  ProtoUtils.marshaller(GetParticipantRequest.getDefaultInstance()))</span>
+<span class="fc" id="L74">              .setResponseMarshaller(ProtoUtils.marshaller(Participant.getDefaultInstance()))</span>
+<span class="fc" id="L75">              .build();</span>
+
+  private static final MethodDescriptor&lt;ListParticipantsRequest, ListParticipantsResponse&gt;
+      listParticipantsMethodDescriptor =
+<span class="fc" id="L79">          MethodDescriptor.&lt;ListParticipantsRequest, ListParticipantsResponse&gt;newBuilder()</span>
+<span class="fc" id="L80">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L81">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Participants/ListParticipants&quot;)</span>
+<span class="fc" id="L82">              .setRequestMarshaller(</span>
+<span class="fc" id="L83">                  ProtoUtils.marshaller(ListParticipantsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L84">              .setResponseMarshaller(</span>
+<span class="fc" id="L85">                  ProtoUtils.marshaller(ListParticipantsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L86">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateParticipantRequest, Participant&gt;
+      updateParticipantMethodDescriptor =
+<span class="fc" id="L90">          MethodDescriptor.&lt;UpdateParticipantRequest, Participant&gt;newBuilder()</span>
+<span class="fc" id="L91">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L92">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Participants/UpdateParticipant&quot;)</span>
+<span class="fc" id="L93">              .setRequestMarshaller(</span>
+<span class="fc" id="L94">                  ProtoUtils.marshaller(UpdateParticipantRequest.getDefaultInstance()))</span>
+<span class="fc" id="L95">              .setResponseMarshaller(ProtoUtils.marshaller(Participant.getDefaultInstance()))</span>
+<span class="fc" id="L96">              .build();</span>
+
+  private static final MethodDescriptor&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt;
+      analyzeContentMethodDescriptor =
+<span class="fc" id="L100">          MethodDescriptor.&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt;newBuilder()</span>
+<span class="fc" id="L101">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L102">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Participants/AnalyzeContent&quot;)</span>
+<span class="fc" id="L103">              .setRequestMarshaller(</span>
+<span class="fc" id="L104">                  ProtoUtils.marshaller(AnalyzeContentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L105">              .setResponseMarshaller(</span>
+<span class="fc" id="L106">                  ProtoUtils.marshaller(AnalyzeContentResponse.getDefaultInstance()))</span>
+<span class="fc" id="L107">              .build();</span>
+
+  private static final MethodDescriptor&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt;
+      suggestArticlesMethodDescriptor =
+<span class="fc" id="L111">          MethodDescriptor.&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt;newBuilder()</span>
+<span class="fc" id="L112">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L113">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Participants/SuggestArticles&quot;)</span>
+<span class="fc" id="L114">              .setRequestMarshaller(</span>
+<span class="fc" id="L115">                  ProtoUtils.marshaller(SuggestArticlesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L116">              .setResponseMarshaller(</span>
+<span class="fc" id="L117">                  ProtoUtils.marshaller(SuggestArticlesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L118">              .build();</span>
+
+  private static final MethodDescriptor&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;
+      suggestFaqAnswersMethodDescriptor =
+<span class="fc" id="L122">          MethodDescriptor.&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;newBuilder()</span>
+<span class="fc" id="L123">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L124">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Participants/SuggestFaqAnswers&quot;)</span>
+<span class="fc" id="L125">              .setRequestMarshaller(</span>
+<span class="fc" id="L126">                  ProtoUtils.marshaller(SuggestFaqAnswersRequest.getDefaultInstance()))</span>
+<span class="fc" id="L127">              .setResponseMarshaller(</span>
+<span class="fc" id="L128">                  ProtoUtils.marshaller(SuggestFaqAnswersResponse.getDefaultInstance()))</span>
+<span class="fc" id="L129">              .build();</span>
+
+  private static final MethodDescriptor&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;
+<span class="fc" id="L132">      suggestSmartRepliesMethodDescriptor =</span>
+<span class="fc" id="L133">          MethodDescriptor.&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;newBuilder()</span>
+<span class="fc" id="L134">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L135">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Participants/SuggestSmartReplies&quot;)</span>
+<span class="fc" id="L136">              .setRequestMarshaller(</span>
+<span class="fc" id="L137">                  ProtoUtils.marshaller(SuggestSmartRepliesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L138">              .setResponseMarshaller(</span>
+<span class="fc" id="L139">                  ProtoUtils.marshaller(SuggestSmartRepliesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L140">              .build();</span>
+
+  private final UnaryCallable&lt;CreateParticipantRequest, Participant&gt; createParticipantCallable;
+  private final UnaryCallable&lt;GetParticipantRequest, Participant&gt; getParticipantCallable;
+  private final UnaryCallable&lt;ListParticipantsRequest, ListParticipantsResponse&gt;
+      listParticipantsCallable;
+  private final UnaryCallable&lt;ListParticipantsRequest, ListParticipantsPagedResponse&gt;
+      listParticipantsPagedCallable;
+  private final UnaryCallable&lt;UpdateParticipantRequest, Participant&gt; updateParticipantCallable;
+  private final UnaryCallable&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt; analyzeContentCallable;
+  private final UnaryCallable&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt;
+      suggestArticlesCallable;
+  private final UnaryCallable&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;
+      suggestFaqAnswersCallable;
+  private final UnaryCallable&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;
+      suggestSmartRepliesCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcParticipantsStub create(ParticipantsStubSettings settings)
+      throws IOException {
+<span class="fc" id="L163">    return new GrpcParticipantsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcParticipantsStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L167">    return new GrpcParticipantsStub(ParticipantsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcParticipantsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L172">    return new GrpcParticipantsStub(</span>
+<span class="nc" id="L173">        ParticipantsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcParticipantsStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcParticipantsStub(ParticipantsStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L183">    this(settings, clientContext, new GrpcParticipantsCallableFactory());</span>
+<span class="fc" id="L184">  }</span>
+
+  /**
+   * Constructs an instance of GrpcParticipantsStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcParticipantsStub(
+      ParticipantsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L195">      throws IOException {</span>
+<span class="fc" id="L196">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L197">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;CreateParticipantRequest, Participant&gt; createParticipantTransportSettings =
+<span class="fc" id="L200">        GrpcCallSettings.&lt;CreateParticipantRequest, Participant&gt;newBuilder()</span>
+<span class="fc" id="L201">            .setMethodDescriptor(createParticipantMethodDescriptor)</span>
+<span class="fc" id="L202">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L204">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L205">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L206">                  return params.build();</span>
+                })
+<span class="fc" id="L208">            .build();</span>
+    GrpcCallSettings&lt;GetParticipantRequest, Participant&gt; getParticipantTransportSettings =
+<span class="fc" id="L210">        GrpcCallSettings.&lt;GetParticipantRequest, Participant&gt;newBuilder()</span>
+<span class="fc" id="L211">            .setMethodDescriptor(getParticipantMethodDescriptor)</span>
+<span class="fc" id="L212">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L214">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L215">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L216">                  return params.build();</span>
+                })
+<span class="fc" id="L218">            .build();</span>
+    GrpcCallSettings&lt;ListParticipantsRequest, ListParticipantsResponse&gt;
+        listParticipantsTransportSettings =
+<span class="fc" id="L221">            GrpcCallSettings.&lt;ListParticipantsRequest, ListParticipantsResponse&gt;newBuilder()</span>
+<span class="fc" id="L222">                .setMethodDescriptor(listParticipantsMethodDescriptor)</span>
+<span class="fc" id="L223">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L225">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L226">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L227">                      return params.build();</span>
+                    })
+<span class="fc" id="L229">                .build();</span>
+    GrpcCallSettings&lt;UpdateParticipantRequest, Participant&gt; updateParticipantTransportSettings =
+<span class="fc" id="L231">        GrpcCallSettings.&lt;UpdateParticipantRequest, Participant&gt;newBuilder()</span>
+<span class="fc" id="L232">            .setMethodDescriptor(updateParticipantMethodDescriptor)</span>
+<span class="fc" id="L233">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L235">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L236">                  params.put(</span>
+<span class="fc" id="L237">                      &quot;participant.name&quot;, String.valueOf(request.getParticipant().getName()));</span>
+<span class="fc" id="L238">                  return params.build();</span>
+                })
+<span class="fc" id="L240">            .build();</span>
+    GrpcCallSettings&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt;
+        analyzeContentTransportSettings =
+<span class="fc" id="L243">            GrpcCallSettings.&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt;newBuilder()</span>
+<span class="fc" id="L244">                .setMethodDescriptor(analyzeContentMethodDescriptor)</span>
+<span class="fc" id="L245">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L247">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L248">                      params.put(&quot;participant&quot;, String.valueOf(request.getParticipant()));</span>
+<span class="fc" id="L249">                      return params.build();</span>
+                    })
+<span class="fc" id="L251">                .build();</span>
+    GrpcCallSettings&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt;
+        suggestArticlesTransportSettings =
+<span class="fc" id="L254">            GrpcCallSettings.&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt;newBuilder()</span>
+<span class="fc" id="L255">                .setMethodDescriptor(suggestArticlesMethodDescriptor)</span>
+<span class="fc" id="L256">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L258">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L259">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L260">                      return params.build();</span>
+                    })
+<span class="fc" id="L262">                .build();</span>
+    GrpcCallSettings&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;
+        suggestFaqAnswersTransportSettings =
+<span class="fc" id="L265">            GrpcCallSettings.&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;newBuilder()</span>
+<span class="fc" id="L266">                .setMethodDescriptor(suggestFaqAnswersMethodDescriptor)</span>
+<span class="fc" id="L267">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L269">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L270">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L271">                      return params.build();</span>
+                    })
+<span class="fc" id="L273">                .build();</span>
+    GrpcCallSettings&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;
+        suggestSmartRepliesTransportSettings =
+<span class="fc" id="L276">            GrpcCallSettings.&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;newBuilder()</span>
+<span class="fc" id="L277">                .setMethodDescriptor(suggestSmartRepliesMethodDescriptor)</span>
+<span class="fc" id="L278">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L280">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L281">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L282">                      return params.build();</span>
+                    })
+<span class="fc" id="L284">                .build();</span>
+
+<span class="fc" id="L286">    this.createParticipantCallable =</span>
+<span class="fc" id="L287">        callableFactory.createUnaryCallable(</span>
+            createParticipantTransportSettings,
+<span class="fc" id="L289">            settings.createParticipantSettings(),</span>
+            clientContext);
+<span class="fc" id="L291">    this.getParticipantCallable =</span>
+<span class="fc" id="L292">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L293">            getParticipantTransportSettings, settings.getParticipantSettings(), clientContext);</span>
+<span class="fc" id="L294">    this.listParticipantsCallable =</span>
+<span class="fc" id="L295">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L296">            listParticipantsTransportSettings, settings.listParticipantsSettings(), clientContext);</span>
+<span class="fc" id="L297">    this.listParticipantsPagedCallable =</span>
+<span class="fc" id="L298">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L299">            listParticipantsTransportSettings, settings.listParticipantsSettings(), clientContext);</span>
+<span class="fc" id="L300">    this.updateParticipantCallable =</span>
+<span class="fc" id="L301">        callableFactory.createUnaryCallable(</span>
+            updateParticipantTransportSettings,
+<span class="fc" id="L303">            settings.updateParticipantSettings(),</span>
+            clientContext);
+<span class="fc" id="L305">    this.analyzeContentCallable =</span>
+<span class="fc" id="L306">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L307">            analyzeContentTransportSettings, settings.analyzeContentSettings(), clientContext);</span>
+<span class="fc" id="L308">    this.suggestArticlesCallable =</span>
+<span class="fc" id="L309">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L310">            suggestArticlesTransportSettings, settings.suggestArticlesSettings(), clientContext);</span>
+<span class="fc" id="L311">    this.suggestFaqAnswersCallable =</span>
+<span class="fc" id="L312">        callableFactory.createUnaryCallable(</span>
+            suggestFaqAnswersTransportSettings,
+<span class="fc" id="L314">            settings.suggestFaqAnswersSettings(),</span>
+            clientContext);
+<span class="fc" id="L316">    this.suggestSmartRepliesCallable =</span>
+<span class="fc" id="L317">        callableFactory.createUnaryCallable(</span>
+            suggestSmartRepliesTransportSettings,
+<span class="fc" id="L319">            settings.suggestSmartRepliesSettings(),</span>
+            clientContext);
+
+<span class="fc" id="L322">    this.backgroundResources =</span>
+<span class="fc" id="L323">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L324">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L327">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateParticipantRequest, Participant&gt; createParticipantCallable() {
+<span class="fc" id="L332">    return createParticipantCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetParticipantRequest, Participant&gt; getParticipantCallable() {
+<span class="fc" id="L337">    return getParticipantCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListParticipantsRequest, ListParticipantsResponse&gt;
+      listParticipantsCallable() {
+<span class="nc" id="L343">    return listParticipantsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListParticipantsRequest, ListParticipantsPagedResponse&gt;
+      listParticipantsPagedCallable() {
+<span class="fc" id="L349">    return listParticipantsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateParticipantRequest, Participant&gt; updateParticipantCallable() {
+<span class="fc" id="L354">    return updateParticipantCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt; analyzeContentCallable() {
+<span class="fc" id="L359">    return analyzeContentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt; suggestArticlesCallable() {
+<span class="fc" id="L364">    return suggestArticlesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;
+      suggestFaqAnswersCallable() {
+<span class="fc" id="L370">    return suggestFaqAnswersCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;
+      suggestSmartRepliesCallable() {
+<span class="fc" id="L376">    return suggestSmartRepliesCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L382">      backgroundResources.close();</span>
+<span class="nc" id="L383">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L384">      throw e;</span>
+<span class="nc" id="L385">    } catch (Exception e) {</span>
+<span class="nc" id="L386">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L387">    }</span>
+<span class="fc" id="L388">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L392">    backgroundResources.shutdown();</span>
+<span class="nc" id="L393">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L397">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L402">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L407">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L408">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L412">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

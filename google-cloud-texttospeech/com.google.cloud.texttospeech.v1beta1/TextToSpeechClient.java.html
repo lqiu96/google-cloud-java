@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TextToSpeechClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-texttospeech</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.texttospeech.v1beta1</a> &gt; <span class="el_source">TextToSpeechClient.java</span></div><h1>TextToSpeechClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.texttospeech.v1beta1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.texttospeech.v1beta1.stub.TextToSpeechStub;
+import com.google.cloud.texttospeech.v1beta1.stub.TextToSpeechStubSettings;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service that implements Google Cloud Text-to-Speech API.
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+ *   String languageCode = &quot;languageCode-2092349083&quot;;
+ *   ListVoicesResponse response = textToSpeechClient.listVoices(languageCode);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the TextToSpeechClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of TextToSpeechSettings to
+ * create(). For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * TextToSpeechSettings textToSpeechSettings =
+ *     TextToSpeechSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * TextToSpeechClient textToSpeechClient = TextToSpeechClient.create(textToSpeechSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * TextToSpeechSettings textToSpeechSettings =
+ *     TextToSpeechSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * TextToSpeechClient textToSpeechClient = TextToSpeechClient.create(textToSpeechSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class TextToSpeechClient implements BackgroundResource {
+  private final TextToSpeechSettings settings;
+  private final TextToSpeechStub stub;
+
+  /** Constructs an instance of TextToSpeechClient with default settings. */
+  public static final TextToSpeechClient create() throws IOException {
+<span class="nc" id="L102">    return create(TextToSpeechSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of TextToSpeechClient, using the given settings. The channels are
+   * created based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final TextToSpeechClient create(TextToSpeechSettings settings) throws IOException {
+<span class="fc" id="L110">    return new TextToSpeechClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of TextToSpeechClient, using the given stub for making calls. This is
+   * for advanced usage - prefer using create(TextToSpeechSettings).
+   */
+  public static final TextToSpeechClient create(TextToSpeechStub stub) {
+<span class="nc" id="L118">    return new TextToSpeechClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of TextToSpeechClient, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+<span class="fc" id="L126">  protected TextToSpeechClient(TextToSpeechSettings settings) throws IOException {</span>
+<span class="fc" id="L127">    this.settings = settings;</span>
+<span class="fc" id="L128">    this.stub = ((TextToSpeechStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L129">  }</span>
+
+<span class="nc" id="L131">  protected TextToSpeechClient(TextToSpeechStub stub) {</span>
+<span class="nc" id="L132">    this.settings = null;</span>
+<span class="nc" id="L133">    this.stub = stub;</span>
+<span class="nc" id="L134">  }</span>
+
+  public final TextToSpeechSettings getSettings() {
+<span class="nc" id="L137">    return settings;</span>
+  }
+
+  public TextToSpeechStub getStub() {
+<span class="nc" id="L141">    return stub;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns a list of Voice supported for synthesis.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+   *   String languageCode = &quot;languageCode-2092349083&quot;;
+   *   ListVoicesResponse response = textToSpeechClient.listVoices(languageCode);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param languageCode Optional. Recommended.
+   *     [BCP-47](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag. If not specified, the
+   *     API will return all supported voices. If specified, the ListVoices call will only return
+   *     voices that can be used to synthesize this language_code. For example, if you specify
+   *     `&quot;en-NZ&quot;`, all `&quot;en-NZ&quot;` voices will be returned. If you specify `&quot;no&quot;`, both
+   *     `&quot;no-\\&amp;#42;&quot;` (Norwegian) and `&quot;nb-\\&amp;#42;&quot;` (Norwegian Bokmal) voices will be returned.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListVoicesResponse listVoices(String languageCode) {
+    ListVoicesRequest request =
+<span class="fc" id="L169">        ListVoicesRequest.newBuilder().setLanguageCode(languageCode).build();</span>
+<span class="fc" id="L170">    return listVoices(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns a list of Voice supported for synthesis.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+   *   ListVoicesRequest request =
+   *       ListVoicesRequest.newBuilder().setLanguageCode(&quot;languageCode-2092349083&quot;).build();
+   *   ListVoicesResponse response = textToSpeechClient.listVoices(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListVoicesResponse listVoices(ListVoicesRequest request) {
+<span class="fc" id="L193">    return listVoicesCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns a list of Voice supported for synthesis.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+   *   ListVoicesRequest request =
+   *       ListVoicesRequest.newBuilder().setLanguageCode(&quot;languageCode-2092349083&quot;).build();
+   *   ApiFuture&lt;ListVoicesResponse&gt; future =
+   *       textToSpeechClient.listVoicesCallable().futureCall(request);
+   *   // Do something.
+   *   ListVoicesResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListVoicesRequest, ListVoicesResponse&gt; listVoicesCallable() {
+<span class="fc" id="L216">    return stub.listVoicesCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Synthesizes speech synchronously: receive results after all text input has been processed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+   *   SynthesisInput input = SynthesisInput.newBuilder().build();
+   *   VoiceSelectionParams voice = VoiceSelectionParams.newBuilder().build();
+   *   AudioConfig audioConfig = AudioConfig.newBuilder().build();
+   *   SynthesizeSpeechResponse response =
+   *       textToSpeechClient.synthesizeSpeech(input, voice, audioConfig);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param input Required. The Synthesizer requires either plain text or SSML as input.
+   * @param voice Required. The desired voice of the synthesized audio.
+   * @param audioConfig Required. The configuration of the synthesized audio.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SynthesizeSpeechResponse synthesizeSpeech(
+      SynthesisInput input, VoiceSelectionParams voice, AudioConfig audioConfig) {
+    SynthesizeSpeechRequest request =
+<span class="fc" id="L245">        SynthesizeSpeechRequest.newBuilder()</span>
+<span class="fc" id="L246">            .setInput(input)</span>
+<span class="fc" id="L247">            .setVoice(voice)</span>
+<span class="fc" id="L248">            .setAudioConfig(audioConfig)</span>
+<span class="fc" id="L249">            .build();</span>
+<span class="fc" id="L250">    return synthesizeSpeech(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Synthesizes speech synchronously: receive results after all text input has been processed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+   *   SynthesizeSpeechRequest request =
+   *       SynthesizeSpeechRequest.newBuilder()
+   *           .setInput(SynthesisInput.newBuilder().build())
+   *           .setVoice(VoiceSelectionParams.newBuilder().build())
+   *           .setAudioConfig(AudioConfig.newBuilder().build())
+   *           .addAllEnableTimePointing(new ArrayList&lt;SynthesizeSpeechRequest.TimepointType&gt;())
+   *           .build();
+   *   SynthesizeSpeechResponse response = textToSpeechClient.synthesizeSpeech(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SynthesizeSpeechResponse synthesizeSpeech(SynthesizeSpeechRequest request) {
+<span class="fc" id="L278">    return synthesizeSpeechCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Synthesizes speech synchronously: receive results after all text input has been processed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+   *   SynthesizeSpeechRequest request =
+   *       SynthesizeSpeechRequest.newBuilder()
+   *           .setInput(SynthesisInput.newBuilder().build())
+   *           .setVoice(VoiceSelectionParams.newBuilder().build())
+   *           .setAudioConfig(AudioConfig.newBuilder().build())
+   *           .addAllEnableTimePointing(new ArrayList&lt;SynthesizeSpeechRequest.TimepointType&gt;())
+   *           .build();
+   *   ApiFuture&lt;SynthesizeSpeechResponse&gt; future =
+   *       textToSpeechClient.synthesizeSpeechCallable().futureCall(request);
+   *   // Do something.
+   *   SynthesizeSpeechResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;SynthesizeSpeechRequest, SynthesizeSpeechResponse&gt;
+      synthesizeSpeechCallable() {
+<span class="fc" id="L307">    return stub.synthesizeSpeechCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L312">    stub.close();</span>
+<span class="fc" id="L313">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L317">    stub.shutdown();</span>
+<span class="nc" id="L318">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L322">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L327">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L332">    stub.shutdownNow();</span>
+<span class="nc" id="L333">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L337">    return stub.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

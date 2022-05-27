@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EntityTypesSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1</a> &gt; <span class="el_source">EntityTypesSettings.java</span></div><h1>EntityTypesSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1;
+
+import static com.google.cloud.dialogflow.v2beta1.EntityTypesClient.ListEntityTypesPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.cloud.dialogflow.v2beta1.stub.EntityTypesStubSettings;
+import com.google.longrunning.Operation;
+import com.google.protobuf.Empty;
+import com.google.protobuf.Struct;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link EntityTypesClient}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (dialogflow.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of getEntityType to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * EntityTypesSettings.Builder entityTypesSettingsBuilder = EntityTypesSettings.newBuilder();
+ * entityTypesSettingsBuilder
+ *     .getEntityTypeSettings()
+ *     .setRetrySettings(
+ *         entityTypesSettingsBuilder
+ *             .getEntityTypeSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * EntityTypesSettings entityTypesSettings = entityTypesSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class EntityTypesSettings extends ClientSettings&lt;EntityTypesSettings&gt; {
+
+  /** Returns the object with the settings used for calls to listEntityTypes. */
+  public PagedCallSettings&lt;
+          ListEntityTypesRequest, ListEntityTypesResponse, ListEntityTypesPagedResponse&gt;
+      listEntityTypesSettings() {
+<span class="nc" id="L82">    return ((EntityTypesStubSettings) getStubSettings()).listEntityTypesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to getEntityType. */
+  public UnaryCallSettings&lt;GetEntityTypeRequest, EntityType&gt; getEntityTypeSettings() {
+<span class="nc" id="L87">    return ((EntityTypesStubSettings) getStubSettings()).getEntityTypeSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to createEntityType. */
+  public UnaryCallSettings&lt;CreateEntityTypeRequest, EntityType&gt; createEntityTypeSettings() {
+<span class="nc" id="L92">    return ((EntityTypesStubSettings) getStubSettings()).createEntityTypeSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateEntityType. */
+  public UnaryCallSettings&lt;UpdateEntityTypeRequest, EntityType&gt; updateEntityTypeSettings() {
+<span class="nc" id="L97">    return ((EntityTypesStubSettings) getStubSettings()).updateEntityTypeSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteEntityType. */
+  public UnaryCallSettings&lt;DeleteEntityTypeRequest, Empty&gt; deleteEntityTypeSettings() {
+<span class="nc" id="L102">    return ((EntityTypesStubSettings) getStubSettings()).deleteEntityTypeSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchUpdateEntityTypes. */
+  public UnaryCallSettings&lt;BatchUpdateEntityTypesRequest, Operation&gt;
+      batchUpdateEntityTypesSettings() {
+<span class="nc" id="L108">    return ((EntityTypesStubSettings) getStubSettings()).batchUpdateEntityTypesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchUpdateEntityTypes. */
+  public OperationCallSettings&lt;
+          BatchUpdateEntityTypesRequest, BatchUpdateEntityTypesResponse, Struct&gt;
+      batchUpdateEntityTypesOperationSettings() {
+<span class="nc" id="L115">    return ((EntityTypesStubSettings) getStubSettings()).batchUpdateEntityTypesOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchDeleteEntityTypes. */
+  public UnaryCallSettings&lt;BatchDeleteEntityTypesRequest, Operation&gt;
+      batchDeleteEntityTypesSettings() {
+<span class="nc" id="L121">    return ((EntityTypesStubSettings) getStubSettings()).batchDeleteEntityTypesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchDeleteEntityTypes. */
+  public OperationCallSettings&lt;BatchDeleteEntityTypesRequest, Empty, Struct&gt;
+      batchDeleteEntityTypesOperationSettings() {
+<span class="nc" id="L127">    return ((EntityTypesStubSettings) getStubSettings()).batchDeleteEntityTypesOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchCreateEntities. */
+  public UnaryCallSettings&lt;BatchCreateEntitiesRequest, Operation&gt; batchCreateEntitiesSettings() {
+<span class="nc" id="L132">    return ((EntityTypesStubSettings) getStubSettings()).batchCreateEntitiesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchCreateEntities. */
+  public OperationCallSettings&lt;BatchCreateEntitiesRequest, Empty, Struct&gt;
+      batchCreateEntitiesOperationSettings() {
+<span class="nc" id="L138">    return ((EntityTypesStubSettings) getStubSettings()).batchCreateEntitiesOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchUpdateEntities. */
+  public UnaryCallSettings&lt;BatchUpdateEntitiesRequest, Operation&gt; batchUpdateEntitiesSettings() {
+<span class="nc" id="L143">    return ((EntityTypesStubSettings) getStubSettings()).batchUpdateEntitiesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchUpdateEntities. */
+  public OperationCallSettings&lt;BatchUpdateEntitiesRequest, Empty, Struct&gt;
+      batchUpdateEntitiesOperationSettings() {
+<span class="nc" id="L149">    return ((EntityTypesStubSettings) getStubSettings()).batchUpdateEntitiesOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchDeleteEntities. */
+  public UnaryCallSettings&lt;BatchDeleteEntitiesRequest, Operation&gt; batchDeleteEntitiesSettings() {
+<span class="nc" id="L154">    return ((EntityTypesStubSettings) getStubSettings()).batchDeleteEntitiesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchDeleteEntities. */
+  public OperationCallSettings&lt;BatchDeleteEntitiesRequest, Empty, Struct&gt;
+      batchDeleteEntitiesOperationSettings() {
+<span class="nc" id="L160">    return ((EntityTypesStubSettings) getStubSettings()).batchDeleteEntitiesOperationSettings();</span>
+  }
+
+  public static final EntityTypesSettings create(EntityTypesStubSettings stub) throws IOException {
+<span class="nc" id="L164">    return new EntityTypesSettings.Builder(stub.toBuilder()).build();</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L169">    return EntityTypesStubSettings.defaultExecutorProviderBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="nc" id="L174">    return EntityTypesStubSettings.getDefaultEndpoint();</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L179">    return EntityTypesStubSettings.getDefaultServiceScopes();</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="nc" id="L184">    return EntityTypesStubSettings.defaultCredentialsProviderBuilder();</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="nc" id="L189">    return EntityTypesStubSettings.defaultGrpcTransportProviderBuilder();</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="nc" id="L193">    return EntityTypesStubSettings.defaultTransportChannelProvider();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="nc" id="L198">    return EntityTypesStubSettings.defaultApiClientHeaderProviderBuilder();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L203">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L208">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L213">    return new Builder(this);</span>
+  }
+
+  protected EntityTypesSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L217">    super(settingsBuilder);</span>
+<span class="fc" id="L218">  }</span>
+
+  /** Builder for EntityTypesSettings. */
+  public static class Builder extends ClientSettings.Builder&lt;EntityTypesSettings, Builder&gt; {
+
+    protected Builder() throws IOException {
+<span class="nc" id="L224">      this(((ClientContext) null));</span>
+<span class="nc" id="L225">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="nc" id="L228">      super(EntityTypesStubSettings.newBuilder(clientContext));</span>
+<span class="nc" id="L229">    }</span>
+
+    protected Builder(EntityTypesSettings settings) {
+<span class="nc" id="L232">      super(settings.getStubSettings().toBuilder());</span>
+<span class="nc" id="L233">    }</span>
+
+    protected Builder(EntityTypesStubSettings.Builder stubSettings) {
+<span class="fc" id="L236">      super(stubSettings);</span>
+<span class="fc" id="L237">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L240">      return new Builder(EntityTypesStubSettings.newBuilder());</span>
+    }
+
+    public EntityTypesStubSettings.Builder getStubSettingsBuilder() {
+<span class="nc" id="L244">      return ((EntityTypesStubSettings.Builder) getStubSettings());</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L254">      super.applyToAllUnaryMethods(</span>
+<span class="nc" id="L255">          getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);</span>
+<span class="nc" id="L256">      return this;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listEntityTypes. */
+    public PagedCallSettings.Builder&lt;
+            ListEntityTypesRequest, ListEntityTypesResponse, ListEntityTypesPagedResponse&gt;
+        listEntityTypesSettings() {
+<span class="nc" id="L263">      return getStubSettingsBuilder().listEntityTypesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getEntityType. */
+    public UnaryCallSettings.Builder&lt;GetEntityTypeRequest, EntityType&gt; getEntityTypeSettings() {
+<span class="nc" id="L268">      return getStubSettingsBuilder().getEntityTypeSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createEntityType. */
+    public UnaryCallSettings.Builder&lt;CreateEntityTypeRequest, EntityType&gt;
+        createEntityTypeSettings() {
+<span class="nc" id="L274">      return getStubSettingsBuilder().createEntityTypeSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateEntityType. */
+    public UnaryCallSettings.Builder&lt;UpdateEntityTypeRequest, EntityType&gt;
+        updateEntityTypeSettings() {
+<span class="nc" id="L280">      return getStubSettingsBuilder().updateEntityTypeSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteEntityType. */
+    public UnaryCallSettings.Builder&lt;DeleteEntityTypeRequest, Empty&gt; deleteEntityTypeSettings() {
+<span class="nc" id="L285">      return getStubSettingsBuilder().deleteEntityTypeSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchUpdateEntityTypes. */
+    public UnaryCallSettings.Builder&lt;BatchUpdateEntityTypesRequest, Operation&gt;
+        batchUpdateEntityTypesSettings() {
+<span class="nc" id="L291">      return getStubSettingsBuilder().batchUpdateEntityTypesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchUpdateEntityTypes. */
+    public OperationCallSettings.Builder&lt;
+            BatchUpdateEntityTypesRequest, BatchUpdateEntityTypesResponse, Struct&gt;
+        batchUpdateEntityTypesOperationSettings() {
+<span class="nc" id="L298">      return getStubSettingsBuilder().batchUpdateEntityTypesOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchDeleteEntityTypes. */
+    public UnaryCallSettings.Builder&lt;BatchDeleteEntityTypesRequest, Operation&gt;
+        batchDeleteEntityTypesSettings() {
+<span class="nc" id="L304">      return getStubSettingsBuilder().batchDeleteEntityTypesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchDeleteEntityTypes. */
+    public OperationCallSettings.Builder&lt;BatchDeleteEntityTypesRequest, Empty, Struct&gt;
+        batchDeleteEntityTypesOperationSettings() {
+<span class="nc" id="L310">      return getStubSettingsBuilder().batchDeleteEntityTypesOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchCreateEntities. */
+    public UnaryCallSettings.Builder&lt;BatchCreateEntitiesRequest, Operation&gt;
+        batchCreateEntitiesSettings() {
+<span class="nc" id="L316">      return getStubSettingsBuilder().batchCreateEntitiesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchCreateEntities. */
+    public OperationCallSettings.Builder&lt;BatchCreateEntitiesRequest, Empty, Struct&gt;
+        batchCreateEntitiesOperationSettings() {
+<span class="nc" id="L322">      return getStubSettingsBuilder().batchCreateEntitiesOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchUpdateEntities. */
+    public UnaryCallSettings.Builder&lt;BatchUpdateEntitiesRequest, Operation&gt;
+        batchUpdateEntitiesSettings() {
+<span class="nc" id="L328">      return getStubSettingsBuilder().batchUpdateEntitiesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchUpdateEntities. */
+    public OperationCallSettings.Builder&lt;BatchUpdateEntitiesRequest, Empty, Struct&gt;
+        batchUpdateEntitiesOperationSettings() {
+<span class="nc" id="L334">      return getStubSettingsBuilder().batchUpdateEntitiesOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchDeleteEntities. */
+    public UnaryCallSettings.Builder&lt;BatchDeleteEntitiesRequest, Operation&gt;
+        batchDeleteEntitiesSettings() {
+<span class="nc" id="L340">      return getStubSettingsBuilder().batchDeleteEntitiesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchDeleteEntities. */
+    public OperationCallSettings.Builder&lt;BatchDeleteEntitiesRequest, Empty, Struct&gt;
+        batchDeleteEntitiesOperationSettings() {
+<span class="nc" id="L346">      return getStubSettingsBuilder().batchDeleteEntitiesOperationSettings();</span>
+    }
+
+    @Override
+    public EntityTypesSettings build() throws IOException {
+<span class="fc" id="L351">      return new EntityTypesSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

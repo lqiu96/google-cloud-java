@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ConversationModelsStubSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">ConversationModelsStubSettings.java</span></div><h1>ConversationModelsStubSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.ConversationModelsClient.ListConversationModelEvaluationsPagedResponse;
+import static com.google.cloud.dialogflow.v2.ConversationModelsClient.ListConversationModelsPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.grpc.ProtoOperationTransformers;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.PagedListDescriptor;
+import com.google.api.gax.rpc.PagedListResponseFactory;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StubSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.ConversationModel;
+import com.google.cloud.dialogflow.v2.ConversationModelEvaluation;
+import com.google.cloud.dialogflow.v2.CreateConversationModelEvaluationOperationMetadata;
+import com.google.cloud.dialogflow.v2.CreateConversationModelEvaluationRequest;
+import com.google.cloud.dialogflow.v2.CreateConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.CreateConversationModelRequest;
+import com.google.cloud.dialogflow.v2.DeleteConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.DeleteConversationModelRequest;
+import com.google.cloud.dialogflow.v2.DeployConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.DeployConversationModelRequest;
+import com.google.cloud.dialogflow.v2.GetConversationModelEvaluationRequest;
+import com.google.cloud.dialogflow.v2.GetConversationModelRequest;
+import com.google.cloud.dialogflow.v2.ListConversationModelEvaluationsRequest;
+import com.google.cloud.dialogflow.v2.ListConversationModelEvaluationsResponse;
+import com.google.cloud.dialogflow.v2.ListConversationModelsRequest;
+import com.google.cloud.dialogflow.v2.ListConversationModelsResponse;
+import com.google.cloud.dialogflow.v2.UndeployConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.UndeployConversationModelRequest;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.longrunning.Operation;
+import com.google.protobuf.Empty;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link ConversationModelsStub}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (dialogflow.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of getConversationModel to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ConversationModelsStubSettings.Builder conversationModelsSettingsBuilder =
+ *     ConversationModelsStubSettings.newBuilder();
+ * conversationModelsSettingsBuilder
+ *     .getConversationModelSettings()
+ *     .setRetrySettings(
+ *         conversationModelsSettingsBuilder
+ *             .getConversationModelSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * ConversationModelsStubSettings conversationModelsSettings =
+ *     conversationModelsSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ConversationModelsStubSettings extends StubSettings&lt;ConversationModelsStubSettings&gt; {
+  /** The default scopes of the service. */
+  private static final ImmutableList&lt;String&gt; DEFAULT_SERVICE_SCOPES =
+<span class="fc" id="L116">      ImmutableList.&lt;String&gt;builder()</span>
+<span class="fc" id="L117">          .add(&quot;https://www.googleapis.com/auth/cloud-platform&quot;)</span>
+<span class="fc" id="L118">          .add(&quot;https://www.googleapis.com/auth/dialogflow&quot;)</span>
+<span class="fc" id="L119">          .build();</span>
+
+  private final UnaryCallSettings&lt;CreateConversationModelRequest, Operation&gt;
+      createConversationModelSettings;
+  private final OperationCallSettings&lt;
+          CreateConversationModelRequest,
+          ConversationModel,
+          CreateConversationModelOperationMetadata&gt;
+      createConversationModelOperationSettings;
+  private final UnaryCallSettings&lt;GetConversationModelRequest, ConversationModel&gt;
+      getConversationModelSettings;
+  private final PagedCallSettings&lt;
+          ListConversationModelsRequest,
+          ListConversationModelsResponse,
+          ListConversationModelsPagedResponse&gt;
+      listConversationModelsSettings;
+  private final UnaryCallSettings&lt;DeleteConversationModelRequest, Operation&gt;
+      deleteConversationModelSettings;
+  private final OperationCallSettings&lt;
+          DeleteConversationModelRequest, Empty, DeleteConversationModelOperationMetadata&gt;
+      deleteConversationModelOperationSettings;
+  private final UnaryCallSettings&lt;DeployConversationModelRequest, Operation&gt;
+      deployConversationModelSettings;
+  private final OperationCallSettings&lt;
+          DeployConversationModelRequest, Empty, DeployConversationModelOperationMetadata&gt;
+      deployConversationModelOperationSettings;
+  private final UnaryCallSettings&lt;UndeployConversationModelRequest, Operation&gt;
+      undeployConversationModelSettings;
+  private final OperationCallSettings&lt;
+          UndeployConversationModelRequest, Empty, UndeployConversationModelOperationMetadata&gt;
+      undeployConversationModelOperationSettings;
+  private final UnaryCallSettings&lt;
+          GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+      getConversationModelEvaluationSettings;
+  private final PagedCallSettings&lt;
+          ListConversationModelEvaluationsRequest,
+          ListConversationModelEvaluationsResponse,
+          ListConversationModelEvaluationsPagedResponse&gt;
+      listConversationModelEvaluationsSettings;
+  private final UnaryCallSettings&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+      createConversationModelEvaluationSettings;
+  private final OperationCallSettings&lt;
+          CreateConversationModelEvaluationRequest,
+          ConversationModelEvaluation,
+          CreateConversationModelEvaluationOperationMetadata&gt;
+      createConversationModelEvaluationOperationSettings;
+
+  private static final PagedListDescriptor&lt;
+          ListConversationModelsRequest, ListConversationModelsResponse, ConversationModel&gt;
+<span class="fc" id="L168">      LIST_CONVERSATION_MODELS_PAGE_STR_DESC =</span>
+          new PagedListDescriptor&lt;
+<span class="fc" id="L170">              ListConversationModelsRequest, ListConversationModelsResponse, ConversationModel&gt;() {</span>
+            @Override
+            public String emptyToken() {
+<span class="fc" id="L173">              return &quot;&quot;;</span>
+            }
+
+            @Override
+            public ListConversationModelsRequest injectToken(
+                ListConversationModelsRequest payload, String token) {
+<span class="nc" id="L179">              return ListConversationModelsRequest.newBuilder(payload).setPageToken(token).build();</span>
+            }
+
+            @Override
+            public ListConversationModelsRequest injectPageSize(
+                ListConversationModelsRequest payload, int pageSize) {
+<span class="nc" id="L185">              return ListConversationModelsRequest.newBuilder(payload)</span>
+<span class="nc" id="L186">                  .setPageSize(pageSize)</span>
+<span class="nc" id="L187">                  .build();</span>
+            }
+
+            @Override
+            public Integer extractPageSize(ListConversationModelsRequest payload) {
+<span class="nc" id="L192">              return payload.getPageSize();</span>
+            }
+
+            @Override
+            public String extractNextToken(ListConversationModelsResponse payload) {
+<span class="fc" id="L197">              return payload.getNextPageToken();</span>
+            }
+
+            @Override
+            public Iterable&lt;ConversationModel&gt; extractResources(
+                ListConversationModelsResponse payload) {
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">              return payload.getConversationModelsList() == null</span>
+<span class="nc" id="L204">                  ? ImmutableList.&lt;ConversationModel&gt;of()</span>
+<span class="fc" id="L205">                  : payload.getConversationModelsList();</span>
+            }
+          };
+
+  private static final PagedListDescriptor&lt;
+          ListConversationModelEvaluationsRequest,
+          ListConversationModelEvaluationsResponse,
+          ConversationModelEvaluation&gt;
+<span class="fc" id="L213">      LIST_CONVERSATION_MODEL_EVALUATIONS_PAGE_STR_DESC =</span>
+          new PagedListDescriptor&lt;
+              ListConversationModelEvaluationsRequest,
+              ListConversationModelEvaluationsResponse,
+<span class="fc" id="L217">              ConversationModelEvaluation&gt;() {</span>
+            @Override
+            public String emptyToken() {
+<span class="fc" id="L220">              return &quot;&quot;;</span>
+            }
+
+            @Override
+            public ListConversationModelEvaluationsRequest injectToken(
+                ListConversationModelEvaluationsRequest payload, String token) {
+<span class="nc" id="L226">              return ListConversationModelEvaluationsRequest.newBuilder(payload)</span>
+<span class="nc" id="L227">                  .setPageToken(token)</span>
+<span class="nc" id="L228">                  .build();</span>
+            }
+
+            @Override
+            public ListConversationModelEvaluationsRequest injectPageSize(
+                ListConversationModelEvaluationsRequest payload, int pageSize) {
+<span class="nc" id="L234">              return ListConversationModelEvaluationsRequest.newBuilder(payload)</span>
+<span class="nc" id="L235">                  .setPageSize(pageSize)</span>
+<span class="nc" id="L236">                  .build();</span>
+            }
+
+            @Override
+            public Integer extractPageSize(ListConversationModelEvaluationsRequest payload) {
+<span class="nc" id="L241">              return payload.getPageSize();</span>
+            }
+
+            @Override
+            public String extractNextToken(ListConversationModelEvaluationsResponse payload) {
+<span class="fc" id="L246">              return payload.getNextPageToken();</span>
+            }
+
+            @Override
+            public Iterable&lt;ConversationModelEvaluation&gt; extractResources(
+                ListConversationModelEvaluationsResponse payload) {
+<span class="pc bpc" id="L252" title="1 of 2 branches missed.">              return payload.getConversationModelEvaluationsList() == null</span>
+<span class="nc" id="L253">                  ? ImmutableList.&lt;ConversationModelEvaluation&gt;of()</span>
+<span class="fc" id="L254">                  : payload.getConversationModelEvaluationsList();</span>
+            }
+          };
+
+  private static final PagedListResponseFactory&lt;
+          ListConversationModelsRequest,
+          ListConversationModelsResponse,
+          ListConversationModelsPagedResponse&gt;
+<span class="fc" id="L262">      LIST_CONVERSATION_MODELS_PAGE_STR_FACT =</span>
+          new PagedListResponseFactory&lt;
+              ListConversationModelsRequest,
+              ListConversationModelsResponse,
+<span class="fc" id="L266">              ListConversationModelsPagedResponse&gt;() {</span>
+            @Override
+            public ApiFuture&lt;ListConversationModelsPagedResponse&gt; getFuturePagedResponse(
+                UnaryCallable&lt;ListConversationModelsRequest, ListConversationModelsResponse&gt;
+                    callable,
+                ListConversationModelsRequest request,
+                ApiCallContext context,
+                ApiFuture&lt;ListConversationModelsResponse&gt; futureResponse) {
+              PageContext&lt;
+                      ListConversationModelsRequest,
+                      ListConversationModelsResponse,
+                      ConversationModel&gt;
+<span class="fc" id="L278">                  pageContext =</span>
+<span class="fc" id="L279">                      PageContext.create(</span>
+<span class="fc" id="L280">                          callable, LIST_CONVERSATION_MODELS_PAGE_STR_DESC, request, context);</span>
+<span class="fc" id="L281">              return ListConversationModelsPagedResponse.createAsync(pageContext, futureResponse);</span>
+            }
+          };
+
+  private static final PagedListResponseFactory&lt;
+          ListConversationModelEvaluationsRequest,
+          ListConversationModelEvaluationsResponse,
+          ListConversationModelEvaluationsPagedResponse&gt;
+<span class="fc" id="L289">      LIST_CONVERSATION_MODEL_EVALUATIONS_PAGE_STR_FACT =</span>
+          new PagedListResponseFactory&lt;
+              ListConversationModelEvaluationsRequest,
+              ListConversationModelEvaluationsResponse,
+<span class="fc" id="L293">              ListConversationModelEvaluationsPagedResponse&gt;() {</span>
+            @Override
+            public ApiFuture&lt;ListConversationModelEvaluationsPagedResponse&gt; getFuturePagedResponse(
+                UnaryCallable&lt;
+                        ListConversationModelEvaluationsRequest,
+                        ListConversationModelEvaluationsResponse&gt;
+                    callable,
+                ListConversationModelEvaluationsRequest request,
+                ApiCallContext context,
+                ApiFuture&lt;ListConversationModelEvaluationsResponse&gt; futureResponse) {
+              PageContext&lt;
+                      ListConversationModelEvaluationsRequest,
+                      ListConversationModelEvaluationsResponse,
+                      ConversationModelEvaluation&gt;
+<span class="fc" id="L307">                  pageContext =</span>
+<span class="fc" id="L308">                      PageContext.create(</span>
+                          callable,
+<span class="fc" id="L310">                          LIST_CONVERSATION_MODEL_EVALUATIONS_PAGE_STR_DESC,</span>
+                          request,
+                          context);
+<span class="fc" id="L313">              return ListConversationModelEvaluationsPagedResponse.createAsync(</span>
+                  pageContext, futureResponse);
+            }
+          };
+
+  /** Returns the object with the settings used for calls to createConversationModel. */
+  public UnaryCallSettings&lt;CreateConversationModelRequest, Operation&gt;
+      createConversationModelSettings() {
+<span class="fc" id="L321">    return createConversationModelSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to createConversationModel. */
+  public OperationCallSettings&lt;
+          CreateConversationModelRequest,
+          ConversationModel,
+          CreateConversationModelOperationMetadata&gt;
+      createConversationModelOperationSettings() {
+<span class="fc" id="L330">    return createConversationModelOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to getConversationModel. */
+  public UnaryCallSettings&lt;GetConversationModelRequest, ConversationModel&gt;
+      getConversationModelSettings() {
+<span class="fc" id="L336">    return getConversationModelSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to listConversationModels. */
+  public PagedCallSettings&lt;
+          ListConversationModelsRequest,
+          ListConversationModelsResponse,
+          ListConversationModelsPagedResponse&gt;
+      listConversationModelsSettings() {
+<span class="fc" id="L345">    return listConversationModelsSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteConversationModel. */
+  public UnaryCallSettings&lt;DeleteConversationModelRequest, Operation&gt;
+      deleteConversationModelSettings() {
+<span class="fc" id="L351">    return deleteConversationModelSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteConversationModel. */
+  public OperationCallSettings&lt;
+          DeleteConversationModelRequest, Empty, DeleteConversationModelOperationMetadata&gt;
+      deleteConversationModelOperationSettings() {
+<span class="fc" id="L358">    return deleteConversationModelOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to deployConversationModel. */
+  public UnaryCallSettings&lt;DeployConversationModelRequest, Operation&gt;
+      deployConversationModelSettings() {
+<span class="fc" id="L364">    return deployConversationModelSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to deployConversationModel. */
+  public OperationCallSettings&lt;
+          DeployConversationModelRequest, Empty, DeployConversationModelOperationMetadata&gt;
+      deployConversationModelOperationSettings() {
+<span class="fc" id="L371">    return deployConversationModelOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to undeployConversationModel. */
+  public UnaryCallSettings&lt;UndeployConversationModelRequest, Operation&gt;
+      undeployConversationModelSettings() {
+<span class="fc" id="L377">    return undeployConversationModelSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to undeployConversationModel. */
+  public OperationCallSettings&lt;
+          UndeployConversationModelRequest, Empty, UndeployConversationModelOperationMetadata&gt;
+      undeployConversationModelOperationSettings() {
+<span class="fc" id="L384">    return undeployConversationModelOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to getConversationModelEvaluation. */
+  public UnaryCallSettings&lt;GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+      getConversationModelEvaluationSettings() {
+<span class="fc" id="L390">    return getConversationModelEvaluationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to listConversationModelEvaluations. */
+  public PagedCallSettings&lt;
+          ListConversationModelEvaluationsRequest,
+          ListConversationModelEvaluationsResponse,
+          ListConversationModelEvaluationsPagedResponse&gt;
+      listConversationModelEvaluationsSettings() {
+<span class="fc" id="L399">    return listConversationModelEvaluationsSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to createConversationModelEvaluation. */
+  public UnaryCallSettings&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+      createConversationModelEvaluationSettings() {
+<span class="fc" id="L405">    return createConversationModelEvaluationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to createConversationModelEvaluation. */
+  public OperationCallSettings&lt;
+          CreateConversationModelEvaluationRequest,
+          ConversationModelEvaluation,
+          CreateConversationModelEvaluationOperationMetadata&gt;
+      createConversationModelEvaluationOperationSettings() {
+<span class="fc" id="L414">    return createConversationModelEvaluationOperationSettings;</span>
+  }
+
+  public ConversationModelsStub createStub() throws IOException {
+<span class="fc" id="L418">    if (getTransportChannelProvider()</span>
+<span class="fc" id="L419">        .getTransportName()</span>
+<span class="pc bpc" id="L420" title="1 of 2 branches missed.">        .equals(GrpcTransportChannel.getGrpcTransportName())) {</span>
+<span class="fc" id="L421">      return GrpcConversationModelsStub.create(this);</span>
+    }
+<span class="nc" id="L423">    throw new UnsupportedOperationException(</span>
+<span class="nc" id="L424">        String.format(</span>
+<span class="nc" id="L425">            &quot;Transport not supported: %s&quot;, getTransportChannelProvider().getTransportName()));</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L430">    return InstantiatingExecutorProvider.newBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="fc" id="L435">    return &quot;dialogflow.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default mTLS service endpoint. */
+  public static String getDefaultMtlsEndpoint() {
+<span class="fc" id="L440">    return &quot;dialogflow.mtls.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L445">    return DEFAULT_SERVICE_SCOPES;</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="fc" id="L450">    return GoogleCredentialsProvider.newBuilder()</span>
+<span class="fc" id="L451">        .setScopesToApply(DEFAULT_SERVICE_SCOPES)</span>
+<span class="fc" id="L452">        .setUseJwtAccessWithScope(true);</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="fc" id="L457">    return InstantiatingGrpcChannelProvider.newBuilder()</span>
+<span class="fc" id="L458">        .setMaxInboundMessageSize(Integer.MAX_VALUE);</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="fc" id="L462">    return defaultGrpcTransportProviderBuilder().build();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="fc" id="L467">    return ApiClientHeaderProvider.newBuilder()</span>
+<span class="fc" id="L468">        .setGeneratedLibToken(</span>
+<span class="fc" id="L469">            &quot;gapic&quot;, GaxProperties.getLibraryVersion(ConversationModelsStubSettings.class))</span>
+<span class="fc" id="L470">        .setTransportToken(</span>
+<span class="fc" id="L471">            GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L476">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L481">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L486">    return new Builder(this);</span>
+  }
+
+  protected ConversationModelsStubSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L490">    super(settingsBuilder);</span>
+
+<span class="fc" id="L492">    createConversationModelSettings = settingsBuilder.createConversationModelSettings().build();</span>
+<span class="fc" id="L493">    createConversationModelOperationSettings =</span>
+<span class="fc" id="L494">        settingsBuilder.createConversationModelOperationSettings().build();</span>
+<span class="fc" id="L495">    getConversationModelSettings = settingsBuilder.getConversationModelSettings().build();</span>
+<span class="fc" id="L496">    listConversationModelsSettings = settingsBuilder.listConversationModelsSettings().build();</span>
+<span class="fc" id="L497">    deleteConversationModelSettings = settingsBuilder.deleteConversationModelSettings().build();</span>
+<span class="fc" id="L498">    deleteConversationModelOperationSettings =</span>
+<span class="fc" id="L499">        settingsBuilder.deleteConversationModelOperationSettings().build();</span>
+<span class="fc" id="L500">    deployConversationModelSettings = settingsBuilder.deployConversationModelSettings().build();</span>
+<span class="fc" id="L501">    deployConversationModelOperationSettings =</span>
+<span class="fc" id="L502">        settingsBuilder.deployConversationModelOperationSettings().build();</span>
+<span class="fc" id="L503">    undeployConversationModelSettings = settingsBuilder.undeployConversationModelSettings().build();</span>
+<span class="fc" id="L504">    undeployConversationModelOperationSettings =</span>
+<span class="fc" id="L505">        settingsBuilder.undeployConversationModelOperationSettings().build();</span>
+<span class="fc" id="L506">    getConversationModelEvaluationSettings =</span>
+<span class="fc" id="L507">        settingsBuilder.getConversationModelEvaluationSettings().build();</span>
+<span class="fc" id="L508">    listConversationModelEvaluationsSettings =</span>
+<span class="fc" id="L509">        settingsBuilder.listConversationModelEvaluationsSettings().build();</span>
+<span class="fc" id="L510">    createConversationModelEvaluationSettings =</span>
+<span class="fc" id="L511">        settingsBuilder.createConversationModelEvaluationSettings().build();</span>
+<span class="fc" id="L512">    createConversationModelEvaluationOperationSettings =</span>
+<span class="fc" id="L513">        settingsBuilder.createConversationModelEvaluationOperationSettings().build();</span>
+<span class="fc" id="L514">  }</span>
+
+  /** Builder for ConversationModelsStubSettings. */
+  public static class Builder
+      extends StubSettings.Builder&lt;ConversationModelsStubSettings, Builder&gt; {
+    private final ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders;
+    private final UnaryCallSettings.Builder&lt;CreateConversationModelRequest, Operation&gt;
+        createConversationModelSettings;
+    private final OperationCallSettings.Builder&lt;
+            CreateConversationModelRequest,
+            ConversationModel,
+            CreateConversationModelOperationMetadata&gt;
+        createConversationModelOperationSettings;
+    private final UnaryCallSettings.Builder&lt;GetConversationModelRequest, ConversationModel&gt;
+        getConversationModelSettings;
+    private final PagedCallSettings.Builder&lt;
+            ListConversationModelsRequest,
+            ListConversationModelsResponse,
+            ListConversationModelsPagedResponse&gt;
+        listConversationModelsSettings;
+    private final UnaryCallSettings.Builder&lt;DeleteConversationModelRequest, Operation&gt;
+        deleteConversationModelSettings;
+    private final OperationCallSettings.Builder&lt;
+            DeleteConversationModelRequest, Empty, DeleteConversationModelOperationMetadata&gt;
+        deleteConversationModelOperationSettings;
+    private final UnaryCallSettings.Builder&lt;DeployConversationModelRequest, Operation&gt;
+        deployConversationModelSettings;
+    private final OperationCallSettings.Builder&lt;
+            DeployConversationModelRequest, Empty, DeployConversationModelOperationMetadata&gt;
+        deployConversationModelOperationSettings;
+    private final UnaryCallSettings.Builder&lt;UndeployConversationModelRequest, Operation&gt;
+        undeployConversationModelSettings;
+    private final OperationCallSettings.Builder&lt;
+            UndeployConversationModelRequest, Empty, UndeployConversationModelOperationMetadata&gt;
+        undeployConversationModelOperationSettings;
+    private final UnaryCallSettings.Builder&lt;
+            GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+        getConversationModelEvaluationSettings;
+    private final PagedCallSettings.Builder&lt;
+            ListConversationModelEvaluationsRequest,
+            ListConversationModelEvaluationsResponse,
+            ListConversationModelEvaluationsPagedResponse&gt;
+        listConversationModelEvaluationsSettings;
+    private final UnaryCallSettings.Builder&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+        createConversationModelEvaluationSettings;
+    private final OperationCallSettings.Builder&lt;
+            CreateConversationModelEvaluationRequest,
+            ConversationModelEvaluation,
+            CreateConversationModelEvaluationOperationMetadata&gt;
+        createConversationModelEvaluationOperationSettings;
+    private static final ImmutableMap&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt;
+        RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt; definitions =
+<span class="fc" id="L569">          ImmutableMap.builder();</span>
+<span class="fc" id="L570">      definitions.put(</span>
+          &quot;retry_policy_0_codes&quot;,
+<span class="fc" id="L572">          ImmutableSet.copyOf(Lists.&lt;StatusCode.Code&gt;newArrayList(StatusCode.Code.UNAVAILABLE)));</span>
+<span class="fc" id="L573">      RETRYABLE_CODE_DEFINITIONS = definitions.build();</span>
+    }
+
+    private static final ImmutableMap&lt;String, RetrySettings&gt; RETRY_PARAM_DEFINITIONS;
+
+    static {
+<span class="fc" id="L579">      ImmutableMap.Builder&lt;String, RetrySettings&gt; definitions = ImmutableMap.builder();</span>
+<span class="fc" id="L580">      RetrySettings settings = null;</span>
+      settings =
+<span class="fc" id="L582">          RetrySettings.newBuilder()</span>
+<span class="fc" id="L583">              .setInitialRetryDelay(Duration.ofMillis(100L))</span>
+<span class="fc" id="L584">              .setRetryDelayMultiplier(1.3)</span>
+<span class="fc" id="L585">              .setMaxRetryDelay(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L586">              .setInitialRpcTimeout(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L587">              .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L588">              .setMaxRpcTimeout(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L589">              .setTotalTimeout(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L590">              .build();</span>
+<span class="fc" id="L591">      definitions.put(&quot;retry_policy_0_params&quot;, settings);</span>
+<span class="fc" id="L592">      RETRY_PARAM_DEFINITIONS = definitions.build();</span>
+<span class="fc" id="L593">    }</span>
+
+    protected Builder() {
+<span class="nc" id="L596">      this(((ClientContext) null));</span>
+<span class="nc" id="L597">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="fc" id="L600">      super(clientContext);</span>
+
+<span class="fc" id="L602">      createConversationModelSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L603">      createConversationModelOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L604">      getConversationModelSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L605">      listConversationModelsSettings =</span>
+<span class="fc" id="L606">          PagedCallSettings.newBuilder(LIST_CONVERSATION_MODELS_PAGE_STR_FACT);</span>
+<span class="fc" id="L607">      deleteConversationModelSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L608">      deleteConversationModelOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L609">      deployConversationModelSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L610">      deployConversationModelOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L611">      undeployConversationModelSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L612">      undeployConversationModelOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L613">      getConversationModelEvaluationSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L614">      listConversationModelEvaluationsSettings =</span>
+<span class="fc" id="L615">          PagedCallSettings.newBuilder(LIST_CONVERSATION_MODEL_EVALUATIONS_PAGE_STR_FACT);</span>
+<span class="fc" id="L616">      createConversationModelEvaluationSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L617">      createConversationModelEvaluationOperationSettings = OperationCallSettings.newBuilder();</span>
+
+<span class="fc" id="L619">      unaryMethodSettingsBuilders =</span>
+<span class="fc" id="L620">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              createConversationModelSettings,
+              getConversationModelSettings,
+              listConversationModelsSettings,
+              deleteConversationModelSettings,
+              deployConversationModelSettings,
+              undeployConversationModelSettings,
+              getConversationModelEvaluationSettings,
+              listConversationModelEvaluationsSettings,
+              createConversationModelEvaluationSettings);
+<span class="fc" id="L630">      initDefaults(this);</span>
+<span class="fc" id="L631">    }</span>
+
+    protected Builder(ConversationModelsStubSettings settings) {
+<span class="nc" id="L634">      super(settings);</span>
+
+<span class="nc" id="L636">      createConversationModelSettings = settings.createConversationModelSettings.toBuilder();</span>
+<span class="nc" id="L637">      createConversationModelOperationSettings =</span>
+<span class="nc" id="L638">          settings.createConversationModelOperationSettings.toBuilder();</span>
+<span class="nc" id="L639">      getConversationModelSettings = settings.getConversationModelSettings.toBuilder();</span>
+<span class="nc" id="L640">      listConversationModelsSettings = settings.listConversationModelsSettings.toBuilder();</span>
+<span class="nc" id="L641">      deleteConversationModelSettings = settings.deleteConversationModelSettings.toBuilder();</span>
+<span class="nc" id="L642">      deleteConversationModelOperationSettings =</span>
+<span class="nc" id="L643">          settings.deleteConversationModelOperationSettings.toBuilder();</span>
+<span class="nc" id="L644">      deployConversationModelSettings = settings.deployConversationModelSettings.toBuilder();</span>
+<span class="nc" id="L645">      deployConversationModelOperationSettings =</span>
+<span class="nc" id="L646">          settings.deployConversationModelOperationSettings.toBuilder();</span>
+<span class="nc" id="L647">      undeployConversationModelSettings = settings.undeployConversationModelSettings.toBuilder();</span>
+<span class="nc" id="L648">      undeployConversationModelOperationSettings =</span>
+<span class="nc" id="L649">          settings.undeployConversationModelOperationSettings.toBuilder();</span>
+<span class="nc" id="L650">      getConversationModelEvaluationSettings =</span>
+<span class="nc" id="L651">          settings.getConversationModelEvaluationSettings.toBuilder();</span>
+<span class="nc" id="L652">      listConversationModelEvaluationsSettings =</span>
+<span class="nc" id="L653">          settings.listConversationModelEvaluationsSettings.toBuilder();</span>
+<span class="nc" id="L654">      createConversationModelEvaluationSettings =</span>
+<span class="nc" id="L655">          settings.createConversationModelEvaluationSettings.toBuilder();</span>
+<span class="nc" id="L656">      createConversationModelEvaluationOperationSettings =</span>
+<span class="nc" id="L657">          settings.createConversationModelEvaluationOperationSettings.toBuilder();</span>
+
+<span class="nc" id="L659">      unaryMethodSettingsBuilders =</span>
+<span class="nc" id="L660">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              createConversationModelSettings,
+              getConversationModelSettings,
+              listConversationModelsSettings,
+              deleteConversationModelSettings,
+              deployConversationModelSettings,
+              undeployConversationModelSettings,
+              getConversationModelEvaluationSettings,
+              listConversationModelEvaluationsSettings,
+              createConversationModelEvaluationSettings);
+<span class="nc" id="L670">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L673">      Builder builder = new Builder(((ClientContext) null));</span>
+
+<span class="fc" id="L675">      builder.setTransportChannelProvider(defaultTransportChannelProvider());</span>
+<span class="fc" id="L676">      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());</span>
+<span class="fc" id="L677">      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());</span>
+<span class="fc" id="L678">      builder.setEndpoint(getDefaultEndpoint());</span>
+<span class="fc" id="L679">      builder.setMtlsEndpoint(getDefaultMtlsEndpoint());</span>
+<span class="fc" id="L680">      builder.setSwitchToMtlsEndpointAllowed(true);</span>
+
+<span class="fc" id="L682">      return initDefaults(builder);</span>
+    }
+
+    private static Builder initDefaults(Builder builder) {
+<span class="fc" id="L686">      builder</span>
+<span class="fc" id="L687">          .createConversationModelSettings()</span>
+<span class="fc" id="L688">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L689">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L691">      builder</span>
+<span class="fc" id="L692">          .getConversationModelSettings()</span>
+<span class="fc" id="L693">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L694">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L696">      builder</span>
+<span class="fc" id="L697">          .listConversationModelsSettings()</span>
+<span class="fc" id="L698">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L699">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L701">      builder</span>
+<span class="fc" id="L702">          .deleteConversationModelSettings()</span>
+<span class="fc" id="L703">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L704">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L706">      builder</span>
+<span class="fc" id="L707">          .deployConversationModelSettings()</span>
+<span class="fc" id="L708">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L709">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L711">      builder</span>
+<span class="fc" id="L712">          .undeployConversationModelSettings()</span>
+<span class="fc" id="L713">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L714">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L716">      builder</span>
+<span class="fc" id="L717">          .getConversationModelEvaluationSettings()</span>
+<span class="fc" id="L718">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L719">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L721">      builder</span>
+<span class="fc" id="L722">          .listConversationModelEvaluationsSettings()</span>
+<span class="fc" id="L723">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L724">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L726">      builder</span>
+<span class="fc" id="L727">          .createConversationModelEvaluationSettings()</span>
+<span class="fc" id="L728">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L729">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L731">      builder</span>
+<span class="fc" id="L732">          .createConversationModelOperationSettings()</span>
+<span class="fc" id="L733">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L735">                  .&lt;CreateConversationModelRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L736">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L737">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L738">                  .build())</span>
+<span class="fc" id="L739">          .setResponseTransformer(</span>
+<span class="fc" id="L740">              ProtoOperationTransformers.ResponseTransformer.create(ConversationModel.class))</span>
+<span class="fc" id="L741">          .setMetadataTransformer(</span>
+<span class="fc" id="L742">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  CreateConversationModelOperationMetadata.class))
+<span class="fc" id="L744">          .setPollingAlgorithm(</span>
+<span class="fc" id="L745">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L746">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L747">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L748">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L749">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L750">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L751">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L752">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L753">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L754">                      .build()));</span>
+
+<span class="fc" id="L756">      builder</span>
+<span class="fc" id="L757">          .deleteConversationModelOperationSettings()</span>
+<span class="fc" id="L758">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L760">                  .&lt;DeleteConversationModelRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L761">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L762">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L763">                  .build())</span>
+<span class="fc" id="L764">          .setResponseTransformer(</span>
+<span class="fc" id="L765">              ProtoOperationTransformers.ResponseTransformer.create(Empty.class))</span>
+<span class="fc" id="L766">          .setMetadataTransformer(</span>
+<span class="fc" id="L767">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  DeleteConversationModelOperationMetadata.class))
+<span class="fc" id="L769">          .setPollingAlgorithm(</span>
+<span class="fc" id="L770">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L771">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L772">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L773">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L774">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L775">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L776">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L777">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L778">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L779">                      .build()));</span>
+
+<span class="fc" id="L781">      builder</span>
+<span class="fc" id="L782">          .deployConversationModelOperationSettings()</span>
+<span class="fc" id="L783">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L785">                  .&lt;DeployConversationModelRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L786">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L787">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L788">                  .build())</span>
+<span class="fc" id="L789">          .setResponseTransformer(</span>
+<span class="fc" id="L790">              ProtoOperationTransformers.ResponseTransformer.create(Empty.class))</span>
+<span class="fc" id="L791">          .setMetadataTransformer(</span>
+<span class="fc" id="L792">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  DeployConversationModelOperationMetadata.class))
+<span class="fc" id="L794">          .setPollingAlgorithm(</span>
+<span class="fc" id="L795">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L796">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L797">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L798">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L799">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L800">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L801">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L802">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L803">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L804">                      .build()));</span>
+
+<span class="fc" id="L806">      builder</span>
+<span class="fc" id="L807">          .undeployConversationModelOperationSettings()</span>
+<span class="fc" id="L808">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+                  .&lt;UndeployConversationModelRequest, OperationSnapshot&gt;
+<span class="fc" id="L811">                      newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L812">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L813">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L814">                  .build())</span>
+<span class="fc" id="L815">          .setResponseTransformer(</span>
+<span class="fc" id="L816">              ProtoOperationTransformers.ResponseTransformer.create(Empty.class))</span>
+<span class="fc" id="L817">          .setMetadataTransformer(</span>
+<span class="fc" id="L818">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  UndeployConversationModelOperationMetadata.class))
+<span class="fc" id="L820">          .setPollingAlgorithm(</span>
+<span class="fc" id="L821">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L822">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L823">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L824">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L825">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L826">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L827">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L828">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L829">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L830">                      .build()));</span>
+
+<span class="fc" id="L832">      builder</span>
+<span class="fc" id="L833">          .createConversationModelEvaluationOperationSettings()</span>
+<span class="fc" id="L834">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+                  .&lt;CreateConversationModelEvaluationRequest, OperationSnapshot&gt;
+<span class="fc" id="L837">                      newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L838">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L839">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L840">                  .build())</span>
+<span class="fc" id="L841">          .setResponseTransformer(</span>
+<span class="fc" id="L842">              ProtoOperationTransformers.ResponseTransformer.create(</span>
+                  ConversationModelEvaluation.class))
+<span class="fc" id="L844">          .setMetadataTransformer(</span>
+<span class="fc" id="L845">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  CreateConversationModelEvaluationOperationMetadata.class))
+<span class="fc" id="L847">          .setPollingAlgorithm(</span>
+<span class="fc" id="L848">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L849">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L850">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L851">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L852">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L853">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L854">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L855">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L856">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L857">                      .build()));</span>
+
+<span class="fc" id="L859">      return builder;</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L869">      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);</span>
+<span class="nc" id="L870">      return this;</span>
+    }
+
+    public ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders() {
+<span class="nc" id="L874">      return unaryMethodSettingsBuilders;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createConversationModel. */
+    public UnaryCallSettings.Builder&lt;CreateConversationModelRequest, Operation&gt;
+        createConversationModelSettings() {
+<span class="fc" id="L880">      return createConversationModelSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createConversationModel. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            CreateConversationModelRequest,
+            ConversationModel,
+            CreateConversationModelOperationMetadata&gt;
+        createConversationModelOperationSettings() {
+<span class="fc" id="L891">      return createConversationModelOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getConversationModel. */
+    public UnaryCallSettings.Builder&lt;GetConversationModelRequest, ConversationModel&gt;
+        getConversationModelSettings() {
+<span class="fc" id="L897">      return getConversationModelSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listConversationModels. */
+    public PagedCallSettings.Builder&lt;
+            ListConversationModelsRequest,
+            ListConversationModelsResponse,
+            ListConversationModelsPagedResponse&gt;
+        listConversationModelsSettings() {
+<span class="fc" id="L906">      return listConversationModelsSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteConversationModel. */
+    public UnaryCallSettings.Builder&lt;DeleteConversationModelRequest, Operation&gt;
+        deleteConversationModelSettings() {
+<span class="fc" id="L912">      return deleteConversationModelSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteConversationModel. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            DeleteConversationModelRequest, Empty, DeleteConversationModelOperationMetadata&gt;
+        deleteConversationModelOperationSettings() {
+<span class="fc" id="L921">      return deleteConversationModelOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deployConversationModel. */
+    public UnaryCallSettings.Builder&lt;DeployConversationModelRequest, Operation&gt;
+        deployConversationModelSettings() {
+<span class="fc" id="L927">      return deployConversationModelSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deployConversationModel. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            DeployConversationModelRequest, Empty, DeployConversationModelOperationMetadata&gt;
+        deployConversationModelOperationSettings() {
+<span class="fc" id="L936">      return deployConversationModelOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to undeployConversationModel. */
+    public UnaryCallSettings.Builder&lt;UndeployConversationModelRequest, Operation&gt;
+        undeployConversationModelSettings() {
+<span class="fc" id="L942">      return undeployConversationModelSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to undeployConversationModel. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            UndeployConversationModelRequest, Empty, UndeployConversationModelOperationMetadata&gt;
+        undeployConversationModelOperationSettings() {
+<span class="fc" id="L951">      return undeployConversationModelOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getConversationModelEvaluation. */
+    public UnaryCallSettings.Builder&lt;
+            GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+        getConversationModelEvaluationSettings() {
+<span class="fc" id="L958">      return getConversationModelEvaluationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listConversationModelEvaluations. */
+    public PagedCallSettings.Builder&lt;
+            ListConversationModelEvaluationsRequest,
+            ListConversationModelEvaluationsResponse,
+            ListConversationModelEvaluationsPagedResponse&gt;
+        listConversationModelEvaluationsSettings() {
+<span class="fc" id="L967">      return listConversationModelEvaluationsSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createConversationModelEvaluation. */
+    public UnaryCallSettings.Builder&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+        createConversationModelEvaluationSettings() {
+<span class="fc" id="L973">      return createConversationModelEvaluationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createConversationModelEvaluation. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            CreateConversationModelEvaluationRequest,
+            ConversationModelEvaluation,
+            CreateConversationModelEvaluationOperationMetadata&gt;
+        createConversationModelEvaluationOperationSettings() {
+<span class="fc" id="L984">      return createConversationModelEvaluationOperationSettings;</span>
+    }
+
+    @Override
+    public ConversationModelsStubSettings build() throws IOException {
+<span class="fc" id="L989">      return new ConversationModelsStubSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

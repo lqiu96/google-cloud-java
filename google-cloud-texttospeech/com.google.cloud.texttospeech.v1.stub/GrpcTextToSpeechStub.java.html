@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcTextToSpeechStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-texttospeech</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.texttospeech.v1.stub</a> &gt; <span class="el_source">GrpcTextToSpeechStub.java</span></div><h1>GrpcTextToSpeechStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.texttospeech.v1.stub;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.texttospeech.v1.ListVoicesRequest;
+import com.google.cloud.texttospeech.v1.ListVoicesResponse;
+import com.google.cloud.texttospeech.v1.SynthesizeSpeechRequest;
+import com.google.cloud.texttospeech.v1.SynthesizeSpeechResponse;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the TextToSpeech service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcTextToSpeechStub extends TextToSpeechStub {
+  private static final MethodDescriptor&lt;ListVoicesRequest, ListVoicesResponse&gt;
+      listVoicesMethodDescriptor =
+<span class="fc" id="L46">          MethodDescriptor.&lt;ListVoicesRequest, ListVoicesResponse&gt;newBuilder()</span>
+<span class="fc" id="L47">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L48">              .setFullMethodName(&quot;google.cloud.texttospeech.v1.TextToSpeech/ListVoices&quot;)</span>
+<span class="fc" id="L49">              .setRequestMarshaller(ProtoUtils.marshaller(ListVoicesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L50">              .setResponseMarshaller(ProtoUtils.marshaller(ListVoicesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L51">              .build();</span>
+
+  private static final MethodDescriptor&lt;SynthesizeSpeechRequest, SynthesizeSpeechResponse&gt;
+<span class="fc" id="L54">      synthesizeSpeechMethodDescriptor =</span>
+<span class="fc" id="L55">          MethodDescriptor.&lt;SynthesizeSpeechRequest, SynthesizeSpeechResponse&gt;newBuilder()</span>
+<span class="fc" id="L56">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L57">              .setFullMethodName(&quot;google.cloud.texttospeech.v1.TextToSpeech/SynthesizeSpeech&quot;)</span>
+<span class="fc" id="L58">              .setRequestMarshaller(</span>
+<span class="fc" id="L59">                  ProtoUtils.marshaller(SynthesizeSpeechRequest.getDefaultInstance()))</span>
+<span class="fc" id="L60">              .setResponseMarshaller(</span>
+<span class="fc" id="L61">                  ProtoUtils.marshaller(SynthesizeSpeechResponse.getDefaultInstance()))</span>
+<span class="fc" id="L62">              .build();</span>
+
+  private final UnaryCallable&lt;ListVoicesRequest, ListVoicesResponse&gt; listVoicesCallable;
+  private final UnaryCallable&lt;SynthesizeSpeechRequest, SynthesizeSpeechResponse&gt;
+      synthesizeSpeechCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcTextToSpeechStub create(TextToSpeechStubSettings settings)
+      throws IOException {
+<span class="fc" id="L74">    return new GrpcTextToSpeechStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcTextToSpeechStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L78">    return new GrpcTextToSpeechStub(TextToSpeechStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcTextToSpeechStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L83">    return new GrpcTextToSpeechStub(</span>
+<span class="nc" id="L84">        TextToSpeechStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcTextToSpeechStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcTextToSpeechStub(TextToSpeechStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L94">    this(settings, clientContext, new GrpcTextToSpeechCallableFactory());</span>
+<span class="fc" id="L95">  }</span>
+
+  /**
+   * Constructs an instance of GrpcTextToSpeechStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcTextToSpeechStub(
+      TextToSpeechStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L106">      throws IOException {</span>
+<span class="fc" id="L107">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L108">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListVoicesRequest, ListVoicesResponse&gt; listVoicesTransportSettings =
+<span class="fc" id="L111">        GrpcCallSettings.&lt;ListVoicesRequest, ListVoicesResponse&gt;newBuilder()</span>
+<span class="fc" id="L112">            .setMethodDescriptor(listVoicesMethodDescriptor)</span>
+<span class="fc" id="L113">            .build();</span>
+    GrpcCallSettings&lt;SynthesizeSpeechRequest, SynthesizeSpeechResponse&gt;
+        synthesizeSpeechTransportSettings =
+<span class="fc" id="L116">            GrpcCallSettings.&lt;SynthesizeSpeechRequest, SynthesizeSpeechResponse&gt;newBuilder()</span>
+<span class="fc" id="L117">                .setMethodDescriptor(synthesizeSpeechMethodDescriptor)</span>
+<span class="fc" id="L118">                .build();</span>
+
+<span class="fc" id="L120">    this.listVoicesCallable =</span>
+<span class="fc" id="L121">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L122">            listVoicesTransportSettings, settings.listVoicesSettings(), clientContext);</span>
+<span class="fc" id="L123">    this.synthesizeSpeechCallable =</span>
+<span class="fc" id="L124">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L125">            synthesizeSpeechTransportSettings, settings.synthesizeSpeechSettings(), clientContext);</span>
+
+<span class="fc" id="L127">    this.backgroundResources =</span>
+<span class="fc" id="L128">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L129">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L132">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListVoicesRequest, ListVoicesResponse&gt; listVoicesCallable() {
+<span class="fc" id="L137">    return listVoicesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;SynthesizeSpeechRequest, SynthesizeSpeechResponse&gt;
+      synthesizeSpeechCallable() {
+<span class="fc" id="L143">    return synthesizeSpeechCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L149">      backgroundResources.close();</span>
+<span class="nc" id="L150">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L151">      throw e;</span>
+<span class="nc" id="L152">    } catch (Exception e) {</span>
+<span class="nc" id="L153">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L154">    }</span>
+<span class="fc" id="L155">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L159">    backgroundResources.shutdown();</span>
+<span class="nc" id="L160">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L164">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L169">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L174">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L175">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L179">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

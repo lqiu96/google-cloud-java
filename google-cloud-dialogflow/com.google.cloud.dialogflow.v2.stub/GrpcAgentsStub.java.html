@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcAgentsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcAgentsStub.java</span></div><h1>GrpcAgentsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.AgentsClient.SearchAgentsPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.Agent;
+import com.google.cloud.dialogflow.v2.DeleteAgentRequest;
+import com.google.cloud.dialogflow.v2.ExportAgentRequest;
+import com.google.cloud.dialogflow.v2.ExportAgentResponse;
+import com.google.cloud.dialogflow.v2.GetAgentRequest;
+import com.google.cloud.dialogflow.v2.GetValidationResultRequest;
+import com.google.cloud.dialogflow.v2.ImportAgentRequest;
+import com.google.cloud.dialogflow.v2.RestoreAgentRequest;
+import com.google.cloud.dialogflow.v2.SearchAgentsRequest;
+import com.google.cloud.dialogflow.v2.SearchAgentsResponse;
+import com.google.cloud.dialogflow.v2.SetAgentRequest;
+import com.google.cloud.dialogflow.v2.TrainAgentRequest;
+import com.google.cloud.dialogflow.v2.ValidationResult;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import com.google.protobuf.Struct;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the Agents service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcAgentsStub extends AgentsStub {
+  private static final MethodDescriptor&lt;GetAgentRequest, Agent&gt; getAgentMethodDescriptor =
+<span class="fc" id="L61">      MethodDescriptor.&lt;GetAgentRequest, Agent&gt;newBuilder()</span>
+<span class="fc" id="L62">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L63">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Agents/GetAgent&quot;)</span>
+<span class="fc" id="L64">          .setRequestMarshaller(ProtoUtils.marshaller(GetAgentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L65">          .setResponseMarshaller(ProtoUtils.marshaller(Agent.getDefaultInstance()))</span>
+<span class="fc" id="L66">          .build();</span>
+
+  private static final MethodDescriptor&lt;SetAgentRequest, Agent&gt; setAgentMethodDescriptor =
+<span class="fc" id="L69">      MethodDescriptor.&lt;SetAgentRequest, Agent&gt;newBuilder()</span>
+<span class="fc" id="L70">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L71">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Agents/SetAgent&quot;)</span>
+<span class="fc" id="L72">          .setRequestMarshaller(ProtoUtils.marshaller(SetAgentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L73">          .setResponseMarshaller(ProtoUtils.marshaller(Agent.getDefaultInstance()))</span>
+<span class="fc" id="L74">          .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteAgentRequest, Empty&gt; deleteAgentMethodDescriptor =
+<span class="fc" id="L77">      MethodDescriptor.&lt;DeleteAgentRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L78">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L79">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Agents/DeleteAgent&quot;)</span>
+<span class="fc" id="L80">          .setRequestMarshaller(ProtoUtils.marshaller(DeleteAgentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L81">          .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L82">          .build();</span>
+
+  private static final MethodDescriptor&lt;SearchAgentsRequest, SearchAgentsResponse&gt;
+      searchAgentsMethodDescriptor =
+<span class="fc" id="L86">          MethodDescriptor.&lt;SearchAgentsRequest, SearchAgentsResponse&gt;newBuilder()</span>
+<span class="fc" id="L87">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L88">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Agents/SearchAgents&quot;)</span>
+<span class="fc" id="L89">              .setRequestMarshaller(ProtoUtils.marshaller(SearchAgentsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L90">              .setResponseMarshaller(</span>
+<span class="fc" id="L91">                  ProtoUtils.marshaller(SearchAgentsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L92">              .build();</span>
+
+  private static final MethodDescriptor&lt;TrainAgentRequest, Operation&gt; trainAgentMethodDescriptor =
+<span class="fc" id="L95">      MethodDescriptor.&lt;TrainAgentRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L96">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L97">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Agents/TrainAgent&quot;)</span>
+<span class="fc" id="L98">          .setRequestMarshaller(ProtoUtils.marshaller(TrainAgentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L99">          .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L100">          .build();</span>
+
+  private static final MethodDescriptor&lt;ExportAgentRequest, Operation&gt; exportAgentMethodDescriptor =
+<span class="fc" id="L103">      MethodDescriptor.&lt;ExportAgentRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L104">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L105">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Agents/ExportAgent&quot;)</span>
+<span class="fc" id="L106">          .setRequestMarshaller(ProtoUtils.marshaller(ExportAgentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L107">          .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L108">          .build();</span>
+
+  private static final MethodDescriptor&lt;ImportAgentRequest, Operation&gt; importAgentMethodDescriptor =
+<span class="fc" id="L111">      MethodDescriptor.&lt;ImportAgentRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L112">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L113">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Agents/ImportAgent&quot;)</span>
+<span class="fc" id="L114">          .setRequestMarshaller(ProtoUtils.marshaller(ImportAgentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L115">          .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L116">          .build();</span>
+
+  private static final MethodDescriptor&lt;RestoreAgentRequest, Operation&gt;
+      restoreAgentMethodDescriptor =
+<span class="fc" id="L120">          MethodDescriptor.&lt;RestoreAgentRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L121">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L122">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Agents/RestoreAgent&quot;)</span>
+<span class="fc" id="L123">              .setRequestMarshaller(ProtoUtils.marshaller(RestoreAgentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L124">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L125">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetValidationResultRequest, ValidationResult&gt;
+<span class="fc" id="L128">      getValidationResultMethodDescriptor =</span>
+<span class="fc" id="L129">          MethodDescriptor.&lt;GetValidationResultRequest, ValidationResult&gt;newBuilder()</span>
+<span class="fc" id="L130">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L131">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Agents/GetValidationResult&quot;)</span>
+<span class="fc" id="L132">              .setRequestMarshaller(</span>
+<span class="fc" id="L133">                  ProtoUtils.marshaller(GetValidationResultRequest.getDefaultInstance()))</span>
+<span class="fc" id="L134">              .setResponseMarshaller(ProtoUtils.marshaller(ValidationResult.getDefaultInstance()))</span>
+<span class="fc" id="L135">              .build();</span>
+
+  private final UnaryCallable&lt;GetAgentRequest, Agent&gt; getAgentCallable;
+  private final UnaryCallable&lt;SetAgentRequest, Agent&gt; setAgentCallable;
+  private final UnaryCallable&lt;DeleteAgentRequest, Empty&gt; deleteAgentCallable;
+  private final UnaryCallable&lt;SearchAgentsRequest, SearchAgentsResponse&gt; searchAgentsCallable;
+  private final UnaryCallable&lt;SearchAgentsRequest, SearchAgentsPagedResponse&gt;
+      searchAgentsPagedCallable;
+  private final UnaryCallable&lt;TrainAgentRequest, Operation&gt; trainAgentCallable;
+  private final OperationCallable&lt;TrainAgentRequest, Empty, Struct&gt; trainAgentOperationCallable;
+  private final UnaryCallable&lt;ExportAgentRequest, Operation&gt; exportAgentCallable;
+  private final OperationCallable&lt;ExportAgentRequest, ExportAgentResponse, Struct&gt;
+      exportAgentOperationCallable;
+  private final UnaryCallable&lt;ImportAgentRequest, Operation&gt; importAgentCallable;
+  private final OperationCallable&lt;ImportAgentRequest, Empty, Struct&gt; importAgentOperationCallable;
+  private final UnaryCallable&lt;RestoreAgentRequest, Operation&gt; restoreAgentCallable;
+  private final OperationCallable&lt;RestoreAgentRequest, Empty, Struct&gt; restoreAgentOperationCallable;
+  private final UnaryCallable&lt;GetValidationResultRequest, ValidationResult&gt;
+      getValidationResultCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcAgentsStub create(AgentsStubSettings settings) throws IOException {
+<span class="fc" id="L160">    return new GrpcAgentsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcAgentsStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L164">    return new GrpcAgentsStub(AgentsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcAgentsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L169">    return new GrpcAgentsStub(</span>
+<span class="nc" id="L170">        AgentsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcAgentsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcAgentsStub(AgentsStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L179">    this(settings, clientContext, new GrpcAgentsCallableFactory());</span>
+<span class="fc" id="L180">  }</span>
+
+  /**
+   * Constructs an instance of GrpcAgentsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcAgentsStub(
+      AgentsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L190">      throws IOException {</span>
+<span class="fc" id="L191">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L192">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;GetAgentRequest, Agent&gt; getAgentTransportSettings =
+<span class="fc" id="L195">        GrpcCallSettings.&lt;GetAgentRequest, Agent&gt;newBuilder()</span>
+<span class="fc" id="L196">            .setMethodDescriptor(getAgentMethodDescriptor)</span>
+<span class="fc" id="L197">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L199">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L200">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L201">                  return params.build();</span>
+                })
+<span class="fc" id="L203">            .build();</span>
+    GrpcCallSettings&lt;SetAgentRequest, Agent&gt; setAgentTransportSettings =
+<span class="fc" id="L205">        GrpcCallSettings.&lt;SetAgentRequest, Agent&gt;newBuilder()</span>
+<span class="fc" id="L206">            .setMethodDescriptor(setAgentMethodDescriptor)</span>
+<span class="fc" id="L207">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L209">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L210">                  params.put(&quot;agent.parent&quot;, String.valueOf(request.getAgent().getParent()));</span>
+<span class="fc" id="L211">                  return params.build();</span>
+                })
+<span class="fc" id="L213">            .build();</span>
+    GrpcCallSettings&lt;DeleteAgentRequest, Empty&gt; deleteAgentTransportSettings =
+<span class="fc" id="L215">        GrpcCallSettings.&lt;DeleteAgentRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L216">            .setMethodDescriptor(deleteAgentMethodDescriptor)</span>
+<span class="fc" id="L217">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L219">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L220">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L221">                  return params.build();</span>
+                })
+<span class="fc" id="L223">            .build();</span>
+    GrpcCallSettings&lt;SearchAgentsRequest, SearchAgentsResponse&gt; searchAgentsTransportSettings =
+<span class="fc" id="L225">        GrpcCallSettings.&lt;SearchAgentsRequest, SearchAgentsResponse&gt;newBuilder()</span>
+<span class="fc" id="L226">            .setMethodDescriptor(searchAgentsMethodDescriptor)</span>
+<span class="fc" id="L227">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L229">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L230">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L231">                  return params.build();</span>
+                })
+<span class="fc" id="L233">            .build();</span>
+    GrpcCallSettings&lt;TrainAgentRequest, Operation&gt; trainAgentTransportSettings =
+<span class="fc" id="L235">        GrpcCallSettings.&lt;TrainAgentRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L236">            .setMethodDescriptor(trainAgentMethodDescriptor)</span>
+<span class="fc" id="L237">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L239">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L240">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L241">                  return params.build();</span>
+                })
+<span class="fc" id="L243">            .build();</span>
+    GrpcCallSettings&lt;ExportAgentRequest, Operation&gt; exportAgentTransportSettings =
+<span class="fc" id="L245">        GrpcCallSettings.&lt;ExportAgentRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L246">            .setMethodDescriptor(exportAgentMethodDescriptor)</span>
+<span class="fc" id="L247">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L249">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L250">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L251">                  return params.build();</span>
+                })
+<span class="fc" id="L253">            .build();</span>
+    GrpcCallSettings&lt;ImportAgentRequest, Operation&gt; importAgentTransportSettings =
+<span class="fc" id="L255">        GrpcCallSettings.&lt;ImportAgentRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L256">            .setMethodDescriptor(importAgentMethodDescriptor)</span>
+<span class="fc" id="L257">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L259">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L260">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L261">                  return params.build();</span>
+                })
+<span class="fc" id="L263">            .build();</span>
+    GrpcCallSettings&lt;RestoreAgentRequest, Operation&gt; restoreAgentTransportSettings =
+<span class="fc" id="L265">        GrpcCallSettings.&lt;RestoreAgentRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L266">            .setMethodDescriptor(restoreAgentMethodDescriptor)</span>
+<span class="fc" id="L267">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L269">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L270">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L271">                  return params.build();</span>
+                })
+<span class="fc" id="L273">            .build();</span>
+    GrpcCallSettings&lt;GetValidationResultRequest, ValidationResult&gt;
+        getValidationResultTransportSettings =
+<span class="fc" id="L276">            GrpcCallSettings.&lt;GetValidationResultRequest, ValidationResult&gt;newBuilder()</span>
+<span class="fc" id="L277">                .setMethodDescriptor(getValidationResultMethodDescriptor)</span>
+<span class="fc" id="L278">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L280">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L281">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L282">                      return params.build();</span>
+                    })
+<span class="fc" id="L284">                .build();</span>
+
+<span class="fc" id="L286">    this.getAgentCallable =</span>
+<span class="fc" id="L287">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L288">            getAgentTransportSettings, settings.getAgentSettings(), clientContext);</span>
+<span class="fc" id="L289">    this.setAgentCallable =</span>
+<span class="fc" id="L290">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L291">            setAgentTransportSettings, settings.setAgentSettings(), clientContext);</span>
+<span class="fc" id="L292">    this.deleteAgentCallable =</span>
+<span class="fc" id="L293">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L294">            deleteAgentTransportSettings, settings.deleteAgentSettings(), clientContext);</span>
+<span class="fc" id="L295">    this.searchAgentsCallable =</span>
+<span class="fc" id="L296">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L297">            searchAgentsTransportSettings, settings.searchAgentsSettings(), clientContext);</span>
+<span class="fc" id="L298">    this.searchAgentsPagedCallable =</span>
+<span class="fc" id="L299">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L300">            searchAgentsTransportSettings, settings.searchAgentsSettings(), clientContext);</span>
+<span class="fc" id="L301">    this.trainAgentCallable =</span>
+<span class="fc" id="L302">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L303">            trainAgentTransportSettings, settings.trainAgentSettings(), clientContext);</span>
+<span class="fc" id="L304">    this.trainAgentOperationCallable =</span>
+<span class="fc" id="L305">        callableFactory.createOperationCallable(</span>
+            trainAgentTransportSettings,
+<span class="fc" id="L307">            settings.trainAgentOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L310">    this.exportAgentCallable =</span>
+<span class="fc" id="L311">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L312">            exportAgentTransportSettings, settings.exportAgentSettings(), clientContext);</span>
+<span class="fc" id="L313">    this.exportAgentOperationCallable =</span>
+<span class="fc" id="L314">        callableFactory.createOperationCallable(</span>
+            exportAgentTransportSettings,
+<span class="fc" id="L316">            settings.exportAgentOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L319">    this.importAgentCallable =</span>
+<span class="fc" id="L320">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L321">            importAgentTransportSettings, settings.importAgentSettings(), clientContext);</span>
+<span class="fc" id="L322">    this.importAgentOperationCallable =</span>
+<span class="fc" id="L323">        callableFactory.createOperationCallable(</span>
+            importAgentTransportSettings,
+<span class="fc" id="L325">            settings.importAgentOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L328">    this.restoreAgentCallable =</span>
+<span class="fc" id="L329">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L330">            restoreAgentTransportSettings, settings.restoreAgentSettings(), clientContext);</span>
+<span class="fc" id="L331">    this.restoreAgentOperationCallable =</span>
+<span class="fc" id="L332">        callableFactory.createOperationCallable(</span>
+            restoreAgentTransportSettings,
+<span class="fc" id="L334">            settings.restoreAgentOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L337">    this.getValidationResultCallable =</span>
+<span class="fc" id="L338">        callableFactory.createUnaryCallable(</span>
+            getValidationResultTransportSettings,
+<span class="fc" id="L340">            settings.getValidationResultSettings(),</span>
+            clientContext);
+
+<span class="fc" id="L343">    this.backgroundResources =</span>
+<span class="fc" id="L344">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L345">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="fc" id="L348">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetAgentRequest, Agent&gt; getAgentCallable() {
+<span class="fc" id="L353">    return getAgentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;SetAgentRequest, Agent&gt; setAgentCallable() {
+<span class="fc" id="L358">    return setAgentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteAgentRequest, Empty&gt; deleteAgentCallable() {
+<span class="fc" id="L363">    return deleteAgentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;SearchAgentsRequest, SearchAgentsResponse&gt; searchAgentsCallable() {
+<span class="nc" id="L368">    return searchAgentsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;SearchAgentsRequest, SearchAgentsPagedResponse&gt; searchAgentsPagedCallable() {
+<span class="fc" id="L373">    return searchAgentsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;TrainAgentRequest, Operation&gt; trainAgentCallable() {
+<span class="nc" id="L378">    return trainAgentCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;TrainAgentRequest, Empty, Struct&gt; trainAgentOperationCallable() {
+<span class="fc" id="L383">    return trainAgentOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ExportAgentRequest, Operation&gt; exportAgentCallable() {
+<span class="nc" id="L388">    return exportAgentCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;ExportAgentRequest, ExportAgentResponse, Struct&gt;
+      exportAgentOperationCallable() {
+<span class="fc" id="L394">    return exportAgentOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ImportAgentRequest, Operation&gt; importAgentCallable() {
+<span class="nc" id="L399">    return importAgentCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;ImportAgentRequest, Empty, Struct&gt; importAgentOperationCallable() {
+<span class="fc" id="L404">    return importAgentOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;RestoreAgentRequest, Operation&gt; restoreAgentCallable() {
+<span class="nc" id="L409">    return restoreAgentCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;RestoreAgentRequest, Empty, Struct&gt; restoreAgentOperationCallable() {
+<span class="fc" id="L414">    return restoreAgentOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetValidationResultRequest, ValidationResult&gt; getValidationResultCallable() {
+<span class="fc" id="L419">    return getValidationResultCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L425">      backgroundResources.close();</span>
+<span class="nc" id="L426">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L427">      throw e;</span>
+<span class="nc" id="L428">    } catch (Exception e) {</span>
+<span class="nc" id="L429">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L430">    }</span>
+<span class="fc" id="L431">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L435">    backgroundResources.shutdown();</span>
+<span class="nc" id="L436">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L440">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L445">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L450">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L451">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L455">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

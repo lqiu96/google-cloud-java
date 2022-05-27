@@ -1,0 +1,1702 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IntentsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1</a> &gt; <span class="el_source">IntentsClient.java</span></div><h1>IntentsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2beta1.stub.IntentsStub;
+import com.google.cloud.dialogflow.v2beta1.stub.IntentsStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
+import com.google.protobuf.Struct;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service for managing [Intents][google.cloud.dialogflow.v2beta1.Intent].
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (IntentsClient intentsClient = IntentsClient.create()) {
+ *   IntentName name = IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;);
+ *   Intent response = intentsClient.getIntent(name);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the IntentsClient object to clean up resources such as
+ * threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of IntentsSettings to create().
+ * For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * IntentsSettings intentsSettings =
+ *     IntentsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * IntentsClient intentsClient = IntentsClient.create(intentsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * IntentsSettings intentsSettings = IntentsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * IntentsClient intentsClient = IntentsClient.create(intentsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class IntentsClient implements BackgroundResource {
+  private final IntentsSettings settings;
+  private final IntentsStub stub;
+  private final OperationsClient operationsClient;
+
+  /** Constructs an instance of IntentsClient with default settings. */
+  public static final IntentsClient create() throws IOException {
+<span class="nc" id="L117">    return create(IntentsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of IntentsClient, using the given settings. The channels are created
+   * based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final IntentsClient create(IntentsSettings settings) throws IOException {
+<span class="fc" id="L125">    return new IntentsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of IntentsClient, using the given stub for making calls. This is for
+   * advanced usage - prefer using create(IntentsSettings).
+   */
+  public static final IntentsClient create(IntentsStub stub) {
+<span class="nc" id="L133">    return new IntentsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of IntentsClient, using the given settings. This is protected so that it
+   * is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+<span class="fc" id="L140">  protected IntentsClient(IntentsSettings settings) throws IOException {</span>
+<span class="fc" id="L141">    this.settings = settings;</span>
+<span class="fc" id="L142">    this.stub = ((IntentsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L143">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="fc" id="L144">  }</span>
+
+<span class="nc" id="L146">  protected IntentsClient(IntentsStub stub) {</span>
+<span class="nc" id="L147">    this.settings = null;</span>
+<span class="nc" id="L148">    this.stub = stub;</span>
+<span class="nc" id="L149">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="nc" id="L150">  }</span>
+
+  public final IntentsSettings getSettings() {
+<span class="nc" id="L153">    return settings;</span>
+  }
+
+  public IntentsStub getStub() {
+<span class="nc" id="L157">    return stub;</span>
+  }
+
+  /**
+   * Returns the OperationsClient that can be used to query the status of a long-running operation
+   * returned by another API method call.
+   */
+  public final OperationsClient getOperationsClient() {
+<span class="nc" id="L165">    return operationsClient;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all intents in the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   AgentName parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   for (Intent element : intentsClient.listIntents(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to list all intents from. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/agent` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`.
+   *     &lt;p&gt;Alternatively, you can specify the environment to list intents for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;` or
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;`. Note: training phrases of the intents
+   *     will not be returned for non-draft environment.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListIntentsPagedResponse listIntents(AgentName parent) {
+    ListIntentsRequest request =
+<span class="fc" id="L196">        ListIntentsRequest.newBuilder()</span>
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L198">            .build();</span>
+<span class="fc" id="L199">    return listIntents(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all intents in the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   for (Intent element : intentsClient.listIntents(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to list all intents from. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/agent` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`.
+   *     &lt;p&gt;Alternatively, you can specify the environment to list intents for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;` or
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;`. Note: training phrases of the intents
+   *     will not be returned for non-draft environment.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListIntentsPagedResponse listIntents(String parent) {
+<span class="fc" id="L229">    ListIntentsRequest request = ListIntentsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L230">    return listIntents(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all intents in the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   AgentName parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   String languageCode = &quot;languageCode-2092349083&quot;;
+   *   for (Intent element : intentsClient.listIntents(parent, languageCode).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to list all intents from. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/agent` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`.
+   *     &lt;p&gt;Alternatively, you can specify the environment to list intents for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;` or
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;`. Note: training phrases of the intents
+   *     will not be returned for non-draft environment.
+   * @param languageCode Optional. The language used to access language-specific data. If not
+   *     specified, the agent's default language is used. For more information, see [Multilingual
+   *     intent and entity
+   *     data](https://cloud.google.com/dialogflow/docs/agents-multilingual#intent-entity).
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListIntentsPagedResponse listIntents(AgentName parent, String languageCode) {
+    ListIntentsRequest request =
+<span class="fc" id="L266">        ListIntentsRequest.newBuilder()</span>
+<span class="pc bpc" id="L267" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L268">            .setLanguageCode(languageCode)</span>
+<span class="fc" id="L269">            .build();</span>
+<span class="fc" id="L270">    return listIntents(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all intents in the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   String languageCode = &quot;languageCode-2092349083&quot;;
+   *   for (Intent element : intentsClient.listIntents(parent, languageCode).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to list all intents from. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/agent` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`.
+   *     &lt;p&gt;Alternatively, you can specify the environment to list intents for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;` or
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;`. Note: training phrases of the intents
+   *     will not be returned for non-draft environment.
+   * @param languageCode Optional. The language used to access language-specific data. If not
+   *     specified, the agent's default language is used. For more information, see [Multilingual
+   *     intent and entity
+   *     data](https://cloud.google.com/dialogflow/docs/agents-multilingual#intent-entity).
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListIntentsPagedResponse listIntents(String parent, String languageCode) {
+    ListIntentsRequest request =
+<span class="fc" id="L306">        ListIntentsRequest.newBuilder().setParent(parent).setLanguageCode(languageCode).build();</span>
+<span class="fc" id="L307">    return listIntents(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all intents in the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   ListIntentsRequest request =
+   *       ListIntentsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (Intent element : intentsClient.listIntents(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListIntentsPagedResponse listIntents(ListIntentsRequest request) {
+<span class="fc" id="L338">    return listIntentsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all intents in the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   ListIntentsRequest request =
+   *       ListIntentsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;Intent&gt; future = intentsClient.listIntentsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (Intent element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListIntentsRequest, ListIntentsPagedResponse&gt;
+      listIntentsPagedCallable() {
+<span class="fc" id="L369">    return stub.listIntentsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all intents in the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   ListIntentsRequest request =
+   *       ListIntentsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListIntentsResponse response = intentsClient.listIntentsCallable().call(request);
+   *     for (Intent element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListIntentsRequest, ListIntentsResponse&gt; listIntentsCallable() {
+<span class="nc" id="L406">    return stub.listIntentsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified intent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   IntentName name = IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;);
+   *   Intent response = intentsClient.getIntent(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the intent. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent getIntent(IntentName name) {
+    GetIntentRequest request =
+<span class="pc bpc" id="L431" title="1 of 2 branches missed.">        GetIntentRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L432">    return getIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified intent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String name = IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;).toString();
+   *   Intent response = intentsClient.getIntent(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the intent. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent getIntent(String name) {
+<span class="fc" id="L456">    GetIntentRequest request = GetIntentRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L457">    return getIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified intent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   IntentName name = IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;);
+   *   String languageCode = &quot;languageCode-2092349083&quot;;
+   *   Intent response = intentsClient.getIntent(name, languageCode);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the intent. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;`
+   * @param languageCode Optional. The language used to access language-specific data. If not
+   *     specified, the agent's default language is used. For more information, see [Multilingual
+   *     intent and entity
+   *     data](https://cloud.google.com/dialogflow/docs/agents-multilingual#intent-entity).
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent getIntent(IntentName name, String languageCode) {
+    GetIntentRequest request =
+<span class="fc" id="L487">        GetIntentRequest.newBuilder()</span>
+<span class="pc bpc" id="L488" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L489">            .setLanguageCode(languageCode)</span>
+<span class="fc" id="L490">            .build();</span>
+<span class="fc" id="L491">    return getIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified intent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String name = IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;).toString();
+   *   String languageCode = &quot;languageCode-2092349083&quot;;
+   *   Intent response = intentsClient.getIntent(name, languageCode);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the intent. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;`
+   * @param languageCode Optional. The language used to access language-specific data. If not
+   *     specified, the agent's default language is used. For more information, see [Multilingual
+   *     intent and entity
+   *     data](https://cloud.google.com/dialogflow/docs/agents-multilingual#intent-entity).
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent getIntent(String name, String languageCode) {
+    GetIntentRequest request =
+<span class="fc" id="L521">        GetIntentRequest.newBuilder().setName(name).setLanguageCode(languageCode).build();</span>
+<span class="fc" id="L522">    return getIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified intent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   GetIntentRequest request =
+   *       GetIntentRequest.newBuilder()
+   *           .setName(IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .build();
+   *   Intent response = intentsClient.getIntent(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent getIntent(GetIntentRequest request) {
+<span class="fc" id="L549">    return getIntentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified intent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   GetIntentRequest request =
+   *       GetIntentRequest.newBuilder()
+   *           .setName(IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .build();
+   *   ApiFuture&lt;Intent&gt; future = intentsClient.getIntentCallable().futureCall(request);
+   *   // Do something.
+   *   Intent response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetIntentRequest, Intent&gt; getIntentCallable() {
+<span class="fc" id="L575">    return stub.getIntentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an intent in the specified agent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   AgentName parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   Intent intent = Intent.newBuilder().build();
+   *   Intent response = intentsClient.createIntent(parent, intent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to create a intent for. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intent Required. The intent to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent createIntent(AgentName parent, Intent intent) {
+    CreateIntentRequest request =
+<span class="fc" id="L605">        CreateIntentRequest.newBuilder()</span>
+<span class="pc bpc" id="L606" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L607">            .setIntent(intent)</span>
+<span class="fc" id="L608">            .build();</span>
+<span class="fc" id="L609">    return createIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an intent in the specified agent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   Intent intent = Intent.newBuilder().build();
+   *   Intent response = intentsClient.createIntent(parent, intent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to create a intent for. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intent Required. The intent to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent createIntent(String parent, Intent intent) {
+    CreateIntentRequest request =
+<span class="fc" id="L639">        CreateIntentRequest.newBuilder().setParent(parent).setIntent(intent).build();</span>
+<span class="fc" id="L640">    return createIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an intent in the specified agent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   AgentName parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   Intent intent = Intent.newBuilder().build();
+   *   String languageCode = &quot;languageCode-2092349083&quot;;
+   *   Intent response = intentsClient.createIntent(parent, intent, languageCode);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to create a intent for. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intent Required. The intent to create.
+   * @param languageCode Optional. The language used to access language-specific data. If not
+   *     specified, the agent's default language is used. For more information, see [Multilingual
+   *     intent and entity
+   *     data](https://cloud.google.com/dialogflow/docs/agents-multilingual#intent-entity).
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent createIntent(AgentName parent, Intent intent, String languageCode) {
+    CreateIntentRequest request =
+<span class="fc" id="L675">        CreateIntentRequest.newBuilder()</span>
+<span class="pc bpc" id="L676" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L677">            .setIntent(intent)</span>
+<span class="fc" id="L678">            .setLanguageCode(languageCode)</span>
+<span class="fc" id="L679">            .build();</span>
+<span class="fc" id="L680">    return createIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an intent in the specified agent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   Intent intent = Intent.newBuilder().build();
+   *   String languageCode = &quot;languageCode-2092349083&quot;;
+   *   Intent response = intentsClient.createIntent(parent, intent, languageCode);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to create a intent for. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intent Required. The intent to create.
+   * @param languageCode Optional. The language used to access language-specific data. If not
+   *     specified, the agent's default language is used. For more information, see [Multilingual
+   *     intent and entity
+   *     data](https://cloud.google.com/dialogflow/docs/agents-multilingual#intent-entity).
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent createIntent(String parent, Intent intent, String languageCode) {
+    CreateIntentRequest request =
+<span class="fc" id="L715">        CreateIntentRequest.newBuilder()</span>
+<span class="fc" id="L716">            .setParent(parent)</span>
+<span class="fc" id="L717">            .setIntent(intent)</span>
+<span class="fc" id="L718">            .setLanguageCode(languageCode)</span>
+<span class="fc" id="L719">            .build();</span>
+<span class="fc" id="L720">    return createIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an intent in the specified agent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   CreateIntentRequest request =
+   *       CreateIntentRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setIntent(Intent.newBuilder().build())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .build();
+   *   Intent response = intentsClient.createIntent(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent createIntent(CreateIntentRequest request) {
+<span class="fc" id="L751">    return createIntentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an intent in the specified agent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   CreateIntentRequest request =
+   *       CreateIntentRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setIntent(Intent.newBuilder().build())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .build();
+   *   ApiFuture&lt;Intent&gt; future = intentsClient.createIntentCallable().futureCall(request);
+   *   // Do something.
+   *   Intent response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateIntentRequest, Intent&gt; createIntentCallable() {
+<span class="fc" id="L781">    return stub.createIntentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified intent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   Intent intent = Intent.newBuilder().build();
+   *   Intent response = intentsClient.updateIntent(intent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param intent Required. The intent to update.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent updateIntent(Intent intent) {
+<span class="fc" id="L806">    UpdateIntentRequest request = UpdateIntentRequest.newBuilder().setIntent(intent).build();</span>
+<span class="fc" id="L807">    return updateIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified intent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   Intent intent = Intent.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   Intent response = intentsClient.updateIntent(intent, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param intent Required. The intent to update.
+   * @param updateMask Optional. The mask to control which fields get updated.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent updateIntent(Intent intent, FieldMask updateMask) {
+    UpdateIntentRequest request =
+<span class="fc" id="L835">        UpdateIntentRequest.newBuilder().setIntent(intent).setUpdateMask(updateMask).build();</span>
+<span class="fc" id="L836">    return updateIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified intent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   Intent intent = Intent.newBuilder().build();
+   *   String languageCode = &quot;languageCode-2092349083&quot;;
+   *   Intent response = intentsClient.updateIntent(intent, languageCode);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param intent Required. The intent to update.
+   * @param languageCode Optional. The language used to access language-specific data. If not
+   *     specified, the agent's default language is used. For more information, see [Multilingual
+   *     intent and entity
+   *     data](https://cloud.google.com/dialogflow/docs/agents-multilingual#intent-entity).
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent updateIntent(Intent intent, String languageCode) {
+    UpdateIntentRequest request =
+<span class="fc" id="L867">        UpdateIntentRequest.newBuilder().setIntent(intent).setLanguageCode(languageCode).build();</span>
+<span class="fc" id="L868">    return updateIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified intent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   Intent intent = Intent.newBuilder().build();
+   *   String languageCode = &quot;languageCode-2092349083&quot;;
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   Intent response = intentsClient.updateIntent(intent, languageCode, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param intent Required. The intent to update.
+   * @param languageCode Optional. The language used to access language-specific data. If not
+   *     specified, the agent's default language is used. For more information, see [Multilingual
+   *     intent and entity
+   *     data](https://cloud.google.com/dialogflow/docs/agents-multilingual#intent-entity).
+   * @param updateMask Optional. The mask to control which fields get updated.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent updateIntent(Intent intent, String languageCode, FieldMask updateMask) {
+    UpdateIntentRequest request =
+<span class="fc" id="L901">        UpdateIntentRequest.newBuilder()</span>
+<span class="fc" id="L902">            .setIntent(intent)</span>
+<span class="fc" id="L903">            .setLanguageCode(languageCode)</span>
+<span class="fc" id="L904">            .setUpdateMask(updateMask)</span>
+<span class="fc" id="L905">            .build();</span>
+<span class="fc" id="L906">    return updateIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified intent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   UpdateIntentRequest request =
+   *       UpdateIntentRequest.newBuilder()
+   *           .setIntent(Intent.newBuilder().build())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .build();
+   *   Intent response = intentsClient.updateIntent(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Intent updateIntent(UpdateIntentRequest request) {
+<span class="fc" id="L937">    return updateIntentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified intent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   UpdateIntentRequest request =
+   *       UpdateIntentRequest.newBuilder()
+   *           .setIntent(Intent.newBuilder().build())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .build();
+   *   ApiFuture&lt;Intent&gt; future = intentsClient.updateIntentCallable().futureCall(request);
+   *   // Do something.
+   *   Intent response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateIntentRequest, Intent&gt; updateIntentCallable() {
+<span class="fc" id="L967">    return stub.updateIntentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified intent and its direct or indirect followup intents.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   IntentName name = IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;);
+   *   intentsClient.deleteIntent(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the intent to delete. If this intent has direct or indirect
+   *     followup intents, we also delete them.
+   *     &lt;p&gt;Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteIntent(IntentName name) {
+    DeleteIntentRequest request =
+<span class="pc bpc" id="L997" title="1 of 2 branches missed.">        DeleteIntentRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L998">    deleteIntent(request);</span>
+<span class="fc" id="L999">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified intent and its direct or indirect followup intents.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String name = IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;).toString();
+   *   intentsClient.deleteIntent(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the intent to delete. If this intent has direct or indirect
+   *     followup intents, we also delete them.
+   *     &lt;p&gt;Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/intents/&amp;lt;Intent ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteIntent(String name) {
+<span class="fc" id="L1027">    DeleteIntentRequest request = DeleteIntentRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L1028">    deleteIntent(request);</span>
+<span class="fc" id="L1029">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified intent and its direct or indirect followup intents.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   DeleteIntentRequest request =
+   *       DeleteIntentRequest.newBuilder()
+   *           .setName(IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;).toString())
+   *           .build();
+   *   intentsClient.deleteIntent(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteIntent(DeleteIntentRequest request) {
+<span class="fc" id="L1056">    deleteIntentCallable().call(request);</span>
+<span class="fc" id="L1057">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified intent and its direct or indirect followup intents.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   DeleteIntentRequest request =
+   *       DeleteIntentRequest.newBuilder()
+   *           .setName(IntentName.ofProjectIntentName(&quot;[PROJECT]&quot;, &quot;[INTENT]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future = intentsClient.deleteIntentCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteIntentRequest, Empty&gt; deleteIntentCallable() {
+<span class="fc" id="L1083">    return stub.deleteIntentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates/Creates multiple intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`:
+   * [BatchUpdateIntentsResponse][google.cloud.dialogflow.v2beta1.BatchUpdateIntentsResponse]
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   AgentName parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   IntentBatch intentBatchInline = IntentBatch.newBuilder().build();
+   *   BatchUpdateIntentsResponse response =
+   *       intentsClient.batchUpdateIntentsAsync(parent, intentBatchInline).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the agent to update or create intents in. Supported
+   *     formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intentBatchInline The collection of intents to update or create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;BatchUpdateIntentsResponse, Struct&gt; batchUpdateIntentsAsync(
+      AgentName parent, IntentBatch intentBatchInline) {
+    BatchUpdateIntentsRequest request =
+<span class="fc" id="L1125">        BatchUpdateIntentsRequest.newBuilder()</span>
+<span class="pc bpc" id="L1126" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1127">            .setIntentBatchInline(intentBatchInline)</span>
+<span class="fc" id="L1128">            .build();</span>
+<span class="fc" id="L1129">    return batchUpdateIntentsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates/Creates multiple intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`:
+   * [BatchUpdateIntentsResponse][google.cloud.dialogflow.v2beta1.BatchUpdateIntentsResponse]
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   AgentName parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   String intentBatchUri = &quot;intentBatchUri544125582&quot;;
+   *   BatchUpdateIntentsResponse response =
+   *       intentsClient.batchUpdateIntentsAsync(parent, intentBatchUri).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the agent to update or create intents in. Supported
+   *     formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intentBatchUri The URI to a Google Cloud Storage file containing intents to update or
+   *     create. The file format can either be a serialized proto (of IntentBatch type) or JSON
+   *     object. Note: The URI must start with &quot;gs://&quot;.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;BatchUpdateIntentsResponse, Struct&gt; batchUpdateIntentsAsync(
+      AgentName parent, String intentBatchUri) {
+    BatchUpdateIntentsRequest request =
+<span class="fc" id="L1173">        BatchUpdateIntentsRequest.newBuilder()</span>
+<span class="pc bpc" id="L1174" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1175">            .setIntentBatchUri(intentBatchUri)</span>
+<span class="fc" id="L1176">            .build();</span>
+<span class="fc" id="L1177">    return batchUpdateIntentsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates/Creates multiple intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`:
+   * [BatchUpdateIntentsResponse][google.cloud.dialogflow.v2beta1.BatchUpdateIntentsResponse]
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   IntentBatch intentBatchInline = IntentBatch.newBuilder().build();
+   *   BatchUpdateIntentsResponse response =
+   *       intentsClient.batchUpdateIntentsAsync(parent, intentBatchInline).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the agent to update or create intents in. Supported
+   *     formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intentBatchInline The collection of intents to update or create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;BatchUpdateIntentsResponse, Struct&gt; batchUpdateIntentsAsync(
+      String parent, IntentBatch intentBatchInline) {
+    BatchUpdateIntentsRequest request =
+<span class="fc" id="L1219">        BatchUpdateIntentsRequest.newBuilder()</span>
+<span class="fc" id="L1220">            .setParent(parent)</span>
+<span class="fc" id="L1221">            .setIntentBatchInline(intentBatchInline)</span>
+<span class="fc" id="L1222">            .build();</span>
+<span class="fc" id="L1223">    return batchUpdateIntentsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates/Creates multiple intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`:
+   * [BatchUpdateIntentsResponse][google.cloud.dialogflow.v2beta1.BatchUpdateIntentsResponse]
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   String intentBatchUri = &quot;intentBatchUri544125582&quot;;
+   *   BatchUpdateIntentsResponse response =
+   *       intentsClient.batchUpdateIntentsAsync(parent, intentBatchUri).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the agent to update or create intents in. Supported
+   *     formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intentBatchUri The URI to a Google Cloud Storage file containing intents to update or
+   *     create. The file format can either be a serialized proto (of IntentBatch type) or JSON
+   *     object. Note: The URI must start with &quot;gs://&quot;.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;BatchUpdateIntentsResponse, Struct&gt; batchUpdateIntentsAsync(
+      String parent, String intentBatchUri) {
+    BatchUpdateIntentsRequest request =
+<span class="fc" id="L1267">        BatchUpdateIntentsRequest.newBuilder()</span>
+<span class="fc" id="L1268">            .setParent(parent)</span>
+<span class="fc" id="L1269">            .setIntentBatchUri(intentBatchUri)</span>
+<span class="fc" id="L1270">            .build();</span>
+<span class="fc" id="L1271">    return batchUpdateIntentsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates/Creates multiple intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`:
+   * [BatchUpdateIntentsResponse][google.cloud.dialogflow.v2beta1.BatchUpdateIntentsResponse]
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   BatchUpdateIntentsRequest request =
+   *       BatchUpdateIntentsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .build();
+   *   BatchUpdateIntentsResponse response = intentsClient.batchUpdateIntentsAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;BatchUpdateIntentsResponse, Struct&gt; batchUpdateIntentsAsync(
+      BatchUpdateIntentsRequest request) {
+<span class="fc" id="L1312">    return batchUpdateIntentsOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates/Creates multiple intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`:
+   * [BatchUpdateIntentsResponse][google.cloud.dialogflow.v2beta1.BatchUpdateIntentsResponse]
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   BatchUpdateIntentsRequest request =
+   *       BatchUpdateIntentsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .build();
+   *   OperationFuture&lt;BatchUpdateIntentsResponse, Struct&gt; future =
+   *       intentsClient.batchUpdateIntentsOperationCallable().futureCall(request);
+   *   // Do something.
+   *   BatchUpdateIntentsResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;BatchUpdateIntentsRequest, BatchUpdateIntentsResponse, Struct&gt;
+      batchUpdateIntentsOperationCallable() {
+<span class="fc" id="L1353">    return stub.batchUpdateIntentsOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates/Creates multiple intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`:
+   * [BatchUpdateIntentsResponse][google.cloud.dialogflow.v2beta1.BatchUpdateIntentsResponse]
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   BatchUpdateIntentsRequest request =
+   *       BatchUpdateIntentsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .setIntentView(IntentView.forNumber(0))
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = intentsClient.batchUpdateIntentsCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;BatchUpdateIntentsRequest, Operation&gt; batchUpdateIntentsCallable() {
+<span class="nc" id="L1392">    return stub.batchUpdateIntentsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   AgentName parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   List&lt;Intent&gt; intents = new ArrayList&lt;&gt;();
+   *   intentsClient.batchDeleteIntentsAsync(parent, intents).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the agent to delete all entities types for. Supported
+   *     formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intents Required. The collection of intents to delete. Only intent `name` must be filled
+   *     in.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, Struct&gt; batchDeleteIntentsAsync(
+      AgentName parent, List&lt;Intent&gt; intents) {
+    BatchDeleteIntentsRequest request =
+<span class="fc" id="L1434">        BatchDeleteIntentsRequest.newBuilder()</span>
+<span class="pc bpc" id="L1435" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1436">            .addAllIntents(intents)</span>
+<span class="fc" id="L1437">            .build();</span>
+<span class="fc" id="L1438">    return batchDeleteIntentsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   String parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   List&lt;Intent&gt; intents = new ArrayList&lt;&gt;();
+   *   intentsClient.batchDeleteIntentsAsync(parent, intents).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The name of the agent to delete all entities types for. Supported
+   *     formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param intents Required. The collection of intents to delete. Only intent `name` must be filled
+   *     in.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, Struct&gt; batchDeleteIntentsAsync(
+      String parent, List&lt;Intent&gt; intents) {
+    BatchDeleteIntentsRequest request =
+<span class="fc" id="L1480">        BatchDeleteIntentsRequest.newBuilder().setParent(parent).addAllIntents(intents).build();</span>
+<span class="fc" id="L1481">    return batchDeleteIntentsAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   BatchDeleteIntentsRequest request =
+   *       BatchDeleteIntentsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .addAllIntents(new ArrayList&lt;Intent&gt;())
+   *           .build();
+   *   intentsClient.batchDeleteIntentsAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, Struct&gt; batchDeleteIntentsAsync(
+      BatchDeleteIntentsRequest request) {
+<span class="fc" id="L1520">    return batchDeleteIntentsOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   BatchDeleteIntentsRequest request =
+   *       BatchDeleteIntentsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .addAllIntents(new ArrayList&lt;Intent&gt;())
+   *           .build();
+   *   OperationFuture&lt;Empty, Struct&gt; future =
+   *       intentsClient.batchDeleteIntentsOperationCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;BatchDeleteIntentsRequest, Empty, Struct&gt;
+      batchDeleteIntentsOperationCallable() {
+<span class="fc" id="L1559">    return stub.batchDeleteIntentsOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes intents in the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (IntentsClient intentsClient = IntentsClient.create()) {
+   *   BatchDeleteIntentsRequest request =
+   *       BatchDeleteIntentsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .addAllIntents(new ArrayList&lt;Intent&gt;())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = intentsClient.batchDeleteIntentsCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;BatchDeleteIntentsRequest, Operation&gt; batchDeleteIntentsCallable() {
+<span class="nc" id="L1596">    return stub.batchDeleteIntentsCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L1601">    stub.close();</span>
+<span class="fc" id="L1602">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L1606">    stub.shutdown();</span>
+<span class="nc" id="L1607">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L1611">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L1616">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L1621">    stub.shutdownNow();</span>
+<span class="nc" id="L1622">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L1626">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListIntentsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListIntentsRequest,
+          ListIntentsResponse,
+          Intent,
+          ListIntentsPage,
+          ListIntentsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListIntentsPagedResponse&gt; createAsync(
+        PageContext&lt;ListIntentsRequest, ListIntentsResponse, Intent&gt; context,
+        ApiFuture&lt;ListIntentsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListIntentsPage&gt; futurePage =
+<span class="fc" id="L1641">          ListIntentsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1642">      return ApiFutures.transform(</span>
+<span class="fc" id="L1643">          futurePage, input -&gt; new ListIntentsPagedResponse(input), MoreExecutors.directExecutor());</span>
+    }
+
+    private ListIntentsPagedResponse(ListIntentsPage page) {
+<span class="fc" id="L1647">      super(page, ListIntentsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1648">    }</span>
+  }
+
+  public static class ListIntentsPage
+      extends AbstractPage&lt;ListIntentsRequest, ListIntentsResponse, Intent, ListIntentsPage&gt; {
+
+    private ListIntentsPage(
+        PageContext&lt;ListIntentsRequest, ListIntentsResponse, Intent&gt; context,
+        ListIntentsResponse response) {
+<span class="fc" id="L1657">      super(context, response);</span>
+<span class="fc" id="L1658">    }</span>
+
+    private static ListIntentsPage createEmptyPage() {
+<span class="fc" id="L1661">      return new ListIntentsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListIntentsPage createPage(
+        PageContext&lt;ListIntentsRequest, ListIntentsResponse, Intent&gt; context,
+        ListIntentsResponse response) {
+<span class="fc" id="L1668">      return new ListIntentsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListIntentsPage&gt; createPageAsync(
+        PageContext&lt;ListIntentsRequest, ListIntentsResponse, Intent&gt; context,
+        ApiFuture&lt;ListIntentsResponse&gt; futureResponse) {
+<span class="fc" id="L1675">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListIntentsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListIntentsRequest,
+          ListIntentsResponse,
+          Intent,
+          ListIntentsPage,
+          ListIntentsFixedSizeCollection&gt; {
+
+    private ListIntentsFixedSizeCollection(List&lt;ListIntentsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1688">      super(pages, collectionSize);</span>
+<span class="fc" id="L1689">    }</span>
+
+    private static ListIntentsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1692">      return new ListIntentsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListIntentsFixedSizeCollection createCollection(
+        List&lt;ListIntentsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1698">      return new ListIntentsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

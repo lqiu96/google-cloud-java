@@ -1,0 +1,1529 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AdaptationClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-speech</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.speech.v1</a> &gt; <span class="el_source">AdaptationClient.java</span></div><h1>AdaptationClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.speech.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.speech.v1.stub.AdaptationStub;
+import com.google.cloud.speech.v1.stub.AdaptationStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service that implements Google Cloud Speech Adaptation API.
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+ *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+ *   PhraseSet phraseSet = PhraseSet.newBuilder().build();
+ *   String phraseSetId = &quot;phraseSetId959902180&quot;;
+ *   PhraseSet response = adaptationClient.createPhraseSet(parent, phraseSet, phraseSetId);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the AdaptationClient object to clean up resources such as
+ * threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of AdaptationSettings to
+ * create(). For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * AdaptationSettings adaptationSettings =
+ *     AdaptationSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * AdaptationClient adaptationClient = AdaptationClient.create(adaptationSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * AdaptationSettings adaptationSettings =
+ *     AdaptationSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * AdaptationClient adaptationClient = AdaptationClient.create(adaptationSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class AdaptationClient implements BackgroundResource {
+  private final AdaptationSettings settings;
+  private final AdaptationStub stub;
+
+  /** Constructs an instance of AdaptationClient with default settings. */
+  public static final AdaptationClient create() throws IOException {
+<span class="nc" id="L112">    return create(AdaptationSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of AdaptationClient, using the given settings. The channels are created
+   * based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final AdaptationClient create(AdaptationSettings settings) throws IOException {
+<span class="fc" id="L120">    return new AdaptationClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of AdaptationClient, using the given stub for making calls. This is for
+   * advanced usage - prefer using create(AdaptationSettings).
+   */
+  public static final AdaptationClient create(AdaptationStub stub) {
+<span class="nc" id="L128">    return new AdaptationClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of AdaptationClient, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+<span class="fc" id="L135">  protected AdaptationClient(AdaptationSettings settings) throws IOException {</span>
+<span class="fc" id="L136">    this.settings = settings;</span>
+<span class="fc" id="L137">    this.stub = ((AdaptationStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L138">  }</span>
+
+<span class="nc" id="L140">  protected AdaptationClient(AdaptationStub stub) {</span>
+<span class="nc" id="L141">    this.settings = null;</span>
+<span class="nc" id="L142">    this.stub = stub;</span>
+<span class="nc" id="L143">  }</span>
+
+  public final AdaptationSettings getSettings() {
+<span class="nc" id="L146">    return settings;</span>
+  }
+
+  public AdaptationStub getStub() {
+<span class="nc" id="L150">    return stub;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create a set of phrase hints. Each item in the set can be a single word or a multi-word phrase.
+   * The items in the PhraseSet are favored by the recognition model when you send a call that
+   * includes the PhraseSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   PhraseSet phraseSet = PhraseSet.newBuilder().build();
+   *   String phraseSetId = &quot;phraseSetId959902180&quot;;
+   *   PhraseSet response = adaptationClient.createPhraseSet(parent, phraseSet, phraseSetId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The parent resource where this phrase set will be created. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/phraseSets`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @param phraseSet Required. The phrase set to create.
+   * @param phraseSetId Required. The ID to use for the phrase set, which will become the final
+   *     component of the phrase set's resource name.
+   *     &lt;p&gt;This value should restrict to letters, numbers, and hyphens, with the first character a
+   *     letter, the last a letter or a number, and be 4-63 characters.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PhraseSet createPhraseSet(
+      LocationName parent, PhraseSet phraseSet, String phraseSetId) {
+    CreatePhraseSetRequest request =
+<span class="fc" id="L189">        CreatePhraseSetRequest.newBuilder()</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L191">            .setPhraseSet(phraseSet)</span>
+<span class="fc" id="L192">            .setPhraseSetId(phraseSetId)</span>
+<span class="fc" id="L193">            .build();</span>
+<span class="fc" id="L194">    return createPhraseSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create a set of phrase hints. Each item in the set can be a single word or a multi-word phrase.
+   * The items in the PhraseSet are favored by the recognition model when you send a call that
+   * includes the PhraseSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   PhraseSet phraseSet = PhraseSet.newBuilder().build();
+   *   String phraseSetId = &quot;phraseSetId959902180&quot;;
+   *   PhraseSet response = adaptationClient.createPhraseSet(parent, phraseSet, phraseSetId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The parent resource where this phrase set will be created. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/phraseSets`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @param phraseSet Required. The phrase set to create.
+   * @param phraseSetId Required. The ID to use for the phrase set, which will become the final
+   *     component of the phrase set's resource name.
+   *     &lt;p&gt;This value should restrict to letters, numbers, and hyphens, with the first character a
+   *     letter, the last a letter or a number, and be 4-63 characters.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PhraseSet createPhraseSet(String parent, PhraseSet phraseSet, String phraseSetId) {
+    CreatePhraseSetRequest request =
+<span class="fc" id="L232">        CreatePhraseSetRequest.newBuilder()</span>
+<span class="fc" id="L233">            .setParent(parent)</span>
+<span class="fc" id="L234">            .setPhraseSet(phraseSet)</span>
+<span class="fc" id="L235">            .setPhraseSetId(phraseSetId)</span>
+<span class="fc" id="L236">            .build();</span>
+<span class="fc" id="L237">    return createPhraseSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create a set of phrase hints. Each item in the set can be a single word or a multi-word phrase.
+   * The items in the PhraseSet are favored by the recognition model when you send a call that
+   * includes the PhraseSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   CreatePhraseSetRequest request =
+   *       CreatePhraseSetRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPhraseSetId(&quot;phraseSetId959902180&quot;)
+   *           .setPhraseSet(PhraseSet.newBuilder().build())
+   *           .build();
+   *   PhraseSet response = adaptationClient.createPhraseSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PhraseSet createPhraseSet(CreatePhraseSetRequest request) {
+<span class="fc" id="L266">    return createPhraseSetCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create a set of phrase hints. Each item in the set can be a single word or a multi-word phrase.
+   * The items in the PhraseSet are favored by the recognition model when you send a call that
+   * includes the PhraseSet.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   CreatePhraseSetRequest request =
+   *       CreatePhraseSetRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPhraseSetId(&quot;phraseSetId959902180&quot;)
+   *           .setPhraseSet(PhraseSet.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;PhraseSet&gt; future = adaptationClient.createPhraseSetCallable().futureCall(request);
+   *   // Do something.
+   *   PhraseSet response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreatePhraseSetRequest, PhraseSet&gt; createPhraseSetCallable() {
+<span class="fc" id="L294">    return stub.createPhraseSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Get a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   PhraseSetName name = PhraseSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PHRASE_SET]&quot;);
+   *   PhraseSet response = adaptationClient.getPhraseSet(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the phrase set to retrieve. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/phraseSets/{phrase_set}`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PhraseSet getPhraseSet(PhraseSetName name) {
+    GetPhraseSetRequest request =
+<span class="pc bpc" id="L323" title="1 of 2 branches missed.">        GetPhraseSetRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L324">    return getPhraseSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Get a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   String name = PhraseSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PHRASE_SET]&quot;).toString();
+   *   PhraseSet response = adaptationClient.getPhraseSet(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the phrase set to retrieve. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/phraseSets/{phrase_set}`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PhraseSet getPhraseSet(String name) {
+<span class="fc" id="L352">    GetPhraseSetRequest request = GetPhraseSetRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L353">    return getPhraseSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Get a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   GetPhraseSetRequest request =
+   *       GetPhraseSetRequest.newBuilder()
+   *           .setName(PhraseSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PHRASE_SET]&quot;).toString())
+   *           .build();
+   *   PhraseSet response = adaptationClient.getPhraseSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PhraseSet getPhraseSet(GetPhraseSetRequest request) {
+<span class="fc" id="L378">    return getPhraseSetCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Get a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   GetPhraseSetRequest request =
+   *       GetPhraseSetRequest.newBuilder()
+   *           .setName(PhraseSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PHRASE_SET]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;PhraseSet&gt; future = adaptationClient.getPhraseSetCallable().futureCall(request);
+   *   // Do something.
+   *   PhraseSet response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetPhraseSetRequest, PhraseSet&gt; getPhraseSetCallable() {
+<span class="fc" id="L402">    return stub.getPhraseSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List phrase sets.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   for (PhraseSet element : adaptationClient.listPhraseSet(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The parent, which owns this collection of phrase set. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListPhraseSetPagedResponse listPhraseSet(LocationName parent) {
+    ListPhraseSetRequest request =
+<span class="fc" id="L433">        ListPhraseSetRequest.newBuilder()</span>
+<span class="pc bpc" id="L434" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L435">            .build();</span>
+<span class="fc" id="L436">    return listPhraseSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List phrase sets.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   for (PhraseSet element : adaptationClient.listPhraseSet(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The parent, which owns this collection of phrase set. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListPhraseSetPagedResponse listPhraseSet(String parent) {
+<span class="fc" id="L466">    ListPhraseSetRequest request = ListPhraseSetRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L467">    return listPhraseSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List phrase sets.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   ListPhraseSetRequest request =
+   *       ListPhraseSetRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (PhraseSet element : adaptationClient.listPhraseSet(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListPhraseSetPagedResponse listPhraseSet(ListPhraseSetRequest request) {
+<span class="fc" id="L496">    return listPhraseSetPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List phrase sets.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   ListPhraseSetRequest request =
+   *       ListPhraseSetRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;PhraseSet&gt; future =
+   *       adaptationClient.listPhraseSetPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (PhraseSet element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListPhraseSetRequest, ListPhraseSetPagedResponse&gt;
+      listPhraseSetPagedCallable() {
+<span class="fc" id="L526">    return stub.listPhraseSetPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List phrase sets.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   ListPhraseSetRequest request =
+   *       ListPhraseSetRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListPhraseSetResponse response = adaptationClient.listPhraseSetCallable().call(request);
+   *     for (PhraseSet element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListPhraseSetRequest, ListPhraseSetResponse&gt; listPhraseSetCallable() {
+<span class="nc" id="L561">    return stub.listPhraseSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Update a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   PhraseSet phraseSet = PhraseSet.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   PhraseSet response = adaptationClient.updatePhraseSet(phraseSet, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param phraseSet Required. The phrase set to update.
+   *     &lt;p&gt;The phrase set's `name` field is used to identify the set to be updated. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/phraseSets/{phrase_set}`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @param updateMask The list of fields to be updated.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PhraseSet updatePhraseSet(PhraseSet phraseSet, FieldMask updateMask) {
+    UpdatePhraseSetRequest request =
+<span class="fc" id="L593">        UpdatePhraseSetRequest.newBuilder()</span>
+<span class="fc" id="L594">            .setPhraseSet(phraseSet)</span>
+<span class="fc" id="L595">            .setUpdateMask(updateMask)</span>
+<span class="fc" id="L596">            .build();</span>
+<span class="fc" id="L597">    return updatePhraseSet(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Update a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   UpdatePhraseSetRequest request =
+   *       UpdatePhraseSetRequest.newBuilder()
+   *           .setPhraseSet(PhraseSet.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   PhraseSet response = adaptationClient.updatePhraseSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final PhraseSet updatePhraseSet(UpdatePhraseSetRequest request) {
+<span class="fc" id="L623">    return updatePhraseSetCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Update a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   UpdatePhraseSetRequest request =
+   *       UpdatePhraseSetRequest.newBuilder()
+   *           .setPhraseSet(PhraseSet.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;PhraseSet&gt; future = adaptationClient.updatePhraseSetCallable().futureCall(request);
+   *   // Do something.
+   *   PhraseSet response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdatePhraseSetRequest, PhraseSet&gt; updatePhraseSetCallable() {
+<span class="fc" id="L648">    return stub.updatePhraseSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   PhraseSetName name = PhraseSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PHRASE_SET]&quot;);
+   *   adaptationClient.deletePhraseSet(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the phrase set to delete. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/phraseSets/{phrase_set}`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deletePhraseSet(PhraseSetName name) {
+    DeletePhraseSetRequest request =
+<span class="pc bpc" id="L672" title="1 of 2 branches missed.">        DeletePhraseSetRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L673">    deletePhraseSet(request);</span>
+<span class="fc" id="L674">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   String name = PhraseSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PHRASE_SET]&quot;).toString();
+   *   adaptationClient.deletePhraseSet(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the phrase set to delete. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/phraseSets/{phrase_set}`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deletePhraseSet(String name) {
+<span class="fc" id="L696">    DeletePhraseSetRequest request = DeletePhraseSetRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L697">    deletePhraseSet(request);</span>
+<span class="fc" id="L698">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   DeletePhraseSetRequest request =
+   *       DeletePhraseSetRequest.newBuilder()
+   *           .setName(PhraseSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PHRASE_SET]&quot;).toString())
+   *           .build();
+   *   adaptationClient.deletePhraseSet(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deletePhraseSet(DeletePhraseSetRequest request) {
+<span class="fc" id="L722">    deletePhraseSetCallable().call(request);</span>
+<span class="fc" id="L723">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete a phrase set.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   DeletePhraseSetRequest request =
+   *       DeletePhraseSetRequest.newBuilder()
+   *           .setName(PhraseSetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[PHRASE_SET]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future = adaptationClient.deletePhraseSetCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeletePhraseSetRequest, Empty&gt; deletePhraseSetCallable() {
+<span class="fc" id="L746">    return stub.deletePhraseSetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   CustomClass customClass = CustomClass.newBuilder().build();
+   *   String customClassId = &quot;customClassId1871032322&quot;;
+   *   CustomClass response = adaptationClient.createCustomClass(parent, customClass, customClassId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The parent resource where this custom class will be created. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/customClasses`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @param customClass Required. The custom class to create.
+   * @param customClassId Required. The ID to use for the custom class, which will become the final
+   *     component of the custom class' resource name.
+   *     &lt;p&gt;This value should restrict to letters, numbers, and hyphens, with the first character a
+   *     letter, the last a letter or a number, and be 4-63 characters.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final CustomClass createCustomClass(
+      LocationName parent, CustomClass customClass, String customClassId) {
+    CreateCustomClassRequest request =
+<span class="fc" id="L783">        CreateCustomClassRequest.newBuilder()</span>
+<span class="pc bpc" id="L784" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L785">            .setCustomClass(customClass)</span>
+<span class="fc" id="L786">            .setCustomClassId(customClassId)</span>
+<span class="fc" id="L787">            .build();</span>
+<span class="fc" id="L788">    return createCustomClass(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   CustomClass customClass = CustomClass.newBuilder().build();
+   *   String customClassId = &quot;customClassId1871032322&quot;;
+   *   CustomClass response = adaptationClient.createCustomClass(parent, customClass, customClassId);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The parent resource where this custom class will be created. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/customClasses`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @param customClass Required. The custom class to create.
+   * @param customClassId Required. The ID to use for the custom class, which will become the final
+   *     component of the custom class' resource name.
+   *     &lt;p&gt;This value should restrict to letters, numbers, and hyphens, with the first character a
+   *     letter, the last a letter or a number, and be 4-63 characters.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final CustomClass createCustomClass(
+      String parent, CustomClass customClass, String customClassId) {
+    CreateCustomClassRequest request =
+<span class="fc" id="L825">        CreateCustomClassRequest.newBuilder()</span>
+<span class="fc" id="L826">            .setParent(parent)</span>
+<span class="fc" id="L827">            .setCustomClass(customClass)</span>
+<span class="fc" id="L828">            .setCustomClassId(customClassId)</span>
+<span class="fc" id="L829">            .build();</span>
+<span class="fc" id="L830">    return createCustomClass(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   CreateCustomClassRequest request =
+   *       CreateCustomClassRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setCustomClassId(&quot;customClassId1871032322&quot;)
+   *           .setCustomClass(CustomClass.newBuilder().build())
+   *           .build();
+   *   CustomClass response = adaptationClient.createCustomClass(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final CustomClass createCustomClass(CreateCustomClassRequest request) {
+<span class="fc" id="L857">    return createCustomClassCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   CreateCustomClassRequest request =
+   *       CreateCustomClassRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setCustomClassId(&quot;customClassId1871032322&quot;)
+   *           .setCustomClass(CustomClass.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;CustomClass&gt; future =
+   *       adaptationClient.createCustomClassCallable().futureCall(request);
+   *   // Do something.
+   *   CustomClass response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateCustomClassRequest, CustomClass&gt; createCustomClassCallable() {
+<span class="fc" id="L884">    return stub.createCustomClassCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Get a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   CustomClassName name = CustomClassName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CUSTOM_CLASS]&quot;);
+   *   CustomClass response = adaptationClient.getCustomClass(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the custom class to retrieve. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/customClasses/{custom_class}`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final CustomClass getCustomClass(CustomClassName name) {
+    GetCustomClassRequest request =
+<span class="pc bpc" id="L908" title="1 of 2 branches missed.">        GetCustomClassRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L909">    return getCustomClass(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Get a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   String name = CustomClassName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CUSTOM_CLASS]&quot;).toString();
+   *   CustomClass response = adaptationClient.getCustomClass(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the custom class to retrieve. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/customClasses/{custom_class}`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final CustomClass getCustomClass(String name) {
+<span class="fc" id="L932">    GetCustomClassRequest request = GetCustomClassRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L933">    return getCustomClass(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Get a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   GetCustomClassRequest request =
+   *       GetCustomClassRequest.newBuilder()
+   *           .setName(CustomClassName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CUSTOM_CLASS]&quot;).toString())
+   *           .build();
+   *   CustomClass response = adaptationClient.getCustomClass(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final CustomClass getCustomClass(GetCustomClassRequest request) {
+<span class="fc" id="L958">    return getCustomClassCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Get a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   GetCustomClassRequest request =
+   *       GetCustomClassRequest.newBuilder()
+   *           .setName(CustomClassName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CUSTOM_CLASS]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;CustomClass&gt; future = adaptationClient.getCustomClassCallable().futureCall(request);
+   *   // Do something.
+   *   CustomClass response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetCustomClassRequest, CustomClass&gt; getCustomClassCallable() {
+<span class="fc" id="L982">    return stub.getCustomClassCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List custom classes.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   for (CustomClass element : adaptationClient.listCustomClasses(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The parent, which owns this collection of custom classes. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/customClasses`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListCustomClassesPagedResponse listCustomClasses(LocationName parent) {
+    ListCustomClassesRequest request =
+<span class="fc" id="L1013">        ListCustomClassesRequest.newBuilder()</span>
+<span class="pc bpc" id="L1014" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1015">            .build();</span>
+<span class="fc" id="L1016">    return listCustomClasses(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List custom classes.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   for (CustomClass element : adaptationClient.listCustomClasses(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The parent, which owns this collection of custom classes. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/customClasses`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListCustomClassesPagedResponse listCustomClasses(String parent) {
+    ListCustomClassesRequest request =
+<span class="fc" id="L1047">        ListCustomClassesRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L1048">    return listCustomClasses(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List custom classes.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   ListCustomClassesRequest request =
+   *       ListCustomClassesRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (CustomClass element : adaptationClient.listCustomClasses(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListCustomClassesPagedResponse listCustomClasses(ListCustomClassesRequest request) {
+<span class="fc" id="L1077">    return listCustomClassesPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List custom classes.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   ListCustomClassesRequest request =
+   *       ListCustomClassesRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;CustomClass&gt; future =
+   *       adaptationClient.listCustomClassesPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (CustomClass element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListCustomClassesRequest, ListCustomClassesPagedResponse&gt;
+      listCustomClassesPagedCallable() {
+<span class="fc" id="L1107">    return stub.listCustomClassesPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * List custom classes.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   ListCustomClassesRequest request =
+   *       ListCustomClassesRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListCustomClassesResponse response =
+   *         adaptationClient.listCustomClassesCallable().call(request);
+   *     for (CustomClass element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListCustomClassesRequest, ListCustomClassesResponse&gt;
+      listCustomClassesCallable() {
+<span class="nc" id="L1144">    return stub.listCustomClassesCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Update a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   CustomClass customClass = CustomClass.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   CustomClass response = adaptationClient.updateCustomClass(customClass, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param customClass Required. The custom class to update.
+   *     &lt;p&gt;The custom class's `name` field is used to identify the custom class to be updated.
+   *     Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/customClasses/{custom_class}`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @param updateMask The list of fields to be updated.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final CustomClass updateCustomClass(CustomClass customClass, FieldMask updateMask) {
+    UpdateCustomClassRequest request =
+<span class="fc" id="L1177">        UpdateCustomClassRequest.newBuilder()</span>
+<span class="fc" id="L1178">            .setCustomClass(customClass)</span>
+<span class="fc" id="L1179">            .setUpdateMask(updateMask)</span>
+<span class="fc" id="L1180">            .build();</span>
+<span class="fc" id="L1181">    return updateCustomClass(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Update a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   UpdateCustomClassRequest request =
+   *       UpdateCustomClassRequest.newBuilder()
+   *           .setCustomClass(CustomClass.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   CustomClass response = adaptationClient.updateCustomClass(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final CustomClass updateCustomClass(UpdateCustomClassRequest request) {
+<span class="fc" id="L1207">    return updateCustomClassCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Update a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   UpdateCustomClassRequest request =
+   *       UpdateCustomClassRequest.newBuilder()
+   *           .setCustomClass(CustomClass.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;CustomClass&gt; future =
+   *       adaptationClient.updateCustomClassCallable().futureCall(request);
+   *   // Do something.
+   *   CustomClass response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateCustomClassRequest, CustomClass&gt; updateCustomClassCallable() {
+<span class="fc" id="L1233">    return stub.updateCustomClassCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   CustomClassName name = CustomClassName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CUSTOM_CLASS]&quot;);
+   *   adaptationClient.deleteCustomClass(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the custom class to delete. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/customClasses/{custom_class}`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteCustomClass(CustomClassName name) {
+    DeleteCustomClassRequest request =
+<span class="fc" id="L1262">        DeleteCustomClassRequest.newBuilder()</span>
+<span class="pc bpc" id="L1263" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L1264">            .build();</span>
+<span class="fc" id="L1265">    deleteCustomClass(request);</span>
+<span class="fc" id="L1266">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   String name = CustomClassName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CUSTOM_CLASS]&quot;).toString();
+   *   adaptationClient.deleteCustomClass(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the custom class to delete. Format:
+   *     &lt;p&gt;`projects/{project}/locations/{location}/customClasses/{custom_class}`
+   *     &lt;p&gt;Speech-to-Text supports three locations: `global`, `us` (US North America), and `eu`
+   *     (Europe). If you are calling the `speech.googleapis.com` endpoint, use the `global`
+   *     location. To specify a region, use a [regional
+   *     endpoint](https://cloud.google.com/speech-to-text/docs/endpoints) with matching `us` or
+   *     `eu` location value.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteCustomClass(String name) {
+<span class="fc" id="L1293">    DeleteCustomClassRequest request = DeleteCustomClassRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L1294">    deleteCustomClass(request);</span>
+<span class="fc" id="L1295">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   DeleteCustomClassRequest request =
+   *       DeleteCustomClassRequest.newBuilder()
+   *           .setName(CustomClassName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CUSTOM_CLASS]&quot;).toString())
+   *           .build();
+   *   adaptationClient.deleteCustomClass(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteCustomClass(DeleteCustomClassRequest request) {
+<span class="fc" id="L1319">    deleteCustomClassCallable().call(request);</span>
+<span class="fc" id="L1320">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete a custom class.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AdaptationClient adaptationClient = AdaptationClient.create()) {
+   *   DeleteCustomClassRequest request =
+   *       DeleteCustomClassRequest.newBuilder()
+   *           .setName(CustomClassName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CUSTOM_CLASS]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future = adaptationClient.deleteCustomClassCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteCustomClassRequest, Empty&gt; deleteCustomClassCallable() {
+<span class="fc" id="L1343">    return stub.deleteCustomClassCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L1348">    stub.close();</span>
+<span class="fc" id="L1349">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L1353">    stub.shutdown();</span>
+<span class="nc" id="L1354">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L1358">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L1363">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L1368">    stub.shutdownNow();</span>
+<span class="nc" id="L1369">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L1373">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListPhraseSetPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListPhraseSetRequest,
+          ListPhraseSetResponse,
+          PhraseSet,
+          ListPhraseSetPage,
+          ListPhraseSetFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListPhraseSetPagedResponse&gt; createAsync(
+        PageContext&lt;ListPhraseSetRequest, ListPhraseSetResponse, PhraseSet&gt; context,
+        ApiFuture&lt;ListPhraseSetResponse&gt; futureResponse) {
+      ApiFuture&lt;ListPhraseSetPage&gt; futurePage =
+<span class="fc" id="L1388">          ListPhraseSetPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1389">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L1391">          input -&gt; new ListPhraseSetPagedResponse(input),</span>
+<span class="fc" id="L1392">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListPhraseSetPagedResponse(ListPhraseSetPage page) {
+<span class="fc" id="L1396">      super(page, ListPhraseSetFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1397">    }</span>
+  }
+
+  public static class ListPhraseSetPage
+      extends AbstractPage&lt;
+          ListPhraseSetRequest, ListPhraseSetResponse, PhraseSet, ListPhraseSetPage&gt; {
+
+    private ListPhraseSetPage(
+        PageContext&lt;ListPhraseSetRequest, ListPhraseSetResponse, PhraseSet&gt; context,
+        ListPhraseSetResponse response) {
+<span class="fc" id="L1407">      super(context, response);</span>
+<span class="fc" id="L1408">    }</span>
+
+    private static ListPhraseSetPage createEmptyPage() {
+<span class="fc" id="L1411">      return new ListPhraseSetPage(null, null);</span>
+    }
+
+    @Override
+    protected ListPhraseSetPage createPage(
+        PageContext&lt;ListPhraseSetRequest, ListPhraseSetResponse, PhraseSet&gt; context,
+        ListPhraseSetResponse response) {
+<span class="fc" id="L1418">      return new ListPhraseSetPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListPhraseSetPage&gt; createPageAsync(
+        PageContext&lt;ListPhraseSetRequest, ListPhraseSetResponse, PhraseSet&gt; context,
+        ApiFuture&lt;ListPhraseSetResponse&gt; futureResponse) {
+<span class="fc" id="L1425">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListPhraseSetFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListPhraseSetRequest,
+          ListPhraseSetResponse,
+          PhraseSet,
+          ListPhraseSetPage,
+          ListPhraseSetFixedSizeCollection&gt; {
+
+    private ListPhraseSetFixedSizeCollection(List&lt;ListPhraseSetPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1438">      super(pages, collectionSize);</span>
+<span class="fc" id="L1439">    }</span>
+
+    private static ListPhraseSetFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1442">      return new ListPhraseSetFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListPhraseSetFixedSizeCollection createCollection(
+        List&lt;ListPhraseSetPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1448">      return new ListPhraseSetFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+
+  public static class ListCustomClassesPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListCustomClassesRequest,
+          ListCustomClassesResponse,
+          CustomClass,
+          ListCustomClassesPage,
+          ListCustomClassesFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListCustomClassesPagedResponse&gt; createAsync(
+        PageContext&lt;ListCustomClassesRequest, ListCustomClassesResponse, CustomClass&gt; context,
+        ApiFuture&lt;ListCustomClassesResponse&gt; futureResponse) {
+      ApiFuture&lt;ListCustomClassesPage&gt; futurePage =
+<span class="fc" id="L1464">          ListCustomClassesPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1465">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L1467">          input -&gt; new ListCustomClassesPagedResponse(input),</span>
+<span class="fc" id="L1468">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListCustomClassesPagedResponse(ListCustomClassesPage page) {
+<span class="fc" id="L1472">      super(page, ListCustomClassesFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1473">    }</span>
+  }
+
+  public static class ListCustomClassesPage
+      extends AbstractPage&lt;
+          ListCustomClassesRequest, ListCustomClassesResponse, CustomClass, ListCustomClassesPage&gt; {
+
+    private ListCustomClassesPage(
+        PageContext&lt;ListCustomClassesRequest, ListCustomClassesResponse, CustomClass&gt; context,
+        ListCustomClassesResponse response) {
+<span class="fc" id="L1483">      super(context, response);</span>
+<span class="fc" id="L1484">    }</span>
+
+    private static ListCustomClassesPage createEmptyPage() {
+<span class="fc" id="L1487">      return new ListCustomClassesPage(null, null);</span>
+    }
+
+    @Override
+    protected ListCustomClassesPage createPage(
+        PageContext&lt;ListCustomClassesRequest, ListCustomClassesResponse, CustomClass&gt; context,
+        ListCustomClassesResponse response) {
+<span class="fc" id="L1494">      return new ListCustomClassesPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListCustomClassesPage&gt; createPageAsync(
+        PageContext&lt;ListCustomClassesRequest, ListCustomClassesResponse, CustomClass&gt; context,
+        ApiFuture&lt;ListCustomClassesResponse&gt; futureResponse) {
+<span class="fc" id="L1501">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListCustomClassesFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListCustomClassesRequest,
+          ListCustomClassesResponse,
+          CustomClass,
+          ListCustomClassesPage,
+          ListCustomClassesFixedSizeCollection&gt; {
+
+    private ListCustomClassesFixedSizeCollection(
+        List&lt;ListCustomClassesPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1515">      super(pages, collectionSize);</span>
+<span class="fc" id="L1516">    }</span>
+
+    private static ListCustomClassesFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1519">      return new ListCustomClassesFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListCustomClassesFixedSizeCollection createCollection(
+        List&lt;ListCustomClassesPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1525">      return new ListCustomClassesFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcConversationModelsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcConversationModelsStub.java</span></div><h1>GrpcConversationModelsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.ConversationModelsClient.ListConversationModelEvaluationsPagedResponse;
+import static com.google.cloud.dialogflow.v2.ConversationModelsClient.ListConversationModelsPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.ConversationModel;
+import com.google.cloud.dialogflow.v2.ConversationModelEvaluation;
+import com.google.cloud.dialogflow.v2.CreateConversationModelEvaluationOperationMetadata;
+import com.google.cloud.dialogflow.v2.CreateConversationModelEvaluationRequest;
+import com.google.cloud.dialogflow.v2.CreateConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.CreateConversationModelRequest;
+import com.google.cloud.dialogflow.v2.DeleteConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.DeleteConversationModelRequest;
+import com.google.cloud.dialogflow.v2.DeployConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.DeployConversationModelRequest;
+import com.google.cloud.dialogflow.v2.GetConversationModelEvaluationRequest;
+import com.google.cloud.dialogflow.v2.GetConversationModelRequest;
+import com.google.cloud.dialogflow.v2.ListConversationModelEvaluationsRequest;
+import com.google.cloud.dialogflow.v2.ListConversationModelEvaluationsResponse;
+import com.google.cloud.dialogflow.v2.ListConversationModelsRequest;
+import com.google.cloud.dialogflow.v2.ListConversationModelsResponse;
+import com.google.cloud.dialogflow.v2.UndeployConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.UndeployConversationModelRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the ConversationModels service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcConversationModelsStub extends ConversationModelsStub {
+  private static final MethodDescriptor&lt;CreateConversationModelRequest, Operation&gt;
+      createConversationModelMethodDescriptor =
+<span class="fc" id="L67">          MethodDescriptor.&lt;CreateConversationModelRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L68">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L69">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationModels/CreateConversationModel&quot;)
+<span class="fc" id="L71">              .setRequestMarshaller(</span>
+<span class="fc" id="L72">                  ProtoUtils.marshaller(CreateConversationModelRequest.getDefaultInstance()))</span>
+<span class="fc" id="L73">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L74">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetConversationModelRequest, ConversationModel&gt;
+      getConversationModelMethodDescriptor =
+<span class="fc" id="L78">          MethodDescriptor.&lt;GetConversationModelRequest, ConversationModel&gt;newBuilder()</span>
+<span class="fc" id="L79">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L80">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationModels/GetConversationModel&quot;)
+<span class="fc" id="L82">              .setRequestMarshaller(</span>
+<span class="fc" id="L83">                  ProtoUtils.marshaller(GetConversationModelRequest.getDefaultInstance()))</span>
+<span class="fc" id="L84">              .setResponseMarshaller(ProtoUtils.marshaller(ConversationModel.getDefaultInstance()))</span>
+<span class="fc" id="L85">              .build();</span>
+
+  private static final MethodDescriptor&lt;
+          ListConversationModelsRequest, ListConversationModelsResponse&gt;
+      listConversationModelsMethodDescriptor =
+          MethodDescriptor
+<span class="fc" id="L91">              .&lt;ListConversationModelsRequest, ListConversationModelsResponse&gt;newBuilder()</span>
+<span class="fc" id="L92">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L93">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationModels/ListConversationModels&quot;)
+<span class="fc" id="L95">              .setRequestMarshaller(</span>
+<span class="fc" id="L96">                  ProtoUtils.marshaller(ListConversationModelsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L97">              .setResponseMarshaller(</span>
+<span class="fc" id="L98">                  ProtoUtils.marshaller(ListConversationModelsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L99">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteConversationModelRequest, Operation&gt;
+      deleteConversationModelMethodDescriptor =
+<span class="fc" id="L103">          MethodDescriptor.&lt;DeleteConversationModelRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L104">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L105">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationModels/DeleteConversationModel&quot;)
+<span class="fc" id="L107">              .setRequestMarshaller(</span>
+<span class="fc" id="L108">                  ProtoUtils.marshaller(DeleteConversationModelRequest.getDefaultInstance()))</span>
+<span class="fc" id="L109">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L110">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeployConversationModelRequest, Operation&gt;
+      deployConversationModelMethodDescriptor =
+<span class="fc" id="L114">          MethodDescriptor.&lt;DeployConversationModelRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L115">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L116">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationModels/DeployConversationModel&quot;)
+<span class="fc" id="L118">              .setRequestMarshaller(</span>
+<span class="fc" id="L119">                  ProtoUtils.marshaller(DeployConversationModelRequest.getDefaultInstance()))</span>
+<span class="fc" id="L120">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L121">              .build();</span>
+
+  private static final MethodDescriptor&lt;UndeployConversationModelRequest, Operation&gt;
+      undeployConversationModelMethodDescriptor =
+<span class="fc" id="L125">          MethodDescriptor.&lt;UndeployConversationModelRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L126">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L127">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationModels/UndeployConversationModel&quot;)
+<span class="fc" id="L129">              .setRequestMarshaller(</span>
+<span class="fc" id="L130">                  ProtoUtils.marshaller(UndeployConversationModelRequest.getDefaultInstance()))</span>
+<span class="fc" id="L131">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L132">              .build();</span>
+
+  private static final MethodDescriptor&lt;
+          GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+      getConversationModelEvaluationMethodDescriptor =
+          MethodDescriptor
+<span class="fc" id="L138">              .&lt;GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;newBuilder()</span>
+<span class="fc" id="L139">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L140">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationModels/GetConversationModelEvaluation&quot;)
+<span class="fc" id="L142">              .setRequestMarshaller(</span>
+<span class="fc" id="L143">                  ProtoUtils.marshaller(GetConversationModelEvaluationRequest.getDefaultInstance()))</span>
+<span class="fc" id="L144">              .setResponseMarshaller(</span>
+<span class="fc" id="L145">                  ProtoUtils.marshaller(ConversationModelEvaluation.getDefaultInstance()))</span>
+<span class="fc" id="L146">              .build();</span>
+
+  private static final MethodDescriptor&lt;
+          ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsResponse&gt;
+      listConversationModelEvaluationsMethodDescriptor =
+          MethodDescriptor
+              .&lt;ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsResponse&gt;
+<span class="fc" id="L153">                  newBuilder()</span>
+<span class="fc" id="L154">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L155">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationModels/ListConversationModelEvaluations&quot;)
+<span class="fc" id="L157">              .setRequestMarshaller(</span>
+<span class="fc" id="L158">                  ProtoUtils.marshaller(</span>
+<span class="fc" id="L159">                      ListConversationModelEvaluationsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L160">              .setResponseMarshaller(</span>
+<span class="fc" id="L161">                  ProtoUtils.marshaller(</span>
+<span class="fc" id="L162">                      ListConversationModelEvaluationsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L163">              .build();</span>
+
+  private static final MethodDescriptor&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+<span class="fc" id="L166">      createConversationModelEvaluationMethodDescriptor =</span>
+<span class="fc" id="L167">          MethodDescriptor.&lt;CreateConversationModelEvaluationRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L168">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L169">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationModels/CreateConversationModelEvaluation&quot;)
+<span class="fc" id="L171">              .setRequestMarshaller(</span>
+<span class="fc" id="L172">                  ProtoUtils.marshaller(</span>
+<span class="fc" id="L173">                      CreateConversationModelEvaluationRequest.getDefaultInstance()))</span>
+<span class="fc" id="L174">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L175">              .build();</span>
+
+  private final UnaryCallable&lt;CreateConversationModelRequest, Operation&gt;
+      createConversationModelCallable;
+  private final OperationCallable&lt;
+          CreateConversationModelRequest,
+          ConversationModel,
+          CreateConversationModelOperationMetadata&gt;
+      createConversationModelOperationCallable;
+  private final UnaryCallable&lt;GetConversationModelRequest, ConversationModel&gt;
+      getConversationModelCallable;
+  private final UnaryCallable&lt;ListConversationModelsRequest, ListConversationModelsResponse&gt;
+      listConversationModelsCallable;
+  private final UnaryCallable&lt;ListConversationModelsRequest, ListConversationModelsPagedResponse&gt;
+      listConversationModelsPagedCallable;
+  private final UnaryCallable&lt;DeleteConversationModelRequest, Operation&gt;
+      deleteConversationModelCallable;
+  private final OperationCallable&lt;
+          DeleteConversationModelRequest, Empty, DeleteConversationModelOperationMetadata&gt;
+      deleteConversationModelOperationCallable;
+  private final UnaryCallable&lt;DeployConversationModelRequest, Operation&gt;
+      deployConversationModelCallable;
+  private final OperationCallable&lt;
+          DeployConversationModelRequest, Empty, DeployConversationModelOperationMetadata&gt;
+      deployConversationModelOperationCallable;
+  private final UnaryCallable&lt;UndeployConversationModelRequest, Operation&gt;
+      undeployConversationModelCallable;
+  private final OperationCallable&lt;
+          UndeployConversationModelRequest, Empty, UndeployConversationModelOperationMetadata&gt;
+      undeployConversationModelOperationCallable;
+  private final UnaryCallable&lt;GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+      getConversationModelEvaluationCallable;
+  private final UnaryCallable&lt;
+          ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsResponse&gt;
+      listConversationModelEvaluationsCallable;
+  private final UnaryCallable&lt;
+          ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsPagedResponse&gt;
+      listConversationModelEvaluationsPagedCallable;
+  private final UnaryCallable&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+      createConversationModelEvaluationCallable;
+  private final OperationCallable&lt;
+          CreateConversationModelEvaluationRequest,
+          ConversationModelEvaluation,
+          CreateConversationModelEvaluationOperationMetadata&gt;
+      createConversationModelEvaluationOperationCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcConversationModelsStub create(ConversationModelsStubSettings settings)
+      throws IOException {
+<span class="fc" id="L227">    return new GrpcConversationModelsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcConversationModelsStub create(ClientContext clientContext)
+      throws IOException {
+<span class="nc" id="L232">    return new GrpcConversationModelsStub(</span>
+<span class="nc" id="L233">        ConversationModelsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcConversationModelsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L238">    return new GrpcConversationModelsStub(</span>
+<span class="nc" id="L239">        ConversationModelsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcConversationModelsStub, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+  protected GrpcConversationModelsStub(
+      ConversationModelsStubSettings settings, ClientContext clientContext) throws IOException {
+<span class="fc" id="L249">    this(settings, clientContext, new GrpcConversationModelsCallableFactory());</span>
+<span class="fc" id="L250">  }</span>
+
+  /**
+   * Constructs an instance of GrpcConversationModelsStub, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+  protected GrpcConversationModelsStub(
+      ConversationModelsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L261">      throws IOException {</span>
+<span class="fc" id="L262">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L263">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;CreateConversationModelRequest, Operation&gt;
+        createConversationModelTransportSettings =
+<span class="fc" id="L267">            GrpcCallSettings.&lt;CreateConversationModelRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L268">                .setMethodDescriptor(createConversationModelMethodDescriptor)</span>
+<span class="fc" id="L269">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L271">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L272">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L273">                      return params.build();</span>
+                    })
+<span class="fc" id="L275">                .build();</span>
+    GrpcCallSettings&lt;GetConversationModelRequest, ConversationModel&gt;
+        getConversationModelTransportSettings =
+<span class="fc" id="L278">            GrpcCallSettings.&lt;GetConversationModelRequest, ConversationModel&gt;newBuilder()</span>
+<span class="fc" id="L279">                .setMethodDescriptor(getConversationModelMethodDescriptor)</span>
+<span class="fc" id="L280">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L282">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L283">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L284">                      return params.build();</span>
+                    })
+<span class="fc" id="L286">                .build();</span>
+    GrpcCallSettings&lt;ListConversationModelsRequest, ListConversationModelsResponse&gt;
+        listConversationModelsTransportSettings =
+            GrpcCallSettings
+<span class="fc" id="L290">                .&lt;ListConversationModelsRequest, ListConversationModelsResponse&gt;newBuilder()</span>
+<span class="fc" id="L291">                .setMethodDescriptor(listConversationModelsMethodDescriptor)</span>
+<span class="fc" id="L292">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L294">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L295">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L296">                      return params.build();</span>
+                    })
+<span class="fc" id="L298">                .build();</span>
+    GrpcCallSettings&lt;DeleteConversationModelRequest, Operation&gt;
+        deleteConversationModelTransportSettings =
+<span class="fc" id="L301">            GrpcCallSettings.&lt;DeleteConversationModelRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L302">                .setMethodDescriptor(deleteConversationModelMethodDescriptor)</span>
+<span class="fc" id="L303">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L305">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L306">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L307">                      return params.build();</span>
+                    })
+<span class="fc" id="L309">                .build();</span>
+    GrpcCallSettings&lt;DeployConversationModelRequest, Operation&gt;
+        deployConversationModelTransportSettings =
+<span class="fc" id="L312">            GrpcCallSettings.&lt;DeployConversationModelRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L313">                .setMethodDescriptor(deployConversationModelMethodDescriptor)</span>
+<span class="fc" id="L314">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L316">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L317">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L318">                      return params.build();</span>
+                    })
+<span class="fc" id="L320">                .build();</span>
+    GrpcCallSettings&lt;UndeployConversationModelRequest, Operation&gt;
+        undeployConversationModelTransportSettings =
+<span class="fc" id="L323">            GrpcCallSettings.&lt;UndeployConversationModelRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L324">                .setMethodDescriptor(undeployConversationModelMethodDescriptor)</span>
+<span class="fc" id="L325">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L327">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L328">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L329">                      return params.build();</span>
+                    })
+<span class="fc" id="L331">                .build();</span>
+    GrpcCallSettings&lt;GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+        getConversationModelEvaluationTransportSettings =
+            GrpcCallSettings
+<span class="fc" id="L335">                .&lt;GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;newBuilder()</span>
+<span class="fc" id="L336">                .setMethodDescriptor(getConversationModelEvaluationMethodDescriptor)</span>
+<span class="fc" id="L337">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L339">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L340">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L341">                      return params.build();</span>
+                    })
+<span class="fc" id="L343">                .build();</span>
+    GrpcCallSettings&lt;
+            ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsResponse&gt;
+        listConversationModelEvaluationsTransportSettings =
+            GrpcCallSettings
+                .&lt;ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsResponse&gt;
+<span class="fc" id="L349">                    newBuilder()</span>
+<span class="fc" id="L350">                .setMethodDescriptor(listConversationModelEvaluationsMethodDescriptor)</span>
+<span class="fc" id="L351">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L353">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L354">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L355">                      return params.build();</span>
+                    })
+<span class="fc" id="L357">                .build();</span>
+    GrpcCallSettings&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+        createConversationModelEvaluationTransportSettings =
+<span class="fc" id="L360">            GrpcCallSettings.&lt;CreateConversationModelEvaluationRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L361">                .setMethodDescriptor(createConversationModelEvaluationMethodDescriptor)</span>
+<span class="fc" id="L362">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L364">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L365">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L366">                      return params.build();</span>
+                    })
+<span class="fc" id="L368">                .build();</span>
+
+<span class="fc" id="L370">    this.createConversationModelCallable =</span>
+<span class="fc" id="L371">        callableFactory.createUnaryCallable(</span>
+            createConversationModelTransportSettings,
+<span class="fc" id="L373">            settings.createConversationModelSettings(),</span>
+            clientContext);
+<span class="fc" id="L375">    this.createConversationModelOperationCallable =</span>
+<span class="fc" id="L376">        callableFactory.createOperationCallable(</span>
+            createConversationModelTransportSettings,
+<span class="fc" id="L378">            settings.createConversationModelOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L381">    this.getConversationModelCallable =</span>
+<span class="fc" id="L382">        callableFactory.createUnaryCallable(</span>
+            getConversationModelTransportSettings,
+<span class="fc" id="L384">            settings.getConversationModelSettings(),</span>
+            clientContext);
+<span class="fc" id="L386">    this.listConversationModelsCallable =</span>
+<span class="fc" id="L387">        callableFactory.createUnaryCallable(</span>
+            listConversationModelsTransportSettings,
+<span class="fc" id="L389">            settings.listConversationModelsSettings(),</span>
+            clientContext);
+<span class="fc" id="L391">    this.listConversationModelsPagedCallable =</span>
+<span class="fc" id="L392">        callableFactory.createPagedCallable(</span>
+            listConversationModelsTransportSettings,
+<span class="fc" id="L394">            settings.listConversationModelsSettings(),</span>
+            clientContext);
+<span class="fc" id="L396">    this.deleteConversationModelCallable =</span>
+<span class="fc" id="L397">        callableFactory.createUnaryCallable(</span>
+            deleteConversationModelTransportSettings,
+<span class="fc" id="L399">            settings.deleteConversationModelSettings(),</span>
+            clientContext);
+<span class="fc" id="L401">    this.deleteConversationModelOperationCallable =</span>
+<span class="fc" id="L402">        callableFactory.createOperationCallable(</span>
+            deleteConversationModelTransportSettings,
+<span class="fc" id="L404">            settings.deleteConversationModelOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L407">    this.deployConversationModelCallable =</span>
+<span class="fc" id="L408">        callableFactory.createUnaryCallable(</span>
+            deployConversationModelTransportSettings,
+<span class="fc" id="L410">            settings.deployConversationModelSettings(),</span>
+            clientContext);
+<span class="fc" id="L412">    this.deployConversationModelOperationCallable =</span>
+<span class="fc" id="L413">        callableFactory.createOperationCallable(</span>
+            deployConversationModelTransportSettings,
+<span class="fc" id="L415">            settings.deployConversationModelOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L418">    this.undeployConversationModelCallable =</span>
+<span class="fc" id="L419">        callableFactory.createUnaryCallable(</span>
+            undeployConversationModelTransportSettings,
+<span class="fc" id="L421">            settings.undeployConversationModelSettings(),</span>
+            clientContext);
+<span class="fc" id="L423">    this.undeployConversationModelOperationCallable =</span>
+<span class="fc" id="L424">        callableFactory.createOperationCallable(</span>
+            undeployConversationModelTransportSettings,
+<span class="fc" id="L426">            settings.undeployConversationModelOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L429">    this.getConversationModelEvaluationCallable =</span>
+<span class="fc" id="L430">        callableFactory.createUnaryCallable(</span>
+            getConversationModelEvaluationTransportSettings,
+<span class="fc" id="L432">            settings.getConversationModelEvaluationSettings(),</span>
+            clientContext);
+<span class="fc" id="L434">    this.listConversationModelEvaluationsCallable =</span>
+<span class="fc" id="L435">        callableFactory.createUnaryCallable(</span>
+            listConversationModelEvaluationsTransportSettings,
+<span class="fc" id="L437">            settings.listConversationModelEvaluationsSettings(),</span>
+            clientContext);
+<span class="fc" id="L439">    this.listConversationModelEvaluationsPagedCallable =</span>
+<span class="fc" id="L440">        callableFactory.createPagedCallable(</span>
+            listConversationModelEvaluationsTransportSettings,
+<span class="fc" id="L442">            settings.listConversationModelEvaluationsSettings(),</span>
+            clientContext);
+<span class="fc" id="L444">    this.createConversationModelEvaluationCallable =</span>
+<span class="fc" id="L445">        callableFactory.createUnaryCallable(</span>
+            createConversationModelEvaluationTransportSettings,
+<span class="fc" id="L447">            settings.createConversationModelEvaluationSettings(),</span>
+            clientContext);
+<span class="fc" id="L449">    this.createConversationModelEvaluationOperationCallable =</span>
+<span class="fc" id="L450">        callableFactory.createOperationCallable(</span>
+            createConversationModelEvaluationTransportSettings,
+<span class="fc" id="L452">            settings.createConversationModelEvaluationOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+
+<span class="fc" id="L456">    this.backgroundResources =</span>
+<span class="fc" id="L457">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L458">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="fc" id="L461">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateConversationModelRequest, Operation&gt;
+      createConversationModelCallable() {
+<span class="nc" id="L467">    return createConversationModelCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          CreateConversationModelRequest,
+          ConversationModel,
+          CreateConversationModelOperationMetadata&gt;
+      createConversationModelOperationCallable() {
+<span class="fc" id="L476">    return createConversationModelOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetConversationModelRequest, ConversationModel&gt;
+      getConversationModelCallable() {
+<span class="fc" id="L482">    return getConversationModelCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListConversationModelsRequest, ListConversationModelsResponse&gt;
+      listConversationModelsCallable() {
+<span class="nc" id="L488">    return listConversationModelsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListConversationModelsRequest, ListConversationModelsPagedResponse&gt;
+      listConversationModelsPagedCallable() {
+<span class="fc" id="L494">    return listConversationModelsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteConversationModelRequest, Operation&gt;
+      deleteConversationModelCallable() {
+<span class="nc" id="L500">    return deleteConversationModelCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          DeleteConversationModelRequest, Empty, DeleteConversationModelOperationMetadata&gt;
+      deleteConversationModelOperationCallable() {
+<span class="fc" id="L507">    return deleteConversationModelOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeployConversationModelRequest, Operation&gt;
+      deployConversationModelCallable() {
+<span class="nc" id="L513">    return deployConversationModelCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          DeployConversationModelRequest, Empty, DeployConversationModelOperationMetadata&gt;
+      deployConversationModelOperationCallable() {
+<span class="fc" id="L520">    return deployConversationModelOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UndeployConversationModelRequest, Operation&gt;
+      undeployConversationModelCallable() {
+<span class="nc" id="L526">    return undeployConversationModelCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          UndeployConversationModelRequest, Empty, UndeployConversationModelOperationMetadata&gt;
+      undeployConversationModelOperationCallable() {
+<span class="fc" id="L533">    return undeployConversationModelOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+      getConversationModelEvaluationCallable() {
+<span class="fc" id="L539">    return getConversationModelEvaluationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;
+          ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsResponse&gt;
+      listConversationModelEvaluationsCallable() {
+<span class="nc" id="L546">    return listConversationModelEvaluationsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;
+          ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsPagedResponse&gt;
+      listConversationModelEvaluationsPagedCallable() {
+<span class="fc" id="L553">    return listConversationModelEvaluationsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+      createConversationModelEvaluationCallable() {
+<span class="nc" id="L559">    return createConversationModelEvaluationCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          CreateConversationModelEvaluationRequest,
+          ConversationModelEvaluation,
+          CreateConversationModelEvaluationOperationMetadata&gt;
+      createConversationModelEvaluationOperationCallable() {
+<span class="fc" id="L568">    return createConversationModelEvaluationOperationCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L574">      backgroundResources.close();</span>
+<span class="nc" id="L575">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L576">      throw e;</span>
+<span class="nc" id="L577">    } catch (Exception e) {</span>
+<span class="nc" id="L578">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L579">    }</span>
+<span class="fc" id="L580">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L584">    backgroundResources.shutdown();</span>
+<span class="nc" id="L585">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L589">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L594">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L599">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L600">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L604">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

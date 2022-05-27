@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcAdaptationStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-speech</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.speech.v1.stub</a> &gt; <span class="el_source">GrpcAdaptationStub.java</span></div><h1>GrpcAdaptationStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.speech.v1.stub;
+
+import static com.google.cloud.speech.v1.AdaptationClient.ListCustomClassesPagedResponse;
+import static com.google.cloud.speech.v1.AdaptationClient.ListPhraseSetPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.speech.v1.CreateCustomClassRequest;
+import com.google.cloud.speech.v1.CreatePhraseSetRequest;
+import com.google.cloud.speech.v1.CustomClass;
+import com.google.cloud.speech.v1.DeleteCustomClassRequest;
+import com.google.cloud.speech.v1.DeletePhraseSetRequest;
+import com.google.cloud.speech.v1.GetCustomClassRequest;
+import com.google.cloud.speech.v1.GetPhraseSetRequest;
+import com.google.cloud.speech.v1.ListCustomClassesRequest;
+import com.google.cloud.speech.v1.ListCustomClassesResponse;
+import com.google.cloud.speech.v1.ListPhraseSetRequest;
+import com.google.cloud.speech.v1.ListPhraseSetResponse;
+import com.google.cloud.speech.v1.PhraseSet;
+import com.google.cloud.speech.v1.UpdateCustomClassRequest;
+import com.google.cloud.speech.v1.UpdatePhraseSetRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the Adaptation service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcAdaptationStub extends AdaptationStub {
+  private static final MethodDescriptor&lt;CreatePhraseSetRequest, PhraseSet&gt;
+      createPhraseSetMethodDescriptor =
+<span class="fc" id="L61">          MethodDescriptor.&lt;CreatePhraseSetRequest, PhraseSet&gt;newBuilder()</span>
+<span class="fc" id="L62">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L63">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/CreatePhraseSet&quot;)</span>
+<span class="fc" id="L64">              .setRequestMarshaller(</span>
+<span class="fc" id="L65">                  ProtoUtils.marshaller(CreatePhraseSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L66">              .setResponseMarshaller(ProtoUtils.marshaller(PhraseSet.getDefaultInstance()))</span>
+<span class="fc" id="L67">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetPhraseSetRequest, PhraseSet&gt;
+      getPhraseSetMethodDescriptor =
+<span class="fc" id="L71">          MethodDescriptor.&lt;GetPhraseSetRequest, PhraseSet&gt;newBuilder()</span>
+<span class="fc" id="L72">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L73">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/GetPhraseSet&quot;)</span>
+<span class="fc" id="L74">              .setRequestMarshaller(ProtoUtils.marshaller(GetPhraseSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L75">              .setResponseMarshaller(ProtoUtils.marshaller(PhraseSet.getDefaultInstance()))</span>
+<span class="fc" id="L76">              .build();</span>
+
+  private static final MethodDescriptor&lt;ListPhraseSetRequest, ListPhraseSetResponse&gt;
+      listPhraseSetMethodDescriptor =
+<span class="fc" id="L80">          MethodDescriptor.&lt;ListPhraseSetRequest, ListPhraseSetResponse&gt;newBuilder()</span>
+<span class="fc" id="L81">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L82">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/ListPhraseSet&quot;)</span>
+<span class="fc" id="L83">              .setRequestMarshaller(</span>
+<span class="fc" id="L84">                  ProtoUtils.marshaller(ListPhraseSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L85">              .setResponseMarshaller(</span>
+<span class="fc" id="L86">                  ProtoUtils.marshaller(ListPhraseSetResponse.getDefaultInstance()))</span>
+<span class="fc" id="L87">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdatePhraseSetRequest, PhraseSet&gt;
+      updatePhraseSetMethodDescriptor =
+<span class="fc" id="L91">          MethodDescriptor.&lt;UpdatePhraseSetRequest, PhraseSet&gt;newBuilder()</span>
+<span class="fc" id="L92">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L93">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/UpdatePhraseSet&quot;)</span>
+<span class="fc" id="L94">              .setRequestMarshaller(</span>
+<span class="fc" id="L95">                  ProtoUtils.marshaller(UpdatePhraseSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L96">              .setResponseMarshaller(ProtoUtils.marshaller(PhraseSet.getDefaultInstance()))</span>
+<span class="fc" id="L97">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeletePhraseSetRequest, Empty&gt;
+      deletePhraseSetMethodDescriptor =
+<span class="fc" id="L101">          MethodDescriptor.&lt;DeletePhraseSetRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L102">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L103">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/DeletePhraseSet&quot;)</span>
+<span class="fc" id="L104">              .setRequestMarshaller(</span>
+<span class="fc" id="L105">                  ProtoUtils.marshaller(DeletePhraseSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L106">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L107">              .build();</span>
+
+  private static final MethodDescriptor&lt;CreateCustomClassRequest, CustomClass&gt;
+      createCustomClassMethodDescriptor =
+<span class="fc" id="L111">          MethodDescriptor.&lt;CreateCustomClassRequest, CustomClass&gt;newBuilder()</span>
+<span class="fc" id="L112">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L113">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/CreateCustomClass&quot;)</span>
+<span class="fc" id="L114">              .setRequestMarshaller(</span>
+<span class="fc" id="L115">                  ProtoUtils.marshaller(CreateCustomClassRequest.getDefaultInstance()))</span>
+<span class="fc" id="L116">              .setResponseMarshaller(ProtoUtils.marshaller(CustomClass.getDefaultInstance()))</span>
+<span class="fc" id="L117">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetCustomClassRequest, CustomClass&gt;
+      getCustomClassMethodDescriptor =
+<span class="fc" id="L121">          MethodDescriptor.&lt;GetCustomClassRequest, CustomClass&gt;newBuilder()</span>
+<span class="fc" id="L122">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L123">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/GetCustomClass&quot;)</span>
+<span class="fc" id="L124">              .setRequestMarshaller(</span>
+<span class="fc" id="L125">                  ProtoUtils.marshaller(GetCustomClassRequest.getDefaultInstance()))</span>
+<span class="fc" id="L126">              .setResponseMarshaller(ProtoUtils.marshaller(CustomClass.getDefaultInstance()))</span>
+<span class="fc" id="L127">              .build();</span>
+
+  private static final MethodDescriptor&lt;ListCustomClassesRequest, ListCustomClassesResponse&gt;
+      listCustomClassesMethodDescriptor =
+<span class="fc" id="L131">          MethodDescriptor.&lt;ListCustomClassesRequest, ListCustomClassesResponse&gt;newBuilder()</span>
+<span class="fc" id="L132">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L133">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/ListCustomClasses&quot;)</span>
+<span class="fc" id="L134">              .setRequestMarshaller(</span>
+<span class="fc" id="L135">                  ProtoUtils.marshaller(ListCustomClassesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L136">              .setResponseMarshaller(</span>
+<span class="fc" id="L137">                  ProtoUtils.marshaller(ListCustomClassesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L138">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateCustomClassRequest, CustomClass&gt;
+      updateCustomClassMethodDescriptor =
+<span class="fc" id="L142">          MethodDescriptor.&lt;UpdateCustomClassRequest, CustomClass&gt;newBuilder()</span>
+<span class="fc" id="L143">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L144">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/UpdateCustomClass&quot;)</span>
+<span class="fc" id="L145">              .setRequestMarshaller(</span>
+<span class="fc" id="L146">                  ProtoUtils.marshaller(UpdateCustomClassRequest.getDefaultInstance()))</span>
+<span class="fc" id="L147">              .setResponseMarshaller(ProtoUtils.marshaller(CustomClass.getDefaultInstance()))</span>
+<span class="fc" id="L148">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteCustomClassRequest, Empty&gt;
+<span class="fc" id="L151">      deleteCustomClassMethodDescriptor =</span>
+<span class="fc" id="L152">          MethodDescriptor.&lt;DeleteCustomClassRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L153">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L154">              .setFullMethodName(&quot;google.cloud.speech.v1.Adaptation/DeleteCustomClass&quot;)</span>
+<span class="fc" id="L155">              .setRequestMarshaller(</span>
+<span class="fc" id="L156">                  ProtoUtils.marshaller(DeleteCustomClassRequest.getDefaultInstance()))</span>
+<span class="fc" id="L157">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L158">              .build();</span>
+
+  private final UnaryCallable&lt;CreatePhraseSetRequest, PhraseSet&gt; createPhraseSetCallable;
+  private final UnaryCallable&lt;GetPhraseSetRequest, PhraseSet&gt; getPhraseSetCallable;
+  private final UnaryCallable&lt;ListPhraseSetRequest, ListPhraseSetResponse&gt; listPhraseSetCallable;
+  private final UnaryCallable&lt;ListPhraseSetRequest, ListPhraseSetPagedResponse&gt;
+      listPhraseSetPagedCallable;
+  private final UnaryCallable&lt;UpdatePhraseSetRequest, PhraseSet&gt; updatePhraseSetCallable;
+  private final UnaryCallable&lt;DeletePhraseSetRequest, Empty&gt; deletePhraseSetCallable;
+  private final UnaryCallable&lt;CreateCustomClassRequest, CustomClass&gt; createCustomClassCallable;
+  private final UnaryCallable&lt;GetCustomClassRequest, CustomClass&gt; getCustomClassCallable;
+  private final UnaryCallable&lt;ListCustomClassesRequest, ListCustomClassesResponse&gt;
+      listCustomClassesCallable;
+  private final UnaryCallable&lt;ListCustomClassesRequest, ListCustomClassesPagedResponse&gt;
+      listCustomClassesPagedCallable;
+  private final UnaryCallable&lt;UpdateCustomClassRequest, CustomClass&gt; updateCustomClassCallable;
+  private final UnaryCallable&lt;DeleteCustomClassRequest, Empty&gt; deleteCustomClassCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcAdaptationStub create(AdaptationStubSettings settings)
+      throws IOException {
+<span class="fc" id="L182">    return new GrpcAdaptationStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcAdaptationStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L186">    return new GrpcAdaptationStub(AdaptationStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcAdaptationStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L191">    return new GrpcAdaptationStub(</span>
+<span class="nc" id="L192">        AdaptationStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcAdaptationStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcAdaptationStub(AdaptationStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L202">    this(settings, clientContext, new GrpcAdaptationCallableFactory());</span>
+<span class="fc" id="L203">  }</span>
+
+  /**
+   * Constructs an instance of GrpcAdaptationStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcAdaptationStub(
+      AdaptationStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L214">      throws IOException {</span>
+<span class="fc" id="L215">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L216">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;CreatePhraseSetRequest, PhraseSet&gt; createPhraseSetTransportSettings =
+<span class="fc" id="L219">        GrpcCallSettings.&lt;CreatePhraseSetRequest, PhraseSet&gt;newBuilder()</span>
+<span class="fc" id="L220">            .setMethodDescriptor(createPhraseSetMethodDescriptor)</span>
+<span class="fc" id="L221">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L223">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L224">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L225">                  return params.build();</span>
+                })
+<span class="fc" id="L227">            .build();</span>
+    GrpcCallSettings&lt;GetPhraseSetRequest, PhraseSet&gt; getPhraseSetTransportSettings =
+<span class="fc" id="L229">        GrpcCallSettings.&lt;GetPhraseSetRequest, PhraseSet&gt;newBuilder()</span>
+<span class="fc" id="L230">            .setMethodDescriptor(getPhraseSetMethodDescriptor)</span>
+<span class="fc" id="L231">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L233">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L234">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L235">                  return params.build();</span>
+                })
+<span class="fc" id="L237">            .build();</span>
+    GrpcCallSettings&lt;ListPhraseSetRequest, ListPhraseSetResponse&gt; listPhraseSetTransportSettings =
+<span class="fc" id="L239">        GrpcCallSettings.&lt;ListPhraseSetRequest, ListPhraseSetResponse&gt;newBuilder()</span>
+<span class="fc" id="L240">            .setMethodDescriptor(listPhraseSetMethodDescriptor)</span>
+<span class="fc" id="L241">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L243">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L244">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L245">                  return params.build();</span>
+                })
+<span class="fc" id="L247">            .build();</span>
+    GrpcCallSettings&lt;UpdatePhraseSetRequest, PhraseSet&gt; updatePhraseSetTransportSettings =
+<span class="fc" id="L249">        GrpcCallSettings.&lt;UpdatePhraseSetRequest, PhraseSet&gt;newBuilder()</span>
+<span class="fc" id="L250">            .setMethodDescriptor(updatePhraseSetMethodDescriptor)</span>
+<span class="fc" id="L251">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L253">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L254">                  params.put(&quot;phrase_set.name&quot;, String.valueOf(request.getPhraseSet().getName()));</span>
+<span class="fc" id="L255">                  return params.build();</span>
+                })
+<span class="fc" id="L257">            .build();</span>
+    GrpcCallSettings&lt;DeletePhraseSetRequest, Empty&gt; deletePhraseSetTransportSettings =
+<span class="fc" id="L259">        GrpcCallSettings.&lt;DeletePhraseSetRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L260">            .setMethodDescriptor(deletePhraseSetMethodDescriptor)</span>
+<span class="fc" id="L261">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L263">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L264">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L265">                  return params.build();</span>
+                })
+<span class="fc" id="L267">            .build();</span>
+    GrpcCallSettings&lt;CreateCustomClassRequest, CustomClass&gt; createCustomClassTransportSettings =
+<span class="fc" id="L269">        GrpcCallSettings.&lt;CreateCustomClassRequest, CustomClass&gt;newBuilder()</span>
+<span class="fc" id="L270">            .setMethodDescriptor(createCustomClassMethodDescriptor)</span>
+<span class="fc" id="L271">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L273">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L274">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L275">                  return params.build();</span>
+                })
+<span class="fc" id="L277">            .build();</span>
+    GrpcCallSettings&lt;GetCustomClassRequest, CustomClass&gt; getCustomClassTransportSettings =
+<span class="fc" id="L279">        GrpcCallSettings.&lt;GetCustomClassRequest, CustomClass&gt;newBuilder()</span>
+<span class="fc" id="L280">            .setMethodDescriptor(getCustomClassMethodDescriptor)</span>
+<span class="fc" id="L281">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L283">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L284">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L285">                  return params.build();</span>
+                })
+<span class="fc" id="L287">            .build();</span>
+    GrpcCallSettings&lt;ListCustomClassesRequest, ListCustomClassesResponse&gt;
+        listCustomClassesTransportSettings =
+<span class="fc" id="L290">            GrpcCallSettings.&lt;ListCustomClassesRequest, ListCustomClassesResponse&gt;newBuilder()</span>
+<span class="fc" id="L291">                .setMethodDescriptor(listCustomClassesMethodDescriptor)</span>
+<span class="fc" id="L292">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L294">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L295">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L296">                      return params.build();</span>
+                    })
+<span class="fc" id="L298">                .build();</span>
+    GrpcCallSettings&lt;UpdateCustomClassRequest, CustomClass&gt; updateCustomClassTransportSettings =
+<span class="fc" id="L300">        GrpcCallSettings.&lt;UpdateCustomClassRequest, CustomClass&gt;newBuilder()</span>
+<span class="fc" id="L301">            .setMethodDescriptor(updateCustomClassMethodDescriptor)</span>
+<span class="fc" id="L302">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L304">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L305">                  params.put(</span>
+<span class="fc" id="L306">                      &quot;custom_class.name&quot;, String.valueOf(request.getCustomClass().getName()));</span>
+<span class="fc" id="L307">                  return params.build();</span>
+                })
+<span class="fc" id="L309">            .build();</span>
+    GrpcCallSettings&lt;DeleteCustomClassRequest, Empty&gt; deleteCustomClassTransportSettings =
+<span class="fc" id="L311">        GrpcCallSettings.&lt;DeleteCustomClassRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L312">            .setMethodDescriptor(deleteCustomClassMethodDescriptor)</span>
+<span class="fc" id="L313">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L315">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L316">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L317">                  return params.build();</span>
+                })
+<span class="fc" id="L319">            .build();</span>
+
+<span class="fc" id="L321">    this.createPhraseSetCallable =</span>
+<span class="fc" id="L322">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L323">            createPhraseSetTransportSettings, settings.createPhraseSetSettings(), clientContext);</span>
+<span class="fc" id="L324">    this.getPhraseSetCallable =</span>
+<span class="fc" id="L325">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L326">            getPhraseSetTransportSettings, settings.getPhraseSetSettings(), clientContext);</span>
+<span class="fc" id="L327">    this.listPhraseSetCallable =</span>
+<span class="fc" id="L328">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L329">            listPhraseSetTransportSettings, settings.listPhraseSetSettings(), clientContext);</span>
+<span class="fc" id="L330">    this.listPhraseSetPagedCallable =</span>
+<span class="fc" id="L331">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L332">            listPhraseSetTransportSettings, settings.listPhraseSetSettings(), clientContext);</span>
+<span class="fc" id="L333">    this.updatePhraseSetCallable =</span>
+<span class="fc" id="L334">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L335">            updatePhraseSetTransportSettings, settings.updatePhraseSetSettings(), clientContext);</span>
+<span class="fc" id="L336">    this.deletePhraseSetCallable =</span>
+<span class="fc" id="L337">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L338">            deletePhraseSetTransportSettings, settings.deletePhraseSetSettings(), clientContext);</span>
+<span class="fc" id="L339">    this.createCustomClassCallable =</span>
+<span class="fc" id="L340">        callableFactory.createUnaryCallable(</span>
+            createCustomClassTransportSettings,
+<span class="fc" id="L342">            settings.createCustomClassSettings(),</span>
+            clientContext);
+<span class="fc" id="L344">    this.getCustomClassCallable =</span>
+<span class="fc" id="L345">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L346">            getCustomClassTransportSettings, settings.getCustomClassSettings(), clientContext);</span>
+<span class="fc" id="L347">    this.listCustomClassesCallable =</span>
+<span class="fc" id="L348">        callableFactory.createUnaryCallable(</span>
+            listCustomClassesTransportSettings,
+<span class="fc" id="L350">            settings.listCustomClassesSettings(),</span>
+            clientContext);
+<span class="fc" id="L352">    this.listCustomClassesPagedCallable =</span>
+<span class="fc" id="L353">        callableFactory.createPagedCallable(</span>
+            listCustomClassesTransportSettings,
+<span class="fc" id="L355">            settings.listCustomClassesSettings(),</span>
+            clientContext);
+<span class="fc" id="L357">    this.updateCustomClassCallable =</span>
+<span class="fc" id="L358">        callableFactory.createUnaryCallable(</span>
+            updateCustomClassTransportSettings,
+<span class="fc" id="L360">            settings.updateCustomClassSettings(),</span>
+            clientContext);
+<span class="fc" id="L362">    this.deleteCustomClassCallable =</span>
+<span class="fc" id="L363">        callableFactory.createUnaryCallable(</span>
+            deleteCustomClassTransportSettings,
+<span class="fc" id="L365">            settings.deleteCustomClassSettings(),</span>
+            clientContext);
+
+<span class="fc" id="L368">    this.backgroundResources =</span>
+<span class="fc" id="L369">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L370">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L373">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreatePhraseSetRequest, PhraseSet&gt; createPhraseSetCallable() {
+<span class="fc" id="L378">    return createPhraseSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetPhraseSetRequest, PhraseSet&gt; getPhraseSetCallable() {
+<span class="fc" id="L383">    return getPhraseSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListPhraseSetRequest, ListPhraseSetResponse&gt; listPhraseSetCallable() {
+<span class="nc" id="L388">    return listPhraseSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListPhraseSetRequest, ListPhraseSetPagedResponse&gt;
+      listPhraseSetPagedCallable() {
+<span class="fc" id="L394">    return listPhraseSetPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdatePhraseSetRequest, PhraseSet&gt; updatePhraseSetCallable() {
+<span class="fc" id="L399">    return updatePhraseSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeletePhraseSetRequest, Empty&gt; deletePhraseSetCallable() {
+<span class="fc" id="L404">    return deletePhraseSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateCustomClassRequest, CustomClass&gt; createCustomClassCallable() {
+<span class="fc" id="L409">    return createCustomClassCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetCustomClassRequest, CustomClass&gt; getCustomClassCallable() {
+<span class="fc" id="L414">    return getCustomClassCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListCustomClassesRequest, ListCustomClassesResponse&gt;
+      listCustomClassesCallable() {
+<span class="nc" id="L420">    return listCustomClassesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListCustomClassesRequest, ListCustomClassesPagedResponse&gt;
+      listCustomClassesPagedCallable() {
+<span class="fc" id="L426">    return listCustomClassesPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateCustomClassRequest, CustomClass&gt; updateCustomClassCallable() {
+<span class="fc" id="L431">    return updateCustomClassCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteCustomClassRequest, Empty&gt; deleteCustomClassCallable() {
+<span class="fc" id="L436">    return deleteCustomClassCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L442">      backgroundResources.close();</span>
+<span class="nc" id="L443">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L444">      throw e;</span>
+<span class="nc" id="L445">    } catch (Exception e) {</span>
+<span class="nc" id="L446">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L447">    }</span>
+<span class="fc" id="L448">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L452">    backgroundResources.shutdown();</span>
+<span class="nc" id="L453">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L457">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L462">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L467">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L468">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L472">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

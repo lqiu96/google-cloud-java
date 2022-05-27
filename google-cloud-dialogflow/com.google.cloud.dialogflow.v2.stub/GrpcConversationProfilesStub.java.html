@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcConversationProfilesStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcConversationProfilesStub.java</span></div><h1>GrpcConversationProfilesStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.ConversationProfilesClient.ListConversationProfilesPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.ClearSuggestionFeatureConfigOperationMetadata;
+import com.google.cloud.dialogflow.v2.ClearSuggestionFeatureConfigRequest;
+import com.google.cloud.dialogflow.v2.ConversationProfile;
+import com.google.cloud.dialogflow.v2.CreateConversationProfileRequest;
+import com.google.cloud.dialogflow.v2.DeleteConversationProfileRequest;
+import com.google.cloud.dialogflow.v2.GetConversationProfileRequest;
+import com.google.cloud.dialogflow.v2.ListConversationProfilesRequest;
+import com.google.cloud.dialogflow.v2.ListConversationProfilesResponse;
+import com.google.cloud.dialogflow.v2.SetSuggestionFeatureConfigOperationMetadata;
+import com.google.cloud.dialogflow.v2.SetSuggestionFeatureConfigRequest;
+import com.google.cloud.dialogflow.v2.UpdateConversationProfileRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the ConversationProfiles service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcConversationProfilesStub extends ConversationProfilesStub {
+  private static final MethodDescriptor&lt;
+          ListConversationProfilesRequest, ListConversationProfilesResponse&gt;
+      listConversationProfilesMethodDescriptor =
+          MethodDescriptor
+<span class="fc" id="L61">              .&lt;ListConversationProfilesRequest, ListConversationProfilesResponse&gt;newBuilder()</span>
+<span class="fc" id="L62">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L63">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationProfiles/ListConversationProfiles&quot;)
+<span class="fc" id="L65">              .setRequestMarshaller(</span>
+<span class="fc" id="L66">                  ProtoUtils.marshaller(ListConversationProfilesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L67">              .setResponseMarshaller(</span>
+<span class="fc" id="L68">                  ProtoUtils.marshaller(ListConversationProfilesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L69">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetConversationProfileRequest, ConversationProfile&gt;
+      getConversationProfileMethodDescriptor =
+<span class="fc" id="L73">          MethodDescriptor.&lt;GetConversationProfileRequest, ConversationProfile&gt;newBuilder()</span>
+<span class="fc" id="L74">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L75">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationProfiles/GetConversationProfile&quot;)
+<span class="fc" id="L77">              .setRequestMarshaller(</span>
+<span class="fc" id="L78">                  ProtoUtils.marshaller(GetConversationProfileRequest.getDefaultInstance()))</span>
+<span class="fc" id="L79">              .setResponseMarshaller(</span>
+<span class="fc" id="L80">                  ProtoUtils.marshaller(ConversationProfile.getDefaultInstance()))</span>
+<span class="fc" id="L81">              .build();</span>
+
+  private static final MethodDescriptor&lt;CreateConversationProfileRequest, ConversationProfile&gt;
+      createConversationProfileMethodDescriptor =
+<span class="fc" id="L85">          MethodDescriptor.&lt;CreateConversationProfileRequest, ConversationProfile&gt;newBuilder()</span>
+<span class="fc" id="L86">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L87">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationProfiles/CreateConversationProfile&quot;)
+<span class="fc" id="L89">              .setRequestMarshaller(</span>
+<span class="fc" id="L90">                  ProtoUtils.marshaller(CreateConversationProfileRequest.getDefaultInstance()))</span>
+<span class="fc" id="L91">              .setResponseMarshaller(</span>
+<span class="fc" id="L92">                  ProtoUtils.marshaller(ConversationProfile.getDefaultInstance()))</span>
+<span class="fc" id="L93">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateConversationProfileRequest, ConversationProfile&gt;
+      updateConversationProfileMethodDescriptor =
+<span class="fc" id="L97">          MethodDescriptor.&lt;UpdateConversationProfileRequest, ConversationProfile&gt;newBuilder()</span>
+<span class="fc" id="L98">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L99">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationProfiles/UpdateConversationProfile&quot;)
+<span class="fc" id="L101">              .setRequestMarshaller(</span>
+<span class="fc" id="L102">                  ProtoUtils.marshaller(UpdateConversationProfileRequest.getDefaultInstance()))</span>
+<span class="fc" id="L103">              .setResponseMarshaller(</span>
+<span class="fc" id="L104">                  ProtoUtils.marshaller(ConversationProfile.getDefaultInstance()))</span>
+<span class="fc" id="L105">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteConversationProfileRequest, Empty&gt;
+      deleteConversationProfileMethodDescriptor =
+<span class="fc" id="L109">          MethodDescriptor.&lt;DeleteConversationProfileRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L110">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L111">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationProfiles/DeleteConversationProfile&quot;)
+<span class="fc" id="L113">              .setRequestMarshaller(</span>
+<span class="fc" id="L114">                  ProtoUtils.marshaller(DeleteConversationProfileRequest.getDefaultInstance()))</span>
+<span class="fc" id="L115">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L116">              .build();</span>
+
+  private static final MethodDescriptor&lt;SetSuggestionFeatureConfigRequest, Operation&gt;
+      setSuggestionFeatureConfigMethodDescriptor =
+<span class="fc" id="L120">          MethodDescriptor.&lt;SetSuggestionFeatureConfigRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L121">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L122">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationProfiles/SetSuggestionFeatureConfig&quot;)
+<span class="fc" id="L124">              .setRequestMarshaller(</span>
+<span class="fc" id="L125">                  ProtoUtils.marshaller(SetSuggestionFeatureConfigRequest.getDefaultInstance()))</span>
+<span class="fc" id="L126">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L127">              .build();</span>
+
+  private static final MethodDescriptor&lt;ClearSuggestionFeatureConfigRequest, Operation&gt;
+<span class="fc" id="L130">      clearSuggestionFeatureConfigMethodDescriptor =</span>
+<span class="fc" id="L131">          MethodDescriptor.&lt;ClearSuggestionFeatureConfigRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L132">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L133">              .setFullMethodName(</span>
+                  &quot;google.cloud.dialogflow.v2.ConversationProfiles/ClearSuggestionFeatureConfig&quot;)
+<span class="fc" id="L135">              .setRequestMarshaller(</span>
+<span class="fc" id="L136">                  ProtoUtils.marshaller(ClearSuggestionFeatureConfigRequest.getDefaultInstance()))</span>
+<span class="fc" id="L137">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L138">              .build();</span>
+
+  private final UnaryCallable&lt;ListConversationProfilesRequest, ListConversationProfilesResponse&gt;
+      listConversationProfilesCallable;
+  private final UnaryCallable&lt;
+          ListConversationProfilesRequest, ListConversationProfilesPagedResponse&gt;
+      listConversationProfilesPagedCallable;
+  private final UnaryCallable&lt;GetConversationProfileRequest, ConversationProfile&gt;
+      getConversationProfileCallable;
+  private final UnaryCallable&lt;CreateConversationProfileRequest, ConversationProfile&gt;
+      createConversationProfileCallable;
+  private final UnaryCallable&lt;UpdateConversationProfileRequest, ConversationProfile&gt;
+      updateConversationProfileCallable;
+  private final UnaryCallable&lt;DeleteConversationProfileRequest, Empty&gt;
+      deleteConversationProfileCallable;
+  private final UnaryCallable&lt;SetSuggestionFeatureConfigRequest, Operation&gt;
+      setSuggestionFeatureConfigCallable;
+  private final OperationCallable&lt;
+          SetSuggestionFeatureConfigRequest,
+          ConversationProfile,
+          SetSuggestionFeatureConfigOperationMetadata&gt;
+      setSuggestionFeatureConfigOperationCallable;
+  private final UnaryCallable&lt;ClearSuggestionFeatureConfigRequest, Operation&gt;
+      clearSuggestionFeatureConfigCallable;
+  private final OperationCallable&lt;
+          ClearSuggestionFeatureConfigRequest,
+          ConversationProfile,
+          ClearSuggestionFeatureConfigOperationMetadata&gt;
+      clearSuggestionFeatureConfigOperationCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcConversationProfilesStub create(ConversationProfilesStubSettings settings)
+      throws IOException {
+<span class="fc" id="L174">    return new GrpcConversationProfilesStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcConversationProfilesStub create(ClientContext clientContext)
+      throws IOException {
+<span class="nc" id="L179">    return new GrpcConversationProfilesStub(</span>
+<span class="nc" id="L180">        ConversationProfilesStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcConversationProfilesStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L185">    return new GrpcConversationProfilesStub(</span>
+<span class="nc" id="L186">        ConversationProfilesStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcConversationProfilesStub, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+  protected GrpcConversationProfilesStub(
+      ConversationProfilesStubSettings settings, ClientContext clientContext) throws IOException {
+<span class="fc" id="L196">    this(settings, clientContext, new GrpcConversationProfilesCallableFactory());</span>
+<span class="fc" id="L197">  }</span>
+
+  /**
+   * Constructs an instance of GrpcConversationProfilesStub, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+  protected GrpcConversationProfilesStub(
+      ConversationProfilesStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L208">      throws IOException {</span>
+<span class="fc" id="L209">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L210">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListConversationProfilesRequest, ListConversationProfilesResponse&gt;
+        listConversationProfilesTransportSettings =
+            GrpcCallSettings
+<span class="fc" id="L215">                .&lt;ListConversationProfilesRequest, ListConversationProfilesResponse&gt;newBuilder()</span>
+<span class="fc" id="L216">                .setMethodDescriptor(listConversationProfilesMethodDescriptor)</span>
+<span class="fc" id="L217">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L219">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L220">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L221">                      return params.build();</span>
+                    })
+<span class="fc" id="L223">                .build();</span>
+    GrpcCallSettings&lt;GetConversationProfileRequest, ConversationProfile&gt;
+        getConversationProfileTransportSettings =
+<span class="fc" id="L226">            GrpcCallSettings.&lt;GetConversationProfileRequest, ConversationProfile&gt;newBuilder()</span>
+<span class="fc" id="L227">                .setMethodDescriptor(getConversationProfileMethodDescriptor)</span>
+<span class="fc" id="L228">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L230">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L231">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L232">                      return params.build();</span>
+                    })
+<span class="fc" id="L234">                .build();</span>
+    GrpcCallSettings&lt;CreateConversationProfileRequest, ConversationProfile&gt;
+        createConversationProfileTransportSettings =
+<span class="fc" id="L237">            GrpcCallSettings.&lt;CreateConversationProfileRequest, ConversationProfile&gt;newBuilder()</span>
+<span class="fc" id="L238">                .setMethodDescriptor(createConversationProfileMethodDescriptor)</span>
+<span class="fc" id="L239">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L241">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L242">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L243">                      return params.build();</span>
+                    })
+<span class="fc" id="L245">                .build();</span>
+    GrpcCallSettings&lt;UpdateConversationProfileRequest, ConversationProfile&gt;
+        updateConversationProfileTransportSettings =
+<span class="fc" id="L248">            GrpcCallSettings.&lt;UpdateConversationProfileRequest, ConversationProfile&gt;newBuilder()</span>
+<span class="fc" id="L249">                .setMethodDescriptor(updateConversationProfileMethodDescriptor)</span>
+<span class="fc" id="L250">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L252">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L253">                      params.put(</span>
+                          &quot;conversation_profile.name&quot;,
+<span class="fc" id="L255">                          String.valueOf(request.getConversationProfile().getName()));</span>
+<span class="fc" id="L256">                      return params.build();</span>
+                    })
+<span class="fc" id="L258">                .build();</span>
+    GrpcCallSettings&lt;DeleteConversationProfileRequest, Empty&gt;
+        deleteConversationProfileTransportSettings =
+<span class="fc" id="L261">            GrpcCallSettings.&lt;DeleteConversationProfileRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L262">                .setMethodDescriptor(deleteConversationProfileMethodDescriptor)</span>
+<span class="fc" id="L263">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L265">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L266">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L267">                      return params.build();</span>
+                    })
+<span class="fc" id="L269">                .build();</span>
+    GrpcCallSettings&lt;SetSuggestionFeatureConfigRequest, Operation&gt;
+        setSuggestionFeatureConfigTransportSettings =
+<span class="fc" id="L272">            GrpcCallSettings.&lt;SetSuggestionFeatureConfigRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L273">                .setMethodDescriptor(setSuggestionFeatureConfigMethodDescriptor)</span>
+<span class="fc" id="L274">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L276">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L277">                      params.put(</span>
+<span class="fc" id="L278">                          &quot;conversation_profile&quot;, String.valueOf(request.getConversationProfile()));</span>
+<span class="fc" id="L279">                      return params.build();</span>
+                    })
+<span class="fc" id="L281">                .build();</span>
+    GrpcCallSettings&lt;ClearSuggestionFeatureConfigRequest, Operation&gt;
+        clearSuggestionFeatureConfigTransportSettings =
+<span class="fc" id="L284">            GrpcCallSettings.&lt;ClearSuggestionFeatureConfigRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L285">                .setMethodDescriptor(clearSuggestionFeatureConfigMethodDescriptor)</span>
+<span class="fc" id="L286">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L288">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L289">                      params.put(</span>
+<span class="fc" id="L290">                          &quot;conversation_profile&quot;, String.valueOf(request.getConversationProfile()));</span>
+<span class="fc" id="L291">                      return params.build();</span>
+                    })
+<span class="fc" id="L293">                .build();</span>
+
+<span class="fc" id="L295">    this.listConversationProfilesCallable =</span>
+<span class="fc" id="L296">        callableFactory.createUnaryCallable(</span>
+            listConversationProfilesTransportSettings,
+<span class="fc" id="L298">            settings.listConversationProfilesSettings(),</span>
+            clientContext);
+<span class="fc" id="L300">    this.listConversationProfilesPagedCallable =</span>
+<span class="fc" id="L301">        callableFactory.createPagedCallable(</span>
+            listConversationProfilesTransportSettings,
+<span class="fc" id="L303">            settings.listConversationProfilesSettings(),</span>
+            clientContext);
+<span class="fc" id="L305">    this.getConversationProfileCallable =</span>
+<span class="fc" id="L306">        callableFactory.createUnaryCallable(</span>
+            getConversationProfileTransportSettings,
+<span class="fc" id="L308">            settings.getConversationProfileSettings(),</span>
+            clientContext);
+<span class="fc" id="L310">    this.createConversationProfileCallable =</span>
+<span class="fc" id="L311">        callableFactory.createUnaryCallable(</span>
+            createConversationProfileTransportSettings,
+<span class="fc" id="L313">            settings.createConversationProfileSettings(),</span>
+            clientContext);
+<span class="fc" id="L315">    this.updateConversationProfileCallable =</span>
+<span class="fc" id="L316">        callableFactory.createUnaryCallable(</span>
+            updateConversationProfileTransportSettings,
+<span class="fc" id="L318">            settings.updateConversationProfileSettings(),</span>
+            clientContext);
+<span class="fc" id="L320">    this.deleteConversationProfileCallable =</span>
+<span class="fc" id="L321">        callableFactory.createUnaryCallable(</span>
+            deleteConversationProfileTransportSettings,
+<span class="fc" id="L323">            settings.deleteConversationProfileSettings(),</span>
+            clientContext);
+<span class="fc" id="L325">    this.setSuggestionFeatureConfigCallable =</span>
+<span class="fc" id="L326">        callableFactory.createUnaryCallable(</span>
+            setSuggestionFeatureConfigTransportSettings,
+<span class="fc" id="L328">            settings.setSuggestionFeatureConfigSettings(),</span>
+            clientContext);
+<span class="fc" id="L330">    this.setSuggestionFeatureConfigOperationCallable =</span>
+<span class="fc" id="L331">        callableFactory.createOperationCallable(</span>
+            setSuggestionFeatureConfigTransportSettings,
+<span class="fc" id="L333">            settings.setSuggestionFeatureConfigOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L336">    this.clearSuggestionFeatureConfigCallable =</span>
+<span class="fc" id="L337">        callableFactory.createUnaryCallable(</span>
+            clearSuggestionFeatureConfigTransportSettings,
+<span class="fc" id="L339">            settings.clearSuggestionFeatureConfigSettings(),</span>
+            clientContext);
+<span class="fc" id="L341">    this.clearSuggestionFeatureConfigOperationCallable =</span>
+<span class="fc" id="L342">        callableFactory.createOperationCallable(</span>
+            clearSuggestionFeatureConfigTransportSettings,
+<span class="fc" id="L344">            settings.clearSuggestionFeatureConfigOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+
+<span class="fc" id="L348">    this.backgroundResources =</span>
+<span class="fc" id="L349">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L350">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="fc" id="L353">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListConversationProfilesRequest, ListConversationProfilesResponse&gt;
+      listConversationProfilesCallable() {
+<span class="nc" id="L359">    return listConversationProfilesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListConversationProfilesRequest, ListConversationProfilesPagedResponse&gt;
+      listConversationProfilesPagedCallable() {
+<span class="fc" id="L365">    return listConversationProfilesPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetConversationProfileRequest, ConversationProfile&gt;
+      getConversationProfileCallable() {
+<span class="fc" id="L371">    return getConversationProfileCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateConversationProfileRequest, ConversationProfile&gt;
+      createConversationProfileCallable() {
+<span class="fc" id="L377">    return createConversationProfileCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateConversationProfileRequest, ConversationProfile&gt;
+      updateConversationProfileCallable() {
+<span class="fc" id="L383">    return updateConversationProfileCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteConversationProfileRequest, Empty&gt;
+      deleteConversationProfileCallable() {
+<span class="fc" id="L389">    return deleteConversationProfileCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;SetSuggestionFeatureConfigRequest, Operation&gt;
+      setSuggestionFeatureConfigCallable() {
+<span class="nc" id="L395">    return setSuggestionFeatureConfigCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          SetSuggestionFeatureConfigRequest,
+          ConversationProfile,
+          SetSuggestionFeatureConfigOperationMetadata&gt;
+      setSuggestionFeatureConfigOperationCallable() {
+<span class="fc" id="L404">    return setSuggestionFeatureConfigOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ClearSuggestionFeatureConfigRequest, Operation&gt;
+      clearSuggestionFeatureConfigCallable() {
+<span class="nc" id="L410">    return clearSuggestionFeatureConfigCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          ClearSuggestionFeatureConfigRequest,
+          ConversationProfile,
+          ClearSuggestionFeatureConfigOperationMetadata&gt;
+      clearSuggestionFeatureConfigOperationCallable() {
+<span class="fc" id="L419">    return clearSuggestionFeatureConfigOperationCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L425">      backgroundResources.close();</span>
+<span class="nc" id="L426">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L427">      throw e;</span>
+<span class="nc" id="L428">    } catch (Exception e) {</span>
+<span class="nc" id="L429">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L430">    }</span>
+<span class="fc" id="L431">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L435">    backgroundResources.shutdown();</span>
+<span class="nc" id="L436">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L440">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L445">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L450">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L451">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L455">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

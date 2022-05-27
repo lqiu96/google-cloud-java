@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcImageAnnotatorStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-vision</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.vision.v1p4beta1.stub</a> &gt; <span class="el_source">GrpcImageAnnotatorStub.java</span></div><h1>GrpcImageAnnotatorStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.vision.v1p4beta1.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateFilesRequest;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateFilesResponse;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateImagesRequest;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateImagesResponse;
+import com.google.cloud.vision.v1p4beta1.BatchAnnotateFilesRequest;
+import com.google.cloud.vision.v1p4beta1.BatchAnnotateFilesResponse;
+import com.google.cloud.vision.v1p4beta1.BatchAnnotateImagesRequest;
+import com.google.cloud.vision.v1p4beta1.BatchAnnotateImagesResponse;
+import com.google.cloud.vision.v1p4beta1.OperationMetadata;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the ImageAnnotator service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcImageAnnotatorStub extends ImageAnnotatorStub {
+  private static final MethodDescriptor&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;
+      batchAnnotateImagesMethodDescriptor =
+<span class="fc" id="L55">          MethodDescriptor.&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;newBuilder()</span>
+<span class="fc" id="L56">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L57">              .setFullMethodName(&quot;google.cloud.vision.v1p4beta1.ImageAnnotator/BatchAnnotateImages&quot;)</span>
+<span class="fc" id="L58">              .setRequestMarshaller(</span>
+<span class="fc" id="L59">                  ProtoUtils.marshaller(BatchAnnotateImagesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L60">              .setResponseMarshaller(</span>
+<span class="fc" id="L61">                  ProtoUtils.marshaller(BatchAnnotateImagesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L62">              .build();</span>
+
+  private static final MethodDescriptor&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;
+      batchAnnotateFilesMethodDescriptor =
+<span class="fc" id="L66">          MethodDescriptor.&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;newBuilder()</span>
+<span class="fc" id="L67">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L68">              .setFullMethodName(&quot;google.cloud.vision.v1p4beta1.ImageAnnotator/BatchAnnotateFiles&quot;)</span>
+<span class="fc" id="L69">              .setRequestMarshaller(</span>
+<span class="fc" id="L70">                  ProtoUtils.marshaller(BatchAnnotateFilesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L71">              .setResponseMarshaller(</span>
+<span class="fc" id="L72">                  ProtoUtils.marshaller(BatchAnnotateFilesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L73">              .build();</span>
+
+  private static final MethodDescriptor&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;
+      asyncBatchAnnotateImagesMethodDescriptor =
+<span class="fc" id="L77">          MethodDescriptor.&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L78">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L79">              .setFullMethodName(</span>
+                  &quot;google.cloud.vision.v1p4beta1.ImageAnnotator/AsyncBatchAnnotateImages&quot;)
+<span class="fc" id="L81">              .setRequestMarshaller(</span>
+<span class="fc" id="L82">                  ProtoUtils.marshaller(AsyncBatchAnnotateImagesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L83">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L84">              .build();</span>
+
+  private static final MethodDescriptor&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;
+<span class="fc" id="L87">      asyncBatchAnnotateFilesMethodDescriptor =</span>
+<span class="fc" id="L88">          MethodDescriptor.&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L89">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L90">              .setFullMethodName(</span>
+                  &quot;google.cloud.vision.v1p4beta1.ImageAnnotator/AsyncBatchAnnotateFiles&quot;)
+<span class="fc" id="L92">              .setRequestMarshaller(</span>
+<span class="fc" id="L93">                  ProtoUtils.marshaller(AsyncBatchAnnotateFilesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L94">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L95">              .build();</span>
+
+  private final UnaryCallable&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;
+      batchAnnotateImagesCallable;
+  private final UnaryCallable&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;
+      batchAnnotateFilesCallable;
+  private final UnaryCallable&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;
+      asyncBatchAnnotateImagesCallable;
+  private final OperationCallable&lt;
+          AsyncBatchAnnotateImagesRequest, AsyncBatchAnnotateImagesResponse, OperationMetadata&gt;
+      asyncBatchAnnotateImagesOperationCallable;
+  private final UnaryCallable&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;
+      asyncBatchAnnotateFilesCallable;
+  private final OperationCallable&lt;
+          AsyncBatchAnnotateFilesRequest, AsyncBatchAnnotateFilesResponse, OperationMetadata&gt;
+      asyncBatchAnnotateFilesOperationCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcImageAnnotatorStub create(ImageAnnotatorStubSettings settings)
+      throws IOException {
+<span class="fc" id="L118">    return new GrpcImageAnnotatorStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcImageAnnotatorStub create(ClientContext clientContext)
+      throws IOException {
+<span class="nc" id="L123">    return new GrpcImageAnnotatorStub(</span>
+<span class="nc" id="L124">        ImageAnnotatorStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcImageAnnotatorStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L129">    return new GrpcImageAnnotatorStub(</span>
+<span class="nc" id="L130">        ImageAnnotatorStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcImageAnnotatorStub, using the given settings. This is protected
+   * so that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcImageAnnotatorStub(ImageAnnotatorStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L140">    this(settings, clientContext, new GrpcImageAnnotatorCallableFactory());</span>
+<span class="fc" id="L141">  }</span>
+
+  /**
+   * Constructs an instance of GrpcImageAnnotatorStub, using the given settings. This is protected
+   * so that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcImageAnnotatorStub(
+      ImageAnnotatorStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L152">      throws IOException {</span>
+<span class="fc" id="L153">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L154">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;
+        batchAnnotateImagesTransportSettings =
+<span class="fc" id="L158">            GrpcCallSettings.&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;newBuilder()</span>
+<span class="fc" id="L159">                .setMethodDescriptor(batchAnnotateImagesMethodDescriptor)</span>
+<span class="fc" id="L160">                .build();</span>
+    GrpcCallSettings&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;
+        batchAnnotateFilesTransportSettings =
+<span class="fc" id="L163">            GrpcCallSettings.&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;newBuilder()</span>
+<span class="fc" id="L164">                .setMethodDescriptor(batchAnnotateFilesMethodDescriptor)</span>
+<span class="fc" id="L165">                .build();</span>
+    GrpcCallSettings&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;
+        asyncBatchAnnotateImagesTransportSettings =
+<span class="fc" id="L168">            GrpcCallSettings.&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L169">                .setMethodDescriptor(asyncBatchAnnotateImagesMethodDescriptor)</span>
+<span class="fc" id="L170">                .build();</span>
+    GrpcCallSettings&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;
+        asyncBatchAnnotateFilesTransportSettings =
+<span class="fc" id="L173">            GrpcCallSettings.&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L174">                .setMethodDescriptor(asyncBatchAnnotateFilesMethodDescriptor)</span>
+<span class="fc" id="L175">                .build();</span>
+
+<span class="fc" id="L177">    this.batchAnnotateImagesCallable =</span>
+<span class="fc" id="L178">        callableFactory.createUnaryCallable(</span>
+            batchAnnotateImagesTransportSettings,
+<span class="fc" id="L180">            settings.batchAnnotateImagesSettings(),</span>
+            clientContext);
+<span class="fc" id="L182">    this.batchAnnotateFilesCallable =</span>
+<span class="fc" id="L183">        callableFactory.createUnaryCallable(</span>
+            batchAnnotateFilesTransportSettings,
+<span class="fc" id="L185">            settings.batchAnnotateFilesSettings(),</span>
+            clientContext);
+<span class="fc" id="L187">    this.asyncBatchAnnotateImagesCallable =</span>
+<span class="fc" id="L188">        callableFactory.createUnaryCallable(</span>
+            asyncBatchAnnotateImagesTransportSettings,
+<span class="fc" id="L190">            settings.asyncBatchAnnotateImagesSettings(),</span>
+            clientContext);
+<span class="fc" id="L192">    this.asyncBatchAnnotateImagesOperationCallable =</span>
+<span class="fc" id="L193">        callableFactory.createOperationCallable(</span>
+            asyncBatchAnnotateImagesTransportSettings,
+<span class="fc" id="L195">            settings.asyncBatchAnnotateImagesOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L198">    this.asyncBatchAnnotateFilesCallable =</span>
+<span class="fc" id="L199">        callableFactory.createUnaryCallable(</span>
+            asyncBatchAnnotateFilesTransportSettings,
+<span class="fc" id="L201">            settings.asyncBatchAnnotateFilesSettings(),</span>
+            clientContext);
+<span class="fc" id="L203">    this.asyncBatchAnnotateFilesOperationCallable =</span>
+<span class="fc" id="L204">        callableFactory.createOperationCallable(</span>
+            asyncBatchAnnotateFilesTransportSettings,
+<span class="fc" id="L206">            settings.asyncBatchAnnotateFilesOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+
+<span class="fc" id="L210">    this.backgroundResources =</span>
+<span class="fc" id="L211">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L212">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="fc" id="L215">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;
+      batchAnnotateImagesCallable() {
+<span class="fc" id="L221">    return batchAnnotateImagesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;
+      batchAnnotateFilesCallable() {
+<span class="fc" id="L227">    return batchAnnotateFilesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;
+      asyncBatchAnnotateImagesCallable() {
+<span class="nc" id="L233">    return asyncBatchAnnotateImagesCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          AsyncBatchAnnotateImagesRequest, AsyncBatchAnnotateImagesResponse, OperationMetadata&gt;
+      asyncBatchAnnotateImagesOperationCallable() {
+<span class="fc" id="L240">    return asyncBatchAnnotateImagesOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;
+      asyncBatchAnnotateFilesCallable() {
+<span class="nc" id="L246">    return asyncBatchAnnotateFilesCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          AsyncBatchAnnotateFilesRequest, AsyncBatchAnnotateFilesResponse, OperationMetadata&gt;
+      asyncBatchAnnotateFilesOperationCallable() {
+<span class="fc" id="L253">    return asyncBatchAnnotateFilesOperationCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L259">      backgroundResources.close();</span>
+<span class="nc" id="L260">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L261">      throw e;</span>
+<span class="nc" id="L262">    } catch (Exception e) {</span>
+<span class="nc" id="L263">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L264">    }</span>
+<span class="fc" id="L265">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L269">    backgroundResources.shutdown();</span>
+<span class="nc" id="L270">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L274">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L279">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L284">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L285">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L289">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

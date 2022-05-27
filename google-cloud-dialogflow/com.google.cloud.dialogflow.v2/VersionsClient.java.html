@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>VersionsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2</a> &gt; <span class="el_source">VersionsClient.java</span></div><h1>VersionsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.stub.VersionsStub;
+import com.google.cloud.dialogflow.v2.stub.VersionsStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service for managing [Versions][google.cloud.dialogflow.v2.Version].
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (VersionsClient versionsClient = VersionsClient.create()) {
+ *   VersionName name = VersionName.ofProjectVersionName(&quot;[PROJECT]&quot;, &quot;[VERSION]&quot;);
+ *   Version response = versionsClient.getVersion(name);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the VersionsClient object to clean up resources such as
+ * threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of VersionsSettings to create().
+ * For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * VersionsSettings versionsSettings =
+ *     VersionsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * VersionsClient versionsClient = VersionsClient.create(versionsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * VersionsSettings versionsSettings =
+ *     VersionsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * VersionsClient versionsClient = VersionsClient.create(versionsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class VersionsClient implements BackgroundResource {
+  private final VersionsSettings settings;
+  private final VersionsStub stub;
+
+  /** Constructs an instance of VersionsClient with default settings. */
+  public static final VersionsClient create() throws IOException {
+<span class="nc" id="L110">    return create(VersionsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of VersionsClient, using the given settings. The channels are created
+   * based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final VersionsClient create(VersionsSettings settings) throws IOException {
+<span class="fc" id="L118">    return new VersionsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of VersionsClient, using the given stub for making calls. This is for
+   * advanced usage - prefer using create(VersionsSettings).
+   */
+  public static final VersionsClient create(VersionsStub stub) {
+<span class="nc" id="L126">    return new VersionsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of VersionsClient, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+<span class="fc" id="L133">  protected VersionsClient(VersionsSettings settings) throws IOException {</span>
+<span class="fc" id="L134">    this.settings = settings;</span>
+<span class="fc" id="L135">    this.stub = ((VersionsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L136">  }</span>
+
+<span class="nc" id="L138">  protected VersionsClient(VersionsStub stub) {</span>
+<span class="nc" id="L139">    this.settings = null;</span>
+<span class="nc" id="L140">    this.stub = stub;</span>
+<span class="nc" id="L141">  }</span>
+
+  public final VersionsSettings getSettings() {
+<span class="nc" id="L144">    return settings;</span>
+  }
+
+  public VersionsStub getStub() {
+<span class="nc" id="L148">    return stub;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all versions of the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   AgentName parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   for (Version element : versionsClient.listVersions(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to list all versions from. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListVersionsPagedResponse listVersions(AgentName parent) {
+    ListVersionsRequest request =
+<span class="fc" id="L175">        ListVersionsRequest.newBuilder()</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L177">            .build();</span>
+<span class="fc" id="L178">    return listVersions(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all versions of the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   String parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   for (Version element : versionsClient.listVersions(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to list all versions from. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListVersionsPagedResponse listVersions(String parent) {
+<span class="fc" id="L204">    ListVersionsRequest request = ListVersionsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L205">    return listVersions(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all versions of the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   ListVersionsRequest request =
+   *       ListVersionsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (Version element : versionsClient.listVersions(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListVersionsPagedResponse listVersions(ListVersionsRequest request) {
+<span class="fc" id="L234">    return listVersionsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all versions of the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   ListVersionsRequest request =
+   *       ListVersionsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;Version&gt; future = versionsClient.listVersionsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (Version element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListVersionsRequest, ListVersionsPagedResponse&gt;
+      listVersionsPagedCallable() {
+<span class="fc" id="L263">    return stub.listVersionsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all versions of the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   ListVersionsRequest request =
+   *       ListVersionsRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListVersionsResponse response = versionsClient.listVersionsCallable().call(request);
+   *     for (Version element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListVersionsRequest, ListVersionsResponse&gt; listVersionsCallable() {
+<span class="nc" id="L298">    return stub.listVersionsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified agent version.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   VersionName name = VersionName.ofProjectVersionName(&quot;[PROJECT]&quot;, &quot;[VERSION]&quot;);
+   *   Version response = versionsClient.getVersion(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the version. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/versions/&amp;lt;Version ID&amp;gt;` -
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/versions/&amp;lt;Version
+   *     ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Version getVersion(VersionName name) {
+    GetVersionRequest request =
+<span class="pc bpc" id="L324" title="1 of 2 branches missed.">        GetVersionRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L325">    return getVersion(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified agent version.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   String name = VersionName.ofProjectVersionName(&quot;[PROJECT]&quot;, &quot;[VERSION]&quot;).toString();
+   *   Version response = versionsClient.getVersion(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the version. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/versions/&amp;lt;Version ID&amp;gt;` -
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/versions/&amp;lt;Version
+   *     ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Version getVersion(String name) {
+<span class="fc" id="L350">    GetVersionRequest request = GetVersionRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L351">    return getVersion(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified agent version.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   GetVersionRequest request =
+   *       GetVersionRequest.newBuilder()
+   *           .setName(VersionName.ofProjectVersionName(&quot;[PROJECT]&quot;, &quot;[VERSION]&quot;).toString())
+   *           .build();
+   *   Version response = versionsClient.getVersion(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Version getVersion(GetVersionRequest request) {
+<span class="fc" id="L376">    return getVersionCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified agent version.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   GetVersionRequest request =
+   *       GetVersionRequest.newBuilder()
+   *           .setName(VersionName.ofProjectVersionName(&quot;[PROJECT]&quot;, &quot;[VERSION]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Version&gt; future = versionsClient.getVersionCallable().futureCall(request);
+   *   // Do something.
+   *   Version response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetVersionRequest, Version&gt; getVersionCallable() {
+<span class="fc" id="L400">    return stub.getVersionCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an agent version.
+   *
+   * &lt;p&gt;The new version points to the agent instance in the &quot;default&quot; environment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   AgentName parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;);
+   *   Version version = Version.newBuilder().build();
+   *   Version response = versionsClient.createVersion(parent, version);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to create a version for. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param version Required. The version to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Version createVersion(AgentName parent, Version version) {
+    CreateVersionRequest request =
+<span class="fc" id="L429">        CreateVersionRequest.newBuilder()</span>
+<span class="pc bpc" id="L430" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L431">            .setVersion(version)</span>
+<span class="fc" id="L432">            .build();</span>
+<span class="fc" id="L433">    return createVersion(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an agent version.
+   *
+   * &lt;p&gt;The new version points to the agent instance in the &quot;default&quot; environment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   String parent = AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString();
+   *   Version version = Version.newBuilder().build();
+   *   Version response = versionsClient.createVersion(parent, version);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The agent to create a version for. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent` - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent`
+   * @param version Required. The version to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Version createVersion(String parent, Version version) {
+    CreateVersionRequest request =
+<span class="fc" id="L462">        CreateVersionRequest.newBuilder().setParent(parent).setVersion(version).build();</span>
+<span class="fc" id="L463">    return createVersion(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an agent version.
+   *
+   * &lt;p&gt;The new version points to the agent instance in the &quot;default&quot; environment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   CreateVersionRequest request =
+   *       CreateVersionRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setVersion(Version.newBuilder().build())
+   *           .build();
+   *   Version response = versionsClient.createVersion(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Version createVersion(CreateVersionRequest request) {
+<span class="fc" id="L491">    return createVersionCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates an agent version.
+   *
+   * &lt;p&gt;The new version points to the agent instance in the &quot;default&quot; environment.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   CreateVersionRequest request =
+   *       CreateVersionRequest.newBuilder()
+   *           .setParent(AgentName.ofProjectName(&quot;[PROJECT]&quot;).toString())
+   *           .setVersion(Version.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Version&gt; future = versionsClient.createVersionCallable().futureCall(request);
+   *   // Do something.
+   *   Version response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateVersionRequest, Version&gt; createVersionCallable() {
+<span class="fc" id="L518">    return stub.createVersionCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified agent version.
+   *
+   * &lt;p&gt;Note that this method does not allow you to update the state of the agent the given version
+   * points to. It allows you to update only mutable properties of the version resource.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   Version version = Version.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   Version response = versionsClient.updateVersion(version, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param version Required. The version to update. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/versions/&amp;lt;Version ID&amp;gt;` -
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/versions/&amp;lt;Version
+   *     ID&amp;gt;`
+   * @param updateMask Required. The mask to control which fields get updated.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Version updateVersion(Version version, FieldMask updateMask) {
+    UpdateVersionRequest request =
+<span class="fc" id="L549">        UpdateVersionRequest.newBuilder().setVersion(version).setUpdateMask(updateMask).build();</span>
+<span class="fc" id="L550">    return updateVersion(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified agent version.
+   *
+   * &lt;p&gt;Note that this method does not allow you to update the state of the agent the given version
+   * points to. It allows you to update only mutable properties of the version resource.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   UpdateVersionRequest request =
+   *       UpdateVersionRequest.newBuilder()
+   *           .setVersion(Version.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   Version response = versionsClient.updateVersion(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Version updateVersion(UpdateVersionRequest request) {
+<span class="fc" id="L579">    return updateVersionCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified agent version.
+   *
+   * &lt;p&gt;Note that this method does not allow you to update the state of the agent the given version
+   * points to. It allows you to update only mutable properties of the version resource.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   UpdateVersionRequest request =
+   *       UpdateVersionRequest.newBuilder()
+   *           .setVersion(Version.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Version&gt; future = versionsClient.updateVersionCallable().futureCall(request);
+   *   // Do something.
+   *   Version response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateVersionRequest, Version&gt; updateVersionCallable() {
+<span class="fc" id="L607">    return stub.updateVersionCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete the specified agent version.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   VersionName name = VersionName.ofProjectVersionName(&quot;[PROJECT]&quot;, &quot;[VERSION]&quot;);
+   *   versionsClient.deleteVersion(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the version to delete. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/versions/&amp;lt;Version ID&amp;gt;` -
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/versions/&amp;lt;Version
+   *     ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteVersion(VersionName name) {
+    DeleteVersionRequest request =
+<span class="pc bpc" id="L633" title="1 of 2 branches missed.">        DeleteVersionRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L634">    deleteVersion(request);</span>
+<span class="fc" id="L635">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete the specified agent version.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   String name = VersionName.ofProjectVersionName(&quot;[PROJECT]&quot;, &quot;[VERSION]&quot;).toString();
+   *   versionsClient.deleteVersion(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the version to delete. Supported formats:
+   *     &lt;p&gt;- `projects/&amp;lt;Project ID&amp;gt;/agent/versions/&amp;lt;Version ID&amp;gt;` -
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/versions/&amp;lt;Version
+   *     ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteVersion(String name) {
+<span class="fc" id="L659">    DeleteVersionRequest request = DeleteVersionRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L660">    deleteVersion(request);</span>
+<span class="fc" id="L661">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete the specified agent version.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   DeleteVersionRequest request =
+   *       DeleteVersionRequest.newBuilder()
+   *           .setName(VersionName.ofProjectVersionName(&quot;[PROJECT]&quot;, &quot;[VERSION]&quot;).toString())
+   *           .build();
+   *   versionsClient.deleteVersion(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteVersion(DeleteVersionRequest request) {
+<span class="fc" id="L685">    deleteVersionCallable().call(request);</span>
+<span class="fc" id="L686">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Delete the specified agent version.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (VersionsClient versionsClient = VersionsClient.create()) {
+   *   DeleteVersionRequest request =
+   *       DeleteVersionRequest.newBuilder()
+   *           .setName(VersionName.ofProjectVersionName(&quot;[PROJECT]&quot;, &quot;[VERSION]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future = versionsClient.deleteVersionCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteVersionRequest, Empty&gt; deleteVersionCallable() {
+<span class="fc" id="L709">    return stub.deleteVersionCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L714">    stub.close();</span>
+<span class="fc" id="L715">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L719">    stub.shutdown();</span>
+<span class="nc" id="L720">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L724">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L729">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L734">    stub.shutdownNow();</span>
+<span class="nc" id="L735">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L739">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListVersionsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListVersionsRequest,
+          ListVersionsResponse,
+          Version,
+          ListVersionsPage,
+          ListVersionsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListVersionsPagedResponse&gt; createAsync(
+        PageContext&lt;ListVersionsRequest, ListVersionsResponse, Version&gt; context,
+        ApiFuture&lt;ListVersionsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListVersionsPage&gt; futurePage =
+<span class="fc" id="L754">          ListVersionsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L755">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L757">          input -&gt; new ListVersionsPagedResponse(input),</span>
+<span class="fc" id="L758">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListVersionsPagedResponse(ListVersionsPage page) {
+<span class="fc" id="L762">      super(page, ListVersionsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L763">    }</span>
+  }
+
+  public static class ListVersionsPage
+      extends AbstractPage&lt;ListVersionsRequest, ListVersionsResponse, Version, ListVersionsPage&gt; {
+
+    private ListVersionsPage(
+        PageContext&lt;ListVersionsRequest, ListVersionsResponse, Version&gt; context,
+        ListVersionsResponse response) {
+<span class="fc" id="L772">      super(context, response);</span>
+<span class="fc" id="L773">    }</span>
+
+    private static ListVersionsPage createEmptyPage() {
+<span class="fc" id="L776">      return new ListVersionsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListVersionsPage createPage(
+        PageContext&lt;ListVersionsRequest, ListVersionsResponse, Version&gt; context,
+        ListVersionsResponse response) {
+<span class="fc" id="L783">      return new ListVersionsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListVersionsPage&gt; createPageAsync(
+        PageContext&lt;ListVersionsRequest, ListVersionsResponse, Version&gt; context,
+        ApiFuture&lt;ListVersionsResponse&gt; futureResponse) {
+<span class="fc" id="L790">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListVersionsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListVersionsRequest,
+          ListVersionsResponse,
+          Version,
+          ListVersionsPage,
+          ListVersionsFixedSizeCollection&gt; {
+
+    private ListVersionsFixedSizeCollection(List&lt;ListVersionsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L803">      super(pages, collectionSize);</span>
+<span class="fc" id="L804">    }</span>
+
+    private static ListVersionsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L807">      return new ListVersionsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListVersionsFixedSizeCollection createCollection(
+        List&lt;ListVersionsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L813">      return new ListVersionsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

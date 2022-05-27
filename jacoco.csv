@@ -1,0 +1,619 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,SpeechSettings,51,6,0,0,14,3,14,2,14,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,AdaptationClient,70,327,8,8,17,97,20,41,12,41
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,AdaptationClient.ListPhraseSetPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,SpeechClient,59,72,0,0,18,17,12,10,12,10
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,AdaptationClient.ListCustomClassesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,SpeechSettings.Builder,43,14,0,0,14,4,9,3,9,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,AdaptationSettings.Builder,67,14,0,0,20,4,15,3,15,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,AdaptationClient.ListCustomClassesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,AdaptationSettings,81,6,0,0,20,3,20,2,20,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,AdaptationClient.ListCustomClassesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,AdaptationClient.ListPhraseSetFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1,AdaptationClient.ListPhraseSetPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,SpeechStub,25,3,0,0,5,1,5,1,5,1
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,GrpcAdaptationStub,56,487,0,0,17,201,10,25,10,25
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,AdaptationStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,AdaptationStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,AdaptationStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,SpeechStubSettings,28,80,1,1,7,30,5,14,4,14
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,AdaptationStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,AdaptationStub,60,3,0,0,12,1,12,1,12,1
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,GrpcSpeechCallableFactory,15,24,0,0,3,5,3,5,3,5
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,GrpcAdaptationCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,GrpcSpeechStub,50,139,0,0,15,59,8,9,8,9
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,AdaptationStubSettings,28,144,1,1,7,45,5,20,4,20
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,AdaptationStubSettings.Builder,91,293,0,0,19,84,4,15,4,15
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1.stub,SpeechStubSettings.Builder,45,230,0,0,14,81,4,9,4,9
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,AdaptationStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,SpeechStub,25,3,0,0,5,1,5,1,5,1
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,GrpcSpeechStub,50,139,0,0,15,59,8,9,8,9
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,GrpcAdaptationStub,56,487,0,0,17,201,10,25,10,25
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,AdaptationStubSettings.Builder,91,293,0,0,19,84,4,15,4,15
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,AdaptationStubSettings,28,144,1,1,7,45,5,20,4,20
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,GrpcSpeechCallableFactory,15,24,0,0,3,5,3,5,3,5
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,SpeechStubSettings.Builder,45,230,0,0,14,81,4,9,4,9
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,GrpcAdaptationCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,AdaptationStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,AdaptationStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,AdaptationStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,AdaptationStub,60,3,0,0,12,1,12,1,12,1
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1.stub,SpeechStubSettings,28,80,1,1,7,30,5,14,4,14
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,SpeechSettings,51,6,0,0,14,3,14,2,14,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,AdaptationClient,70,327,8,8,17,97,20,41,12,41
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,SpeechClient,59,72,0,0,18,17,12,10,12,10
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,AdaptationClient.ListCustomClassesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,AdaptationClient.ListPhraseSetPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,AdaptationClient.ListCustomClassesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,SpeechSettings.Builder,43,14,0,0,14,4,9,3,9,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,AdaptationClient.ListCustomClassesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,AdaptationClient.ListPhraseSetPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,AdaptationSettings.Builder,67,14,0,0,20,4,15,3,15,3
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,AdaptationClient.ListPhraseSetFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-speech,com.google.cloud.speech.v1p1beta1,AdaptationSettings,81,6,0,0,20,3,20,2,20,2
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1,TextToSpeechSettings,41,6,0,0,12,3,12,2,12,2
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1,TextToSpeechClient,46,63,0,0,15,19,10,9,10,9
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1,TextToSpeechSettings.Builder,35,14,0,0,12,4,7,3,7,3
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1beta1,TextToSpeechClient,46,63,0,0,15,19,10,9,10,9
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1beta1,TextToSpeechSettings.Builder,35,14,0,0,12,4,7,3,7,3
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1beta1,TextToSpeechSettings,41,6,0,0,12,3,12,2,12,2
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1beta1.stub,GrpcTextToSpeechCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1beta1.stub,TextToSpeechStubSettings,28,64,1,1,7,26,5,12,4,12
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1beta1.stub,TextToSpeechStubSettings.Builder,35,150,0,0,11,46,4,7,4,7
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1beta1.stub,TextToSpeechStub,10,3,0,0,2,1,2,1,2,1
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1beta1.stub,GrpcTextToSpeechStub,50,97,0,0,15,41,8,7,8,7
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1.stub,TextToSpeechStubSettings.Builder,35,150,0,0,11,46,4,7,4,7
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1.stub,GrpcTextToSpeechCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1.stub,TextToSpeechStub,10,3,0,0,2,1,2,1,2,1
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1.stub,TextToSpeechStubSettings,28,64,1,1,7,26,5,12,4,12
+CoverageAggregator/google-cloud-texttospeech,com.google.cloud.texttospeech.v1.stub,GrpcTextToSpeechStub,50,97,0,0,15,41,8,7,8,7
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,DocumentsStub,80,3,0,0,16,1,16,1,16,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcEntityTypesCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,SessionsStub,10,3,0,0,2,1,2,1,2,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,KnowledgeBasesStubSettings.Builder,56,210,0,0,14,63,4,10,4,10
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcDocumentsStub,68,455,0,0,21,179,14,22,14,22
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EntityTypesStubSettings.Builder,116,560,0,0,29,213,4,20,4,20
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ParticipantsStub,45,3,0,0,9,1,9,1,9,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcConversationsStub,56,270,0,0,17,110,10,15,10,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationProfilesStub,55,3,0,0,11,1,11,1,11,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AnswerRecordsStub,15,3,0,0,3,1,3,1,3,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ContextsStubSettings.Builder,63,231,0,0,15,69,4,11,4,11
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EnvironmentsStubSettings.Builder,63,232,0,0,15,70,4,11,4,11
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AnswerRecordsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AnswerRecordsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EntityTypesStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,FulfillmentsStubSettings,28,66,1,1,7,29,5,12,4,12
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EntityTypesStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationDatasetsStub,50,3,0,0,10,1,10,1,10,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcConversationProfilesStub,56,372,0,0,18,156,10,20,10,20
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,FulfillmentsStubSettings.Builder,35,146,0,0,11,45,4,7,4,7
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcFulfillmentsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AnswerRecordsStubSettings,28,74,1,1,7,30,5,12,4,12
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationProfilesStubSettings,28,130,1,1,7,48,5,19,4,19
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,SessionEntityTypesStubSettings,28,98,1,1,7,36,5,15,4,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationDatasetsStubSettings.new PagedListDescriptor() {...},18,14,1,1,8,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcContextsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationDatasetsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,VersionsStub,30,3,0,0,6,1,6,1,6,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EnvironmentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EnvironmentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EnvironmentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcAgentsStub,62,478,0,0,19,184,12,24,12,24
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EnvironmentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ParticipantsStubSettings.Builder,77,312,0,0,17,93,4,13,4,13
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,IntentsStubSettings.Builder,80,350,0,0,20,123,4,14,4,14
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ContextsStub,35,3,0,0,7,1,7,1,7,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,SessionEntityTypesStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,SessionEntityTypesStubSettings.new PagedListDescriptor() {...},18,14,1,1,6,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,KnowledgeBasesStub,30,3,0,0,6,1,6,1,6,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcIntentsCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcIntentsStub,56,372,0,0,17,145,10,20,10,20
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcConversationDatasetsCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,SessionsStubSettings,28,66,1,1,7,28,5,12,4,12
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ParticipantsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ParticipantsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AgentsStub,75,3,0,0,15,1,15,1,15,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,SessionsStubSettings.Builder,33,156,0,0,11,50,4,7,4,7
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AgentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcKnowledgeBasesCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AgentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,FulfillmentsStub,10,3,0,0,2,1,2,1,2,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcContextsStub,53,306,0,0,16,122,9,17,9,17
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcSessionEntityTypesCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AgentsStubSettings,28,162,1,1,7,51,5,23,4,23
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcAnswerRecordsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ContextsStubSettings,28,106,1,1,7,37,5,16,4,16
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcSessionsStub,50,111,0,0,15,46,8,8,8,8
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AnswerRecordsStubSettings.Builder,35,147,0,0,11,45,4,7,4,7
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcParticipantsStub,53,392,0,0,16,166,9,21,9,21
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcKnowledgeBasesStub,53,263,0,0,17,108,9,15,9,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcEnvironmentsStub,56,314,0,0,17,129,10,17,10,17
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,AgentsStubSettings.Builder,104,490,0,0,22,183,4,18,4,18
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcAgentsCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationsStub,35,3,0,0,7,1,7,1,7,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,VersionsStubSettings.Builder,56,210,0,0,14,63,4,10,4,10
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationModelsStub,85,3,0,0,17,1,17,1,17,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,VersionsStubSettings,28,98,1,1,7,35,5,15,4,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EnvironmentsStub,40,3,0,0,8,1,8,1,8,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcParticipantsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,DocumentsStubSettings,28,170,1,1,7,53,5,24,4,24
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcSessionEntityTypesStub,53,263,0,0,17,108,9,15,9,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcEntityTypesStub,65,531,0,0,20,213,13,26,13,26
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcEnvironmentsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,KnowledgeBasesStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,KnowledgeBasesStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,VersionsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,VersionsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,KnowledgeBasesStubSettings,28,98,1,1,7,36,5,15,4,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcDocumentsCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,DocumentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,IntentsStubSettings,28,130,1,1,7,45,5,19,4,19
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,DocumentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationsStubSettings,28,106,1,1,7,38,5,15,4,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcFulfillmentsStub,50,126,0,0,15,50,8,9,8,9
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationDatasetsStubSettings,28,122,1,1,7,45,5,18,4,18
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationDatasetsStubSettings.Builder,71,357,0,0,20,136,4,13,4,13
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EntityTypesStub,85,3,0,0,17,1,17,1,17,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EnvironmentsStubSettings,28,114,1,1,7,40,5,16,4,16
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,IntentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,IntentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,SessionEntityTypesStub,30,3,0,0,6,1,6,1,6,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcConversationModelsStub,68,495,0,0,22,203,14,24,14,24
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcVersionsStub,53,263,0,0,16,104,9,15,9,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcVersionsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationModelsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationModelsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationModelsStubSettings.new PagedListDescriptor() {...},18,14,1,1,8,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationModelsStubSettings.new PagedListDescriptor() {...},18,14,1,1,6,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcConversationModelsCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,IntentsStub,55,3,0,0,11,1,11,1,11,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationModelsStubSettings,28,178,1,1,7,64,5,24,4,24
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ContextsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ContextsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,SessionEntityTypesStubSettings.Builder,56,210,0,0,14,64,4,10,4,10
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcSessionsCallableFactory,21,18,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcConversationDatasetsStub,59,295,0,0,19,118,11,16,11,16
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcConversationProfilesCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationProfilesStubSettings.Builder,80,350,0,0,21,124,4,14,4,14
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcConversationsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationModelsStubSettings.Builder,109,540,0,0,31,209,4,19,4,19
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationProfilesStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationProfilesStubSettings.new PagedListDescriptor() {...},18,14,1,1,8,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ConversationsStubSettings.Builder,56,211,0,0,14,63,4,10,4,10
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,DocumentsStubSettings.Builder,107,567,0,0,23,225,4,19,4,19
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,GrpcAnswerRecordsStub,53,134,0,0,16,54,9,9,9,9
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,ParticipantsStubSettings,28,122,1,1,7,42,5,18,4,18
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2.stub,EntityTypesStubSettings,28,178,1,1,7,61,5,25,4,25
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EnvironmentsClient,56,102,1,1,17,26,13,17,12,17
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,VersionsClient.ListVersionsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,IntentsSettings.Builder,63,14,0,0,19,4,14,3,14,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ContextsClient.ListContextsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,SessionsSettings.Builder,35,14,0,0,12,4,7,3,7,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationsClient.ListConversationsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationModelsSettings.Builder,83,14,0,0,24,4,19,3,19,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EnvironmentsClient.GetEnvironmentHistoryPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,VersionsClient.ListVersionsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationsClient.ListMessagesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ContextsClient.ListContextsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,SessionEntityTypesClient,58,179,4,4,16,55,15,23,11,23
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,DocumentsClient.ListDocumentsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,SessionEntityTypesClient.ListSessionEntityTypesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationModelsClient.ListConversationModelsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationsClient.ListConversationsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ContextsClient.ListContextsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AnswerRecordsClient.ListAnswerRecordsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,VersionsSettings,56,6,0,0,15,3,15,2,15,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AnswerRecordsSettings.Builder,35,14,0,0,12,4,7,3,7,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,VersionsSettings.Builder,47,14,0,0,15,4,10,3,10,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationDatasetsClient.ListConversationDatasetsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,KnowledgeBasesClient.ListKnowledgeBasesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,KnowledgeBasesClient,62,196,6,6,16,60,17,24,11,24
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ContextsClient,60,201,5,5,16,54,16,26,11,26
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationProfilesSettings,76,6,0,0,27,3,19,2,19,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AgentsSettings.Builder,79,14,0,0,23,4,18,3,18,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EnvironmentsClient.GetEnvironmentHistoryPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ContextsSettings.Builder,51,14,0,0,16,4,11,3,11,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ParticipantsClient.ListParticipantsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationsClient,68,206,7,7,17,58,19,25,12,25
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ContextsSettings,61,6,0,0,16,3,16,2,16,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ParticipantsSettings.Builder,59,14,0,0,18,4,13,3,13,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationsClient.ListConversationsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationModelsClient.ListConversationModelsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,VersionsClient,58,170,4,4,16,43,15,22,11,22
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,KnowledgeBasesClient.ListKnowledgeBasesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,DocumentsClient,93,225,5,5,24,54,23,30,18,30
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationProfilesClient.ListConversationProfilesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationProfilesClient,79,238,6,6,20,75,20,30,14,30
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationModelsClient.ListConversationModelsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AnswerRecordsClient,54,85,2,2,16,26,13,11,11,11
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationProfilesSettings.Builder,63,14,0,0,19,4,14,3,14,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationModelsClient.ListConversationModelEvaluationsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,VersionsClient.ListVersionsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AgentsClient.SearchAgentsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,KnowledgeBasesSettings,56,6,0,0,15,3,15,2,15,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,IntentsClient.ListIntentsPagedResponse,0,20,0,0,0,5,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AnswerRecordsClient.ListAnswerRecordsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ParticipantsClient,66,292,8,8,16,83,19,36,11,36
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,KnowledgeBasesSettings.Builder,47,14,0,0,15,4,10,3,10,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AgentsClient.SearchAgentsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationsSettings,56,6,0,0,15,3,15,2,15,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EntityTypesSettings.Builder,87,14,0,0,25,4,20,3,20,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EnvironmentsClient.ListEnvironmentsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EntityTypesClient.ListEntityTypesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationDatasetsClient.ListConversationDatasetsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,IntentsClient,87,361,10,10,20,107,24,39,14,39
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,SessionEntityTypesClient.ListSessionEntityTypesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,IntentsSettings,76,6,0,0,19,3,19,2,19,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ParticipantsSettings,71,6,0,0,18,3,18,2,18,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EnvironmentsClient.ListEnvironmentsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AgentsClient.SearchAgentsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,FulfillmentsClient,48,73,1,1,15,20,11,10,10,10
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EntityTypesClient.ListEntityTypesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AnswerRecordsClient.ListAnswerRecordsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,SessionEntityTypesClient.ListSessionEntityTypesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,DocumentsSettings,101,6,0,0,24,3,24,2,24,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,IntentsClient.ListIntentsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EntityTypesClient,107,496,14,14,23,155,31,53,17,53
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,FulfillmentsSettings,41,6,0,0,12,3,12,2,12,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationsClient.ListMessagesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationDatasetsSettings.Builder,59,14,0,0,18,4,13,3,13,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationDatasetsSettings,71,6,0,0,24,3,18,2,18,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationDatasetsClient,77,148,3,3,21,41,18,20,15,20
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,KnowledgeBasesClient.ListKnowledgeBasesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,DocumentsSettings.Builder,83,14,0,0,24,4,19,3,19,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationProfilesClient.ListConversationProfilesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AnswerRecordsSettings,41,6,0,0,12,3,12,2,12,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EnvironmentsClient.GetEnvironmentHistoryFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ParticipantsClient.ListParticipantsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationsSettings.Builder,47,14,0,0,15,4,10,3,10,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationModelsClient.ListConversationModelEvaluationsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,FulfillmentsSettings.Builder,35,14,0,0,12,4,7,3,7,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,IntentsClient.ListIntentsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationModelsSettings,101,6,0,0,32,3,24,2,24,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,SessionEntityTypesSettings,56,6,0,0,15,3,15,2,15,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EnvironmentsSettings.Builder,51,14,0,0,16,4,11,3,11,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EnvironmentsClient.ListEnvironmentsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,SessionsSettings,41,6,0,0,12,3,12,2,12,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EnvironmentsSettings,61,6,0,0,16,3,16,2,16,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EntityTypesClient.ListEntityTypesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AgentsSettings,96,6,0,0,23,3,23,2,23,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationDatasetsClient.ListConversationDatasetsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationProfilesClient.ListConversationProfilesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationsClient.ListMessagesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ParticipantsClient.ListParticipantsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,DocumentsClient.ListDocumentsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,EntityTypesSettings,106,6,0,0,25,3,25,2,25,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationModelsClient.ListConversationModelEvaluationsPagedResponse,0,20,0,0,0,7,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,ConversationModelsClient,85,193,1,1,24,51,19,29,18,29
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,AgentsClient,95,287,10,10,22,74,26,37,16,37
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,SessionsClient,48,60,1,1,15,17,11,8,10,8
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,SessionEntityTypesSettings.Builder,47,14,0,0,15,4,10,3,10,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2,DocumentsClient.ListDocumentsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationProfilesClient.ListConversationProfilesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,KnowledgeBasesSettings,56,6,0,0,15,3,15,2,15,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EnvironmentsSettings.Builder,51,14,0,0,16,4,11,3,11,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EntityTypesClient.ListEntityTypesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ParticipantsSettings.Builder,71,14,0,0,21,4,16,3,16,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,DocumentsClient,89,225,5,5,23,54,22,29,17,29
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EnvironmentsClient.GetEnvironmentHistoryFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EnvironmentsSettings,61,6,0,0,16,3,16,2,16,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationProfilesSettings.Builder,63,14,0,0,19,4,14,3,14,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ContextsClient.ListContextsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,FulfillmentsSettings,41,6,0,0,12,3,12,2,12,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,IntentsSettings.Builder,63,14,0,0,19,4,14,3,14,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,DocumentsSettings,91,6,0,0,22,3,22,2,22,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ParticipantsClient.ListParticipantsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,SessionsSettings,41,6,0,0,12,3,12,2,12,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationsClient.ListMessagesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,VersionsClient,58,170,4,4,16,43,15,22,11,22
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationProfilesClient.ListConversationProfilesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EntityTypesClient,107,509,14,14,23,161,31,54,17,54
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationProfilesSettings,76,6,0,0,27,3,19,2,19,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,KnowledgeBasesClient.ListKnowledgeBasesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,FulfillmentsSettings.Builder,35,14,0,0,12,4,7,3,7,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ParticipantsClient.ListSuggestionsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AnswerRecordsClient.ListAnswerRecordsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationProfilesClient.ListConversationProfilesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationProfilesClient,79,238,6,6,20,75,20,30,14,30
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,DocumentsClient.ListDocumentsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EnvironmentsClient.ListEnvironmentsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AnswerRecordsClient.ListAnswerRecordsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EnvironmentsClient.ListEnvironmentsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ParticipantsClient.ListSuggestionsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,VersionsClient.ListVersionsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationsSettings.Builder,51,14,0,0,16,4,11,3,11,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,SessionEntityTypesClient.ListSessionEntityTypesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AgentsSettings,96,6,0,0,23,3,23,2,23,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AgentsSettings.Builder,79,14,0,0,23,4,18,3,18,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ParticipantsClient.ListParticipantsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,IntentsSettings,76,6,0,0,19,3,19,2,19,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,SessionEntityTypesClient.ListSessionEntityTypesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,IntentsClient,87,381,10,10,20,111,24,41,14,41
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,DocumentsClient.ListDocumentsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,KnowledgeBasesClient.ListKnowledgeBasesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EntityTypesSettings.Builder,87,14,0,0,25,4,20,3,20,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,DocumentsClient.ListDocumentsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,KnowledgeBasesSettings.Builder,47,14,0,0,15,4,10,3,10,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationsClient.ListConversationsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,KnowledgeBasesClient.ListKnowledgeBasesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,FulfillmentsClient,48,73,1,1,15,20,11,10,10,10
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationsClient,70,237,8,8,17,66,20,29,12,29
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AnswerRecordsClient.ListAnswerRecordsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ParticipantsClient.ListParticipantsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AnswerRecordsClient,54,95,2,2,16,28,13,13,11,13
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EnvironmentsClient.GetEnvironmentHistoryPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,SessionsClient,48,60,1,1,15,17,11,8,10,8
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,SessionEntityTypesClient.ListSessionEntityTypesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationsClient.ListMessagesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,VersionsClient.ListVersionsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AgentsClient.SearchAgentsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationsSettings,61,6,0,0,16,3,16,2,16,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,SessionEntityTypesClient,58,179,4,4,16,55,15,23,11,23
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,SessionEntityTypesSettings.Builder,47,14,0,0,15,4,10,3,10,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EnvironmentsClient.GetEnvironmentHistoryPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ParticipantsClient,70,316,8,8,17,88,20,41,12,41
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,VersionsSettings.Builder,47,14,0,0,15,4,10,3,10,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ContextsClient,60,210,5,5,16,56,16,27,11,27
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,SessionEntityTypesSettings,56,6,0,0,15,3,15,2,15,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AgentsClient.SearchAgentsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationsClient.ListMessagesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EntityTypesSettings,106,6,0,0,25,3,25,2,25,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ContextsClient.ListContextsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AgentsClient,95,287,10,10,22,74,26,37,16,37
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AnswerRecordsSettings,46,6,0,0,13,3,13,2,13,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,VersionsClient.ListVersionsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,SessionsSettings.Builder,35,14,0,0,12,4,7,3,7,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,VersionsSettings,56,6,0,0,15,3,15,2,15,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EntityTypesClient.ListEntityTypesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ParticipantsClient.ListSuggestionsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,DocumentsSettings.Builder,75,14,0,0,22,4,17,3,17,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ContextsClient.ListContextsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,IntentsClient.ListIntentsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationsClient.ListConversationsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,IntentsClient.ListIntentsPagedResponse,0,20,0,0,0,5,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ContextsSettings.Builder,51,14,0,0,16,4,11,3,11,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,KnowledgeBasesClient,62,205,6,6,16,62,17,25,11,25
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AgentsClient.SearchAgentsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EnvironmentsClient,56,102,1,1,17,26,13,17,12,17
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,AnswerRecordsSettings.Builder,39,14,0,0,13,4,8,3,8,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,IntentsClient.ListIntentsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ParticipantsSettings,86,6,0,0,21,3,21,2,21,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ConversationsClient.ListConversationsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EntityTypesClient.ListEntityTypesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,EnvironmentsClient.ListEnvironmentsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1,ContextsSettings,61,6,0,0,16,3,16,2,16,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ParticipantsStub,65,3,0,0,13,1,13,1,13,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcAgentsStub,62,478,0,0,19,184,12,24,12,24
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ContextsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ContextsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EntityTypesStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EntityTypesStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,SessionsStubSettings.Builder,33,156,0,0,11,50,4,7,4,7
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AnswerRecordsStub,20,3,0,0,4,1,4,1,4,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcFulfillmentsStub,50,126,0,0,15,50,8,9,8,9
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,VersionsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,VersionsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EnvironmentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EnvironmentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcKnowledgeBasesCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,IntentsStubSettings,28,130,1,1,7,45,5,19,4,19
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EntityTypesStub,85,3,0,0,17,1,17,1,17,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcDocumentsStub,65,402,0,0,20,158,13,20,13,20
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationProfilesStub,55,3,0,0,11,1,11,1,11,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,VersionsStubSettings,28,98,1,1,7,35,5,15,4,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcEnvironmentsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,SessionEntityTypesStub,30,3,0,0,6,1,6,1,6,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcEntityTypesCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,DocumentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,DocumentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationProfilesStubSettings,28,130,1,1,7,48,5,19,4,19
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ContextsStubSettings.Builder,63,231,0,0,15,69,4,11,4,11
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EnvironmentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EnvironmentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AnswerRecordsStubSettings,28,82,1,1,7,32,5,13,4,13
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,FulfillmentsStubSettings,28,66,1,1,7,29,5,12,4,12
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcIntentsStub,56,372,0,0,17,145,10,20,10,20
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,SessionsStubSettings,28,66,1,1,7,28,5,12,4,12
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationsStubSettings,28,114,1,1,7,40,5,16,4,16
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,DocumentsStubSettings,28,154,1,1,7,49,5,22,4,22
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ContextsStub,35,3,0,0,7,1,7,1,7,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcSessionsStub,50,111,0,0,15,46,8,8,8,8
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AgentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AgentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ParticipantsStubSettings.Builder,96,386,0,0,20,116,4,16,4,16
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EnvironmentsStubSettings.Builder,63,232,0,0,15,70,4,11,4,11
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,KnowledgeBasesStub,30,3,0,0,6,1,6,1,6,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,KnowledgeBasesStubSettings,28,98,1,1,7,36,5,15,4,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,SessionEntityTypesStubSettings,28,98,1,1,7,36,5,15,4,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ContextsStubSettings,28,106,1,1,7,37,5,16,4,16
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcParticipantsCallableFactory,21,18,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,SessionEntityTypesStubSettings.Builder,56,210,0,0,14,64,4,10,4,10
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcEntityTypesStub,65,531,0,0,20,213,13,26,13,26
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcEnvironmentsStub,56,314,0,0,17,129,10,17,10,17
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationProfilesStubSettings.Builder,80,350,0,0,21,124,4,14,4,14
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,DocumentsStub,70,3,0,0,14,1,14,1,14,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcParticipantsStub,56,515,0,0,17,222,10,26,10,26
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcContextsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcConversationsStub,56,313,0,0,17,129,10,17,10,17
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcIntentsCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcConversationProfilesStub,56,372,0,0,18,156,10,20,10,20
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,SessionEntityTypesStubSettings.new PagedListDescriptor() {...},18,14,1,1,6,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,SessionEntityTypesStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationProfilesStubSettings.new PagedListDescriptor() {...},18,14,1,1,8,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcAnswerRecordsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationProfilesStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,DocumentsStubSettings.Builder,95,497,0,0,21,195,4,17,4,17
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ParticipantsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ParticipantsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AgentsStub,75,3,0,0,15,1,15,1,15,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,VersionsStub,30,3,0,0,6,1,6,1,6,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationsStubSettings.Builder,63,232,0,0,15,69,4,11,4,11
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcDocumentsCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcAgentsCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ParticipantsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ParticipantsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,SessionsStub,10,3,0,0,2,1,2,1,2,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcContextsStub,53,306,0,0,16,122,9,17,9,17
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ConversationsStub,40,3,0,0,8,1,8,1,8,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EnvironmentsStub,40,3,0,0,8,1,8,1,8,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,IntentsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,VersionsStubSettings.Builder,56,210,0,0,14,63,4,10,4,10
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,IntentsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,ParticipantsStubSettings,28,154,1,1,7,50,5,21,4,21
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcKnowledgeBasesStub,53,263,0,0,17,108,9,15,9,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,FulfillmentsStub,10,3,0,0,2,1,2,1,2,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AnswerRecordsStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AnswerRecordsStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,IntentsStub,55,3,0,0,11,1,11,1,11,1
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EntityTypesStubSettings.Builder,116,560,0,0,29,213,4,20,4,20
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcFulfillmentsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,IntentsStubSettings.Builder,80,350,0,0,20,123,4,14,4,14
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AgentsStubSettings,28,162,1,1,7,51,5,23,4,23
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcSessionEntityTypesStub,53,263,0,0,17,108,9,15,9,15
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,KnowledgeBasesStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,KnowledgeBasesStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcConversationProfilesCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EnvironmentsStubSettings,28,114,1,1,7,40,5,16,4,16
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,FulfillmentsStubSettings.Builder,35,146,0,0,11,45,4,7,4,7
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,KnowledgeBasesStubSettings.Builder,56,210,0,0,14,63,4,10,4,10
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcSessionsCallableFactory,21,18,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AnswerRecordsStubSettings.Builder,42,168,0,0,12,51,4,8,4,8
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcAnswerRecordsStub,53,177,0,0,16,72,9,11,9,11
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcSessionEntityTypesCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,EntityTypesStubSettings,28,178,1,1,7,61,5,25,4,25
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcVersionsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,AgentsStubSettings.Builder,104,490,0,0,22,183,4,18,4,18
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcConversationsCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-dialogflow,com.google.cloud.dialogflow.v2beta1.stub,GrpcVersionsStub,53,263,0,0,16,104,9,15,9,15
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p2beta1,ImageAnnotatorSettings,46,6,0,0,14,3,13,2,13,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p2beta1,ImageAnnotatorClient,59,64,0,0,18,16,12,9,12,9
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p2beta1,ImageAnnotatorSettings.Builder,39,14,0,0,13,4,8,3,8,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p2beta1.stub,ImageAnnotatorStubSettings.Builder,40,199,0,0,13,70,4,8,4,8
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p2beta1.stub,ImageAnnotatorStubSettings,28,74,1,1,7,32,5,13,4,13
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p2beta1.stub,GrpcImageAnnotatorCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p2beta1.stub,ImageAnnotatorStub,20,3,0,0,4,1,4,1,4,1
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p2beta1.stub,GrpcImageAnnotatorStub,50,110,0,0,16,46,8,8,8,8
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ImageAnnotatorStub,35,3,0,0,7,1,7,1,7,1
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings,28,250,1,1,7,76,5,31,4,31
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStub,130,3,0,0,26,1,26,1,26,1
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings.Builder,187,665,0,0,31,210,4,26,4,26
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ImageAnnotatorStubSettings,28,98,1,1,7,39,5,16,4,16
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,GrpcImageAnnotatorStub,53,234,0,0,17,94,9,14,9,14
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ImageAnnotatorStubSettings.Builder,59,290,0,0,17,106,4,11,4,11
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,GrpcImageAnnotatorCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,GrpcProductSearchStub,65,913,0,0,20,375,13,44,13,44
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,8,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1.stub,GrpcProductSearchCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings.Builder,187,681,0,0,31,213,4,26,4,26
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,GrpcImageAnnotatorCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,GrpcProductSearchStub,65,913,0,0,20,375,13,44,13,44
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ImageAnnotatorStub,35,3,0,0,7,1,7,1,7,1
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,GrpcImageAnnotatorStub,53,178,0,0,17,78,9,10,9,10
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings,28,250,1,1,7,76,5,31,4,31
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ImageAnnotatorStubSettings,28,98,1,1,7,39,5,16,4,16
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ImageAnnotatorStubSettings.Builder,59,280,0,0,17,105,4,11,4,11
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,GrpcProductSearchCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,8,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1.stub,ProductSearchStub,130,3,0,0,26,1,26,1,26,1
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p1beta1,ImageAnnotatorClient,46,40,0,0,15,11,10,6,10,6
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p1beta1,ImageAnnotatorSettings,36,6,0,0,11,3,11,2,11,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p1beta1,ImageAnnotatorSettings.Builder,31,14,0,0,11,4,6,3,6,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ImageAnnotatorClient,63,103,0,0,19,27,13,15,13,15
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListReferenceImagesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchSettings.Builder,111,14,0,0,31,4,26,3,26,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListProductsInProductSetPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ImageAnnotatorSettings.Builder,51,14,0,0,16,4,11,3,11,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListProductsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListProductSetsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListProductSetsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListProductsInProductSetFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListProductsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ImageAnnotatorSettings,61,6,0,0,18,3,16,2,16,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListReferenceImagesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListReferenceImagesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchSettings,136,6,0,0,31,3,31,2,31,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListProductSetsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListProductsInProductSetPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient.ListProductsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p4beta1,ProductSearchClient,125,692,23,23,23,207,40,81,17,81
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p1beta1.stub,GrpcImageAnnotatorStub,50,68,0,0,16,28,8,6,8,6
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p1beta1.stub,ImageAnnotatorStubSettings.Builder,28,129,0,0,10,40,4,6,4,6
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p1beta1.stub,ImageAnnotatorStub,5,3,0,0,1,1,1,1,1,1
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p1beta1.stub,ImageAnnotatorStubSettings,28,58,1,1,7,27,5,11,4,11
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p1beta1.stub,GrpcImageAnnotatorCallableFactory,26,13,0,0,5,3,5,3,5,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchSettings,126,6,0,0,29,3,29,2,29,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListProductSetsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListProductsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListProductsInProductSetPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListReferenceImagesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListReferenceImagesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ImageAnnotatorSettings.Builder,39,14,0,0,13,4,8,3,8,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListProductSetsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListProductsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ImageAnnotatorClient,59,64,0,0,18,16,12,9,12,9
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchSettings.Builder,103,14,0,0,29,4,24,3,24,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListProductSetsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListProductsInProductSetPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListProductsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient,119,662,22,22,22,199,38,77,16,77
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListReferenceImagesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ProductSearchClient.ListProductsInProductSetFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1,ImageAnnotatorSettings,46,6,0,0,14,3,13,2,13,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,5,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,8,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings.new PagedListResponseFactory() {...},0,13,0,0,0,4,0,2,0,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings.new PagedListDescriptor() {...},18,14,1,1,4,5,4,4,3,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,GrpcImageAnnotatorStub,50,110,0,0,16,46,8,8,8,8
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,GrpcProductSearchStub,62,860,0,0,19,354,12,42,12,42
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ImageAnnotatorStubSettings.Builder,40,232,0,0,13,82,4,8,4,8
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,GrpcImageAnnotatorCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,GrpcProductSearchCallableFactory,20,19,0,0,4,4,4,4,4,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ImageAnnotatorStub,20,3,0,0,4,1,4,1,4,1
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStub,120,3,0,0,24,1,24,1,24,1
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings,28,234,1,1,7,72,5,29,4,29
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ImageAnnotatorStubSettings,28,74,1,1,7,32,5,13,4,13
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1p3beta1.stub,ProductSearchStubSettings.Builder,172,592,0,0,29,180,4,24,4,24
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListProductsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListProductSetsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListProductSetsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListReferenceImagesPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListReferenceImagesPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListProductsFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListProductsInProductSetPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListProductsPagedResponse,0,20,0,0,0,6,0,3,0,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ImageAnnotatorClient,63,103,0,0,19,27,13,15,13,15
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient,313,705,23,23,39,215,56,82,33,82
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchSettings.Builder,111,14,0,0,31,4,26,3,26,3
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListReferenceImagesFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchSettings,136,6,0,0,31,3,31,2,31,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListProductsInProductSetFixedSizeCollection,6,11,0,0,1,3,1,2,1,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListProductsInProductSetPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ImageAnnotatorSettings,61,6,0,0,18,3,16,2,16,2
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ProductSearchClient.ListProductSetsPage,0,22,0,0,0,5,0,4,0,4
+CoverageAggregator/google-cloud-vision,com.google.cloud.vision.v1,ImageAnnotatorSettings.Builder,51,14,0,0,16,4,11,3,11,3

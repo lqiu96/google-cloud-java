@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcSessionEntityTypesCallableFactory.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1.stub</a> &gt; <span class="el_source">GrpcSessionEntityTypesCallableFactory.java</span></div><h1>GrpcSessionEntityTypesCallableFactory.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcCallableFactory;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.BatchingCallSettings;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.ServerStreamingCallSettings;
+import com.google.api.gax.rpc.ServerStreamingCallable;
+import com.google.api.gax.rpc.StreamingCallSettings;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.OperationsStub;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC callable factory implementation for the SessionEntityTypes service API.
+ *
+ * &lt;p&gt;This class is for advanced usage.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+<span class="fc" id="L47">public class GrpcSessionEntityTypesCallableFactory implements GrpcStubCallableFactory {</span>
+
+  @Override
+  public &lt;RequestT, ResponseT&gt; UnaryCallable&lt;RequestT, ResponseT&gt; createUnaryCallable(
+      GrpcCallSettings&lt;RequestT, ResponseT&gt; grpcCallSettings,
+      UnaryCallSettings&lt;RequestT, ResponseT&gt; callSettings,
+      ClientContext clientContext) {
+<span class="fc" id="L54">    return GrpcCallableFactory.createUnaryCallable(grpcCallSettings, callSettings, clientContext);</span>
+  }
+
+  @Override
+  public &lt;RequestT, ResponseT, PagedListResponseT&gt;
+      UnaryCallable&lt;RequestT, PagedListResponseT&gt; createPagedCallable(
+          GrpcCallSettings&lt;RequestT, ResponseT&gt; grpcCallSettings,
+          PagedCallSettings&lt;RequestT, ResponseT, PagedListResponseT&gt; callSettings,
+          ClientContext clientContext) {
+<span class="fc" id="L63">    return GrpcCallableFactory.createPagedCallable(grpcCallSettings, callSettings, clientContext);</span>
+  }
+
+  @Override
+  public &lt;RequestT, ResponseT&gt; UnaryCallable&lt;RequestT, ResponseT&gt; createBatchingCallable(
+      GrpcCallSettings&lt;RequestT, ResponseT&gt; grpcCallSettings,
+      BatchingCallSettings&lt;RequestT, ResponseT&gt; callSettings,
+      ClientContext clientContext) {
+<span class="nc" id="L71">    return GrpcCallableFactory.createBatchingCallable(</span>
+        grpcCallSettings, callSettings, clientContext);
+  }
+
+  @Override
+  public &lt;RequestT, ResponseT, MetadataT&gt;
+      OperationCallable&lt;RequestT, ResponseT, MetadataT&gt; createOperationCallable(
+          GrpcCallSettings&lt;RequestT, Operation&gt; grpcCallSettings,
+          OperationCallSettings&lt;RequestT, ResponseT, MetadataT&gt; callSettings,
+          ClientContext clientContext,
+          OperationsStub operationsStub) {
+<span class="nc" id="L82">    return GrpcCallableFactory.createOperationCallable(</span>
+        grpcCallSettings, callSettings, clientContext, operationsStub);
+  }
+
+  @Override
+  public &lt;RequestT, ResponseT&gt;
+      BidiStreamingCallable&lt;RequestT, ResponseT&gt; createBidiStreamingCallable(
+          GrpcCallSettings&lt;RequestT, ResponseT&gt; grpcCallSettings,
+          StreamingCallSettings&lt;RequestT, ResponseT&gt; callSettings,
+          ClientContext clientContext) {
+<span class="nc" id="L92">    return GrpcCallableFactory.createBidiStreamingCallable(</span>
+        grpcCallSettings, callSettings, clientContext);
+  }
+
+  @Override
+  public &lt;RequestT, ResponseT&gt;
+      ServerStreamingCallable&lt;RequestT, ResponseT&gt; createServerStreamingCallable(
+          GrpcCallSettings&lt;RequestT, ResponseT&gt; grpcCallSettings,
+          ServerStreamingCallSettings&lt;RequestT, ResponseT&gt; callSettings,
+          ClientContext clientContext) {
+<span class="nc" id="L102">    return GrpcCallableFactory.createServerStreamingCallable(</span>
+        grpcCallSettings, callSettings, clientContext);
+  }
+
+  @Override
+  public &lt;RequestT, ResponseT&gt;
+      ClientStreamingCallable&lt;RequestT, ResponseT&gt; createClientStreamingCallable(
+          GrpcCallSettings&lt;RequestT, ResponseT&gt; grpcCallSettings,
+          StreamingCallSettings&lt;RequestT, ResponseT&gt; callSettings,
+          ClientContext clientContext) {
+<span class="nc" id="L112">    return GrpcCallableFactory.createClientStreamingCallable(</span>
+        grpcCallSettings, callSettings, clientContext);
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AgentsSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2</a> &gt; <span class="el_source">AgentsSettings.java</span></div><h1>AgentsSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2;
+
+import static com.google.cloud.dialogflow.v2.AgentsClient.SearchAgentsPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.cloud.dialogflow.v2.stub.AgentsStubSettings;
+import com.google.longrunning.Operation;
+import com.google.protobuf.Empty;
+import com.google.protobuf.Struct;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link AgentsClient}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (dialogflow.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of getAgent to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * AgentsSettings.Builder agentsSettingsBuilder = AgentsSettings.newBuilder();
+ * agentsSettingsBuilder
+ *     .getAgentSettings()
+ *     .setRetrySettings(
+ *         agentsSettingsBuilder
+ *             .getAgentSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * AgentsSettings agentsSettings = agentsSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class AgentsSettings extends ClientSettings&lt;AgentsSettings&gt; {
+
+  /** Returns the object with the settings used for calls to getAgent. */
+  public UnaryCallSettings&lt;GetAgentRequest, Agent&gt; getAgentSettings() {
+<span class="nc" id="L79">    return ((AgentsStubSettings) getStubSettings()).getAgentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to setAgent. */
+  public UnaryCallSettings&lt;SetAgentRequest, Agent&gt; setAgentSettings() {
+<span class="nc" id="L84">    return ((AgentsStubSettings) getStubSettings()).setAgentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteAgent. */
+  public UnaryCallSettings&lt;DeleteAgentRequest, Empty&gt; deleteAgentSettings() {
+<span class="nc" id="L89">    return ((AgentsStubSettings) getStubSettings()).deleteAgentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to searchAgents. */
+  public PagedCallSettings&lt;SearchAgentsRequest, SearchAgentsResponse, SearchAgentsPagedResponse&gt;
+      searchAgentsSettings() {
+<span class="nc" id="L95">    return ((AgentsStubSettings) getStubSettings()).searchAgentsSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to trainAgent. */
+  public UnaryCallSettings&lt;TrainAgentRequest, Operation&gt; trainAgentSettings() {
+<span class="nc" id="L100">    return ((AgentsStubSettings) getStubSettings()).trainAgentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to trainAgent. */
+  public OperationCallSettings&lt;TrainAgentRequest, Empty, Struct&gt; trainAgentOperationSettings() {
+<span class="nc" id="L105">    return ((AgentsStubSettings) getStubSettings()).trainAgentOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to exportAgent. */
+  public UnaryCallSettings&lt;ExportAgentRequest, Operation&gt; exportAgentSettings() {
+<span class="nc" id="L110">    return ((AgentsStubSettings) getStubSettings()).exportAgentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to exportAgent. */
+  public OperationCallSettings&lt;ExportAgentRequest, ExportAgentResponse, Struct&gt;
+      exportAgentOperationSettings() {
+<span class="nc" id="L116">    return ((AgentsStubSettings) getStubSettings()).exportAgentOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to importAgent. */
+  public UnaryCallSettings&lt;ImportAgentRequest, Operation&gt; importAgentSettings() {
+<span class="nc" id="L121">    return ((AgentsStubSettings) getStubSettings()).importAgentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to importAgent. */
+  public OperationCallSettings&lt;ImportAgentRequest, Empty, Struct&gt; importAgentOperationSettings() {
+<span class="nc" id="L126">    return ((AgentsStubSettings) getStubSettings()).importAgentOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to restoreAgent. */
+  public UnaryCallSettings&lt;RestoreAgentRequest, Operation&gt; restoreAgentSettings() {
+<span class="nc" id="L131">    return ((AgentsStubSettings) getStubSettings()).restoreAgentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to restoreAgent. */
+  public OperationCallSettings&lt;RestoreAgentRequest, Empty, Struct&gt; restoreAgentOperationSettings() {
+<span class="nc" id="L136">    return ((AgentsStubSettings) getStubSettings()).restoreAgentOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to getValidationResult. */
+  public UnaryCallSettings&lt;GetValidationResultRequest, ValidationResult&gt;
+      getValidationResultSettings() {
+<span class="nc" id="L142">    return ((AgentsStubSettings) getStubSettings()).getValidationResultSettings();</span>
+  }
+
+  public static final AgentsSettings create(AgentsStubSettings stub) throws IOException {
+<span class="nc" id="L146">    return new AgentsSettings.Builder(stub.toBuilder()).build();</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L151">    return AgentsStubSettings.defaultExecutorProviderBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="nc" id="L156">    return AgentsStubSettings.getDefaultEndpoint();</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L161">    return AgentsStubSettings.getDefaultServiceScopes();</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="nc" id="L166">    return AgentsStubSettings.defaultCredentialsProviderBuilder();</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="nc" id="L171">    return AgentsStubSettings.defaultGrpcTransportProviderBuilder();</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="nc" id="L175">    return AgentsStubSettings.defaultTransportChannelProvider();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="nc" id="L180">    return AgentsStubSettings.defaultApiClientHeaderProviderBuilder();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L185">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L190">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L195">    return new Builder(this);</span>
+  }
+
+  protected AgentsSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L199">    super(settingsBuilder);</span>
+<span class="fc" id="L200">  }</span>
+
+  /** Builder for AgentsSettings. */
+  public static class Builder extends ClientSettings.Builder&lt;AgentsSettings, Builder&gt; {
+
+    protected Builder() throws IOException {
+<span class="nc" id="L206">      this(((ClientContext) null));</span>
+<span class="nc" id="L207">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="nc" id="L210">      super(AgentsStubSettings.newBuilder(clientContext));</span>
+<span class="nc" id="L211">    }</span>
+
+    protected Builder(AgentsSettings settings) {
+<span class="nc" id="L214">      super(settings.getStubSettings().toBuilder());</span>
+<span class="nc" id="L215">    }</span>
+
+    protected Builder(AgentsStubSettings.Builder stubSettings) {
+<span class="fc" id="L218">      super(stubSettings);</span>
+<span class="fc" id="L219">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L222">      return new Builder(AgentsStubSettings.newBuilder());</span>
+    }
+
+    public AgentsStubSettings.Builder getStubSettingsBuilder() {
+<span class="nc" id="L226">      return ((AgentsStubSettings.Builder) getStubSettings());</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L236">      super.applyToAllUnaryMethods(</span>
+<span class="nc" id="L237">          getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);</span>
+<span class="nc" id="L238">      return this;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getAgent. */
+    public UnaryCallSettings.Builder&lt;GetAgentRequest, Agent&gt; getAgentSettings() {
+<span class="nc" id="L243">      return getStubSettingsBuilder().getAgentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to setAgent. */
+    public UnaryCallSettings.Builder&lt;SetAgentRequest, Agent&gt; setAgentSettings() {
+<span class="nc" id="L248">      return getStubSettingsBuilder().setAgentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteAgent. */
+    public UnaryCallSettings.Builder&lt;DeleteAgentRequest, Empty&gt; deleteAgentSettings() {
+<span class="nc" id="L253">      return getStubSettingsBuilder().deleteAgentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to searchAgents. */
+    public PagedCallSettings.Builder&lt;
+            SearchAgentsRequest, SearchAgentsResponse, SearchAgentsPagedResponse&gt;
+        searchAgentsSettings() {
+<span class="nc" id="L260">      return getStubSettingsBuilder().searchAgentsSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to trainAgent. */
+    public UnaryCallSettings.Builder&lt;TrainAgentRequest, Operation&gt; trainAgentSettings() {
+<span class="nc" id="L265">      return getStubSettingsBuilder().trainAgentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to trainAgent. */
+    public OperationCallSettings.Builder&lt;TrainAgentRequest, Empty, Struct&gt;
+        trainAgentOperationSettings() {
+<span class="nc" id="L271">      return getStubSettingsBuilder().trainAgentOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to exportAgent. */
+    public UnaryCallSettings.Builder&lt;ExportAgentRequest, Operation&gt; exportAgentSettings() {
+<span class="nc" id="L276">      return getStubSettingsBuilder().exportAgentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to exportAgent. */
+    public OperationCallSettings.Builder&lt;ExportAgentRequest, ExportAgentResponse, Struct&gt;
+        exportAgentOperationSettings() {
+<span class="nc" id="L282">      return getStubSettingsBuilder().exportAgentOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importAgent. */
+    public UnaryCallSettings.Builder&lt;ImportAgentRequest, Operation&gt; importAgentSettings() {
+<span class="nc" id="L287">      return getStubSettingsBuilder().importAgentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importAgent. */
+    public OperationCallSettings.Builder&lt;ImportAgentRequest, Empty, Struct&gt;
+        importAgentOperationSettings() {
+<span class="nc" id="L293">      return getStubSettingsBuilder().importAgentOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to restoreAgent. */
+    public UnaryCallSettings.Builder&lt;RestoreAgentRequest, Operation&gt; restoreAgentSettings() {
+<span class="nc" id="L298">      return getStubSettingsBuilder().restoreAgentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to restoreAgent. */
+    public OperationCallSettings.Builder&lt;RestoreAgentRequest, Empty, Struct&gt;
+        restoreAgentOperationSettings() {
+<span class="nc" id="L304">      return getStubSettingsBuilder().restoreAgentOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getValidationResult. */
+    public UnaryCallSettings.Builder&lt;GetValidationResultRequest, ValidationResult&gt;
+        getValidationResultSettings() {
+<span class="nc" id="L310">      return getStubSettingsBuilder().getValidationResultSettings();</span>
+    }
+
+    @Override
+    public AgentsSettings build() throws IOException {
+<span class="fc" id="L315">      return new AgentsSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

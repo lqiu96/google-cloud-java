@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TextToSpeechSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-texttospeech</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.texttospeech.v1beta1</a> &gt; <span class="el_source">TextToSpeechSettings.java</span></div><h1>TextToSpeechSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.texttospeech.v1beta1;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.cloud.texttospeech.v1beta1.stub.TextToSpeechStubSettings;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link TextToSpeechClient}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (texttospeech.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of listVoices to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * TextToSpeechSettings.Builder textToSpeechSettingsBuilder = TextToSpeechSettings.newBuilder();
+ * textToSpeechSettingsBuilder
+ *     .listVoicesSettings()
+ *     .setRetrySettings(
+ *         textToSpeechSettingsBuilder
+ *             .listVoicesSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * TextToSpeechSettings textToSpeechSettings = textToSpeechSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class TextToSpeechSettings extends ClientSettings&lt;TextToSpeechSettings&gt; {
+
+  /** Returns the object with the settings used for calls to listVoices. */
+  public UnaryCallSettings&lt;ListVoicesRequest, ListVoicesResponse&gt; listVoicesSettings() {
+<span class="nc" id="L73">    return ((TextToSpeechStubSettings) getStubSettings()).listVoicesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to synthesizeSpeech. */
+  public UnaryCallSettings&lt;SynthesizeSpeechRequest, SynthesizeSpeechResponse&gt;
+      synthesizeSpeechSettings() {
+<span class="nc" id="L79">    return ((TextToSpeechStubSettings) getStubSettings()).synthesizeSpeechSettings();</span>
+  }
+
+  public static final TextToSpeechSettings create(TextToSpeechStubSettings stub)
+      throws IOException {
+<span class="nc" id="L84">    return new TextToSpeechSettings.Builder(stub.toBuilder()).build();</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L89">    return TextToSpeechStubSettings.defaultExecutorProviderBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="nc" id="L94">    return TextToSpeechStubSettings.getDefaultEndpoint();</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L99">    return TextToSpeechStubSettings.getDefaultServiceScopes();</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="nc" id="L104">    return TextToSpeechStubSettings.defaultCredentialsProviderBuilder();</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="nc" id="L109">    return TextToSpeechStubSettings.defaultGrpcTransportProviderBuilder();</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="nc" id="L113">    return TextToSpeechStubSettings.defaultTransportChannelProvider();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="nc" id="L118">    return TextToSpeechStubSettings.defaultApiClientHeaderProviderBuilder();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L123">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L128">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L133">    return new Builder(this);</span>
+  }
+
+  protected TextToSpeechSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L137">    super(settingsBuilder);</span>
+<span class="fc" id="L138">  }</span>
+
+  /** Builder for TextToSpeechSettings. */
+  public static class Builder extends ClientSettings.Builder&lt;TextToSpeechSettings, Builder&gt; {
+
+    protected Builder() throws IOException {
+<span class="nc" id="L144">      this(((ClientContext) null));</span>
+<span class="nc" id="L145">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="nc" id="L148">      super(TextToSpeechStubSettings.newBuilder(clientContext));</span>
+<span class="nc" id="L149">    }</span>
+
+    protected Builder(TextToSpeechSettings settings) {
+<span class="nc" id="L152">      super(settings.getStubSettings().toBuilder());</span>
+<span class="nc" id="L153">    }</span>
+
+    protected Builder(TextToSpeechStubSettings.Builder stubSettings) {
+<span class="fc" id="L156">      super(stubSettings);</span>
+<span class="fc" id="L157">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L160">      return new Builder(TextToSpeechStubSettings.newBuilder());</span>
+    }
+
+    public TextToSpeechStubSettings.Builder getStubSettingsBuilder() {
+<span class="nc" id="L164">      return ((TextToSpeechStubSettings.Builder) getStubSettings());</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L174">      super.applyToAllUnaryMethods(</span>
+<span class="nc" id="L175">          getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);</span>
+<span class="nc" id="L176">      return this;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listVoices. */
+    public UnaryCallSettings.Builder&lt;ListVoicesRequest, ListVoicesResponse&gt; listVoicesSettings() {
+<span class="nc" id="L181">      return getStubSettingsBuilder().listVoicesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to synthesizeSpeech. */
+    public UnaryCallSettings.Builder&lt;SynthesizeSpeechRequest, SynthesizeSpeechResponse&gt;
+        synthesizeSpeechSettings() {
+<span class="nc" id="L187">      return getStubSettingsBuilder().synthesizeSpeechSettings();</span>
+    }
+
+    @Override
+    public TextToSpeechSettings build() throws IOException {
+<span class="fc" id="L192">      return new TextToSpeechSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DocumentsStubSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">DocumentsStubSettings.java</span></div><h1>DocumentsStubSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.DocumentsClient.ListDocumentsPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.grpc.ProtoOperationTransformers;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.PagedListDescriptor;
+import com.google.api.gax.rpc.PagedListResponseFactory;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StubSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.CreateDocumentRequest;
+import com.google.cloud.dialogflow.v2.DeleteDocumentRequest;
+import com.google.cloud.dialogflow.v2.Document;
+import com.google.cloud.dialogflow.v2.ExportDocumentRequest;
+import com.google.cloud.dialogflow.v2.GetDocumentRequest;
+import com.google.cloud.dialogflow.v2.ImportDocumentsRequest;
+import com.google.cloud.dialogflow.v2.ImportDocumentsResponse;
+import com.google.cloud.dialogflow.v2.KnowledgeOperationMetadata;
+import com.google.cloud.dialogflow.v2.ListDocumentsRequest;
+import com.google.cloud.dialogflow.v2.ListDocumentsResponse;
+import com.google.cloud.dialogflow.v2.ReloadDocumentRequest;
+import com.google.cloud.dialogflow.v2.UpdateDocumentRequest;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.longrunning.Operation;
+import com.google.protobuf.Empty;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link DocumentsStub}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (dialogflow.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of getDocument to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * DocumentsStubSettings.Builder documentsSettingsBuilder = DocumentsStubSettings.newBuilder();
+ * documentsSettingsBuilder
+ *     .getDocumentSettings()
+ *     .setRetrySettings(
+ *         documentsSettingsBuilder
+ *             .getDocumentSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * DocumentsStubSettings documentsSettings = documentsSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class DocumentsStubSettings extends StubSettings&lt;DocumentsStubSettings&gt; {
+  /** The default scopes of the service. */
+  private static final ImmutableList&lt;String&gt; DEFAULT_SERVICE_SCOPES =
+<span class="fc" id="L107">      ImmutableList.&lt;String&gt;builder()</span>
+<span class="fc" id="L108">          .add(&quot;https://www.googleapis.com/auth/cloud-platform&quot;)</span>
+<span class="fc" id="L109">          .add(&quot;https://www.googleapis.com/auth/dialogflow&quot;)</span>
+<span class="fc" id="L110">          .build();</span>
+
+  private final PagedCallSettings&lt;
+          ListDocumentsRequest, ListDocumentsResponse, ListDocumentsPagedResponse&gt;
+      listDocumentsSettings;
+  private final UnaryCallSettings&lt;GetDocumentRequest, Document&gt; getDocumentSettings;
+  private final UnaryCallSettings&lt;CreateDocumentRequest, Operation&gt; createDocumentSettings;
+  private final OperationCallSettings&lt;CreateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      createDocumentOperationSettings;
+  private final UnaryCallSettings&lt;ImportDocumentsRequest, Operation&gt; importDocumentsSettings;
+  private final OperationCallSettings&lt;
+          ImportDocumentsRequest, ImportDocumentsResponse, KnowledgeOperationMetadata&gt;
+      importDocumentsOperationSettings;
+  private final UnaryCallSettings&lt;DeleteDocumentRequest, Operation&gt; deleteDocumentSettings;
+  private final OperationCallSettings&lt;DeleteDocumentRequest, Empty, KnowledgeOperationMetadata&gt;
+      deleteDocumentOperationSettings;
+  private final UnaryCallSettings&lt;UpdateDocumentRequest, Operation&gt; updateDocumentSettings;
+  private final OperationCallSettings&lt;UpdateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      updateDocumentOperationSettings;
+  private final UnaryCallSettings&lt;ReloadDocumentRequest, Operation&gt; reloadDocumentSettings;
+  private final OperationCallSettings&lt;ReloadDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      reloadDocumentOperationSettings;
+  private final UnaryCallSettings&lt;ExportDocumentRequest, Operation&gt; exportDocumentSettings;
+  private final OperationCallSettings&lt;ExportDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      exportDocumentOperationSettings;
+
+  private static final PagedListDescriptor&lt;ListDocumentsRequest, ListDocumentsResponse, Document&gt;
+<span class="fc" id="L137">      LIST_DOCUMENTS_PAGE_STR_DESC =</span>
+<span class="fc" id="L138">          new PagedListDescriptor&lt;ListDocumentsRequest, ListDocumentsResponse, Document&gt;() {</span>
+            @Override
+            public String emptyToken() {
+<span class="fc" id="L141">              return &quot;&quot;;</span>
+            }
+
+            @Override
+            public ListDocumentsRequest injectToken(ListDocumentsRequest payload, String token) {
+<span class="nc" id="L146">              return ListDocumentsRequest.newBuilder(payload).setPageToken(token).build();</span>
+            }
+
+            @Override
+            public ListDocumentsRequest injectPageSize(ListDocumentsRequest payload, int pageSize) {
+<span class="nc" id="L151">              return ListDocumentsRequest.newBuilder(payload).setPageSize(pageSize).build();</span>
+            }
+
+            @Override
+            public Integer extractPageSize(ListDocumentsRequest payload) {
+<span class="nc" id="L156">              return payload.getPageSize();</span>
+            }
+
+            @Override
+            public String extractNextToken(ListDocumentsResponse payload) {
+<span class="fc" id="L161">              return payload.getNextPageToken();</span>
+            }
+
+            @Override
+            public Iterable&lt;Document&gt; extractResources(ListDocumentsResponse payload) {
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">              return payload.getDocumentsList() == null</span>
+<span class="nc" id="L167">                  ? ImmutableList.&lt;Document&gt;of()</span>
+<span class="fc" id="L168">                  : payload.getDocumentsList();</span>
+            }
+          };
+
+  private static final PagedListResponseFactory&lt;
+          ListDocumentsRequest, ListDocumentsResponse, ListDocumentsPagedResponse&gt;
+<span class="fc" id="L174">      LIST_DOCUMENTS_PAGE_STR_FACT =</span>
+          new PagedListResponseFactory&lt;
+<span class="fc" id="L176">              ListDocumentsRequest, ListDocumentsResponse, ListDocumentsPagedResponse&gt;() {</span>
+            @Override
+            public ApiFuture&lt;ListDocumentsPagedResponse&gt; getFuturePagedResponse(
+                UnaryCallable&lt;ListDocumentsRequest, ListDocumentsResponse&gt; callable,
+                ListDocumentsRequest request,
+                ApiCallContext context,
+                ApiFuture&lt;ListDocumentsResponse&gt; futureResponse) {
+<span class="fc" id="L183">              PageContext&lt;ListDocumentsRequest, ListDocumentsResponse, Document&gt; pageContext =</span>
+<span class="fc" id="L184">                  PageContext.create(callable, LIST_DOCUMENTS_PAGE_STR_DESC, request, context);</span>
+<span class="fc" id="L185">              return ListDocumentsPagedResponse.createAsync(pageContext, futureResponse);</span>
+            }
+          };
+
+  /** Returns the object with the settings used for calls to listDocuments. */
+  public PagedCallSettings&lt;ListDocumentsRequest, ListDocumentsResponse, ListDocumentsPagedResponse&gt;
+      listDocumentsSettings() {
+<span class="fc" id="L192">    return listDocumentsSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to getDocument. */
+  public UnaryCallSettings&lt;GetDocumentRequest, Document&gt; getDocumentSettings() {
+<span class="fc" id="L197">    return getDocumentSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to createDocument. */
+  public UnaryCallSettings&lt;CreateDocumentRequest, Operation&gt; createDocumentSettings() {
+<span class="fc" id="L202">    return createDocumentSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to createDocument. */
+  public OperationCallSettings&lt;CreateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      createDocumentOperationSettings() {
+<span class="fc" id="L208">    return createDocumentOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to importDocuments. */
+  public UnaryCallSettings&lt;ImportDocumentsRequest, Operation&gt; importDocumentsSettings() {
+<span class="fc" id="L213">    return importDocumentsSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to importDocuments. */
+  public OperationCallSettings&lt;
+          ImportDocumentsRequest, ImportDocumentsResponse, KnowledgeOperationMetadata&gt;
+      importDocumentsOperationSettings() {
+<span class="fc" id="L220">    return importDocumentsOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteDocument. */
+  public UnaryCallSettings&lt;DeleteDocumentRequest, Operation&gt; deleteDocumentSettings() {
+<span class="fc" id="L225">    return deleteDocumentSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteDocument. */
+  public OperationCallSettings&lt;DeleteDocumentRequest, Empty, KnowledgeOperationMetadata&gt;
+      deleteDocumentOperationSettings() {
+<span class="fc" id="L231">    return deleteDocumentOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateDocument. */
+  public UnaryCallSettings&lt;UpdateDocumentRequest, Operation&gt; updateDocumentSettings() {
+<span class="fc" id="L236">    return updateDocumentSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateDocument. */
+  public OperationCallSettings&lt;UpdateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      updateDocumentOperationSettings() {
+<span class="fc" id="L242">    return updateDocumentOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to reloadDocument. */
+  public UnaryCallSettings&lt;ReloadDocumentRequest, Operation&gt; reloadDocumentSettings() {
+<span class="fc" id="L247">    return reloadDocumentSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to reloadDocument. */
+  public OperationCallSettings&lt;ReloadDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      reloadDocumentOperationSettings() {
+<span class="fc" id="L253">    return reloadDocumentOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to exportDocument. */
+  public UnaryCallSettings&lt;ExportDocumentRequest, Operation&gt; exportDocumentSettings() {
+<span class="fc" id="L258">    return exportDocumentSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to exportDocument. */
+  public OperationCallSettings&lt;ExportDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      exportDocumentOperationSettings() {
+<span class="fc" id="L264">    return exportDocumentOperationSettings;</span>
+  }
+
+  public DocumentsStub createStub() throws IOException {
+<span class="fc" id="L268">    if (getTransportChannelProvider()</span>
+<span class="fc" id="L269">        .getTransportName()</span>
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">        .equals(GrpcTransportChannel.getGrpcTransportName())) {</span>
+<span class="fc" id="L271">      return GrpcDocumentsStub.create(this);</span>
+    }
+<span class="nc" id="L273">    throw new UnsupportedOperationException(</span>
+<span class="nc" id="L274">        String.format(</span>
+<span class="nc" id="L275">            &quot;Transport not supported: %s&quot;, getTransportChannelProvider().getTransportName()));</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L280">    return InstantiatingExecutorProvider.newBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="fc" id="L285">    return &quot;dialogflow.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default mTLS service endpoint. */
+  public static String getDefaultMtlsEndpoint() {
+<span class="fc" id="L290">    return &quot;dialogflow.mtls.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L295">    return DEFAULT_SERVICE_SCOPES;</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="fc" id="L300">    return GoogleCredentialsProvider.newBuilder()</span>
+<span class="fc" id="L301">        .setScopesToApply(DEFAULT_SERVICE_SCOPES)</span>
+<span class="fc" id="L302">        .setUseJwtAccessWithScope(true);</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="fc" id="L307">    return InstantiatingGrpcChannelProvider.newBuilder()</span>
+<span class="fc" id="L308">        .setMaxInboundMessageSize(Integer.MAX_VALUE);</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="fc" id="L312">    return defaultGrpcTransportProviderBuilder().build();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="fc" id="L317">    return ApiClientHeaderProvider.newBuilder()</span>
+<span class="fc" id="L318">        .setGeneratedLibToken(&quot;gapic&quot;, GaxProperties.getLibraryVersion(DocumentsStubSettings.class))</span>
+<span class="fc" id="L319">        .setTransportToken(</span>
+<span class="fc" id="L320">            GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L325">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L330">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L335">    return new Builder(this);</span>
+  }
+
+  protected DocumentsStubSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L339">    super(settingsBuilder);</span>
+
+<span class="fc" id="L341">    listDocumentsSettings = settingsBuilder.listDocumentsSettings().build();</span>
+<span class="fc" id="L342">    getDocumentSettings = settingsBuilder.getDocumentSettings().build();</span>
+<span class="fc" id="L343">    createDocumentSettings = settingsBuilder.createDocumentSettings().build();</span>
+<span class="fc" id="L344">    createDocumentOperationSettings = settingsBuilder.createDocumentOperationSettings().build();</span>
+<span class="fc" id="L345">    importDocumentsSettings = settingsBuilder.importDocumentsSettings().build();</span>
+<span class="fc" id="L346">    importDocumentsOperationSettings = settingsBuilder.importDocumentsOperationSettings().build();</span>
+<span class="fc" id="L347">    deleteDocumentSettings = settingsBuilder.deleteDocumentSettings().build();</span>
+<span class="fc" id="L348">    deleteDocumentOperationSettings = settingsBuilder.deleteDocumentOperationSettings().build();</span>
+<span class="fc" id="L349">    updateDocumentSettings = settingsBuilder.updateDocumentSettings().build();</span>
+<span class="fc" id="L350">    updateDocumentOperationSettings = settingsBuilder.updateDocumentOperationSettings().build();</span>
+<span class="fc" id="L351">    reloadDocumentSettings = settingsBuilder.reloadDocumentSettings().build();</span>
+<span class="fc" id="L352">    reloadDocumentOperationSettings = settingsBuilder.reloadDocumentOperationSettings().build();</span>
+<span class="fc" id="L353">    exportDocumentSettings = settingsBuilder.exportDocumentSettings().build();</span>
+<span class="fc" id="L354">    exportDocumentOperationSettings = settingsBuilder.exportDocumentOperationSettings().build();</span>
+<span class="fc" id="L355">  }</span>
+
+  /** Builder for DocumentsStubSettings. */
+  public static class Builder extends StubSettings.Builder&lt;DocumentsStubSettings, Builder&gt; {
+    private final ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders;
+    private final PagedCallSettings.Builder&lt;
+            ListDocumentsRequest, ListDocumentsResponse, ListDocumentsPagedResponse&gt;
+        listDocumentsSettings;
+    private final UnaryCallSettings.Builder&lt;GetDocumentRequest, Document&gt; getDocumentSettings;
+    private final UnaryCallSettings.Builder&lt;CreateDocumentRequest, Operation&gt;
+        createDocumentSettings;
+    private final OperationCallSettings.Builder&lt;
+            CreateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        createDocumentOperationSettings;
+    private final UnaryCallSettings.Builder&lt;ImportDocumentsRequest, Operation&gt;
+        importDocumentsSettings;
+    private final OperationCallSettings.Builder&lt;
+            ImportDocumentsRequest, ImportDocumentsResponse, KnowledgeOperationMetadata&gt;
+        importDocumentsOperationSettings;
+    private final UnaryCallSettings.Builder&lt;DeleteDocumentRequest, Operation&gt;
+        deleteDocumentSettings;
+    private final OperationCallSettings.Builder&lt;
+            DeleteDocumentRequest, Empty, KnowledgeOperationMetadata&gt;
+        deleteDocumentOperationSettings;
+    private final UnaryCallSettings.Builder&lt;UpdateDocumentRequest, Operation&gt;
+        updateDocumentSettings;
+    private final OperationCallSettings.Builder&lt;
+            UpdateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        updateDocumentOperationSettings;
+    private final UnaryCallSettings.Builder&lt;ReloadDocumentRequest, Operation&gt;
+        reloadDocumentSettings;
+    private final OperationCallSettings.Builder&lt;
+            ReloadDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        reloadDocumentOperationSettings;
+    private final UnaryCallSettings.Builder&lt;ExportDocumentRequest, Operation&gt;
+        exportDocumentSettings;
+    private final OperationCallSettings.Builder&lt;
+            ExportDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        exportDocumentOperationSettings;
+    private static final ImmutableMap&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt;
+        RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt; definitions =
+<span class="fc" id="L399">          ImmutableMap.builder();</span>
+<span class="fc" id="L400">      definitions.put(</span>
+          &quot;retry_policy_0_codes&quot;,
+<span class="fc" id="L402">          ImmutableSet.copyOf(Lists.&lt;StatusCode.Code&gt;newArrayList(StatusCode.Code.UNAVAILABLE)));</span>
+<span class="fc" id="L403">      RETRYABLE_CODE_DEFINITIONS = definitions.build();</span>
+    }
+
+    private static final ImmutableMap&lt;String, RetrySettings&gt; RETRY_PARAM_DEFINITIONS;
+
+    static {
+<span class="fc" id="L409">      ImmutableMap.Builder&lt;String, RetrySettings&gt; definitions = ImmutableMap.builder();</span>
+<span class="fc" id="L410">      RetrySettings settings = null;</span>
+      settings =
+<span class="fc" id="L412">          RetrySettings.newBuilder()</span>
+<span class="fc" id="L413">              .setInitialRetryDelay(Duration.ofMillis(100L))</span>
+<span class="fc" id="L414">              .setRetryDelayMultiplier(1.3)</span>
+<span class="fc" id="L415">              .setMaxRetryDelay(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L416">              .setInitialRpcTimeout(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L417">              .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L418">              .setMaxRpcTimeout(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L419">              .setTotalTimeout(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L420">              .build();</span>
+<span class="fc" id="L421">      definitions.put(&quot;retry_policy_0_params&quot;, settings);</span>
+<span class="fc" id="L422">      RETRY_PARAM_DEFINITIONS = definitions.build();</span>
+<span class="fc" id="L423">    }</span>
+
+    protected Builder() {
+<span class="nc" id="L426">      this(((ClientContext) null));</span>
+<span class="nc" id="L427">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="fc" id="L430">      super(clientContext);</span>
+
+<span class="fc" id="L432">      listDocumentsSettings = PagedCallSettings.newBuilder(LIST_DOCUMENTS_PAGE_STR_FACT);</span>
+<span class="fc" id="L433">      getDocumentSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L434">      createDocumentSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L435">      createDocumentOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L436">      importDocumentsSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L437">      importDocumentsOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L438">      deleteDocumentSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L439">      deleteDocumentOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L440">      updateDocumentSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L441">      updateDocumentOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L442">      reloadDocumentSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L443">      reloadDocumentOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L444">      exportDocumentSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L445">      exportDocumentOperationSettings = OperationCallSettings.newBuilder();</span>
+
+<span class="fc" id="L447">      unaryMethodSettingsBuilders =</span>
+<span class="fc" id="L448">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              listDocumentsSettings,
+              getDocumentSettings,
+              createDocumentSettings,
+              importDocumentsSettings,
+              deleteDocumentSettings,
+              updateDocumentSettings,
+              reloadDocumentSettings,
+              exportDocumentSettings);
+<span class="fc" id="L457">      initDefaults(this);</span>
+<span class="fc" id="L458">    }</span>
+
+    protected Builder(DocumentsStubSettings settings) {
+<span class="nc" id="L461">      super(settings);</span>
+
+<span class="nc" id="L463">      listDocumentsSettings = settings.listDocumentsSettings.toBuilder();</span>
+<span class="nc" id="L464">      getDocumentSettings = settings.getDocumentSettings.toBuilder();</span>
+<span class="nc" id="L465">      createDocumentSettings = settings.createDocumentSettings.toBuilder();</span>
+<span class="nc" id="L466">      createDocumentOperationSettings = settings.createDocumentOperationSettings.toBuilder();</span>
+<span class="nc" id="L467">      importDocumentsSettings = settings.importDocumentsSettings.toBuilder();</span>
+<span class="nc" id="L468">      importDocumentsOperationSettings = settings.importDocumentsOperationSettings.toBuilder();</span>
+<span class="nc" id="L469">      deleteDocumentSettings = settings.deleteDocumentSettings.toBuilder();</span>
+<span class="nc" id="L470">      deleteDocumentOperationSettings = settings.deleteDocumentOperationSettings.toBuilder();</span>
+<span class="nc" id="L471">      updateDocumentSettings = settings.updateDocumentSettings.toBuilder();</span>
+<span class="nc" id="L472">      updateDocumentOperationSettings = settings.updateDocumentOperationSettings.toBuilder();</span>
+<span class="nc" id="L473">      reloadDocumentSettings = settings.reloadDocumentSettings.toBuilder();</span>
+<span class="nc" id="L474">      reloadDocumentOperationSettings = settings.reloadDocumentOperationSettings.toBuilder();</span>
+<span class="nc" id="L475">      exportDocumentSettings = settings.exportDocumentSettings.toBuilder();</span>
+<span class="nc" id="L476">      exportDocumentOperationSettings = settings.exportDocumentOperationSettings.toBuilder();</span>
+
+<span class="nc" id="L478">      unaryMethodSettingsBuilders =</span>
+<span class="nc" id="L479">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              listDocumentsSettings,
+              getDocumentSettings,
+              createDocumentSettings,
+              importDocumentsSettings,
+              deleteDocumentSettings,
+              updateDocumentSettings,
+              reloadDocumentSettings,
+              exportDocumentSettings);
+<span class="nc" id="L488">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L491">      Builder builder = new Builder(((ClientContext) null));</span>
+
+<span class="fc" id="L493">      builder.setTransportChannelProvider(defaultTransportChannelProvider());</span>
+<span class="fc" id="L494">      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());</span>
+<span class="fc" id="L495">      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());</span>
+<span class="fc" id="L496">      builder.setEndpoint(getDefaultEndpoint());</span>
+<span class="fc" id="L497">      builder.setMtlsEndpoint(getDefaultMtlsEndpoint());</span>
+<span class="fc" id="L498">      builder.setSwitchToMtlsEndpointAllowed(true);</span>
+
+<span class="fc" id="L500">      return initDefaults(builder);</span>
+    }
+
+    private static Builder initDefaults(Builder builder) {
+<span class="fc" id="L504">      builder</span>
+<span class="fc" id="L505">          .listDocumentsSettings()</span>
+<span class="fc" id="L506">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L507">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L509">      builder</span>
+<span class="fc" id="L510">          .getDocumentSettings()</span>
+<span class="fc" id="L511">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L512">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L514">      builder</span>
+<span class="fc" id="L515">          .createDocumentSettings()</span>
+<span class="fc" id="L516">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L517">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L519">      builder</span>
+<span class="fc" id="L520">          .importDocumentsSettings()</span>
+<span class="fc" id="L521">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L522">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L524">      builder</span>
+<span class="fc" id="L525">          .deleteDocumentSettings()</span>
+<span class="fc" id="L526">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L527">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L529">      builder</span>
+<span class="fc" id="L530">          .updateDocumentSettings()</span>
+<span class="fc" id="L531">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L532">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L534">      builder</span>
+<span class="fc" id="L535">          .reloadDocumentSettings()</span>
+<span class="fc" id="L536">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L537">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L539">      builder</span>
+<span class="fc" id="L540">          .exportDocumentSettings()</span>
+<span class="fc" id="L541">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L542">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L544">      builder</span>
+<span class="fc" id="L545">          .createDocumentOperationSettings()</span>
+<span class="fc" id="L546">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L548">                  .&lt;CreateDocumentRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L549">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L550">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L551">                  .build())</span>
+<span class="fc" id="L552">          .setResponseTransformer(</span>
+<span class="fc" id="L553">              ProtoOperationTransformers.ResponseTransformer.create(Document.class))</span>
+<span class="fc" id="L554">          .setMetadataTransformer(</span>
+<span class="fc" id="L555">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  KnowledgeOperationMetadata.class))
+<span class="fc" id="L557">          .setPollingAlgorithm(</span>
+<span class="fc" id="L558">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L559">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L560">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L561">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L562">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L563">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L564">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L565">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L566">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L567">                      .build()));</span>
+
+<span class="fc" id="L569">      builder</span>
+<span class="fc" id="L570">          .importDocumentsOperationSettings()</span>
+<span class="fc" id="L571">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L573">                  .&lt;ImportDocumentsRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L574">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L575">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L576">                  .build())</span>
+<span class="fc" id="L577">          .setResponseTransformer(</span>
+<span class="fc" id="L578">              ProtoOperationTransformers.ResponseTransformer.create(ImportDocumentsResponse.class))</span>
+<span class="fc" id="L579">          .setMetadataTransformer(</span>
+<span class="fc" id="L580">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  KnowledgeOperationMetadata.class))
+<span class="fc" id="L582">          .setPollingAlgorithm(</span>
+<span class="fc" id="L583">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L584">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L585">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L586">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L587">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L588">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L589">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L590">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L591">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L592">                      .build()));</span>
+
+<span class="fc" id="L594">      builder</span>
+<span class="fc" id="L595">          .deleteDocumentOperationSettings()</span>
+<span class="fc" id="L596">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L598">                  .&lt;DeleteDocumentRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L599">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L600">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L601">                  .build())</span>
+<span class="fc" id="L602">          .setResponseTransformer(</span>
+<span class="fc" id="L603">              ProtoOperationTransformers.ResponseTransformer.create(Empty.class))</span>
+<span class="fc" id="L604">          .setMetadataTransformer(</span>
+<span class="fc" id="L605">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  KnowledgeOperationMetadata.class))
+<span class="fc" id="L607">          .setPollingAlgorithm(</span>
+<span class="fc" id="L608">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L609">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L610">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L611">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L612">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L613">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L614">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L615">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L616">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L617">                      .build()));</span>
+
+<span class="fc" id="L619">      builder</span>
+<span class="fc" id="L620">          .updateDocumentOperationSettings()</span>
+<span class="fc" id="L621">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L623">                  .&lt;UpdateDocumentRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L624">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L625">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L626">                  .build())</span>
+<span class="fc" id="L627">          .setResponseTransformer(</span>
+<span class="fc" id="L628">              ProtoOperationTransformers.ResponseTransformer.create(Document.class))</span>
+<span class="fc" id="L629">          .setMetadataTransformer(</span>
+<span class="fc" id="L630">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  KnowledgeOperationMetadata.class))
+<span class="fc" id="L632">          .setPollingAlgorithm(</span>
+<span class="fc" id="L633">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L634">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L635">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L636">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L637">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L638">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L639">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L640">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L641">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L642">                      .build()));</span>
+
+<span class="fc" id="L644">      builder</span>
+<span class="fc" id="L645">          .reloadDocumentOperationSettings()</span>
+<span class="fc" id="L646">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L648">                  .&lt;ReloadDocumentRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L649">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L650">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L651">                  .build())</span>
+<span class="fc" id="L652">          .setResponseTransformer(</span>
+<span class="fc" id="L653">              ProtoOperationTransformers.ResponseTransformer.create(Document.class))</span>
+<span class="fc" id="L654">          .setMetadataTransformer(</span>
+<span class="fc" id="L655">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  KnowledgeOperationMetadata.class))
+<span class="fc" id="L657">          .setPollingAlgorithm(</span>
+<span class="fc" id="L658">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L659">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L660">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L661">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L662">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L663">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L664">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L665">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L666">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L667">                      .build()));</span>
+
+<span class="fc" id="L669">      builder</span>
+<span class="fc" id="L670">          .exportDocumentOperationSettings()</span>
+<span class="fc" id="L671">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L673">                  .&lt;ExportDocumentRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L674">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L675">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L676">                  .build())</span>
+<span class="fc" id="L677">          .setResponseTransformer(</span>
+<span class="fc" id="L678">              ProtoOperationTransformers.ResponseTransformer.create(Document.class))</span>
+<span class="fc" id="L679">          .setMetadataTransformer(</span>
+<span class="fc" id="L680">              ProtoOperationTransformers.MetadataTransformer.create(</span>
+                  KnowledgeOperationMetadata.class))
+<span class="fc" id="L682">          .setPollingAlgorithm(</span>
+<span class="fc" id="L683">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L684">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L685">                      .setInitialRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L686">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L687">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L688">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L689">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L690">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L691">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L692">                      .build()));</span>
+
+<span class="fc" id="L694">      return builder;</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L704">      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);</span>
+<span class="nc" id="L705">      return this;</span>
+    }
+
+    public ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders() {
+<span class="nc" id="L709">      return unaryMethodSettingsBuilders;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listDocuments. */
+    public PagedCallSettings.Builder&lt;
+            ListDocumentsRequest, ListDocumentsResponse, ListDocumentsPagedResponse&gt;
+        listDocumentsSettings() {
+<span class="fc" id="L716">      return listDocumentsSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getDocument. */
+    public UnaryCallSettings.Builder&lt;GetDocumentRequest, Document&gt; getDocumentSettings() {
+<span class="fc" id="L721">      return getDocumentSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createDocument. */
+    public UnaryCallSettings.Builder&lt;CreateDocumentRequest, Operation&gt; createDocumentSettings() {
+<span class="fc" id="L726">      return createDocumentSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createDocument. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            CreateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        createDocumentOperationSettings() {
+<span class="fc" id="L735">      return createDocumentOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importDocuments. */
+    public UnaryCallSettings.Builder&lt;ImportDocumentsRequest, Operation&gt; importDocumentsSettings() {
+<span class="fc" id="L740">      return importDocumentsSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importDocuments. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            ImportDocumentsRequest, ImportDocumentsResponse, KnowledgeOperationMetadata&gt;
+        importDocumentsOperationSettings() {
+<span class="fc" id="L749">      return importDocumentsOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteDocument. */
+    public UnaryCallSettings.Builder&lt;DeleteDocumentRequest, Operation&gt; deleteDocumentSettings() {
+<span class="fc" id="L754">      return deleteDocumentSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteDocument. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;DeleteDocumentRequest, Empty, KnowledgeOperationMetadata&gt;
+        deleteDocumentOperationSettings() {
+<span class="fc" id="L762">      return deleteDocumentOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateDocument. */
+    public UnaryCallSettings.Builder&lt;UpdateDocumentRequest, Operation&gt; updateDocumentSettings() {
+<span class="fc" id="L767">      return updateDocumentSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateDocument. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            UpdateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        updateDocumentOperationSettings() {
+<span class="fc" id="L776">      return updateDocumentOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to reloadDocument. */
+    public UnaryCallSettings.Builder&lt;ReloadDocumentRequest, Operation&gt; reloadDocumentSettings() {
+<span class="fc" id="L781">      return reloadDocumentSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to reloadDocument. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            ReloadDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        reloadDocumentOperationSettings() {
+<span class="fc" id="L790">      return reloadDocumentOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to exportDocument. */
+    public UnaryCallSettings.Builder&lt;ExportDocumentRequest, Operation&gt; exportDocumentSettings() {
+<span class="fc" id="L795">      return exportDocumentSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to exportDocument. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            ExportDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        exportDocumentOperationSettings() {
+<span class="fc" id="L804">      return exportDocumentOperationSettings;</span>
+    }
+
+    @Override
+    public DocumentsStubSettings build() throws IOException {
+<span class="fc" id="L809">      return new DocumentsStubSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

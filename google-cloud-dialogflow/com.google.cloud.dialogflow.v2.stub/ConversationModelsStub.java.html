@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ConversationModelsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">ConversationModelsStub.java</span></div><h1>ConversationModelsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.ConversationModelsClient.ListConversationModelEvaluationsPagedResponse;
+import static com.google.cloud.dialogflow.v2.ConversationModelsClient.ListConversationModelsPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.ConversationModel;
+import com.google.cloud.dialogflow.v2.ConversationModelEvaluation;
+import com.google.cloud.dialogflow.v2.CreateConversationModelEvaluationOperationMetadata;
+import com.google.cloud.dialogflow.v2.CreateConversationModelEvaluationRequest;
+import com.google.cloud.dialogflow.v2.CreateConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.CreateConversationModelRequest;
+import com.google.cloud.dialogflow.v2.DeleteConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.DeleteConversationModelRequest;
+import com.google.cloud.dialogflow.v2.DeployConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.DeployConversationModelRequest;
+import com.google.cloud.dialogflow.v2.GetConversationModelEvaluationRequest;
+import com.google.cloud.dialogflow.v2.GetConversationModelRequest;
+import com.google.cloud.dialogflow.v2.ListConversationModelEvaluationsRequest;
+import com.google.cloud.dialogflow.v2.ListConversationModelEvaluationsResponse;
+import com.google.cloud.dialogflow.v2.ListConversationModelsRequest;
+import com.google.cloud.dialogflow.v2.ListConversationModelsResponse;
+import com.google.cloud.dialogflow.v2.UndeployConversationModelOperationMetadata;
+import com.google.cloud.dialogflow.v2.UndeployConversationModelRequest;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.OperationsStub;
+import com.google.protobuf.Empty;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Base stub class for the ConversationModels service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+<span class="fc" id="L55">public abstract class ConversationModelsStub implements BackgroundResource {</span>
+
+  public OperationsStub getOperationsStub() {
+<span class="nc" id="L58">    throw new UnsupportedOperationException(&quot;Not implemented: getOperationsStub()&quot;);</span>
+  }
+
+  public OperationCallable&lt;
+          CreateConversationModelRequest,
+          ConversationModel,
+          CreateConversationModelOperationMetadata&gt;
+      createConversationModelOperationCallable() {
+<span class="nc" id="L66">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: createConversationModelOperationCallable()&quot;);
+  }
+
+  public UnaryCallable&lt;CreateConversationModelRequest, Operation&gt;
+      createConversationModelCallable() {
+<span class="nc" id="L72">    throw new UnsupportedOperationException(&quot;Not implemented: createConversationModelCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;GetConversationModelRequest, ConversationModel&gt;
+      getConversationModelCallable() {
+<span class="nc" id="L77">    throw new UnsupportedOperationException(&quot;Not implemented: getConversationModelCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;ListConversationModelsRequest, ListConversationModelsPagedResponse&gt;
+      listConversationModelsPagedCallable() {
+<span class="nc" id="L82">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: listConversationModelsPagedCallable()&quot;);
+  }
+
+  public UnaryCallable&lt;ListConversationModelsRequest, ListConversationModelsResponse&gt;
+      listConversationModelsCallable() {
+<span class="nc" id="L88">    throw new UnsupportedOperationException(&quot;Not implemented: listConversationModelsCallable()&quot;);</span>
+  }
+
+  public OperationCallable&lt;
+          DeleteConversationModelRequest, Empty, DeleteConversationModelOperationMetadata&gt;
+      deleteConversationModelOperationCallable() {
+<span class="nc" id="L94">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: deleteConversationModelOperationCallable()&quot;);
+  }
+
+  public UnaryCallable&lt;DeleteConversationModelRequest, Operation&gt;
+      deleteConversationModelCallable() {
+<span class="nc" id="L100">    throw new UnsupportedOperationException(&quot;Not implemented: deleteConversationModelCallable()&quot;);</span>
+  }
+
+  public OperationCallable&lt;
+          DeployConversationModelRequest, Empty, DeployConversationModelOperationMetadata&gt;
+      deployConversationModelOperationCallable() {
+<span class="nc" id="L106">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: deployConversationModelOperationCallable()&quot;);
+  }
+
+  public UnaryCallable&lt;DeployConversationModelRequest, Operation&gt;
+      deployConversationModelCallable() {
+<span class="nc" id="L112">    throw new UnsupportedOperationException(&quot;Not implemented: deployConversationModelCallable()&quot;);</span>
+  }
+
+  public OperationCallable&lt;
+          UndeployConversationModelRequest, Empty, UndeployConversationModelOperationMetadata&gt;
+      undeployConversationModelOperationCallable() {
+<span class="nc" id="L118">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: undeployConversationModelOperationCallable()&quot;);
+  }
+
+  public UnaryCallable&lt;UndeployConversationModelRequest, Operation&gt;
+      undeployConversationModelCallable() {
+<span class="nc" id="L124">    throw new UnsupportedOperationException(&quot;Not implemented: undeployConversationModelCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+      getConversationModelEvaluationCallable() {
+<span class="nc" id="L129">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: getConversationModelEvaluationCallable()&quot;);
+  }
+
+  public UnaryCallable&lt;
+          ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsPagedResponse&gt;
+      listConversationModelEvaluationsPagedCallable() {
+<span class="nc" id="L136">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: listConversationModelEvaluationsPagedCallable()&quot;);
+  }
+
+  public UnaryCallable&lt;
+          ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsResponse&gt;
+      listConversationModelEvaluationsCallable() {
+<span class="nc" id="L143">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: listConversationModelEvaluationsCallable()&quot;);
+  }
+
+  public OperationCallable&lt;
+          CreateConversationModelEvaluationRequest,
+          ConversationModelEvaluation,
+          CreateConversationModelEvaluationOperationMetadata&gt;
+      createConversationModelEvaluationOperationCallable() {
+<span class="nc" id="L152">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: createConversationModelEvaluationOperationCallable()&quot;);
+  }
+
+  public UnaryCallable&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+      createConversationModelEvaluationCallable() {
+<span class="nc" id="L158">    throw new UnsupportedOperationException(</span>
+        &quot;Not implemented: createConversationModelEvaluationCallable()&quot;);
+  }
+
+  @Override
+  public abstract void close();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

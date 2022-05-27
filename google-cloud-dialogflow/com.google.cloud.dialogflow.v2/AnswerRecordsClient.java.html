@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AnswerRecordsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2</a> &gt; <span class="el_source">AnswerRecordsClient.java</span></div><h1>AnswerRecordsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.stub.AnswerRecordsStub;
+import com.google.cloud.dialogflow.v2.stub.AnswerRecordsStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.protobuf.FieldMask;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service for managing
+ * [AnswerRecords][google.cloud.dialogflow.v2.AnswerRecord].
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+ *   AnswerRecord answerRecord = AnswerRecord.newBuilder().build();
+ *   FieldMask updateMask = FieldMask.newBuilder().build();
+ *   AnswerRecord response = answerRecordsClient.updateAnswerRecord(answerRecord, updateMask);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the AnswerRecordsClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of AnswerRecordsSettings to
+ * create(). For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * AnswerRecordsSettings answerRecordsSettings =
+ *     AnswerRecordsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create(answerRecordsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * AnswerRecordsSettings answerRecordsSettings =
+ *     AnswerRecordsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create(answerRecordsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class AnswerRecordsClient implements BackgroundResource {
+  private final AnswerRecordsSettings settings;
+  private final AnswerRecordsStub stub;
+
+  /** Constructs an instance of AnswerRecordsClient with default settings. */
+  public static final AnswerRecordsClient create() throws IOException {
+<span class="nc" id="L111">    return create(AnswerRecordsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of AnswerRecordsClient, using the given settings. The channels are
+   * created based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final AnswerRecordsClient create(AnswerRecordsSettings settings)
+      throws IOException {
+<span class="fc" id="L120">    return new AnswerRecordsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of AnswerRecordsClient, using the given stub for making calls. This is
+   * for advanced usage - prefer using create(AnswerRecordsSettings).
+   */
+  public static final AnswerRecordsClient create(AnswerRecordsStub stub) {
+<span class="nc" id="L128">    return new AnswerRecordsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of AnswerRecordsClient, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+<span class="fc" id="L136">  protected AnswerRecordsClient(AnswerRecordsSettings settings) throws IOException {</span>
+<span class="fc" id="L137">    this.settings = settings;</span>
+<span class="fc" id="L138">    this.stub = ((AnswerRecordsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L139">  }</span>
+
+<span class="nc" id="L141">  protected AnswerRecordsClient(AnswerRecordsStub stub) {</span>
+<span class="nc" id="L142">    this.settings = null;</span>
+<span class="nc" id="L143">    this.stub = stub;</span>
+<span class="nc" id="L144">  }</span>
+
+  public final AnswerRecordsSettings getSettings() {
+<span class="nc" id="L147">    return settings;</span>
+  }
+
+  public AnswerRecordsStub getStub() {
+<span class="nc" id="L151">    return stub;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all answer records in the specified project in reverse chronological order.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   for (AnswerRecord element : answerRecordsClient.listAnswerRecords(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list all answer records for in reverse chronological
+   *     order. Format: `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListAnswerRecordsPagedResponse listAnswerRecords(LocationName parent) {
+    ListAnswerRecordsRequest request =
+<span class="fc" id="L177">        ListAnswerRecordsRequest.newBuilder()</span>
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L179">            .build();</span>
+<span class="fc" id="L180">    return listAnswerRecords(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all answer records in the specified project in reverse chronological order.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+   *   ProjectName parent = ProjectName.of(&quot;[PROJECT]&quot;);
+   *   for (AnswerRecord element : answerRecordsClient.listAnswerRecords(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list all answer records for in reverse chronological
+   *     order. Format: `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListAnswerRecordsPagedResponse listAnswerRecords(ProjectName parent) {
+    ListAnswerRecordsRequest request =
+<span class="fc" id="L206">        ListAnswerRecordsRequest.newBuilder()</span>
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L208">            .build();</span>
+<span class="fc" id="L209">    return listAnswerRecords(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all answer records in the specified project in reverse chronological order.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+   *   String parent = ProjectName.of(&quot;[PROJECT]&quot;).toString();
+   *   for (AnswerRecord element : answerRecordsClient.listAnswerRecords(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list all answer records for in reverse chronological
+   *     order. Format: `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListAnswerRecordsPagedResponse listAnswerRecords(String parent) {
+    ListAnswerRecordsRequest request =
+<span class="fc" id="L235">        ListAnswerRecordsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L236">    return listAnswerRecords(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all answer records in the specified project in reverse chronological order.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+   *   ListAnswerRecordsRequest request =
+   *       ListAnswerRecordsRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setFilter(&quot;filter-1274492040&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (AnswerRecord element : answerRecordsClient.listAnswerRecords(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListAnswerRecordsPagedResponse listAnswerRecords(ListAnswerRecordsRequest request) {
+<span class="fc" id="L266">    return listAnswerRecordsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all answer records in the specified project in reverse chronological order.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+   *   ListAnswerRecordsRequest request =
+   *       ListAnswerRecordsRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setFilter(&quot;filter-1274492040&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;AnswerRecord&gt; future =
+   *       answerRecordsClient.listAnswerRecordsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (AnswerRecord element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListAnswerRecordsRequest, ListAnswerRecordsPagedResponse&gt;
+      listAnswerRecordsPagedCallable() {
+<span class="fc" id="L297">    return stub.listAnswerRecordsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all answer records in the specified project in reverse chronological order.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+   *   ListAnswerRecordsRequest request =
+   *       ListAnswerRecordsRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setFilter(&quot;filter-1274492040&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListAnswerRecordsResponse response =
+   *         answerRecordsClient.listAnswerRecordsCallable().call(request);
+   *     for (AnswerRecord element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse&gt;
+      listAnswerRecordsCallable() {
+<span class="nc" id="L335">    return stub.listAnswerRecordsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified answer record.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+   *   AnswerRecord answerRecord = AnswerRecord.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   AnswerRecord response = answerRecordsClient.updateAnswerRecord(answerRecord, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param answerRecord Required. Answer record to update.
+   * @param updateMask Required. The mask to control which fields get updated.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final AnswerRecord updateAnswerRecord(AnswerRecord answerRecord, FieldMask updateMask) {
+    UpdateAnswerRecordRequest request =
+<span class="fc" id="L360">        UpdateAnswerRecordRequest.newBuilder()</span>
+<span class="fc" id="L361">            .setAnswerRecord(answerRecord)</span>
+<span class="fc" id="L362">            .setUpdateMask(updateMask)</span>
+<span class="fc" id="L363">            .build();</span>
+<span class="fc" id="L364">    return updateAnswerRecord(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified answer record.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+   *   UpdateAnswerRecordRequest request =
+   *       UpdateAnswerRecordRequest.newBuilder()
+   *           .setAnswerRecord(AnswerRecord.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   AnswerRecord response = answerRecordsClient.updateAnswerRecord(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final AnswerRecord updateAnswerRecord(UpdateAnswerRecordRequest request) {
+<span class="fc" id="L390">    return updateAnswerRecordCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified answer record.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AnswerRecordsClient answerRecordsClient = AnswerRecordsClient.create()) {
+   *   UpdateAnswerRecordRequest request =
+   *       UpdateAnswerRecordRequest.newBuilder()
+   *           .setAnswerRecord(AnswerRecord.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;AnswerRecord&gt; future =
+   *       answerRecordsClient.updateAnswerRecordCallable().futureCall(request);
+   *   // Do something.
+   *   AnswerRecord response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateAnswerRecordRequest, AnswerRecord&gt; updateAnswerRecordCallable() {
+<span class="fc" id="L416">    return stub.updateAnswerRecordCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L421">    stub.close();</span>
+<span class="fc" id="L422">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L426">    stub.shutdown();</span>
+<span class="nc" id="L427">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L431">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L436">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L441">    stub.shutdownNow();</span>
+<span class="nc" id="L442">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L446">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListAnswerRecordsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListAnswerRecordsRequest,
+          ListAnswerRecordsResponse,
+          AnswerRecord,
+          ListAnswerRecordsPage,
+          ListAnswerRecordsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListAnswerRecordsPagedResponse&gt; createAsync(
+        PageContext&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse, AnswerRecord&gt; context,
+        ApiFuture&lt;ListAnswerRecordsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListAnswerRecordsPage&gt; futurePage =
+<span class="fc" id="L461">          ListAnswerRecordsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L462">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L464">          input -&gt; new ListAnswerRecordsPagedResponse(input),</span>
+<span class="fc" id="L465">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListAnswerRecordsPagedResponse(ListAnswerRecordsPage page) {
+<span class="fc" id="L469">      super(page, ListAnswerRecordsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L470">    }</span>
+  }
+
+  public static class ListAnswerRecordsPage
+      extends AbstractPage&lt;
+          ListAnswerRecordsRequest,
+          ListAnswerRecordsResponse,
+          AnswerRecord,
+          ListAnswerRecordsPage&gt; {
+
+    private ListAnswerRecordsPage(
+        PageContext&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse, AnswerRecord&gt; context,
+        ListAnswerRecordsResponse response) {
+<span class="fc" id="L483">      super(context, response);</span>
+<span class="fc" id="L484">    }</span>
+
+    private static ListAnswerRecordsPage createEmptyPage() {
+<span class="fc" id="L487">      return new ListAnswerRecordsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListAnswerRecordsPage createPage(
+        PageContext&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse, AnswerRecord&gt; context,
+        ListAnswerRecordsResponse response) {
+<span class="fc" id="L494">      return new ListAnswerRecordsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListAnswerRecordsPage&gt; createPageAsync(
+        PageContext&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse, AnswerRecord&gt; context,
+        ApiFuture&lt;ListAnswerRecordsResponse&gt; futureResponse) {
+<span class="fc" id="L501">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListAnswerRecordsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListAnswerRecordsRequest,
+          ListAnswerRecordsResponse,
+          AnswerRecord,
+          ListAnswerRecordsPage,
+          ListAnswerRecordsFixedSizeCollection&gt; {
+
+    private ListAnswerRecordsFixedSizeCollection(
+        List&lt;ListAnswerRecordsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L515">      super(pages, collectionSize);</span>
+<span class="fc" id="L516">    }</span>
+
+    private static ListAnswerRecordsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L519">      return new ListAnswerRecordsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListAnswerRecordsFixedSizeCollection createCollection(
+        List&lt;ListAnswerRecordsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L525">      return new ListAnswerRecordsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,1056 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ConversationDatasetsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2</a> &gt; <span class="el_source">ConversationDatasetsClient.java</span></div><h1>ConversationDatasetsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.stub.ConversationDatasetsStub;
+import com.google.cloud.dialogflow.v2.stub.ConversationDatasetsStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
+import com.google.protobuf.Empty;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Conversation datasets.
+ *
+ * &lt;p&gt;Conversation datasets contain raw conversation files and their customizable metadata that can
+ * be used for model training.
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (ConversationDatasetsClient conversationDatasetsClient =
+ *     ConversationDatasetsClient.create()) {
+ *   ConversationDatasetName name =
+ *       ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;);
+ *   ConversationDataset response = conversationDatasetsClient.getConversationDataset(name);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the ConversationDatasetsClient object to clean up
+ * resources such as threads. In the example above, try-with-resources is used, which automatically
+ * calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of ConversationDatasetsSettings
+ * to create(). For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ConversationDatasetsSettings conversationDatasetsSettings =
+ *     ConversationDatasetsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * ConversationDatasetsClient conversationDatasetsClient =
+ *     ConversationDatasetsClient.create(conversationDatasetsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ConversationDatasetsSettings conversationDatasetsSettings =
+ *     ConversationDatasetsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * ConversationDatasetsClient conversationDatasetsClient =
+ *     ConversationDatasetsClient.create(conversationDatasetsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ConversationDatasetsClient implements BackgroundResource {
+  private final ConversationDatasetsSettings settings;
+  private final ConversationDatasetsStub stub;
+  private final OperationsClient operationsClient;
+
+  /** Constructs an instance of ConversationDatasetsClient with default settings. */
+  public static final ConversationDatasetsClient create() throws IOException {
+<span class="nc" id="L122">    return create(ConversationDatasetsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of ConversationDatasetsClient, using the given settings. The channels
+   * are created based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final ConversationDatasetsClient create(ConversationDatasetsSettings settings)
+      throws IOException {
+<span class="fc" id="L131">    return new ConversationDatasetsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of ConversationDatasetsClient, using the given stub for making calls.
+   * This is for advanced usage - prefer using create(ConversationDatasetsSettings).
+   */
+  public static final ConversationDatasetsClient create(ConversationDatasetsStub stub) {
+<span class="nc" id="L139">    return new ConversationDatasetsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of ConversationDatasetsClient, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+<span class="fc" id="L147">  protected ConversationDatasetsClient(ConversationDatasetsSettings settings) throws IOException {</span>
+<span class="fc" id="L148">    this.settings = settings;</span>
+<span class="fc" id="L149">    this.stub = ((ConversationDatasetsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L150">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="fc" id="L151">  }</span>
+
+<span class="nc" id="L153">  protected ConversationDatasetsClient(ConversationDatasetsStub stub) {</span>
+<span class="nc" id="L154">    this.settings = null;</span>
+<span class="nc" id="L155">    this.stub = stub;</span>
+<span class="nc" id="L156">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="nc" id="L157">  }</span>
+
+  public final ConversationDatasetsSettings getSettings() {
+<span class="nc" id="L160">    return settings;</span>
+  }
+
+  public ConversationDatasetsStub getStub() {
+<span class="nc" id="L164">    return stub;</span>
+  }
+
+  /**
+   * Returns the OperationsClient that can be used to query the status of a long-running operation
+   * returned by another API method call.
+   */
+  public final OperationsClient getOperationsClient() {
+<span class="nc" id="L172">    return operationsClient;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new conversation dataset.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [CreateConversationDatasetOperationMetadata][google.cloud.dialogflow.v2.CreateConversationDatasetOperationMetadata]
+   * - `response`: [ConversationDataset][google.cloud.dialogflow.v2.ConversationDataset]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   String parent = &quot;parent-995424086&quot;;
+   *   ConversationDataset conversationDataset = ConversationDataset.newBuilder().build();
+   *   ConversationDataset response =
+   *       conversationDatasetsClient
+   *           .createConversationDatasetAsync(parent, conversationDataset)
+   *           .get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to create conversation dataset for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`
+   * @param conversationDataset Required. The conversation dataset to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ConversationDataset, CreateConversationDatasetOperationMetadata&gt;
+      createConversationDatasetAsync(String parent, ConversationDataset conversationDataset) {
+    CreateConversationDatasetRequest request =
+<span class="fc" id="L211">        CreateConversationDatasetRequest.newBuilder()</span>
+<span class="fc" id="L212">            .setParent(parent)</span>
+<span class="fc" id="L213">            .setConversationDataset(conversationDataset)</span>
+<span class="fc" id="L214">            .build();</span>
+<span class="fc" id="L215">    return createConversationDatasetAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new conversation dataset.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [CreateConversationDatasetOperationMetadata][google.cloud.dialogflow.v2.CreateConversationDatasetOperationMetadata]
+   * - `response`: [ConversationDataset][google.cloud.dialogflow.v2.ConversationDataset]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   CreateConversationDatasetRequest request =
+   *       CreateConversationDatasetRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setConversationDataset(ConversationDataset.newBuilder().build())
+   *           .build();
+   *   ConversationDataset response =
+   *       conversationDatasetsClient.createConversationDatasetAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ConversationDataset, CreateConversationDatasetOperationMetadata&gt;
+      createConversationDatasetAsync(CreateConversationDatasetRequest request) {
+<span class="fc" id="L252">    return createConversationDatasetOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new conversation dataset.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [CreateConversationDatasetOperationMetadata][google.cloud.dialogflow.v2.CreateConversationDatasetOperationMetadata]
+   * - `response`: [ConversationDataset][google.cloud.dialogflow.v2.ConversationDataset]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   CreateConversationDatasetRequest request =
+   *       CreateConversationDatasetRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setConversationDataset(ConversationDataset.newBuilder().build())
+   *           .build();
+   *   OperationFuture&lt;ConversationDataset, CreateConversationDatasetOperationMetadata&gt; future =
+   *       conversationDatasetsClient
+   *           .createConversationDatasetOperationCallable()
+   *           .futureCall(request);
+   *   // Do something.
+   *   ConversationDataset response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          CreateConversationDatasetRequest,
+          ConversationDataset,
+          CreateConversationDatasetOperationMetadata&gt;
+      createConversationDatasetOperationCallable() {
+<span class="fc" id="L293">    return stub.createConversationDatasetOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new conversation dataset.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [CreateConversationDatasetOperationMetadata][google.cloud.dialogflow.v2.CreateConversationDatasetOperationMetadata]
+   * - `response`: [ConversationDataset][google.cloud.dialogflow.v2.ConversationDataset]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   CreateConversationDatasetRequest request =
+   *       CreateConversationDatasetRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setConversationDataset(ConversationDataset.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationDatasetsClient.createConversationDatasetCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateConversationDatasetRequest, Operation&gt;
+      createConversationDatasetCallable() {
+<span class="nc" id="L329">    return stub.createConversationDatasetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified conversation dataset.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   ConversationDatasetName name =
+   *       ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;);
+   *   ConversationDataset response = conversationDatasetsClient.getConversationDataset(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The conversation dataset to retrieve. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversationDatasets/&amp;lt;Conversation Dataset ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationDataset getConversationDataset(ConversationDatasetName name) {
+    GetConversationDatasetRequest request =
+<span class="fc" id="L355">        GetConversationDatasetRequest.newBuilder()</span>
+<span class="pc bpc" id="L356" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L357">            .build();</span>
+<span class="fc" id="L358">    return getConversationDataset(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified conversation dataset.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   String name =
+   *       ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *           .toString();
+   *   ConversationDataset response = conversationDatasetsClient.getConversationDataset(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The conversation dataset to retrieve. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversationDatasets/&amp;lt;Conversation Dataset ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationDataset getConversationDataset(String name) {
+    GetConversationDatasetRequest request =
+<span class="fc" id="L385">        GetConversationDatasetRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L386">    return getConversationDataset(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified conversation dataset.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   GetConversationDatasetRequest request =
+   *       GetConversationDatasetRequest.newBuilder()
+   *           .setName(
+   *               ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ConversationDataset response = conversationDatasetsClient.getConversationDataset(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationDataset getConversationDataset(GetConversationDatasetRequest request) {
+<span class="fc" id="L414">    return getConversationDatasetCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified conversation dataset.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   GetConversationDatasetRequest request =
+   *       GetConversationDatasetRequest.newBuilder()
+   *           .setName(
+   *               ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ApiFuture&lt;ConversationDataset&gt; future =
+   *       conversationDatasetsClient.getConversationDatasetCallable().futureCall(request);
+   *   // Do something.
+   *   ConversationDataset response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetConversationDatasetRequest, ConversationDataset&gt;
+      getConversationDatasetCallable() {
+<span class="fc" id="L443">    return stub.getConversationDatasetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation datasets in the specified project and location.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   for (ConversationDataset element :
+   *       conversationDatasetsClient.listConversationDatasets(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project and location name to list all conversation datasets for.
+   *     Format: `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationDatasetsPagedResponse listConversationDatasets(LocationName parent) {
+    ListConversationDatasetsRequest request =
+<span class="fc" id="L471">        ListConversationDatasetsRequest.newBuilder()</span>
+<span class="pc bpc" id="L472" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L473">            .build();</span>
+<span class="fc" id="L474">    return listConversationDatasets(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation datasets in the specified project and location.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   String parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString();
+   *   for (ConversationDataset element :
+   *       conversationDatasetsClient.listConversationDatasets(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project and location name to list all conversation datasets for.
+   *     Format: `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationDatasetsPagedResponse listConversationDatasets(String parent) {
+    ListConversationDatasetsRequest request =
+<span class="fc" id="L502">        ListConversationDatasetsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L503">    return listConversationDatasets(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation datasets in the specified project and location.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   ListConversationDatasetsRequest request =
+   *       ListConversationDatasetsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (ConversationDataset element :
+   *       conversationDatasetsClient.listConversationDatasets(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationDatasetsPagedResponse listConversationDatasets(
+      ListConversationDatasetsRequest request) {
+<span class="fc" id="L535">    return listConversationDatasetsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation datasets in the specified project and location.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   ListConversationDatasetsRequest request =
+   *       ListConversationDatasetsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;ConversationDataset&gt; future =
+   *       conversationDatasetsClient.listConversationDatasetsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (ConversationDataset element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListConversationDatasetsRequest, ListConversationDatasetsPagedResponse&gt;
+      listConversationDatasetsPagedCallable() {
+<span class="fc" id="L566">    return stub.listConversationDatasetsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation datasets in the specified project and location.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   ListConversationDatasetsRequest request =
+   *       ListConversationDatasetsRequest.newBuilder()
+   *           .setParent(LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListConversationDatasetsResponse response =
+   *         conversationDatasetsClient.listConversationDatasetsCallable().call(request);
+   *     for (ConversationDataset element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListConversationDatasetsRequest, ListConversationDatasetsResponse&gt;
+      listConversationDatasetsCallable() {
+<span class="nc" id="L604">    return stub.listConversationDatasetsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified conversation dataset.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeleteConversationDatasetOperationMetadata][google.cloud.dialogflow.v2.DeleteConversationDatasetOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   ConversationDatasetName name =
+   *       ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;);
+   *   conversationDatasetsClient.deleteConversationDatasetAsync(name).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The conversation dataset to delete. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversationDatasets/&amp;lt;Conversation Dataset ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, DeleteConversationDatasetOperationMetadata&gt;
+      deleteConversationDatasetAsync(ConversationDatasetName name) {
+    DeleteConversationDatasetRequest request =
+<span class="fc" id="L640">        DeleteConversationDatasetRequest.newBuilder()</span>
+<span class="pc bpc" id="L641" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L642">            .build();</span>
+<span class="fc" id="L643">    return deleteConversationDatasetAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified conversation dataset.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeleteConversationDatasetOperationMetadata][google.cloud.dialogflow.v2.DeleteConversationDatasetOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   String name =
+   *       ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *           .toString();
+   *   conversationDatasetsClient.deleteConversationDatasetAsync(name).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The conversation dataset to delete. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversationDatasets/&amp;lt;Conversation Dataset ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, DeleteConversationDatasetOperationMetadata&gt;
+      deleteConversationDatasetAsync(String name) {
+    DeleteConversationDatasetRequest request =
+<span class="fc" id="L680">        DeleteConversationDatasetRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L681">    return deleteConversationDatasetAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified conversation dataset.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeleteConversationDatasetOperationMetadata][google.cloud.dialogflow.v2.DeleteConversationDatasetOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   DeleteConversationDatasetRequest request =
+   *       DeleteConversationDatasetRequest.newBuilder()
+   *           .setName(
+   *               ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *                   .toString())
+   *           .build();
+   *   conversationDatasetsClient.deleteConversationDatasetAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, DeleteConversationDatasetOperationMetadata&gt;
+      deleteConversationDatasetAsync(DeleteConversationDatasetRequest request) {
+<span class="fc" id="L719">    return deleteConversationDatasetOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified conversation dataset.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeleteConversationDatasetOperationMetadata][google.cloud.dialogflow.v2.DeleteConversationDatasetOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   DeleteConversationDatasetRequest request =
+   *       DeleteConversationDatasetRequest.newBuilder()
+   *           .setName(
+   *               ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *                   .toString())
+   *           .build();
+   *   OperationFuture&lt;Empty, DeleteConversationDatasetOperationMetadata&gt; future =
+   *       conversationDatasetsClient
+   *           .deleteConversationDatasetOperationCallable()
+   *           .futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          DeleteConversationDatasetRequest, Empty, DeleteConversationDatasetOperationMetadata&gt;
+      deleteConversationDatasetOperationCallable() {
+<span class="fc" id="L760">    return stub.deleteConversationDatasetOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified conversation dataset.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeleteConversationDatasetOperationMetadata][google.cloud.dialogflow.v2.DeleteConversationDatasetOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   DeleteConversationDatasetRequest request =
+   *       DeleteConversationDatasetRequest.newBuilder()
+   *           .setName(
+   *               ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationDatasetsClient.deleteConversationDatasetCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteConversationDatasetRequest, Operation&gt;
+      deleteConversationDatasetCallable() {
+<span class="nc" id="L798">    return stub.deleteConversationDatasetCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Import data into the specified conversation dataset. Note that it is not allowed to import data
+   * to a conversation dataset that already has data in it.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [ImportConversationDataOperationMetadata][google.cloud.dialogflow.v2.ImportConversationDataOperationMetadata]
+   * - `response`:
+   * [ImportConversationDataOperationResponse][google.cloud.dialogflow.v2.ImportConversationDataOperationResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   ImportConversationDataRequest request =
+   *       ImportConversationDataRequest.newBuilder()
+   *           .setName(
+   *               ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *                   .toString())
+   *           .setInputConfig(InputConfig.newBuilder().build())
+   *           .build();
+   *   ImportConversationDataOperationResponse response =
+   *       conversationDatasetsClient.importConversationDataAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;
+          ImportConversationDataOperationResponse, ImportConversationDataOperationMetadata&gt;
+      importConversationDataAsync(ImportConversationDataRequest request) {
+<span class="fc" id="L840">    return importConversationDataOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Import data into the specified conversation dataset. Note that it is not allowed to import data
+   * to a conversation dataset that already has data in it.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [ImportConversationDataOperationMetadata][google.cloud.dialogflow.v2.ImportConversationDataOperationMetadata]
+   * - `response`:
+   * [ImportConversationDataOperationResponse][google.cloud.dialogflow.v2.ImportConversationDataOperationResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   ImportConversationDataRequest request =
+   *       ImportConversationDataRequest.newBuilder()
+   *           .setName(
+   *               ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *                   .toString())
+   *           .setInputConfig(InputConfig.newBuilder().build())
+   *           .build();
+   *   OperationFuture&lt;
+   *           ImportConversationDataOperationResponse, ImportConversationDataOperationMetadata&gt;
+   *       future =
+   *           conversationDatasetsClient
+   *               .importConversationDataOperationCallable()
+   *               .futureCall(request);
+   *   // Do something.
+   *   ImportConversationDataOperationResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          ImportConversationDataRequest,
+          ImportConversationDataOperationResponse,
+          ImportConversationDataOperationMetadata&gt;
+      importConversationDataOperationCallable() {
+<span class="fc" id="L887">    return stub.importConversationDataOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Import data into the specified conversation dataset. Note that it is not allowed to import data
+   * to a conversation dataset that already has data in it.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [ImportConversationDataOperationMetadata][google.cloud.dialogflow.v2.ImportConversationDataOperationMetadata]
+   * - `response`:
+   * [ImportConversationDataOperationResponse][google.cloud.dialogflow.v2.ImportConversationDataOperationResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationDatasetsClient conversationDatasetsClient =
+   *     ConversationDatasetsClient.create()) {
+   *   ImportConversationDataRequest request =
+   *       ImportConversationDataRequest.newBuilder()
+   *           .setName(
+   *               ConversationDatasetName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_DATASET]&quot;)
+   *                   .toString())
+   *           .setInputConfig(InputConfig.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationDatasetsClient.importConversationDataCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ImportConversationDataRequest, Operation&gt;
+      importConversationDataCallable() {
+<span class="nc" id="L927">    return stub.importConversationDataCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L932">    stub.close();</span>
+<span class="fc" id="L933">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L937">    stub.shutdown();</span>
+<span class="nc" id="L938">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L942">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L947">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L952">    stub.shutdownNow();</span>
+<span class="nc" id="L953">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L957">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListConversationDatasetsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListConversationDatasetsRequest,
+          ListConversationDatasetsResponse,
+          ConversationDataset,
+          ListConversationDatasetsPage,
+          ListConversationDatasetsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListConversationDatasetsPagedResponse&gt; createAsync(
+        PageContext&lt;
+                ListConversationDatasetsRequest,
+                ListConversationDatasetsResponse,
+                ConversationDataset&gt;
+            context,
+        ApiFuture&lt;ListConversationDatasetsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListConversationDatasetsPage&gt; futurePage =
+<span class="fc" id="L976">          ListConversationDatasetsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L977">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L979">          input -&gt; new ListConversationDatasetsPagedResponse(input),</span>
+<span class="fc" id="L980">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListConversationDatasetsPagedResponse(ListConversationDatasetsPage page) {
+<span class="fc" id="L984">      super(page, ListConversationDatasetsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L985">    }</span>
+  }
+
+  public static class ListConversationDatasetsPage
+      extends AbstractPage&lt;
+          ListConversationDatasetsRequest,
+          ListConversationDatasetsResponse,
+          ConversationDataset,
+          ListConversationDatasetsPage&gt; {
+
+    private ListConversationDatasetsPage(
+        PageContext&lt;
+                ListConversationDatasetsRequest,
+                ListConversationDatasetsResponse,
+                ConversationDataset&gt;
+            context,
+        ListConversationDatasetsResponse response) {
+<span class="fc" id="L1002">      super(context, response);</span>
+<span class="fc" id="L1003">    }</span>
+
+    private static ListConversationDatasetsPage createEmptyPage() {
+<span class="fc" id="L1006">      return new ListConversationDatasetsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListConversationDatasetsPage createPage(
+        PageContext&lt;
+                ListConversationDatasetsRequest,
+                ListConversationDatasetsResponse,
+                ConversationDataset&gt;
+            context,
+        ListConversationDatasetsResponse response) {
+<span class="fc" id="L1017">      return new ListConversationDatasetsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListConversationDatasetsPage&gt; createPageAsync(
+        PageContext&lt;
+                ListConversationDatasetsRequest,
+                ListConversationDatasetsResponse,
+                ConversationDataset&gt;
+            context,
+        ApiFuture&lt;ListConversationDatasetsResponse&gt; futureResponse) {
+<span class="fc" id="L1028">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListConversationDatasetsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListConversationDatasetsRequest,
+          ListConversationDatasetsResponse,
+          ConversationDataset,
+          ListConversationDatasetsPage,
+          ListConversationDatasetsFixedSizeCollection&gt; {
+
+    private ListConversationDatasetsFixedSizeCollection(
+        List&lt;ListConversationDatasetsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1042">      super(pages, collectionSize);</span>
+<span class="fc" id="L1043">    }</span>
+
+    private static ListConversationDatasetsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1046">      return new ListConversationDatasetsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListConversationDatasetsFixedSizeCollection createCollection(
+        List&lt;ListConversationDatasetsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1052">      return new ListConversationDatasetsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

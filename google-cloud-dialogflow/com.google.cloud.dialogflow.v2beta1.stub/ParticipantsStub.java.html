@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ParticipantsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1.stub</a> &gt; <span class="el_source">ParticipantsStub.java</span></div><h1>ParticipantsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1.stub;
+
+import static com.google.cloud.dialogflow.v2beta1.ParticipantsClient.ListParticipantsPagedResponse;
+import static com.google.cloud.dialogflow.v2beta1.ParticipantsClient.ListSuggestionsPagedResponse;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2beta1.AnalyzeContentRequest;
+import com.google.cloud.dialogflow.v2beta1.AnalyzeContentResponse;
+import com.google.cloud.dialogflow.v2beta1.CompileSuggestionRequest;
+import com.google.cloud.dialogflow.v2beta1.CompileSuggestionResponse;
+import com.google.cloud.dialogflow.v2beta1.CreateParticipantRequest;
+import com.google.cloud.dialogflow.v2beta1.GetParticipantRequest;
+import com.google.cloud.dialogflow.v2beta1.ListParticipantsRequest;
+import com.google.cloud.dialogflow.v2beta1.ListParticipantsResponse;
+import com.google.cloud.dialogflow.v2beta1.ListSuggestionsRequest;
+import com.google.cloud.dialogflow.v2beta1.ListSuggestionsResponse;
+import com.google.cloud.dialogflow.v2beta1.Participant;
+import com.google.cloud.dialogflow.v2beta1.StreamingAnalyzeContentRequest;
+import com.google.cloud.dialogflow.v2beta1.StreamingAnalyzeContentResponse;
+import com.google.cloud.dialogflow.v2beta1.SuggestArticlesRequest;
+import com.google.cloud.dialogflow.v2beta1.SuggestArticlesResponse;
+import com.google.cloud.dialogflow.v2beta1.SuggestFaqAnswersRequest;
+import com.google.cloud.dialogflow.v2beta1.SuggestFaqAnswersResponse;
+import com.google.cloud.dialogflow.v2beta1.SuggestSmartRepliesRequest;
+import com.google.cloud.dialogflow.v2beta1.SuggestSmartRepliesResponse;
+import com.google.cloud.dialogflow.v2beta1.UpdateParticipantRequest;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Base stub class for the Participants service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+<span class="fc" id="L56">public abstract class ParticipantsStub implements BackgroundResource {</span>
+
+  public UnaryCallable&lt;CreateParticipantRequest, Participant&gt; createParticipantCallable() {
+<span class="nc" id="L59">    throw new UnsupportedOperationException(&quot;Not implemented: createParticipantCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;GetParticipantRequest, Participant&gt; getParticipantCallable() {
+<span class="nc" id="L63">    throw new UnsupportedOperationException(&quot;Not implemented: getParticipantCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;ListParticipantsRequest, ListParticipantsPagedResponse&gt;
+      listParticipantsPagedCallable() {
+<span class="nc" id="L68">    throw new UnsupportedOperationException(&quot;Not implemented: listParticipantsPagedCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;ListParticipantsRequest, ListParticipantsResponse&gt;
+      listParticipantsCallable() {
+<span class="nc" id="L73">    throw new UnsupportedOperationException(&quot;Not implemented: listParticipantsCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;UpdateParticipantRequest, Participant&gt; updateParticipantCallable() {
+<span class="nc" id="L77">    throw new UnsupportedOperationException(&quot;Not implemented: updateParticipantCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;AnalyzeContentRequest, AnalyzeContentResponse&gt; analyzeContentCallable() {
+<span class="nc" id="L81">    throw new UnsupportedOperationException(&quot;Not implemented: analyzeContentCallable()&quot;);</span>
+  }
+
+  public BidiStreamingCallable&lt;StreamingAnalyzeContentRequest, StreamingAnalyzeContentResponse&gt;
+      streamingAnalyzeContentCallable() {
+<span class="nc" id="L86">    throw new UnsupportedOperationException(&quot;Not implemented: streamingAnalyzeContentCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;SuggestArticlesRequest, SuggestArticlesResponse&gt; suggestArticlesCallable() {
+<span class="nc" id="L90">    throw new UnsupportedOperationException(&quot;Not implemented: suggestArticlesCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;SuggestFaqAnswersRequest, SuggestFaqAnswersResponse&gt;
+      suggestFaqAnswersCallable() {
+<span class="nc" id="L95">    throw new UnsupportedOperationException(&quot;Not implemented: suggestFaqAnswersCallable()&quot;);</span>
+  }
+
+  public UnaryCallable&lt;SuggestSmartRepliesRequest, SuggestSmartRepliesResponse&gt;
+      suggestSmartRepliesCallable() {
+<span class="nc" id="L100">    throw new UnsupportedOperationException(&quot;Not implemented: suggestSmartRepliesCallable()&quot;);</span>
+  }
+
+  @Deprecated
+  public UnaryCallable&lt;ListSuggestionsRequest, ListSuggestionsPagedResponse&gt;
+      listSuggestionsPagedCallable() {
+<span class="nc" id="L106">    throw new UnsupportedOperationException(&quot;Not implemented: listSuggestionsPagedCallable()&quot;);</span>
+  }
+
+  @Deprecated
+  public UnaryCallable&lt;ListSuggestionsRequest, ListSuggestionsResponse&gt; listSuggestionsCallable() {
+<span class="nc" id="L111">    throw new UnsupportedOperationException(&quot;Not implemented: listSuggestionsCallable()&quot;);</span>
+  }
+
+  @Deprecated
+  public UnaryCallable&lt;CompileSuggestionRequest, CompileSuggestionResponse&gt;
+      compileSuggestionCallable() {
+<span class="nc" id="L117">    throw new UnsupportedOperationException(&quot;Not implemented: compileSuggestionCallable()&quot;);</span>
+  }
+
+  @Override
+  public abstract void close();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

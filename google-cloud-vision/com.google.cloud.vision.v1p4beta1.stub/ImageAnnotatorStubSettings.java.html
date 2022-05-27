@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ImageAnnotatorStubSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-vision</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.vision.v1p4beta1.stub</a> &gt; <span class="el_source">ImageAnnotatorStubSettings.java</span></div><h1>ImageAnnotatorStubSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.vision.v1p4beta1.stub;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.grpc.ProtoOperationTransformers;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StubSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateFilesRequest;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateFilesResponse;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateImagesRequest;
+import com.google.cloud.vision.v1p4beta1.AsyncBatchAnnotateImagesResponse;
+import com.google.cloud.vision.v1p4beta1.BatchAnnotateFilesRequest;
+import com.google.cloud.vision.v1p4beta1.BatchAnnotateFilesResponse;
+import com.google.cloud.vision.v1p4beta1.BatchAnnotateImagesRequest;
+import com.google.cloud.vision.v1p4beta1.BatchAnnotateImagesResponse;
+import com.google.cloud.vision.v1p4beta1.OperationMetadata;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.longrunning.Operation;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link ImageAnnotatorStub}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (vision.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of batchAnnotateImages to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ImageAnnotatorStubSettings.Builder imageAnnotatorSettingsBuilder =
+ *     ImageAnnotatorStubSettings.newBuilder();
+ * imageAnnotatorSettingsBuilder
+ *     .batchAnnotateImagesSettings()
+ *     .setRetrySettings(
+ *         imageAnnotatorSettingsBuilder
+ *             .batchAnnotateImagesSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * ImageAnnotatorStubSettings imageAnnotatorSettings = imageAnnotatorSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ImageAnnotatorStubSettings extends StubSettings&lt;ImageAnnotatorStubSettings&gt; {
+  /** The default scopes of the service. */
+<span class="fc" id="L95">  private static final ImmutableList&lt;String&gt; DEFAULT_SERVICE_SCOPES =</span>
+<span class="fc" id="L96">      ImmutableList.&lt;String&gt;builder()</span>
+<span class="fc" id="L97">          .add(&quot;https://www.googleapis.com/auth/cloud-platform&quot;)</span>
+<span class="fc" id="L98">          .add(&quot;https://www.googleapis.com/auth/cloud-vision&quot;)</span>
+<span class="fc" id="L99">          .build();</span>
+
+  private final UnaryCallSettings&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;
+      batchAnnotateImagesSettings;
+  private final UnaryCallSettings&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;
+      batchAnnotateFilesSettings;
+  private final UnaryCallSettings&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;
+      asyncBatchAnnotateImagesSettings;
+  private final OperationCallSettings&lt;
+          AsyncBatchAnnotateImagesRequest, AsyncBatchAnnotateImagesResponse, OperationMetadata&gt;
+      asyncBatchAnnotateImagesOperationSettings;
+  private final UnaryCallSettings&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;
+      asyncBatchAnnotateFilesSettings;
+  private final OperationCallSettings&lt;
+          AsyncBatchAnnotateFilesRequest, AsyncBatchAnnotateFilesResponse, OperationMetadata&gt;
+      asyncBatchAnnotateFilesOperationSettings;
+
+  /** Returns the object with the settings used for calls to batchAnnotateImages. */
+  public UnaryCallSettings&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;
+      batchAnnotateImagesSettings() {
+<span class="fc" id="L119">    return batchAnnotateImagesSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to batchAnnotateFiles. */
+  public UnaryCallSettings&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;
+      batchAnnotateFilesSettings() {
+<span class="fc" id="L125">    return batchAnnotateFilesSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to asyncBatchAnnotateImages. */
+  public UnaryCallSettings&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;
+      asyncBatchAnnotateImagesSettings() {
+<span class="fc" id="L131">    return asyncBatchAnnotateImagesSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to asyncBatchAnnotateImages. */
+  public OperationCallSettings&lt;
+          AsyncBatchAnnotateImagesRequest, AsyncBatchAnnotateImagesResponse, OperationMetadata&gt;
+      asyncBatchAnnotateImagesOperationSettings() {
+<span class="fc" id="L138">    return asyncBatchAnnotateImagesOperationSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to asyncBatchAnnotateFiles. */
+  public UnaryCallSettings&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;
+      asyncBatchAnnotateFilesSettings() {
+<span class="fc" id="L144">    return asyncBatchAnnotateFilesSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to asyncBatchAnnotateFiles. */
+  public OperationCallSettings&lt;
+          AsyncBatchAnnotateFilesRequest, AsyncBatchAnnotateFilesResponse, OperationMetadata&gt;
+      asyncBatchAnnotateFilesOperationSettings() {
+<span class="fc" id="L151">    return asyncBatchAnnotateFilesOperationSettings;</span>
+  }
+
+  @BetaApi(&quot;A restructuring of stub classes is planned, so this may break in the future&quot;)
+  public ImageAnnotatorStub createStub() throws IOException {
+<span class="fc" id="L156">    if (getTransportChannelProvider()</span>
+<span class="fc" id="L157">        .getTransportName()</span>
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">        .equals(GrpcTransportChannel.getGrpcTransportName())) {</span>
+<span class="fc" id="L159">      return GrpcImageAnnotatorStub.create(this);</span>
+    }
+<span class="nc" id="L161">    throw new UnsupportedOperationException(</span>
+<span class="nc" id="L162">        String.format(</span>
+<span class="nc" id="L163">            &quot;Transport not supported: %s&quot;, getTransportChannelProvider().getTransportName()));</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L168">    return InstantiatingExecutorProvider.newBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="fc" id="L173">    return &quot;vision.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default mTLS service endpoint. */
+  public static String getDefaultMtlsEndpoint() {
+<span class="fc" id="L178">    return &quot;vision.mtls.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L183">    return DEFAULT_SERVICE_SCOPES;</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="fc" id="L188">    return GoogleCredentialsProvider.newBuilder()</span>
+<span class="fc" id="L189">        .setScopesToApply(DEFAULT_SERVICE_SCOPES)</span>
+<span class="fc" id="L190">        .setUseJwtAccessWithScope(true);</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="fc" id="L195">    return InstantiatingGrpcChannelProvider.newBuilder()</span>
+<span class="fc" id="L196">        .setMaxInboundMessageSize(Integer.MAX_VALUE);</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="fc" id="L200">    return defaultGrpcTransportProviderBuilder().build();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="fc" id="L205">    return ApiClientHeaderProvider.newBuilder()</span>
+<span class="fc" id="L206">        .setGeneratedLibToken(</span>
+<span class="fc" id="L207">            &quot;gapic&quot;, GaxProperties.getLibraryVersion(ImageAnnotatorStubSettings.class))</span>
+<span class="fc" id="L208">        .setTransportToken(</span>
+<span class="fc" id="L209">            GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L214">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L219">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L224">    return new Builder(this);</span>
+  }
+
+  protected ImageAnnotatorStubSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L228">    super(settingsBuilder);</span>
+
+<span class="fc" id="L230">    batchAnnotateImagesSettings = settingsBuilder.batchAnnotateImagesSettings().build();</span>
+<span class="fc" id="L231">    batchAnnotateFilesSettings = settingsBuilder.batchAnnotateFilesSettings().build();</span>
+<span class="fc" id="L232">    asyncBatchAnnotateImagesSettings = settingsBuilder.asyncBatchAnnotateImagesSettings().build();</span>
+<span class="fc" id="L233">    asyncBatchAnnotateImagesOperationSettings =</span>
+<span class="fc" id="L234">        settingsBuilder.asyncBatchAnnotateImagesOperationSettings().build();</span>
+<span class="fc" id="L235">    asyncBatchAnnotateFilesSettings = settingsBuilder.asyncBatchAnnotateFilesSettings().build();</span>
+<span class="fc" id="L236">    asyncBatchAnnotateFilesOperationSettings =</span>
+<span class="fc" id="L237">        settingsBuilder.asyncBatchAnnotateFilesOperationSettings().build();</span>
+<span class="fc" id="L238">  }</span>
+
+  /** Builder for ImageAnnotatorStubSettings. */
+  public static class Builder extends StubSettings.Builder&lt;ImageAnnotatorStubSettings, Builder&gt; {
+    private final ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders;
+    private final UnaryCallSettings.Builder&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;
+        batchAnnotateImagesSettings;
+    private final UnaryCallSettings.Builder&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;
+        batchAnnotateFilesSettings;
+    private final UnaryCallSettings.Builder&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;
+        asyncBatchAnnotateImagesSettings;
+    private final OperationCallSettings.Builder&lt;
+            AsyncBatchAnnotateImagesRequest, AsyncBatchAnnotateImagesResponse, OperationMetadata&gt;
+        asyncBatchAnnotateImagesOperationSettings;
+    private final UnaryCallSettings.Builder&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;
+        asyncBatchAnnotateFilesSettings;
+    private final OperationCallSettings.Builder&lt;
+            AsyncBatchAnnotateFilesRequest, AsyncBatchAnnotateFilesResponse, OperationMetadata&gt;
+        asyncBatchAnnotateFilesOperationSettings;
+    private static final ImmutableMap&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt;
+        RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt; definitions =
+<span class="fc" id="L262">          ImmutableMap.builder();</span>
+<span class="fc" id="L263">      definitions.put(</span>
+<span class="fc" id="L264">          &quot;retry_policy_0_codes&quot;, ImmutableSet.copyOf(Lists.&lt;StatusCode.Code&gt;newArrayList()));</span>
+<span class="fc" id="L265">      RETRYABLE_CODE_DEFINITIONS = definitions.build();</span>
+    }
+
+    private static final ImmutableMap&lt;String, RetrySettings&gt; RETRY_PARAM_DEFINITIONS;
+
+    static {
+<span class="fc" id="L271">      ImmutableMap.Builder&lt;String, RetrySettings&gt; definitions = ImmutableMap.builder();</span>
+<span class="fc" id="L272">      RetrySettings settings = null;</span>
+      settings =
+<span class="fc" id="L274">          RetrySettings.newBuilder()</span>
+<span class="fc" id="L275">              .setInitialRetryDelay(Duration.ofMillis(100L))</span>
+<span class="fc" id="L276">              .setRetryDelayMultiplier(1.3)</span>
+<span class="fc" id="L277">              .setMaxRetryDelay(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L278">              .setInitialRpcTimeout(Duration.ofMillis(600000L))</span>
+<span class="fc" id="L279">              .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L280">              .setMaxRpcTimeout(Duration.ofMillis(600000L))</span>
+<span class="fc" id="L281">              .setTotalTimeout(Duration.ofMillis(600000L))</span>
+<span class="fc" id="L282">              .build();</span>
+<span class="fc" id="L283">      definitions.put(&quot;retry_policy_0_params&quot;, settings);</span>
+<span class="fc" id="L284">      RETRY_PARAM_DEFINITIONS = definitions.build();</span>
+<span class="fc" id="L285">    }</span>
+
+    protected Builder() {
+<span class="nc" id="L288">      this(((ClientContext) null));</span>
+<span class="nc" id="L289">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="fc" id="L292">      super(clientContext);</span>
+
+<span class="fc" id="L294">      batchAnnotateImagesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L295">      batchAnnotateFilesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L296">      asyncBatchAnnotateImagesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L297">      asyncBatchAnnotateImagesOperationSettings = OperationCallSettings.newBuilder();</span>
+<span class="fc" id="L298">      asyncBatchAnnotateFilesSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L299">      asyncBatchAnnotateFilesOperationSettings = OperationCallSettings.newBuilder();</span>
+
+<span class="fc" id="L301">      unaryMethodSettingsBuilders =</span>
+<span class="fc" id="L302">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              batchAnnotateImagesSettings,
+              batchAnnotateFilesSettings,
+              asyncBatchAnnotateImagesSettings,
+              asyncBatchAnnotateFilesSettings);
+<span class="fc" id="L307">      initDefaults(this);</span>
+<span class="fc" id="L308">    }</span>
+
+    protected Builder(ImageAnnotatorStubSettings settings) {
+<span class="nc" id="L311">      super(settings);</span>
+
+<span class="nc" id="L313">      batchAnnotateImagesSettings = settings.batchAnnotateImagesSettings.toBuilder();</span>
+<span class="nc" id="L314">      batchAnnotateFilesSettings = settings.batchAnnotateFilesSettings.toBuilder();</span>
+<span class="nc" id="L315">      asyncBatchAnnotateImagesSettings = settings.asyncBatchAnnotateImagesSettings.toBuilder();</span>
+<span class="nc" id="L316">      asyncBatchAnnotateImagesOperationSettings =</span>
+<span class="nc" id="L317">          settings.asyncBatchAnnotateImagesOperationSettings.toBuilder();</span>
+<span class="nc" id="L318">      asyncBatchAnnotateFilesSettings = settings.asyncBatchAnnotateFilesSettings.toBuilder();</span>
+<span class="nc" id="L319">      asyncBatchAnnotateFilesOperationSettings =</span>
+<span class="nc" id="L320">          settings.asyncBatchAnnotateFilesOperationSettings.toBuilder();</span>
+
+<span class="nc" id="L322">      unaryMethodSettingsBuilders =</span>
+<span class="nc" id="L323">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              batchAnnotateImagesSettings,
+              batchAnnotateFilesSettings,
+              asyncBatchAnnotateImagesSettings,
+              asyncBatchAnnotateFilesSettings);
+<span class="nc" id="L328">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L331">      Builder builder = new Builder(((ClientContext) null));</span>
+
+<span class="fc" id="L333">      builder.setTransportChannelProvider(defaultTransportChannelProvider());</span>
+<span class="fc" id="L334">      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());</span>
+<span class="fc" id="L335">      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());</span>
+<span class="fc" id="L336">      builder.setEndpoint(getDefaultEndpoint());</span>
+<span class="fc" id="L337">      builder.setMtlsEndpoint(getDefaultMtlsEndpoint());</span>
+<span class="fc" id="L338">      builder.setSwitchToMtlsEndpointAllowed(true);</span>
+
+<span class="fc" id="L340">      return initDefaults(builder);</span>
+    }
+
+    private static Builder initDefaults(Builder builder) {
+<span class="fc" id="L344">      builder</span>
+<span class="fc" id="L345">          .batchAnnotateImagesSettings()</span>
+<span class="fc" id="L346">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L347">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L349">      builder</span>
+<span class="fc" id="L350">          .batchAnnotateFilesSettings()</span>
+<span class="fc" id="L351">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L352">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L354">      builder</span>
+<span class="fc" id="L355">          .asyncBatchAnnotateImagesSettings()</span>
+<span class="fc" id="L356">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L357">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L359">      builder</span>
+<span class="fc" id="L360">          .asyncBatchAnnotateFilesSettings()</span>
+<span class="fc" id="L361">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L362">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L364">      builder</span>
+<span class="fc" id="L365">          .asyncBatchAnnotateImagesOperationSettings()</span>
+<span class="fc" id="L366">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L368">                  .&lt;AsyncBatchAnnotateImagesRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L369">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L370">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L371">                  .build())</span>
+<span class="fc" id="L372">          .setResponseTransformer(</span>
+<span class="fc" id="L373">              ProtoOperationTransformers.ResponseTransformer.create(</span>
+                  AsyncBatchAnnotateImagesResponse.class))
+<span class="fc" id="L375">          .setMetadataTransformer(</span>
+<span class="fc" id="L376">              ProtoOperationTransformers.MetadataTransformer.create(OperationMetadata.class))</span>
+<span class="fc" id="L377">          .setPollingAlgorithm(</span>
+<span class="fc" id="L378">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L379">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L380">                      .setInitialRetryDelay(Duration.ofMillis(500L))</span>
+<span class="fc" id="L381">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L382">                      .setMaxRetryDelay(Duration.ofMillis(5000L))</span>
+<span class="fc" id="L383">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L384">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L385">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L386">                      .setTotalTimeout(Duration.ofMillis(300000L))</span>
+<span class="fc" id="L387">                      .build()));</span>
+
+<span class="fc" id="L389">      builder</span>
+<span class="fc" id="L390">          .asyncBatchAnnotateFilesOperationSettings()</span>
+<span class="fc" id="L391">          .setInitialCallSettings(</span>
+              UnaryCallSettings
+<span class="fc" id="L393">                  .&lt;AsyncBatchAnnotateFilesRequest, OperationSnapshot&gt;newUnaryCallSettingsBuilder()</span>
+<span class="fc" id="L394">                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L395">                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;))</span>
+<span class="fc" id="L396">                  .build())</span>
+<span class="fc" id="L397">          .setResponseTransformer(</span>
+<span class="fc" id="L398">              ProtoOperationTransformers.ResponseTransformer.create(</span>
+                  AsyncBatchAnnotateFilesResponse.class))
+<span class="fc" id="L400">          .setMetadataTransformer(</span>
+<span class="fc" id="L401">              ProtoOperationTransformers.MetadataTransformer.create(OperationMetadata.class))</span>
+<span class="fc" id="L402">          .setPollingAlgorithm(</span>
+<span class="fc" id="L403">              OperationTimedPollAlgorithm.create(</span>
+<span class="fc" id="L404">                  RetrySettings.newBuilder()</span>
+<span class="fc" id="L405">                      .setInitialRetryDelay(Duration.ofMillis(20000L))</span>
+<span class="fc" id="L406">                      .setRetryDelayMultiplier(1.5)</span>
+<span class="fc" id="L407">                      .setMaxRetryDelay(Duration.ofMillis(45000L))</span>
+<span class="fc" id="L408">                      .setInitialRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L409">                      .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L410">                      .setMaxRpcTimeout(Duration.ZERO)</span>
+<span class="fc" id="L411">                      .setTotalTimeout(Duration.ofMillis(86400000L))</span>
+<span class="fc" id="L412">                      .build()));</span>
+
+<span class="fc" id="L414">      return builder;</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L424">      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);</span>
+<span class="nc" id="L425">      return this;</span>
+    }
+
+    public ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders() {
+<span class="nc" id="L429">      return unaryMethodSettingsBuilders;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchAnnotateImages. */
+    public UnaryCallSettings.Builder&lt;BatchAnnotateImagesRequest, BatchAnnotateImagesResponse&gt;
+        batchAnnotateImagesSettings() {
+<span class="fc" id="L435">      return batchAnnotateImagesSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to batchAnnotateFiles. */
+    public UnaryCallSettings.Builder&lt;BatchAnnotateFilesRequest, BatchAnnotateFilesResponse&gt;
+        batchAnnotateFilesSettings() {
+<span class="fc" id="L441">      return batchAnnotateFilesSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to asyncBatchAnnotateImages. */
+    public UnaryCallSettings.Builder&lt;AsyncBatchAnnotateImagesRequest, Operation&gt;
+        asyncBatchAnnotateImagesSettings() {
+<span class="fc" id="L447">      return asyncBatchAnnotateImagesSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to asyncBatchAnnotateImages. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            AsyncBatchAnnotateImagesRequest, AsyncBatchAnnotateImagesResponse, OperationMetadata&gt;
+        asyncBatchAnnotateImagesOperationSettings() {
+<span class="fc" id="L456">      return asyncBatchAnnotateImagesOperationSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to asyncBatchAnnotateFiles. */
+    public UnaryCallSettings.Builder&lt;AsyncBatchAnnotateFilesRequest, Operation&gt;
+        asyncBatchAnnotateFilesSettings() {
+<span class="fc" id="L462">      return asyncBatchAnnotateFilesSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to asyncBatchAnnotateFiles. */
+    @BetaApi(
+        &quot;The surface for use by generated code is not stable yet and may change in the future.&quot;)
+    public OperationCallSettings.Builder&lt;
+            AsyncBatchAnnotateFilesRequest, AsyncBatchAnnotateFilesResponse, OperationMetadata&gt;
+        asyncBatchAnnotateFilesOperationSettings() {
+<span class="fc" id="L471">      return asyncBatchAnnotateFilesOperationSettings;</span>
+    }
+
+    @Override
+    public ImageAnnotatorStubSettings build() throws IOException {
+<span class="fc" id="L476">      return new ImageAnnotatorStubSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

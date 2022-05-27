@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcFulfillmentsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcFulfillmentsStub.java</span></div><h1>GrpcFulfillmentsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.Fulfillment;
+import com.google.cloud.dialogflow.v2.GetFulfillmentRequest;
+import com.google.cloud.dialogflow.v2.UpdateFulfillmentRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the Fulfillments service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcFulfillmentsStub extends FulfillmentsStub {
+  private static final MethodDescriptor&lt;GetFulfillmentRequest, Fulfillment&gt;
+      getFulfillmentMethodDescriptor =
+<span class="fc" id="L46">          MethodDescriptor.&lt;GetFulfillmentRequest, Fulfillment&gt;newBuilder()</span>
+<span class="fc" id="L47">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L48">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Fulfillments/GetFulfillment&quot;)</span>
+<span class="fc" id="L49">              .setRequestMarshaller(</span>
+<span class="fc" id="L50">                  ProtoUtils.marshaller(GetFulfillmentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L51">              .setResponseMarshaller(ProtoUtils.marshaller(Fulfillment.getDefaultInstance()))</span>
+<span class="fc" id="L52">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateFulfillmentRequest, Fulfillment&gt;
+<span class="fc" id="L55">      updateFulfillmentMethodDescriptor =</span>
+<span class="fc" id="L56">          MethodDescriptor.&lt;UpdateFulfillmentRequest, Fulfillment&gt;newBuilder()</span>
+<span class="fc" id="L57">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L58">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Fulfillments/UpdateFulfillment&quot;)</span>
+<span class="fc" id="L59">              .setRequestMarshaller(</span>
+<span class="fc" id="L60">                  ProtoUtils.marshaller(UpdateFulfillmentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L61">              .setResponseMarshaller(ProtoUtils.marshaller(Fulfillment.getDefaultInstance()))</span>
+<span class="fc" id="L62">              .build();</span>
+
+  private final UnaryCallable&lt;GetFulfillmentRequest, Fulfillment&gt; getFulfillmentCallable;
+  private final UnaryCallable&lt;UpdateFulfillmentRequest, Fulfillment&gt; updateFulfillmentCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcFulfillmentsStub create(FulfillmentsStubSettings settings)
+      throws IOException {
+<span class="fc" id="L73">    return new GrpcFulfillmentsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcFulfillmentsStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L77">    return new GrpcFulfillmentsStub(FulfillmentsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcFulfillmentsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L82">    return new GrpcFulfillmentsStub(</span>
+<span class="nc" id="L83">        FulfillmentsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcFulfillmentsStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcFulfillmentsStub(FulfillmentsStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L93">    this(settings, clientContext, new GrpcFulfillmentsCallableFactory());</span>
+<span class="fc" id="L94">  }</span>
+
+  /**
+   * Constructs an instance of GrpcFulfillmentsStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcFulfillmentsStub(
+      FulfillmentsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L105">      throws IOException {</span>
+<span class="fc" id="L106">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L107">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;GetFulfillmentRequest, Fulfillment&gt; getFulfillmentTransportSettings =
+<span class="fc" id="L110">        GrpcCallSettings.&lt;GetFulfillmentRequest, Fulfillment&gt;newBuilder()</span>
+<span class="fc" id="L111">            .setMethodDescriptor(getFulfillmentMethodDescriptor)</span>
+<span class="fc" id="L112">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L114">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L115">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L116">                  return params.build();</span>
+                })
+<span class="fc" id="L118">            .build();</span>
+    GrpcCallSettings&lt;UpdateFulfillmentRequest, Fulfillment&gt; updateFulfillmentTransportSettings =
+<span class="fc" id="L120">        GrpcCallSettings.&lt;UpdateFulfillmentRequest, Fulfillment&gt;newBuilder()</span>
+<span class="fc" id="L121">            .setMethodDescriptor(updateFulfillmentMethodDescriptor)</span>
+<span class="fc" id="L122">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L124">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L125">                  params.put(</span>
+<span class="fc" id="L126">                      &quot;fulfillment.name&quot;, String.valueOf(request.getFulfillment().getName()));</span>
+<span class="fc" id="L127">                  return params.build();</span>
+                })
+<span class="fc" id="L129">            .build();</span>
+
+<span class="fc" id="L131">    this.getFulfillmentCallable =</span>
+<span class="fc" id="L132">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L133">            getFulfillmentTransportSettings, settings.getFulfillmentSettings(), clientContext);</span>
+<span class="fc" id="L134">    this.updateFulfillmentCallable =</span>
+<span class="fc" id="L135">        callableFactory.createUnaryCallable(</span>
+            updateFulfillmentTransportSettings,
+<span class="fc" id="L137">            settings.updateFulfillmentSettings(),</span>
+            clientContext);
+
+<span class="fc" id="L140">    this.backgroundResources =</span>
+<span class="fc" id="L141">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L142">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L145">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetFulfillmentRequest, Fulfillment&gt; getFulfillmentCallable() {
+<span class="fc" id="L150">    return getFulfillmentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateFulfillmentRequest, Fulfillment&gt; updateFulfillmentCallable() {
+<span class="fc" id="L155">    return updateFulfillmentCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L161">      backgroundResources.close();</span>
+<span class="nc" id="L162">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L163">      throw e;</span>
+<span class="nc" id="L164">    } catch (Exception e) {</span>
+<span class="nc" id="L165">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L166">    }</span>
+<span class="fc" id="L167">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L171">    backgroundResources.shutdown();</span>
+<span class="nc" id="L172">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L176">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L181">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L186">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L187">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L191">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

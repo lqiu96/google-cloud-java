@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AnswerRecordsStubSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1.stub</a> &gt; <span class="el_source">AnswerRecordsStubSettings.java</span></div><h1>AnswerRecordsStubSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1.stub;
+
+import static com.google.cloud.dialogflow.v2beta1.AnswerRecordsClient.ListAnswerRecordsPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GaxProperties;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.GaxGrpcProperties;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.rpc.ApiCallContext;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.PagedListDescriptor;
+import com.google.api.gax.rpc.PagedListResponseFactory;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.StubSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2beta1.AnswerRecord;
+import com.google.cloud.dialogflow.v2beta1.GetAnswerRecordRequest;
+import com.google.cloud.dialogflow.v2beta1.ListAnswerRecordsRequest;
+import com.google.cloud.dialogflow.v2beta1.ListAnswerRecordsResponse;
+import com.google.cloud.dialogflow.v2beta1.UpdateAnswerRecordRequest;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link AnswerRecordsStub}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (dialogflow.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of getAnswerRecord to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * AnswerRecordsStubSettings.Builder answerRecordsSettingsBuilder =
+ *     AnswerRecordsStubSettings.newBuilder();
+ * answerRecordsSettingsBuilder
+ *     .getAnswerRecordSettings()
+ *     .setRetrySettings(
+ *         answerRecordsSettingsBuilder
+ *             .getAnswerRecordSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * AnswerRecordsStubSettings answerRecordsSettings = answerRecordsSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class AnswerRecordsStubSettings extends StubSettings&lt;AnswerRecordsStubSettings&gt; {
+  /** The default scopes of the service. */
+  private static final ImmutableList&lt;String&gt; DEFAULT_SERVICE_SCOPES =
+<span class="fc" id="L96">      ImmutableList.&lt;String&gt;builder()</span>
+<span class="fc" id="L97">          .add(&quot;https://www.googleapis.com/auth/cloud-platform&quot;)</span>
+<span class="fc" id="L98">          .add(&quot;https://www.googleapis.com/auth/dialogflow&quot;)</span>
+<span class="fc" id="L99">          .build();</span>
+
+  private final UnaryCallSettings&lt;GetAnswerRecordRequest, AnswerRecord&gt; getAnswerRecordSettings;
+  private final PagedCallSettings&lt;
+          ListAnswerRecordsRequest, ListAnswerRecordsResponse, ListAnswerRecordsPagedResponse&gt;
+      listAnswerRecordsSettings;
+  private final UnaryCallSettings&lt;UpdateAnswerRecordRequest, AnswerRecord&gt;
+      updateAnswerRecordSettings;
+
+  private static final PagedListDescriptor&lt;
+          ListAnswerRecordsRequest, ListAnswerRecordsResponse, AnswerRecord&gt;
+<span class="fc" id="L110">      LIST_ANSWER_RECORDS_PAGE_STR_DESC =</span>
+          new PagedListDescriptor&lt;
+<span class="fc" id="L112">              ListAnswerRecordsRequest, ListAnswerRecordsResponse, AnswerRecord&gt;() {</span>
+            @Override
+            public String emptyToken() {
+<span class="fc" id="L115">              return &quot;&quot;;</span>
+            }
+
+            @Override
+            public ListAnswerRecordsRequest injectToken(
+                ListAnswerRecordsRequest payload, String token) {
+<span class="nc" id="L121">              return ListAnswerRecordsRequest.newBuilder(payload).setPageToken(token).build();</span>
+            }
+
+            @Override
+            public ListAnswerRecordsRequest injectPageSize(
+                ListAnswerRecordsRequest payload, int pageSize) {
+<span class="nc" id="L127">              return ListAnswerRecordsRequest.newBuilder(payload).setPageSize(pageSize).build();</span>
+            }
+
+            @Override
+            public Integer extractPageSize(ListAnswerRecordsRequest payload) {
+<span class="nc" id="L132">              return payload.getPageSize();</span>
+            }
+
+            @Override
+            public String extractNextToken(ListAnswerRecordsResponse payload) {
+<span class="fc" id="L137">              return payload.getNextPageToken();</span>
+            }
+
+            @Override
+            public Iterable&lt;AnswerRecord&gt; extractResources(ListAnswerRecordsResponse payload) {
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">              return payload.getAnswerRecordsList() == null</span>
+<span class="nc" id="L143">                  ? ImmutableList.&lt;AnswerRecord&gt;of()</span>
+<span class="fc" id="L144">                  : payload.getAnswerRecordsList();</span>
+            }
+          };
+
+  private static final PagedListResponseFactory&lt;
+          ListAnswerRecordsRequest, ListAnswerRecordsResponse, ListAnswerRecordsPagedResponse&gt;
+<span class="fc" id="L150">      LIST_ANSWER_RECORDS_PAGE_STR_FACT =</span>
+          new PagedListResponseFactory&lt;
+              ListAnswerRecordsRequest,
+              ListAnswerRecordsResponse,
+<span class="fc" id="L154">              ListAnswerRecordsPagedResponse&gt;() {</span>
+            @Override
+            public ApiFuture&lt;ListAnswerRecordsPagedResponse&gt; getFuturePagedResponse(
+                UnaryCallable&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse&gt; callable,
+                ListAnswerRecordsRequest request,
+                ApiCallContext context,
+                ApiFuture&lt;ListAnswerRecordsResponse&gt; futureResponse) {
+              PageContext&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse, AnswerRecord&gt;
+<span class="fc" id="L162">                  pageContext =</span>
+<span class="fc" id="L163">                      PageContext.create(</span>
+<span class="fc" id="L164">                          callable, LIST_ANSWER_RECORDS_PAGE_STR_DESC, request, context);</span>
+<span class="fc" id="L165">              return ListAnswerRecordsPagedResponse.createAsync(pageContext, futureResponse);</span>
+            }
+          };
+
+  /**
+   * Returns the object with the settings used for calls to getAnswerRecord.
+   *
+   * @deprecated This method is deprecated and will be removed in the next major version update.
+   */
+  @Deprecated
+  public UnaryCallSettings&lt;GetAnswerRecordRequest, AnswerRecord&gt; getAnswerRecordSettings() {
+<span class="fc" id="L176">    return getAnswerRecordSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to listAnswerRecords. */
+  public PagedCallSettings&lt;
+          ListAnswerRecordsRequest, ListAnswerRecordsResponse, ListAnswerRecordsPagedResponse&gt;
+      listAnswerRecordsSettings() {
+<span class="fc" id="L183">    return listAnswerRecordsSettings;</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateAnswerRecord. */
+  public UnaryCallSettings&lt;UpdateAnswerRecordRequest, AnswerRecord&gt; updateAnswerRecordSettings() {
+<span class="fc" id="L188">    return updateAnswerRecordSettings;</span>
+  }
+
+  public AnswerRecordsStub createStub() throws IOException {
+<span class="fc" id="L192">    if (getTransportChannelProvider()</span>
+<span class="fc" id="L193">        .getTransportName()</span>
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">        .equals(GrpcTransportChannel.getGrpcTransportName())) {</span>
+<span class="fc" id="L195">      return GrpcAnswerRecordsStub.create(this);</span>
+    }
+<span class="nc" id="L197">    throw new UnsupportedOperationException(</span>
+<span class="nc" id="L198">        String.format(</span>
+<span class="nc" id="L199">            &quot;Transport not supported: %s&quot;, getTransportChannelProvider().getTransportName()));</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L204">    return InstantiatingExecutorProvider.newBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="fc" id="L209">    return &quot;dialogflow.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default mTLS service endpoint. */
+  public static String getDefaultMtlsEndpoint() {
+<span class="fc" id="L214">    return &quot;dialogflow.mtls.googleapis.com:443&quot;;</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L219">    return DEFAULT_SERVICE_SCOPES;</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="fc" id="L224">    return GoogleCredentialsProvider.newBuilder()</span>
+<span class="fc" id="L225">        .setScopesToApply(DEFAULT_SERVICE_SCOPES)</span>
+<span class="fc" id="L226">        .setUseJwtAccessWithScope(true);</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="fc" id="L231">    return InstantiatingGrpcChannelProvider.newBuilder()</span>
+<span class="fc" id="L232">        .setMaxInboundMessageSize(Integer.MAX_VALUE);</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="fc" id="L236">    return defaultGrpcTransportProviderBuilder().build();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="fc" id="L241">    return ApiClientHeaderProvider.newBuilder()</span>
+<span class="fc" id="L242">        .setGeneratedLibToken(</span>
+<span class="fc" id="L243">            &quot;gapic&quot;, GaxProperties.getLibraryVersion(AnswerRecordsStubSettings.class))</span>
+<span class="fc" id="L244">        .setTransportToken(</span>
+<span class="fc" id="L245">            GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L250">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L255">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L260">    return new Builder(this);</span>
+  }
+
+  protected AnswerRecordsStubSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L264">    super(settingsBuilder);</span>
+
+<span class="fc" id="L266">    getAnswerRecordSettings = settingsBuilder.getAnswerRecordSettings().build();</span>
+<span class="fc" id="L267">    listAnswerRecordsSettings = settingsBuilder.listAnswerRecordsSettings().build();</span>
+<span class="fc" id="L268">    updateAnswerRecordSettings = settingsBuilder.updateAnswerRecordSettings().build();</span>
+<span class="fc" id="L269">  }</span>
+
+  /** Builder for AnswerRecordsStubSettings. */
+  public static class Builder extends StubSettings.Builder&lt;AnswerRecordsStubSettings, Builder&gt; {
+    private final ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders;
+    private final UnaryCallSettings.Builder&lt;GetAnswerRecordRequest, AnswerRecord&gt;
+        getAnswerRecordSettings;
+    private final PagedCallSettings.Builder&lt;
+            ListAnswerRecordsRequest, ListAnswerRecordsResponse, ListAnswerRecordsPagedResponse&gt;
+        listAnswerRecordsSettings;
+    private final UnaryCallSettings.Builder&lt;UpdateAnswerRecordRequest, AnswerRecord&gt;
+        updateAnswerRecordSettings;
+    private static final ImmutableMap&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt;
+        RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder&lt;String, ImmutableSet&lt;StatusCode.Code&gt;&gt; definitions =
+<span class="fc" id="L286">          ImmutableMap.builder();</span>
+<span class="fc" id="L287">      definitions.put(</span>
+          &quot;retry_policy_0_codes&quot;,
+<span class="fc" id="L289">          ImmutableSet.copyOf(Lists.&lt;StatusCode.Code&gt;newArrayList(StatusCode.Code.UNAVAILABLE)));</span>
+<span class="fc" id="L290">      RETRYABLE_CODE_DEFINITIONS = definitions.build();</span>
+    }
+
+    private static final ImmutableMap&lt;String, RetrySettings&gt; RETRY_PARAM_DEFINITIONS;
+
+    static {
+<span class="fc" id="L296">      ImmutableMap.Builder&lt;String, RetrySettings&gt; definitions = ImmutableMap.builder();</span>
+<span class="fc" id="L297">      RetrySettings settings = null;</span>
+      settings =
+<span class="fc" id="L299">          RetrySettings.newBuilder()</span>
+<span class="fc" id="L300">              .setInitialRetryDelay(Duration.ofMillis(100L))</span>
+<span class="fc" id="L301">              .setRetryDelayMultiplier(1.3)</span>
+<span class="fc" id="L302">              .setMaxRetryDelay(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L303">              .setInitialRpcTimeout(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L304">              .setRpcTimeoutMultiplier(1.0)</span>
+<span class="fc" id="L305">              .setMaxRpcTimeout(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L306">              .setTotalTimeout(Duration.ofMillis(60000L))</span>
+<span class="fc" id="L307">              .build();</span>
+<span class="fc" id="L308">      definitions.put(&quot;retry_policy_0_params&quot;, settings);</span>
+<span class="fc" id="L309">      RETRY_PARAM_DEFINITIONS = definitions.build();</span>
+<span class="fc" id="L310">    }</span>
+
+    protected Builder() {
+<span class="nc" id="L313">      this(((ClientContext) null));</span>
+<span class="nc" id="L314">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="fc" id="L317">      super(clientContext);</span>
+
+<span class="fc" id="L319">      getAnswerRecordSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+<span class="fc" id="L320">      listAnswerRecordsSettings = PagedCallSettings.newBuilder(LIST_ANSWER_RECORDS_PAGE_STR_FACT);</span>
+<span class="fc" id="L321">      updateAnswerRecordSettings = UnaryCallSettings.newUnaryCallSettingsBuilder();</span>
+
+<span class="fc" id="L323">      unaryMethodSettingsBuilders =</span>
+<span class="fc" id="L324">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              getAnswerRecordSettings, listAnswerRecordsSettings, updateAnswerRecordSettings);
+<span class="fc" id="L326">      initDefaults(this);</span>
+<span class="fc" id="L327">    }</span>
+
+    protected Builder(AnswerRecordsStubSettings settings) {
+<span class="nc" id="L330">      super(settings);</span>
+
+<span class="nc" id="L332">      getAnswerRecordSettings = settings.getAnswerRecordSettings.toBuilder();</span>
+<span class="nc" id="L333">      listAnswerRecordsSettings = settings.listAnswerRecordsSettings.toBuilder();</span>
+<span class="nc" id="L334">      updateAnswerRecordSettings = settings.updateAnswerRecordSettings.toBuilder();</span>
+
+<span class="nc" id="L336">      unaryMethodSettingsBuilders =</span>
+<span class="nc" id="L337">          ImmutableList.&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt;of(</span>
+              getAnswerRecordSettings, listAnswerRecordsSettings, updateAnswerRecordSettings);
+<span class="nc" id="L339">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L342">      Builder builder = new Builder(((ClientContext) null));</span>
+
+<span class="fc" id="L344">      builder.setTransportChannelProvider(defaultTransportChannelProvider());</span>
+<span class="fc" id="L345">      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());</span>
+<span class="fc" id="L346">      builder.setInternalHeaderProvider(defaultApiClientHeaderProviderBuilder().build());</span>
+<span class="fc" id="L347">      builder.setEndpoint(getDefaultEndpoint());</span>
+<span class="fc" id="L348">      builder.setMtlsEndpoint(getDefaultMtlsEndpoint());</span>
+<span class="fc" id="L349">      builder.setSwitchToMtlsEndpointAllowed(true);</span>
+
+<span class="fc" id="L351">      return initDefaults(builder);</span>
+    }
+
+    private static Builder initDefaults(Builder builder) {
+<span class="fc" id="L355">      builder</span>
+<span class="fc" id="L356">          .getAnswerRecordSettings()</span>
+<span class="fc" id="L357">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L358">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L360">      builder</span>
+<span class="fc" id="L361">          .listAnswerRecordsSettings()</span>
+<span class="fc" id="L362">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L363">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L365">      builder</span>
+<span class="fc" id="L366">          .updateAnswerRecordSettings()</span>
+<span class="fc" id="L367">          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get(&quot;retry_policy_0_codes&quot;))</span>
+<span class="fc" id="L368">          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get(&quot;retry_policy_0_params&quot;));</span>
+
+<span class="fc" id="L370">      return builder;</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L380">      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);</span>
+<span class="nc" id="L381">      return this;</span>
+    }
+
+    public ImmutableList&lt;UnaryCallSettings.Builder&lt;?, ?&gt;&gt; unaryMethodSettingsBuilders() {
+<span class="nc" id="L385">      return unaryMethodSettingsBuilders;</span>
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getAnswerRecord.
+     *
+     * @deprecated This method is deprecated and will be removed in the next major version update.
+     */
+    @Deprecated
+    public UnaryCallSettings.Builder&lt;GetAnswerRecordRequest, AnswerRecord&gt;
+        getAnswerRecordSettings() {
+<span class="fc" id="L396">      return getAnswerRecordSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listAnswerRecords. */
+    public PagedCallSettings.Builder&lt;
+            ListAnswerRecordsRequest, ListAnswerRecordsResponse, ListAnswerRecordsPagedResponse&gt;
+        listAnswerRecordsSettings() {
+<span class="fc" id="L403">      return listAnswerRecordsSettings;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateAnswerRecord. */
+    public UnaryCallSettings.Builder&lt;UpdateAnswerRecordRequest, AnswerRecord&gt;
+        updateAnswerRecordSettings() {
+<span class="fc" id="L409">      return updateAnswerRecordSettings;</span>
+    }
+
+    @Override
+    public AnswerRecordsStubSettings build() throws IOException {
+<span class="fc" id="L414">      return new AnswerRecordsStubSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

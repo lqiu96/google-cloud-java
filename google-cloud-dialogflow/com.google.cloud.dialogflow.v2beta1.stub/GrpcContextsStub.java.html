@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcContextsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1.stub</a> &gt; <span class="el_source">GrpcContextsStub.java</span></div><h1>GrpcContextsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1.stub;
+
+import static com.google.cloud.dialogflow.v2beta1.ContextsClient.ListContextsPagedResponse;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2beta1.Context;
+import com.google.cloud.dialogflow.v2beta1.CreateContextRequest;
+import com.google.cloud.dialogflow.v2beta1.DeleteAllContextsRequest;
+import com.google.cloud.dialogflow.v2beta1.DeleteContextRequest;
+import com.google.cloud.dialogflow.v2beta1.GetContextRequest;
+import com.google.cloud.dialogflow.v2beta1.ListContextsRequest;
+import com.google.cloud.dialogflow.v2beta1.ListContextsResponse;
+import com.google.cloud.dialogflow.v2beta1.UpdateContextRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the Contexts service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcContextsStub extends ContextsStub {
+  private static final MethodDescriptor&lt;ListContextsRequest, ListContextsResponse&gt;
+      listContextsMethodDescriptor =
+<span class="fc" id="L56">          MethodDescriptor.&lt;ListContextsRequest, ListContextsResponse&gt;newBuilder()</span>
+<span class="fc" id="L57">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L58">              .setFullMethodName(&quot;google.cloud.dialogflow.v2beta1.Contexts/ListContexts&quot;)</span>
+<span class="fc" id="L59">              .setRequestMarshaller(ProtoUtils.marshaller(ListContextsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L60">              .setResponseMarshaller(</span>
+<span class="fc" id="L61">                  ProtoUtils.marshaller(ListContextsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L62">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetContextRequest, Context&gt; getContextMethodDescriptor =
+<span class="fc" id="L65">      MethodDescriptor.&lt;GetContextRequest, Context&gt;newBuilder()</span>
+<span class="fc" id="L66">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L67">          .setFullMethodName(&quot;google.cloud.dialogflow.v2beta1.Contexts/GetContext&quot;)</span>
+<span class="fc" id="L68">          .setRequestMarshaller(ProtoUtils.marshaller(GetContextRequest.getDefaultInstance()))</span>
+<span class="fc" id="L69">          .setResponseMarshaller(ProtoUtils.marshaller(Context.getDefaultInstance()))</span>
+<span class="fc" id="L70">          .build();</span>
+
+  private static final MethodDescriptor&lt;CreateContextRequest, Context&gt;
+      createContextMethodDescriptor =
+<span class="fc" id="L74">          MethodDescriptor.&lt;CreateContextRequest, Context&gt;newBuilder()</span>
+<span class="fc" id="L75">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L76">              .setFullMethodName(&quot;google.cloud.dialogflow.v2beta1.Contexts/CreateContext&quot;)</span>
+<span class="fc" id="L77">              .setRequestMarshaller(</span>
+<span class="fc" id="L78">                  ProtoUtils.marshaller(CreateContextRequest.getDefaultInstance()))</span>
+<span class="fc" id="L79">              .setResponseMarshaller(ProtoUtils.marshaller(Context.getDefaultInstance()))</span>
+<span class="fc" id="L80">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateContextRequest, Context&gt;
+      updateContextMethodDescriptor =
+<span class="fc" id="L84">          MethodDescriptor.&lt;UpdateContextRequest, Context&gt;newBuilder()</span>
+<span class="fc" id="L85">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L86">              .setFullMethodName(&quot;google.cloud.dialogflow.v2beta1.Contexts/UpdateContext&quot;)</span>
+<span class="fc" id="L87">              .setRequestMarshaller(</span>
+<span class="fc" id="L88">                  ProtoUtils.marshaller(UpdateContextRequest.getDefaultInstance()))</span>
+<span class="fc" id="L89">              .setResponseMarshaller(ProtoUtils.marshaller(Context.getDefaultInstance()))</span>
+<span class="fc" id="L90">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteContextRequest, Empty&gt; deleteContextMethodDescriptor =
+<span class="fc" id="L93">      MethodDescriptor.&lt;DeleteContextRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L94">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L95">          .setFullMethodName(&quot;google.cloud.dialogflow.v2beta1.Contexts/DeleteContext&quot;)</span>
+<span class="fc" id="L96">          .setRequestMarshaller(ProtoUtils.marshaller(DeleteContextRequest.getDefaultInstance()))</span>
+<span class="fc" id="L97">          .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L98">          .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteAllContextsRequest, Empty&gt;
+<span class="fc" id="L101">      deleteAllContextsMethodDescriptor =</span>
+<span class="fc" id="L102">          MethodDescriptor.&lt;DeleteAllContextsRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L103">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L104">              .setFullMethodName(&quot;google.cloud.dialogflow.v2beta1.Contexts/DeleteAllContexts&quot;)</span>
+<span class="fc" id="L105">              .setRequestMarshaller(</span>
+<span class="fc" id="L106">                  ProtoUtils.marshaller(DeleteAllContextsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L107">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L108">              .build();</span>
+
+  private final UnaryCallable&lt;ListContextsRequest, ListContextsResponse&gt; listContextsCallable;
+  private final UnaryCallable&lt;ListContextsRequest, ListContextsPagedResponse&gt;
+      listContextsPagedCallable;
+  private final UnaryCallable&lt;GetContextRequest, Context&gt; getContextCallable;
+  private final UnaryCallable&lt;CreateContextRequest, Context&gt; createContextCallable;
+  private final UnaryCallable&lt;UpdateContextRequest, Context&gt; updateContextCallable;
+  private final UnaryCallable&lt;DeleteContextRequest, Empty&gt; deleteContextCallable;
+  private final UnaryCallable&lt;DeleteAllContextsRequest, Empty&gt; deleteAllContextsCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcContextsStub create(ContextsStubSettings settings) throws IOException {
+<span class="fc" id="L124">    return new GrpcContextsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcContextsStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L128">    return new GrpcContextsStub(ContextsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcContextsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L133">    return new GrpcContextsStub(</span>
+<span class="nc" id="L134">        ContextsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcContextsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcContextsStub(ContextsStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L143">    this(settings, clientContext, new GrpcContextsCallableFactory());</span>
+<span class="fc" id="L144">  }</span>
+
+  /**
+   * Constructs an instance of GrpcContextsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcContextsStub(
+      ContextsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L154">      throws IOException {</span>
+<span class="fc" id="L155">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L156">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListContextsRequest, ListContextsResponse&gt; listContextsTransportSettings =
+<span class="fc" id="L159">        GrpcCallSettings.&lt;ListContextsRequest, ListContextsResponse&gt;newBuilder()</span>
+<span class="fc" id="L160">            .setMethodDescriptor(listContextsMethodDescriptor)</span>
+<span class="fc" id="L161">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L163">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L164">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L165">                  return params.build();</span>
+                })
+<span class="fc" id="L167">            .build();</span>
+    GrpcCallSettings&lt;GetContextRequest, Context&gt; getContextTransportSettings =
+<span class="fc" id="L169">        GrpcCallSettings.&lt;GetContextRequest, Context&gt;newBuilder()</span>
+<span class="fc" id="L170">            .setMethodDescriptor(getContextMethodDescriptor)</span>
+<span class="fc" id="L171">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L173">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L174">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L175">                  return params.build();</span>
+                })
+<span class="fc" id="L177">            .build();</span>
+    GrpcCallSettings&lt;CreateContextRequest, Context&gt; createContextTransportSettings =
+<span class="fc" id="L179">        GrpcCallSettings.&lt;CreateContextRequest, Context&gt;newBuilder()</span>
+<span class="fc" id="L180">            .setMethodDescriptor(createContextMethodDescriptor)</span>
+<span class="fc" id="L181">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L183">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L184">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L185">                  return params.build();</span>
+                })
+<span class="fc" id="L187">            .build();</span>
+    GrpcCallSettings&lt;UpdateContextRequest, Context&gt; updateContextTransportSettings =
+<span class="fc" id="L189">        GrpcCallSettings.&lt;UpdateContextRequest, Context&gt;newBuilder()</span>
+<span class="fc" id="L190">            .setMethodDescriptor(updateContextMethodDescriptor)</span>
+<span class="fc" id="L191">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L193">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L194">                  params.put(&quot;context.name&quot;, String.valueOf(request.getContext().getName()));</span>
+<span class="fc" id="L195">                  return params.build();</span>
+                })
+<span class="fc" id="L197">            .build();</span>
+    GrpcCallSettings&lt;DeleteContextRequest, Empty&gt; deleteContextTransportSettings =
+<span class="fc" id="L199">        GrpcCallSettings.&lt;DeleteContextRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L200">            .setMethodDescriptor(deleteContextMethodDescriptor)</span>
+<span class="fc" id="L201">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L203">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L204">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L205">                  return params.build();</span>
+                })
+<span class="fc" id="L207">            .build();</span>
+    GrpcCallSettings&lt;DeleteAllContextsRequest, Empty&gt; deleteAllContextsTransportSettings =
+<span class="fc" id="L209">        GrpcCallSettings.&lt;DeleteAllContextsRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L210">            .setMethodDescriptor(deleteAllContextsMethodDescriptor)</span>
+<span class="fc" id="L211">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L213">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L214">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L215">                  return params.build();</span>
+                })
+<span class="fc" id="L217">            .build();</span>
+
+<span class="fc" id="L219">    this.listContextsCallable =</span>
+<span class="fc" id="L220">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L221">            listContextsTransportSettings, settings.listContextsSettings(), clientContext);</span>
+<span class="fc" id="L222">    this.listContextsPagedCallable =</span>
+<span class="fc" id="L223">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L224">            listContextsTransportSettings, settings.listContextsSettings(), clientContext);</span>
+<span class="fc" id="L225">    this.getContextCallable =</span>
+<span class="fc" id="L226">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L227">            getContextTransportSettings, settings.getContextSettings(), clientContext);</span>
+<span class="fc" id="L228">    this.createContextCallable =</span>
+<span class="fc" id="L229">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L230">            createContextTransportSettings, settings.createContextSettings(), clientContext);</span>
+<span class="fc" id="L231">    this.updateContextCallable =</span>
+<span class="fc" id="L232">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L233">            updateContextTransportSettings, settings.updateContextSettings(), clientContext);</span>
+<span class="fc" id="L234">    this.deleteContextCallable =</span>
+<span class="fc" id="L235">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L236">            deleteContextTransportSettings, settings.deleteContextSettings(), clientContext);</span>
+<span class="fc" id="L237">    this.deleteAllContextsCallable =</span>
+<span class="fc" id="L238">        callableFactory.createUnaryCallable(</span>
+            deleteAllContextsTransportSettings,
+<span class="fc" id="L240">            settings.deleteAllContextsSettings(),</span>
+            clientContext);
+
+<span class="fc" id="L243">    this.backgroundResources =</span>
+<span class="fc" id="L244">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L245">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L248">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListContextsRequest, ListContextsResponse&gt; listContextsCallable() {
+<span class="nc" id="L253">    return listContextsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListContextsRequest, ListContextsPagedResponse&gt; listContextsPagedCallable() {
+<span class="fc" id="L258">    return listContextsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetContextRequest, Context&gt; getContextCallable() {
+<span class="fc" id="L263">    return getContextCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateContextRequest, Context&gt; createContextCallable() {
+<span class="fc" id="L268">    return createContextCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateContextRequest, Context&gt; updateContextCallable() {
+<span class="fc" id="L273">    return updateContextCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteContextRequest, Empty&gt; deleteContextCallable() {
+<span class="fc" id="L278">    return deleteContextCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteAllContextsRequest, Empty&gt; deleteAllContextsCallable() {
+<span class="fc" id="L283">    return deleteAllContextsCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L289">      backgroundResources.close();</span>
+<span class="nc" id="L290">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L291">      throw e;</span>
+<span class="nc" id="L292">    } catch (Exception e) {</span>
+<span class="nc" id="L293">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L294">    }</span>
+<span class="fc" id="L295">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L299">    backgroundResources.shutdown();</span>
+<span class="nc" id="L300">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L304">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L309">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L314">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L315">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L319">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

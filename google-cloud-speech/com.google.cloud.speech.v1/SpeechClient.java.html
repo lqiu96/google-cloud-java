@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SpeechClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-speech</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.speech.v1</a> &gt; <span class="el_source">SpeechClient.java</span></div><h1>SpeechClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.speech.v1;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.speech.v1.stub.SpeechStub;
+import com.google.cloud.speech.v1.stub.SpeechStubSettings;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service that implements Google Cloud Speech API.
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (SpeechClient speechClient = SpeechClient.create()) {
+ *   RecognitionConfig config = RecognitionConfig.newBuilder().build();
+ *   RecognitionAudio audio = RecognitionAudio.newBuilder().build();
+ *   RecognizeResponse response = speechClient.recognize(config, audio);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the SpeechClient object to clean up resources such as
+ * threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of SpeechSettings to create().
+ * For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * SpeechSettings speechSettings =
+ *     SpeechSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * SpeechClient speechClient = SpeechClient.create(speechSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * SpeechSettings speechSettings = SpeechSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * SpeechClient speechClient = SpeechClient.create(speechSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class SpeechClient implements BackgroundResource {
+  private final SpeechSettings settings;
+  private final SpeechStub stub;
+  private final OperationsClient operationsClient;
+
+  /** Constructs an instance of SpeechClient with default settings. */
+  public static final SpeechClient create() throws IOException {
+<span class="nc" id="L106">    return create(SpeechSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of SpeechClient, using the given settings. The channels are created
+   * based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final SpeechClient create(SpeechSettings settings) throws IOException {
+<span class="fc" id="L114">    return new SpeechClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of SpeechClient, using the given stub for making calls. This is for
+   * advanced usage - prefer using create(SpeechSettings).
+   */
+  public static final SpeechClient create(SpeechStub stub) {
+<span class="nc" id="L122">    return new SpeechClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of SpeechClient, using the given settings. This is protected so that it
+   * is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+<span class="fc" id="L129">  protected SpeechClient(SpeechSettings settings) throws IOException {</span>
+<span class="fc" id="L130">    this.settings = settings;</span>
+<span class="fc" id="L131">    this.stub = ((SpeechStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L132">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="fc" id="L133">  }</span>
+
+<span class="nc" id="L135">  protected SpeechClient(SpeechStub stub) {</span>
+<span class="nc" id="L136">    this.settings = null;</span>
+<span class="nc" id="L137">    this.stub = stub;</span>
+<span class="nc" id="L138">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="nc" id="L139">  }</span>
+
+  public final SpeechSettings getSettings() {
+<span class="nc" id="L142">    return settings;</span>
+  }
+
+  public SpeechStub getStub() {
+<span class="nc" id="L146">    return stub;</span>
+  }
+
+  /**
+   * Returns the OperationsClient that can be used to query the status of a long-running operation
+   * returned by another API method call.
+   */
+  public final OperationsClient getOperationsClient() {
+<span class="nc" id="L154">    return operationsClient;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Performs synchronous speech recognition: receive results after all audio has been sent and
+   * processed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SpeechClient speechClient = SpeechClient.create()) {
+   *   RecognitionConfig config = RecognitionConfig.newBuilder().build();
+   *   RecognitionAudio audio = RecognitionAudio.newBuilder().build();
+   *   RecognizeResponse response = speechClient.recognize(config, audio);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param config Required. Provides information to the recognizer that specifies how to process
+   *     the request.
+   * @param audio Required. The audio data to be recognized.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final RecognizeResponse recognize(RecognitionConfig config, RecognitionAudio audio) {
+    RecognizeRequest request =
+<span class="fc" id="L181">        RecognizeRequest.newBuilder().setConfig(config).setAudio(audio).build();</span>
+<span class="fc" id="L182">    return recognize(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Performs synchronous speech recognition: receive results after all audio has been sent and
+   * processed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SpeechClient speechClient = SpeechClient.create()) {
+   *   RecognizeRequest request =
+   *       RecognizeRequest.newBuilder()
+   *           .setConfig(RecognitionConfig.newBuilder().build())
+   *           .setAudio(RecognitionAudio.newBuilder().build())
+   *           .build();
+   *   RecognizeResponse response = speechClient.recognize(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final RecognizeResponse recognize(RecognizeRequest request) {
+<span class="fc" id="L209">    return recognizeCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Performs synchronous speech recognition: receive results after all audio has been sent and
+   * processed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SpeechClient speechClient = SpeechClient.create()) {
+   *   RecognizeRequest request =
+   *       RecognizeRequest.newBuilder()
+   *           .setConfig(RecognitionConfig.newBuilder().build())
+   *           .setAudio(RecognitionAudio.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;RecognizeResponse&gt; future = speechClient.recognizeCallable().futureCall(request);
+   *   // Do something.
+   *   RecognizeResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;RecognizeRequest, RecognizeResponse&gt; recognizeCallable() {
+<span class="fc" id="L235">    return stub.recognizeCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Performs asynchronous speech recognition: receive results via the google.longrunning.Operations
+   * interface. Returns either an `Operation.error` or an `Operation.response` which contains a
+   * `LongRunningRecognizeResponse` message. For more information on asynchronous speech
+   * recognition, see the [how-to](https://cloud.google.com/speech-to-text/docs/async-recognize).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SpeechClient speechClient = SpeechClient.create()) {
+   *   RecognitionConfig config = RecognitionConfig.newBuilder().build();
+   *   RecognitionAudio audio = RecognitionAudio.newBuilder().build();
+   *   LongRunningRecognizeResponse response =
+   *       speechClient.longRunningRecognizeAsync(config, audio).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param config Required. Provides information to the recognizer that specifies how to process
+   *     the request.
+   * @param audio Required. The audio data to be recognized.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;LongRunningRecognizeResponse, LongRunningRecognizeMetadata&gt;
+      longRunningRecognizeAsync(RecognitionConfig config, RecognitionAudio audio) {
+    LongRunningRecognizeRequest request =
+<span class="fc" id="L266">        LongRunningRecognizeRequest.newBuilder().setConfig(config).setAudio(audio).build();</span>
+<span class="fc" id="L267">    return longRunningRecognizeAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Performs asynchronous speech recognition: receive results via the google.longrunning.Operations
+   * interface. Returns either an `Operation.error` or an `Operation.response` which contains a
+   * `LongRunningRecognizeResponse` message. For more information on asynchronous speech
+   * recognition, see the [how-to](https://cloud.google.com/speech-to-text/docs/async-recognize).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SpeechClient speechClient = SpeechClient.create()) {
+   *   LongRunningRecognizeRequest request =
+   *       LongRunningRecognizeRequest.newBuilder()
+   *           .setConfig(RecognitionConfig.newBuilder().build())
+   *           .setAudio(RecognitionAudio.newBuilder().build())
+   *           .setOutputConfig(TranscriptOutputConfig.newBuilder().build())
+   *           .build();
+   *   LongRunningRecognizeResponse response = speechClient.longRunningRecognizeAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;LongRunningRecognizeResponse, LongRunningRecognizeMetadata&gt;
+      longRunningRecognizeAsync(LongRunningRecognizeRequest request) {
+<span class="fc" id="L298">    return longRunningRecognizeOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Performs asynchronous speech recognition: receive results via the google.longrunning.Operations
+   * interface. Returns either an `Operation.error` or an `Operation.response` which contains a
+   * `LongRunningRecognizeResponse` message. For more information on asynchronous speech
+   * recognition, see the [how-to](https://cloud.google.com/speech-to-text/docs/async-recognize).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SpeechClient speechClient = SpeechClient.create()) {
+   *   LongRunningRecognizeRequest request =
+   *       LongRunningRecognizeRequest.newBuilder()
+   *           .setConfig(RecognitionConfig.newBuilder().build())
+   *           .setAudio(RecognitionAudio.newBuilder().build())
+   *           .setOutputConfig(TranscriptOutputConfig.newBuilder().build())
+   *           .build();
+   *   OperationFuture&lt;LongRunningRecognizeResponse, LongRunningRecognizeMetadata&gt; future =
+   *       speechClient.longRunningRecognizeOperationCallable().futureCall(request);
+   *   // Do something.
+   *   LongRunningRecognizeResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          LongRunningRecognizeRequest, LongRunningRecognizeResponse, LongRunningRecognizeMetadata&gt;
+      longRunningRecognizeOperationCallable() {
+<span class="fc" id="L330">    return stub.longRunningRecognizeOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Performs asynchronous speech recognition: receive results via the google.longrunning.Operations
+   * interface. Returns either an `Operation.error` or an `Operation.response` which contains a
+   * `LongRunningRecognizeResponse` message. For more information on asynchronous speech
+   * recognition, see the [how-to](https://cloud.google.com/speech-to-text/docs/async-recognize).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SpeechClient speechClient = SpeechClient.create()) {
+   *   LongRunningRecognizeRequest request =
+   *       LongRunningRecognizeRequest.newBuilder()
+   *           .setConfig(RecognitionConfig.newBuilder().build())
+   *           .setAudio(RecognitionAudio.newBuilder().build())
+   *           .setOutputConfig(TranscriptOutputConfig.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = speechClient.longRunningRecognizeCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;LongRunningRecognizeRequest, Operation&gt;
+      longRunningRecognizeCallable() {
+<span class="nc" id="L360">    return stub.longRunningRecognizeCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Performs bidirectional streaming speech recognition: receive results while sending audio. This
+   * method is only available via the gRPC API (not REST).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SpeechClient speechClient = SpeechClient.create()) {
+   *   BidiStream&lt;StreamingRecognizeRequest, StreamingRecognizeResponse&gt; bidiStream =
+   *       speechClient.streamingRecognizeCallable().call();
+   *   StreamingRecognizeRequest request = StreamingRecognizeRequest.newBuilder().build();
+   *   bidiStream.send(request);
+   *   for (StreamingRecognizeResponse response : bidiStream) {
+   *     // Do something when a response is received.
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final BidiStreamingCallable&lt;StreamingRecognizeRequest, StreamingRecognizeResponse&gt;
+      streamingRecognizeCallable() {
+<span class="fc" id="L386">    return stub.streamingRecognizeCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L391">    stub.close();</span>
+<span class="fc" id="L392">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L396">    stub.shutdown();</span>
+<span class="nc" id="L397">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L401">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L406">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L411">    stub.shutdownNow();</span>
+<span class="nc" id="L412">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L416">    return stub.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

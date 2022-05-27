@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcEnvironmentsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcEnvironmentsStub.java</span></div><h1>GrpcEnvironmentsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.EnvironmentsClient.GetEnvironmentHistoryPagedResponse;
+import static com.google.cloud.dialogflow.v2.EnvironmentsClient.ListEnvironmentsPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.CreateEnvironmentRequest;
+import com.google.cloud.dialogflow.v2.DeleteEnvironmentRequest;
+import com.google.cloud.dialogflow.v2.Environment;
+import com.google.cloud.dialogflow.v2.EnvironmentHistory;
+import com.google.cloud.dialogflow.v2.GetEnvironmentHistoryRequest;
+import com.google.cloud.dialogflow.v2.GetEnvironmentRequest;
+import com.google.cloud.dialogflow.v2.ListEnvironmentsRequest;
+import com.google.cloud.dialogflow.v2.ListEnvironmentsResponse;
+import com.google.cloud.dialogflow.v2.UpdateEnvironmentRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the Environments service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcEnvironmentsStub extends EnvironmentsStub {
+  private static final MethodDescriptor&lt;ListEnvironmentsRequest, ListEnvironmentsResponse&gt;
+      listEnvironmentsMethodDescriptor =
+<span class="fc" id="L56">          MethodDescriptor.&lt;ListEnvironmentsRequest, ListEnvironmentsResponse&gt;newBuilder()</span>
+<span class="fc" id="L57">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L58">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Environments/ListEnvironments&quot;)</span>
+<span class="fc" id="L59">              .setRequestMarshaller(</span>
+<span class="fc" id="L60">                  ProtoUtils.marshaller(ListEnvironmentsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L61">              .setResponseMarshaller(</span>
+<span class="fc" id="L62">                  ProtoUtils.marshaller(ListEnvironmentsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L63">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetEnvironmentRequest, Environment&gt;
+      getEnvironmentMethodDescriptor =
+<span class="fc" id="L67">          MethodDescriptor.&lt;GetEnvironmentRequest, Environment&gt;newBuilder()</span>
+<span class="fc" id="L68">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L69">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Environments/GetEnvironment&quot;)</span>
+<span class="fc" id="L70">              .setRequestMarshaller(</span>
+<span class="fc" id="L71">                  ProtoUtils.marshaller(GetEnvironmentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L72">              .setResponseMarshaller(ProtoUtils.marshaller(Environment.getDefaultInstance()))</span>
+<span class="fc" id="L73">              .build();</span>
+
+  private static final MethodDescriptor&lt;CreateEnvironmentRequest, Environment&gt;
+      createEnvironmentMethodDescriptor =
+<span class="fc" id="L77">          MethodDescriptor.&lt;CreateEnvironmentRequest, Environment&gt;newBuilder()</span>
+<span class="fc" id="L78">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L79">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Environments/CreateEnvironment&quot;)</span>
+<span class="fc" id="L80">              .setRequestMarshaller(</span>
+<span class="fc" id="L81">                  ProtoUtils.marshaller(CreateEnvironmentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L82">              .setResponseMarshaller(ProtoUtils.marshaller(Environment.getDefaultInstance()))</span>
+<span class="fc" id="L83">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateEnvironmentRequest, Environment&gt;
+      updateEnvironmentMethodDescriptor =
+<span class="fc" id="L87">          MethodDescriptor.&lt;UpdateEnvironmentRequest, Environment&gt;newBuilder()</span>
+<span class="fc" id="L88">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L89">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Environments/UpdateEnvironment&quot;)</span>
+<span class="fc" id="L90">              .setRequestMarshaller(</span>
+<span class="fc" id="L91">                  ProtoUtils.marshaller(UpdateEnvironmentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L92">              .setResponseMarshaller(ProtoUtils.marshaller(Environment.getDefaultInstance()))</span>
+<span class="fc" id="L93">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteEnvironmentRequest, Empty&gt;
+      deleteEnvironmentMethodDescriptor =
+<span class="fc" id="L97">          MethodDescriptor.&lt;DeleteEnvironmentRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L98">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L99">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Environments/DeleteEnvironment&quot;)</span>
+<span class="fc" id="L100">              .setRequestMarshaller(</span>
+<span class="fc" id="L101">                  ProtoUtils.marshaller(DeleteEnvironmentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L102">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L103">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetEnvironmentHistoryRequest, EnvironmentHistory&gt;
+<span class="fc" id="L106">      getEnvironmentHistoryMethodDescriptor =</span>
+<span class="fc" id="L107">          MethodDescriptor.&lt;GetEnvironmentHistoryRequest, EnvironmentHistory&gt;newBuilder()</span>
+<span class="fc" id="L108">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L109">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Environments/GetEnvironmentHistory&quot;)</span>
+<span class="fc" id="L110">              .setRequestMarshaller(</span>
+<span class="fc" id="L111">                  ProtoUtils.marshaller(GetEnvironmentHistoryRequest.getDefaultInstance()))</span>
+<span class="fc" id="L112">              .setResponseMarshaller(ProtoUtils.marshaller(EnvironmentHistory.getDefaultInstance()))</span>
+<span class="fc" id="L113">              .build();</span>
+
+  private final UnaryCallable&lt;ListEnvironmentsRequest, ListEnvironmentsResponse&gt;
+      listEnvironmentsCallable;
+  private final UnaryCallable&lt;ListEnvironmentsRequest, ListEnvironmentsPagedResponse&gt;
+      listEnvironmentsPagedCallable;
+  private final UnaryCallable&lt;GetEnvironmentRequest, Environment&gt; getEnvironmentCallable;
+  private final UnaryCallable&lt;CreateEnvironmentRequest, Environment&gt; createEnvironmentCallable;
+  private final UnaryCallable&lt;UpdateEnvironmentRequest, Environment&gt; updateEnvironmentCallable;
+  private final UnaryCallable&lt;DeleteEnvironmentRequest, Empty&gt; deleteEnvironmentCallable;
+  private final UnaryCallable&lt;GetEnvironmentHistoryRequest, EnvironmentHistory&gt;
+      getEnvironmentHistoryCallable;
+  private final UnaryCallable&lt;GetEnvironmentHistoryRequest, GetEnvironmentHistoryPagedResponse&gt;
+      getEnvironmentHistoryPagedCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcEnvironmentsStub create(EnvironmentsStubSettings settings)
+      throws IOException {
+<span class="fc" id="L134">    return new GrpcEnvironmentsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcEnvironmentsStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L138">    return new GrpcEnvironmentsStub(EnvironmentsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcEnvironmentsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L143">    return new GrpcEnvironmentsStub(</span>
+<span class="nc" id="L144">        EnvironmentsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcEnvironmentsStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcEnvironmentsStub(EnvironmentsStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L154">    this(settings, clientContext, new GrpcEnvironmentsCallableFactory());</span>
+<span class="fc" id="L155">  }</span>
+
+  /**
+   * Constructs an instance of GrpcEnvironmentsStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcEnvironmentsStub(
+      EnvironmentsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L166">      throws IOException {</span>
+<span class="fc" id="L167">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L168">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListEnvironmentsRequest, ListEnvironmentsResponse&gt;
+        listEnvironmentsTransportSettings =
+<span class="fc" id="L172">            GrpcCallSettings.&lt;ListEnvironmentsRequest, ListEnvironmentsResponse&gt;newBuilder()</span>
+<span class="fc" id="L173">                .setMethodDescriptor(listEnvironmentsMethodDescriptor)</span>
+<span class="fc" id="L174">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L176">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L177">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L178">                      return params.build();</span>
+                    })
+<span class="fc" id="L180">                .build();</span>
+    GrpcCallSettings&lt;GetEnvironmentRequest, Environment&gt; getEnvironmentTransportSettings =
+<span class="fc" id="L182">        GrpcCallSettings.&lt;GetEnvironmentRequest, Environment&gt;newBuilder()</span>
+<span class="fc" id="L183">            .setMethodDescriptor(getEnvironmentMethodDescriptor)</span>
+<span class="fc" id="L184">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L186">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L187">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L188">                  return params.build();</span>
+                })
+<span class="fc" id="L190">            .build();</span>
+    GrpcCallSettings&lt;CreateEnvironmentRequest, Environment&gt; createEnvironmentTransportSettings =
+<span class="fc" id="L192">        GrpcCallSettings.&lt;CreateEnvironmentRequest, Environment&gt;newBuilder()</span>
+<span class="fc" id="L193">            .setMethodDescriptor(createEnvironmentMethodDescriptor)</span>
+<span class="fc" id="L194">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L196">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L197">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L198">                  return params.build();</span>
+                })
+<span class="fc" id="L200">            .build();</span>
+    GrpcCallSettings&lt;UpdateEnvironmentRequest, Environment&gt; updateEnvironmentTransportSettings =
+<span class="fc" id="L202">        GrpcCallSettings.&lt;UpdateEnvironmentRequest, Environment&gt;newBuilder()</span>
+<span class="fc" id="L203">            .setMethodDescriptor(updateEnvironmentMethodDescriptor)</span>
+<span class="fc" id="L204">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L206">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L207">                  params.put(</span>
+<span class="fc" id="L208">                      &quot;environment.name&quot;, String.valueOf(request.getEnvironment().getName()));</span>
+<span class="fc" id="L209">                  return params.build();</span>
+                })
+<span class="fc" id="L211">            .build();</span>
+    GrpcCallSettings&lt;DeleteEnvironmentRequest, Empty&gt; deleteEnvironmentTransportSettings =
+<span class="fc" id="L213">        GrpcCallSettings.&lt;DeleteEnvironmentRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L214">            .setMethodDescriptor(deleteEnvironmentMethodDescriptor)</span>
+<span class="fc" id="L215">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L217">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L218">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L219">                  return params.build();</span>
+                })
+<span class="fc" id="L221">            .build();</span>
+    GrpcCallSettings&lt;GetEnvironmentHistoryRequest, EnvironmentHistory&gt;
+        getEnvironmentHistoryTransportSettings =
+<span class="fc" id="L224">            GrpcCallSettings.&lt;GetEnvironmentHistoryRequest, EnvironmentHistory&gt;newBuilder()</span>
+<span class="fc" id="L225">                .setMethodDescriptor(getEnvironmentHistoryMethodDescriptor)</span>
+<span class="fc" id="L226">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L228">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L229">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L230">                      return params.build();</span>
+                    })
+<span class="fc" id="L232">                .build();</span>
+
+<span class="fc" id="L234">    this.listEnvironmentsCallable =</span>
+<span class="fc" id="L235">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L236">            listEnvironmentsTransportSettings, settings.listEnvironmentsSettings(), clientContext);</span>
+<span class="fc" id="L237">    this.listEnvironmentsPagedCallable =</span>
+<span class="fc" id="L238">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L239">            listEnvironmentsTransportSettings, settings.listEnvironmentsSettings(), clientContext);</span>
+<span class="fc" id="L240">    this.getEnvironmentCallable =</span>
+<span class="fc" id="L241">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L242">            getEnvironmentTransportSettings, settings.getEnvironmentSettings(), clientContext);</span>
+<span class="fc" id="L243">    this.createEnvironmentCallable =</span>
+<span class="fc" id="L244">        callableFactory.createUnaryCallable(</span>
+            createEnvironmentTransportSettings,
+<span class="fc" id="L246">            settings.createEnvironmentSettings(),</span>
+            clientContext);
+<span class="fc" id="L248">    this.updateEnvironmentCallable =</span>
+<span class="fc" id="L249">        callableFactory.createUnaryCallable(</span>
+            updateEnvironmentTransportSettings,
+<span class="fc" id="L251">            settings.updateEnvironmentSettings(),</span>
+            clientContext);
+<span class="fc" id="L253">    this.deleteEnvironmentCallable =</span>
+<span class="fc" id="L254">        callableFactory.createUnaryCallable(</span>
+            deleteEnvironmentTransportSettings,
+<span class="fc" id="L256">            settings.deleteEnvironmentSettings(),</span>
+            clientContext);
+<span class="fc" id="L258">    this.getEnvironmentHistoryCallable =</span>
+<span class="fc" id="L259">        callableFactory.createUnaryCallable(</span>
+            getEnvironmentHistoryTransportSettings,
+<span class="fc" id="L261">            settings.getEnvironmentHistorySettings(),</span>
+            clientContext);
+<span class="fc" id="L263">    this.getEnvironmentHistoryPagedCallable =</span>
+<span class="fc" id="L264">        callableFactory.createPagedCallable(</span>
+            getEnvironmentHistoryTransportSettings,
+<span class="fc" id="L266">            settings.getEnvironmentHistorySettings(),</span>
+            clientContext);
+
+<span class="fc" id="L269">    this.backgroundResources =</span>
+<span class="fc" id="L270">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L271">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L274">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListEnvironmentsRequest, ListEnvironmentsResponse&gt;
+      listEnvironmentsCallable() {
+<span class="nc" id="L280">    return listEnvironmentsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListEnvironmentsRequest, ListEnvironmentsPagedResponse&gt;
+      listEnvironmentsPagedCallable() {
+<span class="fc" id="L286">    return listEnvironmentsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetEnvironmentRequest, Environment&gt; getEnvironmentCallable() {
+<span class="fc" id="L291">    return getEnvironmentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateEnvironmentRequest, Environment&gt; createEnvironmentCallable() {
+<span class="fc" id="L296">    return createEnvironmentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateEnvironmentRequest, Environment&gt; updateEnvironmentCallable() {
+<span class="fc" id="L301">    return updateEnvironmentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteEnvironmentRequest, Empty&gt; deleteEnvironmentCallable() {
+<span class="fc" id="L306">    return deleteEnvironmentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetEnvironmentHistoryRequest, EnvironmentHistory&gt;
+      getEnvironmentHistoryCallable() {
+<span class="nc" id="L312">    return getEnvironmentHistoryCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetEnvironmentHistoryRequest, GetEnvironmentHistoryPagedResponse&gt;
+      getEnvironmentHistoryPagedCallable() {
+<span class="fc" id="L318">    return getEnvironmentHistoryPagedCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L324">      backgroundResources.close();</span>
+<span class="nc" id="L325">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L326">      throw e;</span>
+<span class="nc" id="L327">    } catch (Exception e) {</span>
+<span class="nc" id="L328">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L329">    }</span>
+<span class="fc" id="L330">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L334">    backgroundResources.shutdown();</span>
+<span class="nc" id="L335">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L339">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L344">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L349">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L350">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L354">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

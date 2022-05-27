@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcIntentsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcIntentsStub.java</span></div><h1>GrpcIntentsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.IntentsClient.ListIntentsPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.BatchDeleteIntentsRequest;
+import com.google.cloud.dialogflow.v2.BatchUpdateIntentsRequest;
+import com.google.cloud.dialogflow.v2.BatchUpdateIntentsResponse;
+import com.google.cloud.dialogflow.v2.CreateIntentRequest;
+import com.google.cloud.dialogflow.v2.DeleteIntentRequest;
+import com.google.cloud.dialogflow.v2.GetIntentRequest;
+import com.google.cloud.dialogflow.v2.Intent;
+import com.google.cloud.dialogflow.v2.ListIntentsRequest;
+import com.google.cloud.dialogflow.v2.ListIntentsResponse;
+import com.google.cloud.dialogflow.v2.UpdateIntentRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import com.google.protobuf.Struct;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the Intents service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcIntentsStub extends IntentsStub {
+  private static final MethodDescriptor&lt;ListIntentsRequest, ListIntentsResponse&gt;
+      listIntentsMethodDescriptor =
+<span class="fc" id="L59">          MethodDescriptor.&lt;ListIntentsRequest, ListIntentsResponse&gt;newBuilder()</span>
+<span class="fc" id="L60">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L61">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Intents/ListIntents&quot;)</span>
+<span class="fc" id="L62">              .setRequestMarshaller(ProtoUtils.marshaller(ListIntentsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L63">              .setResponseMarshaller(</span>
+<span class="fc" id="L64">                  ProtoUtils.marshaller(ListIntentsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L65">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetIntentRequest, Intent&gt; getIntentMethodDescriptor =
+<span class="fc" id="L68">      MethodDescriptor.&lt;GetIntentRequest, Intent&gt;newBuilder()</span>
+<span class="fc" id="L69">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L70">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Intents/GetIntent&quot;)</span>
+<span class="fc" id="L71">          .setRequestMarshaller(ProtoUtils.marshaller(GetIntentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L72">          .setResponseMarshaller(ProtoUtils.marshaller(Intent.getDefaultInstance()))</span>
+<span class="fc" id="L73">          .build();</span>
+
+  private static final MethodDescriptor&lt;CreateIntentRequest, Intent&gt; createIntentMethodDescriptor =
+<span class="fc" id="L76">      MethodDescriptor.&lt;CreateIntentRequest, Intent&gt;newBuilder()</span>
+<span class="fc" id="L77">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L78">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Intents/CreateIntent&quot;)</span>
+<span class="fc" id="L79">          .setRequestMarshaller(ProtoUtils.marshaller(CreateIntentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L80">          .setResponseMarshaller(ProtoUtils.marshaller(Intent.getDefaultInstance()))</span>
+<span class="fc" id="L81">          .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateIntentRequest, Intent&gt; updateIntentMethodDescriptor =
+<span class="fc" id="L84">      MethodDescriptor.&lt;UpdateIntentRequest, Intent&gt;newBuilder()</span>
+<span class="fc" id="L85">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L86">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Intents/UpdateIntent&quot;)</span>
+<span class="fc" id="L87">          .setRequestMarshaller(ProtoUtils.marshaller(UpdateIntentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L88">          .setResponseMarshaller(ProtoUtils.marshaller(Intent.getDefaultInstance()))</span>
+<span class="fc" id="L89">          .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteIntentRequest, Empty&gt; deleteIntentMethodDescriptor =
+<span class="fc" id="L92">      MethodDescriptor.&lt;DeleteIntentRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L93">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L94">          .setFullMethodName(&quot;google.cloud.dialogflow.v2.Intents/DeleteIntent&quot;)</span>
+<span class="fc" id="L95">          .setRequestMarshaller(ProtoUtils.marshaller(DeleteIntentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L96">          .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L97">          .build();</span>
+
+  private static final MethodDescriptor&lt;BatchUpdateIntentsRequest, Operation&gt;
+      batchUpdateIntentsMethodDescriptor =
+<span class="fc" id="L101">          MethodDescriptor.&lt;BatchUpdateIntentsRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L102">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L103">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Intents/BatchUpdateIntents&quot;)</span>
+<span class="fc" id="L104">              .setRequestMarshaller(</span>
+<span class="fc" id="L105">                  ProtoUtils.marshaller(BatchUpdateIntentsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L106">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L107">              .build();</span>
+
+  private static final MethodDescriptor&lt;BatchDeleteIntentsRequest, Operation&gt;
+<span class="fc" id="L110">      batchDeleteIntentsMethodDescriptor =</span>
+<span class="fc" id="L111">          MethodDescriptor.&lt;BatchDeleteIntentsRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L112">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L113">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Intents/BatchDeleteIntents&quot;)</span>
+<span class="fc" id="L114">              .setRequestMarshaller(</span>
+<span class="fc" id="L115">                  ProtoUtils.marshaller(BatchDeleteIntentsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L116">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L117">              .build();</span>
+
+  private final UnaryCallable&lt;ListIntentsRequest, ListIntentsResponse&gt; listIntentsCallable;
+  private final UnaryCallable&lt;ListIntentsRequest, ListIntentsPagedResponse&gt;
+      listIntentsPagedCallable;
+  private final UnaryCallable&lt;GetIntentRequest, Intent&gt; getIntentCallable;
+  private final UnaryCallable&lt;CreateIntentRequest, Intent&gt; createIntentCallable;
+  private final UnaryCallable&lt;UpdateIntentRequest, Intent&gt; updateIntentCallable;
+  private final UnaryCallable&lt;DeleteIntentRequest, Empty&gt; deleteIntentCallable;
+  private final UnaryCallable&lt;BatchUpdateIntentsRequest, Operation&gt; batchUpdateIntentsCallable;
+  private final OperationCallable&lt;BatchUpdateIntentsRequest, BatchUpdateIntentsResponse, Struct&gt;
+      batchUpdateIntentsOperationCallable;
+  private final UnaryCallable&lt;BatchDeleteIntentsRequest, Operation&gt; batchDeleteIntentsCallable;
+  private final OperationCallable&lt;BatchDeleteIntentsRequest, Empty, Struct&gt;
+      batchDeleteIntentsOperationCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcIntentsStub create(IntentsStubSettings settings) throws IOException {
+<span class="fc" id="L138">    return new GrpcIntentsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcIntentsStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L142">    return new GrpcIntentsStub(IntentsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcIntentsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L147">    return new GrpcIntentsStub(</span>
+<span class="nc" id="L148">        IntentsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcIntentsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcIntentsStub(IntentsStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L157">    this(settings, clientContext, new GrpcIntentsCallableFactory());</span>
+<span class="fc" id="L158">  }</span>
+
+  /**
+   * Constructs an instance of GrpcIntentsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcIntentsStub(
+      IntentsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L168">      throws IOException {</span>
+<span class="fc" id="L169">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L170">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListIntentsRequest, ListIntentsResponse&gt; listIntentsTransportSettings =
+<span class="fc" id="L173">        GrpcCallSettings.&lt;ListIntentsRequest, ListIntentsResponse&gt;newBuilder()</span>
+<span class="fc" id="L174">            .setMethodDescriptor(listIntentsMethodDescriptor)</span>
+<span class="fc" id="L175">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L177">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L178">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L179">                  return params.build();</span>
+                })
+<span class="fc" id="L181">            .build();</span>
+    GrpcCallSettings&lt;GetIntentRequest, Intent&gt; getIntentTransportSettings =
+<span class="fc" id="L183">        GrpcCallSettings.&lt;GetIntentRequest, Intent&gt;newBuilder()</span>
+<span class="fc" id="L184">            .setMethodDescriptor(getIntentMethodDescriptor)</span>
+<span class="fc" id="L185">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L187">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L188">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L189">                  return params.build();</span>
+                })
+<span class="fc" id="L191">            .build();</span>
+    GrpcCallSettings&lt;CreateIntentRequest, Intent&gt; createIntentTransportSettings =
+<span class="fc" id="L193">        GrpcCallSettings.&lt;CreateIntentRequest, Intent&gt;newBuilder()</span>
+<span class="fc" id="L194">            .setMethodDescriptor(createIntentMethodDescriptor)</span>
+<span class="fc" id="L195">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L197">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L198">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L199">                  return params.build();</span>
+                })
+<span class="fc" id="L201">            .build();</span>
+    GrpcCallSettings&lt;UpdateIntentRequest, Intent&gt; updateIntentTransportSettings =
+<span class="fc" id="L203">        GrpcCallSettings.&lt;UpdateIntentRequest, Intent&gt;newBuilder()</span>
+<span class="fc" id="L204">            .setMethodDescriptor(updateIntentMethodDescriptor)</span>
+<span class="fc" id="L205">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L207">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L208">                  params.put(&quot;intent.name&quot;, String.valueOf(request.getIntent().getName()));</span>
+<span class="fc" id="L209">                  return params.build();</span>
+                })
+<span class="fc" id="L211">            .build();</span>
+    GrpcCallSettings&lt;DeleteIntentRequest, Empty&gt; deleteIntentTransportSettings =
+<span class="fc" id="L213">        GrpcCallSettings.&lt;DeleteIntentRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L214">            .setMethodDescriptor(deleteIntentMethodDescriptor)</span>
+<span class="fc" id="L215">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L217">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L218">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L219">                  return params.build();</span>
+                })
+<span class="fc" id="L221">            .build();</span>
+    GrpcCallSettings&lt;BatchUpdateIntentsRequest, Operation&gt; batchUpdateIntentsTransportSettings =
+<span class="fc" id="L223">        GrpcCallSettings.&lt;BatchUpdateIntentsRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L224">            .setMethodDescriptor(batchUpdateIntentsMethodDescriptor)</span>
+<span class="fc" id="L225">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L227">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L228">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L229">                  return params.build();</span>
+                })
+<span class="fc" id="L231">            .build();</span>
+    GrpcCallSettings&lt;BatchDeleteIntentsRequest, Operation&gt; batchDeleteIntentsTransportSettings =
+<span class="fc" id="L233">        GrpcCallSettings.&lt;BatchDeleteIntentsRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L234">            .setMethodDescriptor(batchDeleteIntentsMethodDescriptor)</span>
+<span class="fc" id="L235">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L237">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L238">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L239">                  return params.build();</span>
+                })
+<span class="fc" id="L241">            .build();</span>
+
+<span class="fc" id="L243">    this.listIntentsCallable =</span>
+<span class="fc" id="L244">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L245">            listIntentsTransportSettings, settings.listIntentsSettings(), clientContext);</span>
+<span class="fc" id="L246">    this.listIntentsPagedCallable =</span>
+<span class="fc" id="L247">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L248">            listIntentsTransportSettings, settings.listIntentsSettings(), clientContext);</span>
+<span class="fc" id="L249">    this.getIntentCallable =</span>
+<span class="fc" id="L250">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L251">            getIntentTransportSettings, settings.getIntentSettings(), clientContext);</span>
+<span class="fc" id="L252">    this.createIntentCallable =</span>
+<span class="fc" id="L253">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L254">            createIntentTransportSettings, settings.createIntentSettings(), clientContext);</span>
+<span class="fc" id="L255">    this.updateIntentCallable =</span>
+<span class="fc" id="L256">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L257">            updateIntentTransportSettings, settings.updateIntentSettings(), clientContext);</span>
+<span class="fc" id="L258">    this.deleteIntentCallable =</span>
+<span class="fc" id="L259">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L260">            deleteIntentTransportSettings, settings.deleteIntentSettings(), clientContext);</span>
+<span class="fc" id="L261">    this.batchUpdateIntentsCallable =</span>
+<span class="fc" id="L262">        callableFactory.createUnaryCallable(</span>
+            batchUpdateIntentsTransportSettings,
+<span class="fc" id="L264">            settings.batchUpdateIntentsSettings(),</span>
+            clientContext);
+<span class="fc" id="L266">    this.batchUpdateIntentsOperationCallable =</span>
+<span class="fc" id="L267">        callableFactory.createOperationCallable(</span>
+            batchUpdateIntentsTransportSettings,
+<span class="fc" id="L269">            settings.batchUpdateIntentsOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L272">    this.batchDeleteIntentsCallable =</span>
+<span class="fc" id="L273">        callableFactory.createUnaryCallable(</span>
+            batchDeleteIntentsTransportSettings,
+<span class="fc" id="L275">            settings.batchDeleteIntentsSettings(),</span>
+            clientContext);
+<span class="fc" id="L277">    this.batchDeleteIntentsOperationCallable =</span>
+<span class="fc" id="L278">        callableFactory.createOperationCallable(</span>
+            batchDeleteIntentsTransportSettings,
+<span class="fc" id="L280">            settings.batchDeleteIntentsOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+
+<span class="fc" id="L284">    this.backgroundResources =</span>
+<span class="fc" id="L285">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L286">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="fc" id="L289">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListIntentsRequest, ListIntentsResponse&gt; listIntentsCallable() {
+<span class="nc" id="L294">    return listIntentsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListIntentsRequest, ListIntentsPagedResponse&gt; listIntentsPagedCallable() {
+<span class="fc" id="L299">    return listIntentsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetIntentRequest, Intent&gt; getIntentCallable() {
+<span class="fc" id="L304">    return getIntentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateIntentRequest, Intent&gt; createIntentCallable() {
+<span class="fc" id="L309">    return createIntentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateIntentRequest, Intent&gt; updateIntentCallable() {
+<span class="fc" id="L314">    return updateIntentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteIntentRequest, Empty&gt; deleteIntentCallable() {
+<span class="fc" id="L319">    return deleteIntentCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;BatchUpdateIntentsRequest, Operation&gt; batchUpdateIntentsCallable() {
+<span class="nc" id="L324">    return batchUpdateIntentsCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;BatchUpdateIntentsRequest, BatchUpdateIntentsResponse, Struct&gt;
+      batchUpdateIntentsOperationCallable() {
+<span class="fc" id="L330">    return batchUpdateIntentsOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;BatchDeleteIntentsRequest, Operation&gt; batchDeleteIntentsCallable() {
+<span class="nc" id="L335">    return batchDeleteIntentsCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;BatchDeleteIntentsRequest, Empty, Struct&gt;
+      batchDeleteIntentsOperationCallable() {
+<span class="fc" id="L341">    return batchDeleteIntentsOperationCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L347">      backgroundResources.close();</span>
+<span class="nc" id="L348">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L349">      throw e;</span>
+<span class="nc" id="L350">    } catch (Exception e) {</span>
+<span class="nc" id="L351">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L352">    }</span>
+<span class="fc" id="L353">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L357">    backgroundResources.shutdown();</span>
+<span class="nc" id="L358">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L362">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L367">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L372">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L373">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L377">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DocumentsSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2</a> &gt; <span class="el_source">DocumentsSettings.java</span></div><h1>DocumentsSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2;
+
+import static com.google.cloud.dialogflow.v2.DocumentsClient.ListDocumentsPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.cloud.dialogflow.v2.stub.DocumentsStubSettings;
+import com.google.longrunning.Operation;
+import com.google.protobuf.Empty;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link DocumentsClient}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (dialogflow.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of getDocument to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * DocumentsSettings.Builder documentsSettingsBuilder = DocumentsSettings.newBuilder();
+ * documentsSettingsBuilder
+ *     .getDocumentSettings()
+ *     .setRetrySettings(
+ *         documentsSettingsBuilder
+ *             .getDocumentSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * DocumentsSettings documentsSettings = documentsSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class DocumentsSettings extends ClientSettings&lt;DocumentsSettings&gt; {
+
+  /** Returns the object with the settings used for calls to listDocuments. */
+  public PagedCallSettings&lt;ListDocumentsRequest, ListDocumentsResponse, ListDocumentsPagedResponse&gt;
+      listDocumentsSettings() {
+<span class="nc" id="L79">    return ((DocumentsStubSettings) getStubSettings()).listDocumentsSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to getDocument. */
+  public UnaryCallSettings&lt;GetDocumentRequest, Document&gt; getDocumentSettings() {
+<span class="nc" id="L84">    return ((DocumentsStubSettings) getStubSettings()).getDocumentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to createDocument. */
+  public UnaryCallSettings&lt;CreateDocumentRequest, Operation&gt; createDocumentSettings() {
+<span class="nc" id="L89">    return ((DocumentsStubSettings) getStubSettings()).createDocumentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to createDocument. */
+  public OperationCallSettings&lt;CreateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      createDocumentOperationSettings() {
+<span class="nc" id="L95">    return ((DocumentsStubSettings) getStubSettings()).createDocumentOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to importDocuments. */
+  public UnaryCallSettings&lt;ImportDocumentsRequest, Operation&gt; importDocumentsSettings() {
+<span class="nc" id="L100">    return ((DocumentsStubSettings) getStubSettings()).importDocumentsSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to importDocuments. */
+  public OperationCallSettings&lt;
+          ImportDocumentsRequest, ImportDocumentsResponse, KnowledgeOperationMetadata&gt;
+      importDocumentsOperationSettings() {
+<span class="nc" id="L107">    return ((DocumentsStubSettings) getStubSettings()).importDocumentsOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteDocument. */
+  public UnaryCallSettings&lt;DeleteDocumentRequest, Operation&gt; deleteDocumentSettings() {
+<span class="nc" id="L112">    return ((DocumentsStubSettings) getStubSettings()).deleteDocumentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteDocument. */
+  public OperationCallSettings&lt;DeleteDocumentRequest, Empty, KnowledgeOperationMetadata&gt;
+      deleteDocumentOperationSettings() {
+<span class="nc" id="L118">    return ((DocumentsStubSettings) getStubSettings()).deleteDocumentOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateDocument. */
+  public UnaryCallSettings&lt;UpdateDocumentRequest, Operation&gt; updateDocumentSettings() {
+<span class="nc" id="L123">    return ((DocumentsStubSettings) getStubSettings()).updateDocumentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateDocument. */
+  public OperationCallSettings&lt;UpdateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      updateDocumentOperationSettings() {
+<span class="nc" id="L129">    return ((DocumentsStubSettings) getStubSettings()).updateDocumentOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to reloadDocument. */
+  public UnaryCallSettings&lt;ReloadDocumentRequest, Operation&gt; reloadDocumentSettings() {
+<span class="nc" id="L134">    return ((DocumentsStubSettings) getStubSettings()).reloadDocumentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to reloadDocument. */
+  public OperationCallSettings&lt;ReloadDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      reloadDocumentOperationSettings() {
+<span class="nc" id="L140">    return ((DocumentsStubSettings) getStubSettings()).reloadDocumentOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to exportDocument. */
+  public UnaryCallSettings&lt;ExportDocumentRequest, Operation&gt; exportDocumentSettings() {
+<span class="nc" id="L145">    return ((DocumentsStubSettings) getStubSettings()).exportDocumentSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to exportDocument. */
+  public OperationCallSettings&lt;ExportDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      exportDocumentOperationSettings() {
+<span class="nc" id="L151">    return ((DocumentsStubSettings) getStubSettings()).exportDocumentOperationSettings();</span>
+  }
+
+  public static final DocumentsSettings create(DocumentsStubSettings stub) throws IOException {
+<span class="nc" id="L155">    return new DocumentsSettings.Builder(stub.toBuilder()).build();</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L160">    return DocumentsStubSettings.defaultExecutorProviderBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="nc" id="L165">    return DocumentsStubSettings.getDefaultEndpoint();</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L170">    return DocumentsStubSettings.getDefaultServiceScopes();</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="nc" id="L175">    return DocumentsStubSettings.defaultCredentialsProviderBuilder();</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="nc" id="L180">    return DocumentsStubSettings.defaultGrpcTransportProviderBuilder();</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="nc" id="L184">    return DocumentsStubSettings.defaultTransportChannelProvider();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="nc" id="L189">    return DocumentsStubSettings.defaultApiClientHeaderProviderBuilder();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L194">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L199">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L204">    return new Builder(this);</span>
+  }
+
+  protected DocumentsSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L208">    super(settingsBuilder);</span>
+<span class="fc" id="L209">  }</span>
+
+  /** Builder for DocumentsSettings. */
+  public static class Builder extends ClientSettings.Builder&lt;DocumentsSettings, Builder&gt; {
+
+    protected Builder() throws IOException {
+<span class="nc" id="L215">      this(((ClientContext) null));</span>
+<span class="nc" id="L216">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="nc" id="L219">      super(DocumentsStubSettings.newBuilder(clientContext));</span>
+<span class="nc" id="L220">    }</span>
+
+    protected Builder(DocumentsSettings settings) {
+<span class="nc" id="L223">      super(settings.getStubSettings().toBuilder());</span>
+<span class="nc" id="L224">    }</span>
+
+    protected Builder(DocumentsStubSettings.Builder stubSettings) {
+<span class="fc" id="L227">      super(stubSettings);</span>
+<span class="fc" id="L228">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L231">      return new Builder(DocumentsStubSettings.newBuilder());</span>
+    }
+
+    public DocumentsStubSettings.Builder getStubSettingsBuilder() {
+<span class="nc" id="L235">      return ((DocumentsStubSettings.Builder) getStubSettings());</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L245">      super.applyToAllUnaryMethods(</span>
+<span class="nc" id="L246">          getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);</span>
+<span class="nc" id="L247">      return this;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listDocuments. */
+    public PagedCallSettings.Builder&lt;
+            ListDocumentsRequest, ListDocumentsResponse, ListDocumentsPagedResponse&gt;
+        listDocumentsSettings() {
+<span class="nc" id="L254">      return getStubSettingsBuilder().listDocumentsSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getDocument. */
+    public UnaryCallSettings.Builder&lt;GetDocumentRequest, Document&gt; getDocumentSettings() {
+<span class="nc" id="L259">      return getStubSettingsBuilder().getDocumentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createDocument. */
+    public UnaryCallSettings.Builder&lt;CreateDocumentRequest, Operation&gt; createDocumentSettings() {
+<span class="nc" id="L264">      return getStubSettingsBuilder().createDocumentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createDocument. */
+    public OperationCallSettings.Builder&lt;
+            CreateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        createDocumentOperationSettings() {
+<span class="nc" id="L271">      return getStubSettingsBuilder().createDocumentOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importDocuments. */
+    public UnaryCallSettings.Builder&lt;ImportDocumentsRequest, Operation&gt; importDocumentsSettings() {
+<span class="nc" id="L276">      return getStubSettingsBuilder().importDocumentsSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to importDocuments. */
+    public OperationCallSettings.Builder&lt;
+            ImportDocumentsRequest, ImportDocumentsResponse, KnowledgeOperationMetadata&gt;
+        importDocumentsOperationSettings() {
+<span class="nc" id="L283">      return getStubSettingsBuilder().importDocumentsOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteDocument. */
+    public UnaryCallSettings.Builder&lt;DeleteDocumentRequest, Operation&gt; deleteDocumentSettings() {
+<span class="nc" id="L288">      return getStubSettingsBuilder().deleteDocumentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteDocument. */
+    public OperationCallSettings.Builder&lt;DeleteDocumentRequest, Empty, KnowledgeOperationMetadata&gt;
+        deleteDocumentOperationSettings() {
+<span class="nc" id="L294">      return getStubSettingsBuilder().deleteDocumentOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateDocument. */
+    public UnaryCallSettings.Builder&lt;UpdateDocumentRequest, Operation&gt; updateDocumentSettings() {
+<span class="nc" id="L299">      return getStubSettingsBuilder().updateDocumentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateDocument. */
+    public OperationCallSettings.Builder&lt;
+            UpdateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        updateDocumentOperationSettings() {
+<span class="nc" id="L306">      return getStubSettingsBuilder().updateDocumentOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to reloadDocument. */
+    public UnaryCallSettings.Builder&lt;ReloadDocumentRequest, Operation&gt; reloadDocumentSettings() {
+<span class="nc" id="L311">      return getStubSettingsBuilder().reloadDocumentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to reloadDocument. */
+    public OperationCallSettings.Builder&lt;
+            ReloadDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        reloadDocumentOperationSettings() {
+<span class="nc" id="L318">      return getStubSettingsBuilder().reloadDocumentOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to exportDocument. */
+    public UnaryCallSettings.Builder&lt;ExportDocumentRequest, Operation&gt; exportDocumentSettings() {
+<span class="nc" id="L323">      return getStubSettingsBuilder().exportDocumentSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to exportDocument. */
+    public OperationCallSettings.Builder&lt;
+            ExportDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+        exportDocumentOperationSettings() {
+<span class="nc" id="L330">      return getStubSettingsBuilder().exportDocumentOperationSettings();</span>
+    }
+
+    @Override
+    public DocumentsSettings build() throws IOException {
+<span class="fc" id="L335">      return new DocumentsSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

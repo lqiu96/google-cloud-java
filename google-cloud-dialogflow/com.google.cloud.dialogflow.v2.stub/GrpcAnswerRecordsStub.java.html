@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcAnswerRecordsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcAnswerRecordsStub.java</span></div><h1>GrpcAnswerRecordsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.AnswerRecordsClient.ListAnswerRecordsPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.AnswerRecord;
+import com.google.cloud.dialogflow.v2.ListAnswerRecordsRequest;
+import com.google.cloud.dialogflow.v2.ListAnswerRecordsResponse;
+import com.google.cloud.dialogflow.v2.UpdateAnswerRecordRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the AnswerRecords service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcAnswerRecordsStub extends AnswerRecordsStub {
+  private static final MethodDescriptor&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse&gt;
+      listAnswerRecordsMethodDescriptor =
+<span class="fc" id="L49">          MethodDescriptor.&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse&gt;newBuilder()</span>
+<span class="fc" id="L50">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L51">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.AnswerRecords/ListAnswerRecords&quot;)</span>
+<span class="fc" id="L52">              .setRequestMarshaller(</span>
+<span class="fc" id="L53">                  ProtoUtils.marshaller(ListAnswerRecordsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L54">              .setResponseMarshaller(</span>
+<span class="fc" id="L55">                  ProtoUtils.marshaller(ListAnswerRecordsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L56">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateAnswerRecordRequest, AnswerRecord&gt;
+<span class="fc" id="L59">      updateAnswerRecordMethodDescriptor =</span>
+<span class="fc" id="L60">          MethodDescriptor.&lt;UpdateAnswerRecordRequest, AnswerRecord&gt;newBuilder()</span>
+<span class="fc" id="L61">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L62">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.AnswerRecords/UpdateAnswerRecord&quot;)</span>
+<span class="fc" id="L63">              .setRequestMarshaller(</span>
+<span class="fc" id="L64">                  ProtoUtils.marshaller(UpdateAnswerRecordRequest.getDefaultInstance()))</span>
+<span class="fc" id="L65">              .setResponseMarshaller(ProtoUtils.marshaller(AnswerRecord.getDefaultInstance()))</span>
+<span class="fc" id="L66">              .build();</span>
+
+  private final UnaryCallable&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse&gt;
+      listAnswerRecordsCallable;
+  private final UnaryCallable&lt;ListAnswerRecordsRequest, ListAnswerRecordsPagedResponse&gt;
+      listAnswerRecordsPagedCallable;
+  private final UnaryCallable&lt;UpdateAnswerRecordRequest, AnswerRecord&gt; updateAnswerRecordCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcAnswerRecordsStub create(AnswerRecordsStubSettings settings)
+      throws IOException {
+<span class="fc" id="L80">    return new GrpcAnswerRecordsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcAnswerRecordsStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L84">    return new GrpcAnswerRecordsStub(AnswerRecordsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcAnswerRecordsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L89">    return new GrpcAnswerRecordsStub(</span>
+<span class="nc" id="L90">        AnswerRecordsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcAnswerRecordsStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcAnswerRecordsStub(AnswerRecordsStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L100">    this(settings, clientContext, new GrpcAnswerRecordsCallableFactory());</span>
+<span class="fc" id="L101">  }</span>
+
+  /**
+   * Constructs an instance of GrpcAnswerRecordsStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcAnswerRecordsStub(
+      AnswerRecordsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L112">      throws IOException {</span>
+<span class="fc" id="L113">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L114">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse&gt;
+        listAnswerRecordsTransportSettings =
+<span class="fc" id="L118">            GrpcCallSettings.&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse&gt;newBuilder()</span>
+<span class="fc" id="L119">                .setMethodDescriptor(listAnswerRecordsMethodDescriptor)</span>
+<span class="fc" id="L120">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L122">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L123">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L124">                      return params.build();</span>
+                    })
+<span class="fc" id="L126">                .build();</span>
+    GrpcCallSettings&lt;UpdateAnswerRecordRequest, AnswerRecord&gt; updateAnswerRecordTransportSettings =
+<span class="fc" id="L128">        GrpcCallSettings.&lt;UpdateAnswerRecordRequest, AnswerRecord&gt;newBuilder()</span>
+<span class="fc" id="L129">            .setMethodDescriptor(updateAnswerRecordMethodDescriptor)</span>
+<span class="fc" id="L130">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L132">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L133">                  params.put(</span>
+<span class="fc" id="L134">                      &quot;answer_record.name&quot;, String.valueOf(request.getAnswerRecord().getName()));</span>
+<span class="fc" id="L135">                  return params.build();</span>
+                })
+<span class="fc" id="L137">            .build();</span>
+
+<span class="fc" id="L139">    this.listAnswerRecordsCallable =</span>
+<span class="fc" id="L140">        callableFactory.createUnaryCallable(</span>
+            listAnswerRecordsTransportSettings,
+<span class="fc" id="L142">            settings.listAnswerRecordsSettings(),</span>
+            clientContext);
+<span class="fc" id="L144">    this.listAnswerRecordsPagedCallable =</span>
+<span class="fc" id="L145">        callableFactory.createPagedCallable(</span>
+            listAnswerRecordsTransportSettings,
+<span class="fc" id="L147">            settings.listAnswerRecordsSettings(),</span>
+            clientContext);
+<span class="fc" id="L149">    this.updateAnswerRecordCallable =</span>
+<span class="fc" id="L150">        callableFactory.createUnaryCallable(</span>
+            updateAnswerRecordTransportSettings,
+<span class="fc" id="L152">            settings.updateAnswerRecordSettings(),</span>
+            clientContext);
+
+<span class="fc" id="L155">    this.backgroundResources =</span>
+<span class="fc" id="L156">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L157">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L160">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListAnswerRecordsRequest, ListAnswerRecordsResponse&gt;
+      listAnswerRecordsCallable() {
+<span class="nc" id="L166">    return listAnswerRecordsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListAnswerRecordsRequest, ListAnswerRecordsPagedResponse&gt;
+      listAnswerRecordsPagedCallable() {
+<span class="fc" id="L172">    return listAnswerRecordsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateAnswerRecordRequest, AnswerRecord&gt; updateAnswerRecordCallable() {
+<span class="fc" id="L177">    return updateAnswerRecordCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L183">      backgroundResources.close();</span>
+<span class="nc" id="L184">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L185">      throw e;</span>
+<span class="nc" id="L186">    } catch (Exception e) {</span>
+<span class="nc" id="L187">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L188">    }</span>
+<span class="fc" id="L189">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L193">    backgroundResources.shutdown();</span>
+<span class="nc" id="L194">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L198">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L203">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L208">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L209">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L213">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcKnowledgeBasesStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcKnowledgeBasesStub.java</span></div><h1>GrpcKnowledgeBasesStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import static com.google.cloud.dialogflow.v2.KnowledgeBasesClient.ListKnowledgeBasesPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.CreateKnowledgeBaseRequest;
+import com.google.cloud.dialogflow.v2.DeleteKnowledgeBaseRequest;
+import com.google.cloud.dialogflow.v2.GetKnowledgeBaseRequest;
+import com.google.cloud.dialogflow.v2.KnowledgeBase;
+import com.google.cloud.dialogflow.v2.ListKnowledgeBasesRequest;
+import com.google.cloud.dialogflow.v2.ListKnowledgeBasesResponse;
+import com.google.cloud.dialogflow.v2.UpdateKnowledgeBaseRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the KnowledgeBases service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcKnowledgeBasesStub extends KnowledgeBasesStub {
+  private static final MethodDescriptor&lt;ListKnowledgeBasesRequest, ListKnowledgeBasesResponse&gt;
+      listKnowledgeBasesMethodDescriptor =
+<span class="fc" id="L53">          MethodDescriptor.&lt;ListKnowledgeBasesRequest, ListKnowledgeBasesResponse&gt;newBuilder()</span>
+<span class="fc" id="L54">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L55">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.KnowledgeBases/ListKnowledgeBases&quot;)</span>
+<span class="fc" id="L56">              .setRequestMarshaller(</span>
+<span class="fc" id="L57">                  ProtoUtils.marshaller(ListKnowledgeBasesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L58">              .setResponseMarshaller(</span>
+<span class="fc" id="L59">                  ProtoUtils.marshaller(ListKnowledgeBasesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L60">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetKnowledgeBaseRequest, KnowledgeBase&gt;
+      getKnowledgeBaseMethodDescriptor =
+<span class="fc" id="L64">          MethodDescriptor.&lt;GetKnowledgeBaseRequest, KnowledgeBase&gt;newBuilder()</span>
+<span class="fc" id="L65">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L66">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.KnowledgeBases/GetKnowledgeBase&quot;)</span>
+<span class="fc" id="L67">              .setRequestMarshaller(</span>
+<span class="fc" id="L68">                  ProtoUtils.marshaller(GetKnowledgeBaseRequest.getDefaultInstance()))</span>
+<span class="fc" id="L69">              .setResponseMarshaller(ProtoUtils.marshaller(KnowledgeBase.getDefaultInstance()))</span>
+<span class="fc" id="L70">              .build();</span>
+
+  private static final MethodDescriptor&lt;CreateKnowledgeBaseRequest, KnowledgeBase&gt;
+      createKnowledgeBaseMethodDescriptor =
+<span class="fc" id="L74">          MethodDescriptor.&lt;CreateKnowledgeBaseRequest, KnowledgeBase&gt;newBuilder()</span>
+<span class="fc" id="L75">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L76">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.KnowledgeBases/CreateKnowledgeBase&quot;)</span>
+<span class="fc" id="L77">              .setRequestMarshaller(</span>
+<span class="fc" id="L78">                  ProtoUtils.marshaller(CreateKnowledgeBaseRequest.getDefaultInstance()))</span>
+<span class="fc" id="L79">              .setResponseMarshaller(ProtoUtils.marshaller(KnowledgeBase.getDefaultInstance()))</span>
+<span class="fc" id="L80">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteKnowledgeBaseRequest, Empty&gt;
+      deleteKnowledgeBaseMethodDescriptor =
+<span class="fc" id="L84">          MethodDescriptor.&lt;DeleteKnowledgeBaseRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L85">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L86">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.KnowledgeBases/DeleteKnowledgeBase&quot;)</span>
+<span class="fc" id="L87">              .setRequestMarshaller(</span>
+<span class="fc" id="L88">                  ProtoUtils.marshaller(DeleteKnowledgeBaseRequest.getDefaultInstance()))</span>
+<span class="fc" id="L89">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L90">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateKnowledgeBaseRequest, KnowledgeBase&gt;
+<span class="fc" id="L93">      updateKnowledgeBaseMethodDescriptor =</span>
+<span class="fc" id="L94">          MethodDescriptor.&lt;UpdateKnowledgeBaseRequest, KnowledgeBase&gt;newBuilder()</span>
+<span class="fc" id="L95">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L96">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.KnowledgeBases/UpdateKnowledgeBase&quot;)</span>
+<span class="fc" id="L97">              .setRequestMarshaller(</span>
+<span class="fc" id="L98">                  ProtoUtils.marshaller(UpdateKnowledgeBaseRequest.getDefaultInstance()))</span>
+<span class="fc" id="L99">              .setResponseMarshaller(ProtoUtils.marshaller(KnowledgeBase.getDefaultInstance()))</span>
+<span class="fc" id="L100">              .build();</span>
+
+  private final UnaryCallable&lt;ListKnowledgeBasesRequest, ListKnowledgeBasesResponse&gt;
+      listKnowledgeBasesCallable;
+  private final UnaryCallable&lt;ListKnowledgeBasesRequest, ListKnowledgeBasesPagedResponse&gt;
+      listKnowledgeBasesPagedCallable;
+  private final UnaryCallable&lt;GetKnowledgeBaseRequest, KnowledgeBase&gt; getKnowledgeBaseCallable;
+  private final UnaryCallable&lt;CreateKnowledgeBaseRequest, KnowledgeBase&gt;
+      createKnowledgeBaseCallable;
+  private final UnaryCallable&lt;DeleteKnowledgeBaseRequest, Empty&gt; deleteKnowledgeBaseCallable;
+  private final UnaryCallable&lt;UpdateKnowledgeBaseRequest, KnowledgeBase&gt;
+      updateKnowledgeBaseCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcKnowledgeBasesStub create(KnowledgeBasesStubSettings settings)
+      throws IOException {
+<span class="fc" id="L119">    return new GrpcKnowledgeBasesStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcKnowledgeBasesStub create(ClientContext clientContext)
+      throws IOException {
+<span class="nc" id="L124">    return new GrpcKnowledgeBasesStub(</span>
+<span class="nc" id="L125">        KnowledgeBasesStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcKnowledgeBasesStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L130">    return new GrpcKnowledgeBasesStub(</span>
+<span class="nc" id="L131">        KnowledgeBasesStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcKnowledgeBasesStub, using the given settings. This is protected
+   * so that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcKnowledgeBasesStub(KnowledgeBasesStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L141">    this(settings, clientContext, new GrpcKnowledgeBasesCallableFactory());</span>
+<span class="fc" id="L142">  }</span>
+
+  /**
+   * Constructs an instance of GrpcKnowledgeBasesStub, using the given settings. This is protected
+   * so that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcKnowledgeBasesStub(
+      KnowledgeBasesStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L153">      throws IOException {</span>
+<span class="fc" id="L154">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L155">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;ListKnowledgeBasesRequest, ListKnowledgeBasesResponse&gt;
+        listKnowledgeBasesTransportSettings =
+<span class="fc" id="L159">            GrpcCallSettings.&lt;ListKnowledgeBasesRequest, ListKnowledgeBasesResponse&gt;newBuilder()</span>
+<span class="fc" id="L160">                .setMethodDescriptor(listKnowledgeBasesMethodDescriptor)</span>
+<span class="fc" id="L161">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L163">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L164">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L165">                      return params.build();</span>
+                    })
+<span class="fc" id="L167">                .build();</span>
+    GrpcCallSettings&lt;GetKnowledgeBaseRequest, KnowledgeBase&gt; getKnowledgeBaseTransportSettings =
+<span class="fc" id="L169">        GrpcCallSettings.&lt;GetKnowledgeBaseRequest, KnowledgeBase&gt;newBuilder()</span>
+<span class="fc" id="L170">            .setMethodDescriptor(getKnowledgeBaseMethodDescriptor)</span>
+<span class="fc" id="L171">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L173">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L174">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L175">                  return params.build();</span>
+                })
+<span class="fc" id="L177">            .build();</span>
+    GrpcCallSettings&lt;CreateKnowledgeBaseRequest, KnowledgeBase&gt;
+        createKnowledgeBaseTransportSettings =
+<span class="fc" id="L180">            GrpcCallSettings.&lt;CreateKnowledgeBaseRequest, KnowledgeBase&gt;newBuilder()</span>
+<span class="fc" id="L181">                .setMethodDescriptor(createKnowledgeBaseMethodDescriptor)</span>
+<span class="fc" id="L182">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L184">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L185">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L186">                      return params.build();</span>
+                    })
+<span class="fc" id="L188">                .build();</span>
+    GrpcCallSettings&lt;DeleteKnowledgeBaseRequest, Empty&gt; deleteKnowledgeBaseTransportSettings =
+<span class="fc" id="L190">        GrpcCallSettings.&lt;DeleteKnowledgeBaseRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L191">            .setMethodDescriptor(deleteKnowledgeBaseMethodDescriptor)</span>
+<span class="fc" id="L192">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L194">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L195">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L196">                  return params.build();</span>
+                })
+<span class="fc" id="L198">            .build();</span>
+    GrpcCallSettings&lt;UpdateKnowledgeBaseRequest, KnowledgeBase&gt;
+        updateKnowledgeBaseTransportSettings =
+<span class="fc" id="L201">            GrpcCallSettings.&lt;UpdateKnowledgeBaseRequest, KnowledgeBase&gt;newBuilder()</span>
+<span class="fc" id="L202">                .setMethodDescriptor(updateKnowledgeBaseMethodDescriptor)</span>
+<span class="fc" id="L203">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L205">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L206">                      params.put(</span>
+                          &quot;knowledge_base.name&quot;,
+<span class="fc" id="L208">                          String.valueOf(request.getKnowledgeBase().getName()));</span>
+<span class="fc" id="L209">                      return params.build();</span>
+                    })
+<span class="fc" id="L211">                .build();</span>
+
+<span class="fc" id="L213">    this.listKnowledgeBasesCallable =</span>
+<span class="fc" id="L214">        callableFactory.createUnaryCallable(</span>
+            listKnowledgeBasesTransportSettings,
+<span class="fc" id="L216">            settings.listKnowledgeBasesSettings(),</span>
+            clientContext);
+<span class="fc" id="L218">    this.listKnowledgeBasesPagedCallable =</span>
+<span class="fc" id="L219">        callableFactory.createPagedCallable(</span>
+            listKnowledgeBasesTransportSettings,
+<span class="fc" id="L221">            settings.listKnowledgeBasesSettings(),</span>
+            clientContext);
+<span class="fc" id="L223">    this.getKnowledgeBaseCallable =</span>
+<span class="fc" id="L224">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L225">            getKnowledgeBaseTransportSettings, settings.getKnowledgeBaseSettings(), clientContext);</span>
+<span class="fc" id="L226">    this.createKnowledgeBaseCallable =</span>
+<span class="fc" id="L227">        callableFactory.createUnaryCallable(</span>
+            createKnowledgeBaseTransportSettings,
+<span class="fc" id="L229">            settings.createKnowledgeBaseSettings(),</span>
+            clientContext);
+<span class="fc" id="L231">    this.deleteKnowledgeBaseCallable =</span>
+<span class="fc" id="L232">        callableFactory.createUnaryCallable(</span>
+            deleteKnowledgeBaseTransportSettings,
+<span class="fc" id="L234">            settings.deleteKnowledgeBaseSettings(),</span>
+            clientContext);
+<span class="fc" id="L236">    this.updateKnowledgeBaseCallable =</span>
+<span class="fc" id="L237">        callableFactory.createUnaryCallable(</span>
+            updateKnowledgeBaseTransportSettings,
+<span class="fc" id="L239">            settings.updateKnowledgeBaseSettings(),</span>
+            clientContext);
+
+<span class="fc" id="L242">    this.backgroundResources =</span>
+<span class="fc" id="L243">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L244">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L247">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListKnowledgeBasesRequest, ListKnowledgeBasesResponse&gt;
+      listKnowledgeBasesCallable() {
+<span class="nc" id="L253">    return listKnowledgeBasesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListKnowledgeBasesRequest, ListKnowledgeBasesPagedResponse&gt;
+      listKnowledgeBasesPagedCallable() {
+<span class="fc" id="L259">    return listKnowledgeBasesPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetKnowledgeBaseRequest, KnowledgeBase&gt; getKnowledgeBaseCallable() {
+<span class="fc" id="L264">    return getKnowledgeBaseCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateKnowledgeBaseRequest, KnowledgeBase&gt; createKnowledgeBaseCallable() {
+<span class="fc" id="L269">    return createKnowledgeBaseCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteKnowledgeBaseRequest, Empty&gt; deleteKnowledgeBaseCallable() {
+<span class="fc" id="L274">    return deleteKnowledgeBaseCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateKnowledgeBaseRequest, KnowledgeBase&gt; updateKnowledgeBaseCallable() {
+<span class="fc" id="L279">    return updateKnowledgeBaseCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L285">      backgroundResources.close();</span>
+<span class="nc" id="L286">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L287">      throw e;</span>
+<span class="nc" id="L288">    } catch (Exception e) {</span>
+<span class="nc" id="L289">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L290">    }</span>
+<span class="fc" id="L291">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L295">    backgroundResources.shutdown();</span>
+<span class="nc" id="L296">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L300">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L305">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L310">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L311">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L315">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

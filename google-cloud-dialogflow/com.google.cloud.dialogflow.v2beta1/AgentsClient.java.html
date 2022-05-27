@@ -1,0 +1,1550 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AgentsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1</a> &gt; <span class="el_source">AgentsClient.java</span></div><h1>AgentsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2beta1.stub.AgentsStub;
+import com.google.cloud.dialogflow.v2beta1.stub.AgentsStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
+import com.google.protobuf.Empty;
+import com.google.protobuf.Struct;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service for managing [Agents][google.cloud.dialogflow.v2beta1.Agent].
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (AgentsClient agentsClient = AgentsClient.create()) {
+ *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+ *   Agent response = agentsClient.getAgent(parent);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the AgentsClient object to clean up resources such as
+ * threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of AgentsSettings to create().
+ * For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * AgentsSettings agentsSettings =
+ *     AgentsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * AgentsClient agentsClient = AgentsClient.create(agentsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * AgentsSettings agentsSettings = AgentsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * AgentsClient agentsClient = AgentsClient.create(agentsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class AgentsClient implements BackgroundResource {
+  private final AgentsSettings settings;
+  private final AgentsStub stub;
+  private final OperationsClient operationsClient;
+
+  /** Constructs an instance of AgentsClient with default settings. */
+  public static final AgentsClient create() throws IOException {
+<span class="nc" id="L116">    return create(AgentsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of AgentsClient, using the given settings. The channels are created
+   * based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final AgentsClient create(AgentsSettings settings) throws IOException {
+<span class="fc" id="L124">    return new AgentsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of AgentsClient, using the given stub for making calls. This is for
+   * advanced usage - prefer using create(AgentsSettings).
+   */
+  public static final AgentsClient create(AgentsStub stub) {
+<span class="nc" id="L132">    return new AgentsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of AgentsClient, using the given settings. This is protected so that it
+   * is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+<span class="fc" id="L139">  protected AgentsClient(AgentsSettings settings) throws IOException {</span>
+<span class="fc" id="L140">    this.settings = settings;</span>
+<span class="fc" id="L141">    this.stub = ((AgentsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L142">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="fc" id="L143">  }</span>
+
+<span class="nc" id="L145">  protected AgentsClient(AgentsStub stub) {</span>
+<span class="nc" id="L146">    this.settings = null;</span>
+<span class="nc" id="L147">    this.stub = stub;</span>
+<span class="nc" id="L148">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="nc" id="L149">  }</span>
+
+  public final AgentsSettings getSettings() {
+<span class="nc" id="L152">    return settings;</span>
+  }
+
+  public AgentsStub getStub() {
+<span class="nc" id="L156">    return stub;</span>
+  }
+
+  /**
+   * Returns the OperationsClient that can be used to query the status of a long-running operation
+   * returned by another API method call.
+   */
+  public final OperationsClient getOperationsClient() {
+<span class="nc" id="L164">    return operationsClient;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   Agent response = agentsClient.getAgent(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to fetch is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Agent getAgent(LocationName parent) {
+    GetAgentRequest request =
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">        GetAgentRequest.newBuilder().setParent(parent == null ? null : parent.toString()).build();</span>
+<span class="fc" id="L190">    return getAgent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ProjectName parent = ProjectName.of(&quot;[PROJECT]&quot;);
+   *   Agent response = agentsClient.getAgent(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to fetch is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Agent getAgent(ProjectName parent) {
+    GetAgentRequest request =
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">        GetAgentRequest.newBuilder().setParent(parent == null ? null : parent.toString()).build();</span>
+<span class="fc" id="L216">    return getAgent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   String parent = ProjectName.of(&quot;[PROJECT]&quot;).toString();
+   *   Agent response = agentsClient.getAgent(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to fetch is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Agent getAgent(String parent) {
+<span class="fc" id="L240">    GetAgentRequest request = GetAgentRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L241">    return getAgent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   GetAgentRequest request =
+   *       GetAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   Agent response = agentsClient.getAgent(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Agent getAgent(GetAgentRequest request) {
+<span class="fc" id="L264">    return getAgentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   GetAgentRequest request =
+   *       GetAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   ApiFuture&lt;Agent&gt; future = agentsClient.getAgentCallable().futureCall(request);
+   *   // Do something.
+   *   Agent response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetAgentRequest, Agent&gt; getAgentCallable() {
+<span class="fc" id="L286">    return stub.getAgentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates/updates the specified agent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   Agent agent = Agent.newBuilder().build();
+   *   Agent response = agentsClient.setAgent(agent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param agent Required. The agent to update.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Agent setAgent(Agent agent) {
+<span class="fc" id="L311">    SetAgentRequest request = SetAgentRequest.newBuilder().setAgent(agent).build();</span>
+<span class="fc" id="L312">    return setAgent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates/updates the specified agent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   SetAgentRequest request =
+   *       SetAgentRequest.newBuilder()
+   *           .setAgent(Agent.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   Agent response = agentsClient.setAgent(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Agent setAgent(SetAgentRequest request) {
+<span class="fc" id="L341">    return setAgentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates/updates the specified agent.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   SetAgentRequest request =
+   *       SetAgentRequest.newBuilder()
+   *           .setAgent(Agent.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Agent&gt; future = agentsClient.setAgentCallable().futureCall(request);
+   *   // Do something.
+   *   Agent response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;SetAgentRequest, Agent&gt; setAgentCallable() {
+<span class="fc" id="L369">    return stub.setAgentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   agentsClient.deleteAgent(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to delete is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteAgent(LocationName parent) {
+    DeleteAgentRequest request =
+<span class="fc" id="L394">        DeleteAgentRequest.newBuilder()</span>
+<span class="pc bpc" id="L395" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L396">            .build();</span>
+<span class="fc" id="L397">    deleteAgent(request);</span>
+<span class="fc" id="L398">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ProjectName parent = ProjectName.of(&quot;[PROJECT]&quot;);
+   *   agentsClient.deleteAgent(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to delete is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteAgent(ProjectName parent) {
+    DeleteAgentRequest request =
+<span class="fc" id="L422">        DeleteAgentRequest.newBuilder()</span>
+<span class="pc bpc" id="L423" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L424">            .build();</span>
+<span class="fc" id="L425">    deleteAgent(request);</span>
+<span class="fc" id="L426">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   String parent = ProjectName.of(&quot;[PROJECT]&quot;).toString();
+   *   agentsClient.deleteAgent(parent);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to delete is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteAgent(String parent) {
+<span class="fc" id="L449">    DeleteAgentRequest request = DeleteAgentRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L450">    deleteAgent(request);</span>
+<span class="fc" id="L451">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   DeleteAgentRequest request =
+   *       DeleteAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   agentsClient.deleteAgent(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteAgent(DeleteAgentRequest request) {
+<span class="fc" id="L473">    deleteAgentCallable().call(request);</span>
+<span class="fc" id="L474">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified agent.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   DeleteAgentRequest request =
+   *       DeleteAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   ApiFuture&lt;Empty&gt; future = agentsClient.deleteAgentCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteAgentRequest, Empty&gt; deleteAgentCallable() {
+<span class="fc" id="L495">    return stub.deleteAgentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of agents. Since there is at most one conversational agent per project, this
+   * method is useful primarily for listing all agents across projects the caller has access to. One
+   * can achieve that with a wildcard project collection id &quot;-&quot;. Refer to [List
+   * Sub-Collections](https://cloud.google.com/apis/design/design_patterns#list_sub-collections).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   for (Agent element : agentsClient.searchAgents(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list agents from. Format: `projects/&amp;lt;Project ID or
+   *     '-'&amp;gt;` or `projects/&amp;lt;Project ID or '-'&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SearchAgentsPagedResponse searchAgents(LocationName parent) {
+    SearchAgentsRequest request =
+<span class="fc" id="L524">        SearchAgentsRequest.newBuilder()</span>
+<span class="pc bpc" id="L525" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L526">            .build();</span>
+<span class="fc" id="L527">    return searchAgents(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of agents. Since there is at most one conversational agent per project, this
+   * method is useful primarily for listing all agents across projects the caller has access to. One
+   * can achieve that with a wildcard project collection id &quot;-&quot;. Refer to [List
+   * Sub-Collections](https://cloud.google.com/apis/design/design_patterns#list_sub-collections).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ProjectName parent = ProjectName.of(&quot;[PROJECT]&quot;);
+   *   for (Agent element : agentsClient.searchAgents(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list agents from. Format: `projects/&amp;lt;Project ID or
+   *     '-'&amp;gt;` or `projects/&amp;lt;Project ID or '-'&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SearchAgentsPagedResponse searchAgents(ProjectName parent) {
+    SearchAgentsRequest request =
+<span class="fc" id="L556">        SearchAgentsRequest.newBuilder()</span>
+<span class="pc bpc" id="L557" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L558">            .build();</span>
+<span class="fc" id="L559">    return searchAgents(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of agents. Since there is at most one conversational agent per project, this
+   * method is useful primarily for listing all agents across projects the caller has access to. One
+   * can achieve that with a wildcard project collection id &quot;-&quot;. Refer to [List
+   * Sub-Collections](https://cloud.google.com/apis/design/design_patterns#list_sub-collections).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   String parent = ProjectName.of(&quot;[PROJECT]&quot;).toString();
+   *   for (Agent element : agentsClient.searchAgents(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list agents from. Format: `projects/&amp;lt;Project ID or
+   *     '-'&amp;gt;` or `projects/&amp;lt;Project ID or '-'&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SearchAgentsPagedResponse searchAgents(String parent) {
+<span class="fc" id="L587">    SearchAgentsRequest request = SearchAgentsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L588">    return searchAgents(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of agents. Since there is at most one conversational agent per project, this
+   * method is useful primarily for listing all agents across projects the caller has access to. One
+   * can achieve that with a wildcard project collection id &quot;-&quot;. Refer to [List
+   * Sub-Collections](https://cloud.google.com/apis/design/design_patterns#list_sub-collections).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   SearchAgentsRequest request =
+   *       SearchAgentsRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (Agent element : agentsClient.searchAgents(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final SearchAgentsPagedResponse searchAgents(SearchAgentsRequest request) {
+<span class="fc" id="L620">    return searchAgentsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of agents. Since there is at most one conversational agent per project, this
+   * method is useful primarily for listing all agents across projects the caller has access to. One
+   * can achieve that with a wildcard project collection id &quot;-&quot;. Refer to [List
+   * Sub-Collections](https://cloud.google.com/apis/design/design_patterns#list_sub-collections).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   SearchAgentsRequest request =
+   *       SearchAgentsRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;Agent&gt; future = agentsClient.searchAgentsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (Agent element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;SearchAgentsRequest, SearchAgentsPagedResponse&gt;
+      searchAgentsPagedCallable() {
+<span class="fc" id="L652">    return stub.searchAgentsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of agents. Since there is at most one conversational agent per project, this
+   * method is useful primarily for listing all agents across projects the caller has access to. One
+   * can achieve that with a wildcard project collection id &quot;-&quot;. Refer to [List
+   * Sub-Collections](https://cloud.google.com/apis/design/design_patterns#list_sub-collections).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   SearchAgentsRequest request =
+   *       SearchAgentsRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     SearchAgentsResponse response = agentsClient.searchAgentsCallable().call(request);
+   *     for (Agent element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;SearchAgentsRequest, SearchAgentsResponse&gt; searchAgentsCallable() {
+<span class="nc" id="L690">    return stub.searchAgentsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Trains the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   agentsClient.trainAgentAsync(parent).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to train is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, Struct&gt; trainAgentAsync(LocationName parent) {
+    TrainAgentRequest request =
+<span class="pc bpc" id="L727" title="1 of 2 branches missed.">        TrainAgentRequest.newBuilder().setParent(parent == null ? null : parent.toString()).build();</span>
+<span class="fc" id="L728">    return trainAgentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Trains the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ProjectName parent = ProjectName.of(&quot;[PROJECT]&quot;);
+   *   agentsClient.trainAgentAsync(parent).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to train is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, Struct&gt; trainAgentAsync(ProjectName parent) {
+    TrainAgentRequest request =
+<span class="pc bpc" id="L765" title="1 of 2 branches missed.">        TrainAgentRequest.newBuilder().setParent(parent == null ? null : parent.toString()).build();</span>
+<span class="fc" id="L766">    return trainAgentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Trains the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   String parent = ProjectName.of(&quot;[PROJECT]&quot;).toString();
+   *   agentsClient.trainAgentAsync(parent).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to train is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, Struct&gt; trainAgentAsync(String parent) {
+<span class="fc" id="L802">    TrainAgentRequest request = TrainAgentRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L803">    return trainAgentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Trains the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   TrainAgentRequest request =
+   *       TrainAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   agentsClient.trainAgentAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, Struct&gt; trainAgentAsync(TrainAgentRequest request) {
+<span class="fc" id="L838">    return trainAgentOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Trains the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   TrainAgentRequest request =
+   *       TrainAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   OperationFuture&lt;Empty, Struct&gt; future =
+   *       agentsClient.trainAgentOperationCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;TrainAgentRequest, Empty, Struct&gt; trainAgentOperationCallable() {
+<span class="fc" id="L873">    return stub.trainAgentOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Trains the specified agent.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   TrainAgentRequest request =
+   *       TrainAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   ApiFuture&lt;Operation&gt; future = agentsClient.trainAgentCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;TrainAgentRequest, Operation&gt; trainAgentCallable() {
+<span class="nc" id="L907">    return stub.trainAgentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Exports the specified agent to a ZIP file.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: [ExportAgentResponse][google.cloud.dialogflow.v2beta1.ExportAgentResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   ExportAgentResponse response = agentsClient.exportAgentAsync(parent).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to export is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ExportAgentResponse, Struct&gt; exportAgentAsync(LocationName parent) {
+    ExportAgentRequest request =
+<span class="fc" id="L940">        ExportAgentRequest.newBuilder()</span>
+<span class="pc bpc" id="L941" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L942">            .build();</span>
+<span class="fc" id="L943">    return exportAgentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Exports the specified agent to a ZIP file.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: [ExportAgentResponse][google.cloud.dialogflow.v2beta1.ExportAgentResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ProjectName parent = ProjectName.of(&quot;[PROJECT]&quot;);
+   *   ExportAgentResponse response = agentsClient.exportAgentAsync(parent).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to export is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ExportAgentResponse, Struct&gt; exportAgentAsync(ProjectName parent) {
+    ExportAgentRequest request =
+<span class="fc" id="L976">        ExportAgentRequest.newBuilder()</span>
+<span class="pc bpc" id="L977" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L978">            .build();</span>
+<span class="fc" id="L979">    return exportAgentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Exports the specified agent to a ZIP file.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: [ExportAgentResponse][google.cloud.dialogflow.v2beta1.ExportAgentResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   String parent = ProjectName.of(&quot;[PROJECT]&quot;).toString();
+   *   ExportAgentResponse response = agentsClient.exportAgentAsync(parent).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project that the agent to export is associated with. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;` or `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ExportAgentResponse, Struct&gt; exportAgentAsync(String parent) {
+<span class="fc" id="L1011">    ExportAgentRequest request = ExportAgentRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L1012">    return exportAgentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Exports the specified agent to a ZIP file.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: [ExportAgentResponse][google.cloud.dialogflow.v2beta1.ExportAgentResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ExportAgentRequest request =
+   *       ExportAgentRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setAgentUri(&quot;agentUri1469149223&quot;)
+   *           .build();
+   *   ExportAgentResponse response = agentsClient.exportAgentAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ExportAgentResponse, Struct&gt; exportAgentAsync(
+      ExportAgentRequest request) {
+<span class="fc" id="L1047">    return exportAgentOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Exports the specified agent to a ZIP file.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: [ExportAgentResponse][google.cloud.dialogflow.v2beta1.ExportAgentResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ExportAgentRequest request =
+   *       ExportAgentRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setAgentUri(&quot;agentUri1469149223&quot;)
+   *           .build();
+   *   OperationFuture&lt;ExportAgentResponse, Struct&gt; future =
+   *       agentsClient.exportAgentOperationCallable().futureCall(request);
+   *   // Do something.
+   *   ExportAgentResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;ExportAgentRequest, ExportAgentResponse, Struct&gt;
+      exportAgentOperationCallable() {
+<span class="fc" id="L1082">    return stub.exportAgentOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Exports the specified agent to a ZIP file.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: [ExportAgentResponse][google.cloud.dialogflow.v2beta1.ExportAgentResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ExportAgentRequest request =
+   *       ExportAgentRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setAgentUri(&quot;agentUri1469149223&quot;)
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = agentsClient.exportAgentCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ExportAgentRequest, Operation&gt; exportAgentCallable() {
+<span class="nc" id="L1115">    return stub.exportAgentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Imports the specified agent from a ZIP file.
+   *
+   * &lt;p&gt;Uploads new intents and entity types without deleting the existing ones. Intents and entity
+   * types with the same name are replaced with the new versions from
+   * [ImportAgentRequest][google.cloud.dialogflow.v2beta1.ImportAgentRequest]. After the import, the
+   * imported draft agent will be trained automatically (unless disabled in agent settings).
+   * However, once the import is done, training may not be completed yet. Please call
+   * [TrainAgent][google.cloud.dialogflow.v2beta1.Agents.TrainAgent] and wait for the operation it
+   * returns in order to train explicitly.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;The operation only tracks when importing is complete, not when it is done training.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ImportAgentRequest request =
+   *       ImportAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   agentsClient.importAgentAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, Struct&gt; importAgentAsync(ImportAgentRequest request) {
+<span class="fc" id="L1160">    return importAgentOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Imports the specified agent from a ZIP file.
+   *
+   * &lt;p&gt;Uploads new intents and entity types without deleting the existing ones. Intents and entity
+   * types with the same name are replaced with the new versions from
+   * [ImportAgentRequest][google.cloud.dialogflow.v2beta1.ImportAgentRequest]. After the import, the
+   * imported draft agent will be trained automatically (unless disabled in agent settings).
+   * However, once the import is done, training may not be completed yet. Please call
+   * [TrainAgent][google.cloud.dialogflow.v2beta1.Agents.TrainAgent] and wait for the operation it
+   * returns in order to train explicitly.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;The operation only tracks when importing is complete, not when it is done training.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ImportAgentRequest request =
+   *       ImportAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   OperationFuture&lt;Empty, Struct&gt; future =
+   *       agentsClient.importAgentOperationCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;ImportAgentRequest, Empty, Struct&gt; importAgentOperationCallable() {
+<span class="fc" id="L1205">    return stub.importAgentOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Imports the specified agent from a ZIP file.
+   *
+   * &lt;p&gt;Uploads new intents and entity types without deleting the existing ones. Intents and entity
+   * types with the same name are replaced with the new versions from
+   * [ImportAgentRequest][google.cloud.dialogflow.v2beta1.ImportAgentRequest]. After the import, the
+   * imported draft agent will be trained automatically (unless disabled in agent settings).
+   * However, once the import is done, training may not be completed yet. Please call
+   * [TrainAgent][google.cloud.dialogflow.v2beta1.Agents.TrainAgent] and wait for the operation it
+   * returns in order to train explicitly.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;The operation only tracks when importing is complete, not when it is done training.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   ImportAgentRequest request =
+   *       ImportAgentRequest.newBuilder().setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString()).build();
+   *   ApiFuture&lt;Operation&gt; future = agentsClient.importAgentCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ImportAgentRequest, Operation&gt; importAgentCallable() {
+<span class="nc" id="L1249">    return stub.importAgentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Restores the specified agent from a ZIP file.
+   *
+   * &lt;p&gt;Replaces the current agent version with a new one. All the intents and entity types in the
+   * older version are deleted. After the restore, the restored draft agent will be trained
+   * automatically (unless disabled in agent settings). However, once the restore is done, training
+   * may not be completed yet. Please call
+   * [TrainAgent][google.cloud.dialogflow.v2beta1.Agents.TrainAgent] and wait for the operation it
+   * returns in order to train explicitly.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;The operation only tracks when restoring is complete, not when it is done training.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   RestoreAgentRequest request =
+   *       RestoreAgentRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .build();
+   *   agentsClient.restoreAgentAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, Struct&gt; restoreAgentAsync(RestoreAgentRequest request) {
+<span class="fc" id="L1295">    return restoreAgentOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Restores the specified agent from a ZIP file.
+   *
+   * &lt;p&gt;Replaces the current agent version with a new one. All the intents and entity types in the
+   * older version are deleted. After the restore, the restored draft agent will be trained
+   * automatically (unless disabled in agent settings). However, once the restore is done, training
+   * may not be completed yet. Please call
+   * [TrainAgent][google.cloud.dialogflow.v2beta1.Agents.TrainAgent] and wait for the operation it
+   * returns in order to train explicitly.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;The operation only tracks when restoring is complete, not when it is done training.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   RestoreAgentRequest request =
+   *       RestoreAgentRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .build();
+   *   OperationFuture&lt;Empty, Struct&gt; future =
+   *       agentsClient.restoreAgentOperationCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;RestoreAgentRequest, Empty, Struct&gt;
+      restoreAgentOperationCallable() {
+<span class="fc" id="L1342">    return stub.restoreAgentOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Restores the specified agent from a ZIP file.
+   *
+   * &lt;p&gt;Replaces the current agent version with a new one. All the intents and entity types in the
+   * older version are deleted. After the restore, the restored draft agent will be trained
+   * automatically (unless disabled in agent settings). However, once the restore is done, training
+   * may not be completed yet. Please call
+   * [TrainAgent][google.cloud.dialogflow.v2beta1.Agents.TrainAgent] and wait for the operation it
+   * returns in order to train explicitly.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`: An empty [Struct
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;The operation only tracks when restoring is complete, not when it is done training.
+   *
+   * &lt;p&gt;Note: You should always train an agent prior to sending it queries. See the [training
+   * documentation](https://cloud.google.com/dialogflow/es/docs/training).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   RestoreAgentRequest request =
+   *       RestoreAgentRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = agentsClient.restoreAgentCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;RestoreAgentRequest, Operation&gt; restoreAgentCallable() {
+<span class="nc" id="L1387">    return stub.restoreAgentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets agent validation result. Agent validation is performed during training time and is updated
+   * automatically when training is completed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   GetValidationResultRequest request =
+   *       GetValidationResultRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .build();
+   *   ValidationResult response = agentsClient.getValidationResult(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ValidationResult getValidationResult(GetValidationResultRequest request) {
+<span class="fc" id="L1414">    return getValidationResultCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets agent validation result. Agent validation is performed during training time and is updated
+   * automatically when training is completed.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (AgentsClient agentsClient = AgentsClient.create()) {
+   *   GetValidationResultRequest request =
+   *       GetValidationResultRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setLanguageCode(&quot;languageCode-2092349083&quot;)
+   *           .build();
+   *   ApiFuture&lt;ValidationResult&gt; future =
+   *       agentsClient.getValidationResultCallable().futureCall(request);
+   *   // Do something.
+   *   ValidationResult response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetValidationResultRequest, ValidationResult&gt;
+      getValidationResultCallable() {
+<span class="fc" id="L1442">    return stub.getValidationResultCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L1447">    stub.close();</span>
+<span class="fc" id="L1448">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L1452">    stub.shutdown();</span>
+<span class="nc" id="L1453">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L1457">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L1462">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L1467">    stub.shutdownNow();</span>
+<span class="nc" id="L1468">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L1472">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class SearchAgentsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          SearchAgentsRequest,
+          SearchAgentsResponse,
+          Agent,
+          SearchAgentsPage,
+          SearchAgentsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;SearchAgentsPagedResponse&gt; createAsync(
+        PageContext&lt;SearchAgentsRequest, SearchAgentsResponse, Agent&gt; context,
+        ApiFuture&lt;SearchAgentsResponse&gt; futureResponse) {
+      ApiFuture&lt;SearchAgentsPage&gt; futurePage =
+<span class="fc" id="L1487">          SearchAgentsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1488">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L1490">          input -&gt; new SearchAgentsPagedResponse(input),</span>
+<span class="fc" id="L1491">          MoreExecutors.directExecutor());</span>
+    }
+
+    private SearchAgentsPagedResponse(SearchAgentsPage page) {
+<span class="fc" id="L1495">      super(page, SearchAgentsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1496">    }</span>
+  }
+
+  public static class SearchAgentsPage
+      extends AbstractPage&lt;SearchAgentsRequest, SearchAgentsResponse, Agent, SearchAgentsPage&gt; {
+
+    private SearchAgentsPage(
+        PageContext&lt;SearchAgentsRequest, SearchAgentsResponse, Agent&gt; context,
+        SearchAgentsResponse response) {
+<span class="fc" id="L1505">      super(context, response);</span>
+<span class="fc" id="L1506">    }</span>
+
+    private static SearchAgentsPage createEmptyPage() {
+<span class="fc" id="L1509">      return new SearchAgentsPage(null, null);</span>
+    }
+
+    @Override
+    protected SearchAgentsPage createPage(
+        PageContext&lt;SearchAgentsRequest, SearchAgentsResponse, Agent&gt; context,
+        SearchAgentsResponse response) {
+<span class="fc" id="L1516">      return new SearchAgentsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;SearchAgentsPage&gt; createPageAsync(
+        PageContext&lt;SearchAgentsRequest, SearchAgentsResponse, Agent&gt; context,
+        ApiFuture&lt;SearchAgentsResponse&gt; futureResponse) {
+<span class="fc" id="L1523">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class SearchAgentsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          SearchAgentsRequest,
+          SearchAgentsResponse,
+          Agent,
+          SearchAgentsPage,
+          SearchAgentsFixedSizeCollection&gt; {
+
+    private SearchAgentsFixedSizeCollection(List&lt;SearchAgentsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1536">      super(pages, collectionSize);</span>
+<span class="fc" id="L1537">    }</span>
+
+    private static SearchAgentsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1540">      return new SearchAgentsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected SearchAgentsFixedSizeCollection createCollection(
+        List&lt;SearchAgentsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1546">      return new SearchAgentsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

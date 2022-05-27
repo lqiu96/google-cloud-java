@@ -1,0 +1,1523 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DocumentsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1</a> &gt; <span class="el_source">DocumentsClient.java</span></div><h1>DocumentsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2beta1.stub.DocumentsStub;
+import com.google.cloud.dialogflow.v2beta1.stub.DocumentsStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service for managing knowledge
+ * [Documents][google.cloud.dialogflow.v2beta1.Document].
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+ *   DocumentName name =
+ *       DocumentName.ofProjectKnowledgeBaseDocumentName(
+ *           &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;);
+ *   Document response = documentsClient.getDocument(name);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the DocumentsClient object to clean up resources such as
+ * threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of DocumentsSettings to create().
+ * For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * DocumentsSettings documentsSettings =
+ *     DocumentsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * DocumentsClient documentsClient = DocumentsClient.create(documentsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * DocumentsSettings documentsSettings =
+ *     DocumentsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * DocumentsClient documentsClient = DocumentsClient.create(documentsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class DocumentsClient implements BackgroundResource {
+  private final DocumentsSettings settings;
+  private final DocumentsStub stub;
+  private final OperationsClient operationsClient;
+
+  /** Constructs an instance of DocumentsClient with default settings. */
+  public static final DocumentsClient create() throws IOException {
+<span class="nc" id="L120">    return create(DocumentsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of DocumentsClient, using the given settings. The channels are created
+   * based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final DocumentsClient create(DocumentsSettings settings) throws IOException {
+<span class="fc" id="L128">    return new DocumentsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of DocumentsClient, using the given stub for making calls. This is for
+   * advanced usage - prefer using create(DocumentsSettings).
+   */
+  public static final DocumentsClient create(DocumentsStub stub) {
+<span class="nc" id="L136">    return new DocumentsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of DocumentsClient, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+<span class="fc" id="L143">  protected DocumentsClient(DocumentsSettings settings) throws IOException {</span>
+<span class="fc" id="L144">    this.settings = settings;</span>
+<span class="fc" id="L145">    this.stub = ((DocumentsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L146">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="fc" id="L147">  }</span>
+
+<span class="nc" id="L149">  protected DocumentsClient(DocumentsStub stub) {</span>
+<span class="nc" id="L150">    this.settings = null;</span>
+<span class="nc" id="L151">    this.stub = stub;</span>
+<span class="nc" id="L152">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="nc" id="L153">  }</span>
+
+  public final DocumentsSettings getSettings() {
+<span class="nc" id="L156">    return settings;</span>
+  }
+
+  public DocumentsStub getStub() {
+<span class="nc" id="L160">    return stub;</span>
+  }
+
+  /**
+   * Returns the OperationsClient that can be used to query the status of a long-running operation
+   * returned by another API method call.
+   */
+  public final OperationsClient getOperationsClient() {
+<span class="nc" id="L168">    return operationsClient;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all documents of the knowledge base.
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   KnowledgeBaseName parent =
+   *       KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;);
+   *   for (Document element : documentsClient.listDocuments(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The knowledge base to list all documents for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge
+   *     Base ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListDocumentsPagedResponse listDocuments(KnowledgeBaseName parent) {
+    ListDocumentsRequest request =
+<span class="fc" id="L199">        ListDocumentsRequest.newBuilder()</span>
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L201">            .build();</span>
+<span class="fc" id="L202">    return listDocuments(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all documents of the knowledge base.
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   String parent =
+   *       KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;).toString();
+   *   for (Document element : documentsClient.listDocuments(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The knowledge base to list all documents for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge
+   *     Base ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListDocumentsPagedResponse listDocuments(String parent) {
+<span class="fc" id="L232">    ListDocumentsRequest request = ListDocumentsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L233">    return listDocuments(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all documents of the knowledge base.
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   ListDocumentsRequest request =
+   *       ListDocumentsRequest.newBuilder()
+   *           .setParent(
+   *               KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;)
+   *                   .toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .setFilter(&quot;filter-1274492040&quot;)
+   *           .build();
+   *   for (Document element : documentsClient.listDocuments(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListDocumentsPagedResponse listDocuments(ListDocumentsRequest request) {
+<span class="fc" id="L268">    return listDocumentsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all documents of the knowledge base.
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   ListDocumentsRequest request =
+   *       ListDocumentsRequest.newBuilder()
+   *           .setParent(
+   *               KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;)
+   *                   .toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .setFilter(&quot;filter-1274492040&quot;)
+   *           .build();
+   *   ApiFuture&lt;Document&gt; future = documentsClient.listDocumentsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (Document element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListDocumentsRequest, ListDocumentsPagedResponse&gt;
+      listDocumentsPagedCallable() {
+<span class="fc" id="L303">    return stub.listDocumentsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all documents of the knowledge base.
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   ListDocumentsRequest request =
+   *       ListDocumentsRequest.newBuilder()
+   *           .setParent(
+   *               KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;)
+   *                   .toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .setFilter(&quot;filter-1274492040&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListDocumentsResponse response = documentsClient.listDocumentsCallable().call(request);
+   *     for (Document element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListDocumentsRequest, ListDocumentsResponse&gt; listDocumentsCallable() {
+<span class="nc" id="L344">    return stub.listDocumentsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified document.
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   DocumentName name =
+   *       DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *           &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;);
+   *   Document response = documentsClient.getDocument(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the document to retrieve. Format `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge Base
+   *     ID&amp;gt;/documents/&amp;lt;Document ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Document getDocument(DocumentName name) {
+    GetDocumentRequest request =
+<span class="pc bpc" id="L374" title="1 of 2 branches missed.">        GetDocumentRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L375">    return getDocument(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified document.
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   String name =
+   *       DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *               &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *           .toString();
+   *   Document response = documentsClient.getDocument(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the document to retrieve. Format `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge Base
+   *     ID&amp;gt;/documents/&amp;lt;Document ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Document getDocument(String name) {
+<span class="fc" id="L405">    GetDocumentRequest request = GetDocumentRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L406">    return getDocument(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified document.
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   GetDocumentRequest request =
+   *       GetDocumentRequest.newBuilder()
+   *           .setName(
+   *               DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *                       &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *                   .toString())
+   *           .build();
+   *   Document response = documentsClient.getDocument(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final Document getDocument(GetDocumentRequest request) {
+<span class="fc" id="L437">    return getDocumentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified document.
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   GetDocumentRequest request =
+   *       GetDocumentRequest.newBuilder()
+   *           .setName(
+   *               DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *                       &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ApiFuture&lt;Document&gt; future = documentsClient.getDocumentCallable().futureCall(request);
+   *   // Do something.
+   *   Document response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetDocumentRequest, Document&gt; getDocumentCallable() {
+<span class="fc" id="L467">    return stub.getDocumentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   KnowledgeBaseName parent =
+   *       KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;);
+   *   Document document = Document.newBuilder().build();
+   *   Document response = documentsClient.createDocumentAsync(parent, document).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The knowledge base to create a document for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge
+   *     Base ID&amp;gt;`.
+   * @param document Required. The document to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; createDocumentAsync(
+      KnowledgeBaseName parent, Document document) {
+    CreateDocumentRequest request =
+<span class="fc" id="L507">        CreateDocumentRequest.newBuilder()</span>
+<span class="pc bpc" id="L508" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L509">            .setDocument(document)</span>
+<span class="fc" id="L510">            .build();</span>
+<span class="fc" id="L511">    return createDocumentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   String parent =
+   *       KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;).toString();
+   *   Document document = Document.newBuilder().build();
+   *   Document response = documentsClient.createDocumentAsync(parent, document).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The knowledge base to create a document for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge
+   *     Base ID&amp;gt;`.
+   * @param document Required. The document to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; createDocumentAsync(
+      String parent, Document document) {
+    CreateDocumentRequest request =
+<span class="fc" id="L551">        CreateDocumentRequest.newBuilder().setParent(parent).setDocument(document).build();</span>
+<span class="fc" id="L552">    return createDocumentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   CreateDocumentRequest request =
+   *       CreateDocumentRequest.newBuilder()
+   *           .setParent(
+   *               KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;)
+   *                   .toString())
+   *           .setDocument(Document.newBuilder().build())
+   *           .setImportGcsCustomMetadata(true)
+   *           .build();
+   *   Document response = documentsClient.createDocumentAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; createDocumentAsync(
+      CreateDocumentRequest request) {
+<span class="fc" id="L593">    return createDocumentOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   CreateDocumentRequest request =
+   *       CreateDocumentRequest.newBuilder()
+   *           .setParent(
+   *               KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;)
+   *                   .toString())
+   *           .setDocument(Document.newBuilder().build())
+   *           .setImportGcsCustomMetadata(true)
+   *           .build();
+   *   OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; future =
+   *       documentsClient.createDocumentOperationCallable().futureCall(request);
+   *   // Do something.
+   *   Document response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;CreateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      createDocumentOperationCallable() {
+<span class="fc" id="L634">    return stub.createDocumentOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a new document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   CreateDocumentRequest request =
+   *       CreateDocumentRequest.newBuilder()
+   *           .setParent(
+   *               KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;)
+   *                   .toString())
+   *           .setDocument(Document.newBuilder().build())
+   *           .setImportGcsCustomMetadata(true)
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = documentsClient.createDocumentCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateDocumentRequest, Operation&gt; createDocumentCallable() {
+<span class="nc" id="L673">    return stub.createDocumentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create documents by importing data from external sources. Dialogflow supports up to 350
+   * documents in each request. If you try to import more, Dialogflow will return an error.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [ImportDocumentsResponse][google.cloud.dialogflow.v2beta1.ImportDocumentsResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   ImportDocumentsRequest request =
+   *       ImportDocumentsRequest.newBuilder()
+   *           .setParent(
+   *               KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;)
+   *                   .toString())
+   *           .setDocumentTemplate(ImportDocumentTemplate.newBuilder().build())
+   *           .setImportGcsCustomMetadata(true)
+   *           .build();
+   *   ImportDocumentsResponse response = documentsClient.importDocumentsAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ImportDocumentsResponse, KnowledgeOperationMetadata&gt;
+      importDocumentsAsync(ImportDocumentsRequest request) {
+<span class="fc" id="L712">    return importDocumentsOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create documents by importing data from external sources. Dialogflow supports up to 350
+   * documents in each request. If you try to import more, Dialogflow will return an error.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [ImportDocumentsResponse][google.cloud.dialogflow.v2beta1.ImportDocumentsResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   ImportDocumentsRequest request =
+   *       ImportDocumentsRequest.newBuilder()
+   *           .setParent(
+   *               KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;)
+   *                   .toString())
+   *           .setDocumentTemplate(ImportDocumentTemplate.newBuilder().build())
+   *           .setImportGcsCustomMetadata(true)
+   *           .build();
+   *   OperationFuture&lt;ImportDocumentsResponse, KnowledgeOperationMetadata&gt; future =
+   *       documentsClient.importDocumentsOperationCallable().futureCall(request);
+   *   // Do something.
+   *   ImportDocumentsResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          ImportDocumentsRequest, ImportDocumentsResponse, KnowledgeOperationMetadata&gt;
+      importDocumentsOperationCallable() {
+<span class="fc" id="L752">    return stub.importDocumentsOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Create documents by importing data from external sources. Dialogflow supports up to 350
+   * documents in each request. If you try to import more, Dialogflow will return an error.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [ImportDocumentsResponse][google.cloud.dialogflow.v2beta1.ImportDocumentsResponse]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   ImportDocumentsRequest request =
+   *       ImportDocumentsRequest.newBuilder()
+   *           .setParent(
+   *               KnowledgeBaseName.ofProjectKnowledgeBaseName(&quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;)
+   *                   .toString())
+   *           .setDocumentTemplate(ImportDocumentTemplate.newBuilder().build())
+   *           .setImportGcsCustomMetadata(true)
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = documentsClient.importDocumentsCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ImportDocumentsRequest, Operation&gt; importDocumentsCallable() {
+<span class="nc" id="L789">    return stub.importDocumentsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   DocumentName name =
+   *       DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *           &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;);
+   *   documentsClient.deleteDocumentAsync(name).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the document to delete. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge Base
+   *     ID&amp;gt;/documents/&amp;lt;Document ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, KnowledgeOperationMetadata&gt; deleteDocumentAsync(
+      DocumentName name) {
+    DeleteDocumentRequest request =
+<span class="pc bpc" id="L829" title="1 of 2 branches missed.">        DeleteDocumentRequest.newBuilder().setName(name == null ? null : name.toString()).build();</span>
+<span class="fc" id="L830">    return deleteDocumentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   String name =
+   *       DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *               &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *           .toString();
+   *   documentsClient.deleteDocumentAsync(name).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the document to delete. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge Base
+   *     ID&amp;gt;/documents/&amp;lt;Document ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, KnowledgeOperationMetadata&gt; deleteDocumentAsync(String name) {
+<span class="fc" id="L869">    DeleteDocumentRequest request = DeleteDocumentRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L870">    return deleteDocumentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   DeleteDocumentRequest request =
+   *       DeleteDocumentRequest.newBuilder()
+   *           .setName(
+   *               DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *                       &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *                   .toString())
+   *           .build();
+   *   documentsClient.deleteDocumentAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, KnowledgeOperationMetadata&gt; deleteDocumentAsync(
+      DeleteDocumentRequest request) {
+<span class="fc" id="L911">    return deleteDocumentOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   DeleteDocumentRequest request =
+   *       DeleteDocumentRequest.newBuilder()
+   *           .setName(
+   *               DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *                       &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *                   .toString())
+   *           .build();
+   *   OperationFuture&lt;Empty, KnowledgeOperationMetadata&gt; future =
+   *       documentsClient.deleteDocumentOperationCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;DeleteDocumentRequest, Empty, KnowledgeOperationMetadata&gt;
+      deleteDocumentOperationCallable() {
+<span class="fc" id="L952">    return stub.deleteDocumentOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   DeleteDocumentRequest request =
+   *       DeleteDocumentRequest.newBuilder()
+   *           .setName(
+   *               DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *                       &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = documentsClient.deleteDocumentCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteDocumentRequest, Operation&gt; deleteDocumentCallable() {
+<span class="nc" id="L991">    return stub.deleteDocumentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   Document document = Document.newBuilder().build();
+   *   Document response = documentsClient.updateDocumentAsync(document).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param document Required. The document to update.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; updateDocumentAsync(
+      Document document) {
+    UpdateDocumentRequest request =
+<span class="fc" id="L1026">        UpdateDocumentRequest.newBuilder().setDocument(document).build();</span>
+<span class="fc" id="L1027">    return updateDocumentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   Document document = Document.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   Document response = documentsClient.updateDocumentAsync(document, updateMask).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param document Required. The document to update.
+   * @param updateMask Optional. Not specified means `update all`. Currently, only `display_name`
+   *     can be updated, an InvalidArgument will be returned for attempting to update other fields.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; updateDocumentAsync(
+      Document document, FieldMask updateMask) {
+    UpdateDocumentRequest request =
+<span class="fc" id="L1065">        UpdateDocumentRequest.newBuilder().setDocument(document).setUpdateMask(updateMask).build();</span>
+<span class="fc" id="L1066">    return updateDocumentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   UpdateDocumentRequest request =
+   *       UpdateDocumentRequest.newBuilder()
+   *           .setDocument(Document.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   Document response = documentsClient.updateDocumentAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; updateDocumentAsync(
+      UpdateDocumentRequest request) {
+<span class="fc" id="L1104">    return updateDocumentOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   UpdateDocumentRequest request =
+   *       UpdateDocumentRequest.newBuilder()
+   *           .setDocument(Document.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; future =
+   *       documentsClient.updateDocumentOperationCallable().futureCall(request);
+   *   // Do something.
+   *   Document response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;UpdateDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      updateDocumentOperationCallable() {
+<span class="fc" id="L1142">    return stub.updateDocumentOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified document.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   UpdateDocumentRequest request =
+   *       UpdateDocumentRequest.newBuilder()
+   *           .setDocument(Document.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = documentsClient.updateDocumentCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateDocumentRequest, Operation&gt; updateDocumentCallable() {
+<span class="nc" id="L1178">    return stub.updateDocumentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Reloads the specified document from its specified source, content_uri or content. The
+   * previously loaded content of the document will be deleted. Note: Even when the content of the
+   * document has not changed, there still may be side effects because of internal implementation
+   * changes. Note: If the document source is Google Cloud Storage URI, its metadata will be
+   * replaced with the custom metadata from Google Cloud Storage if the `import_gcs_custom_metadata`
+   * field is set to true in the request.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   DocumentName name =
+   *       DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *           &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;);
+   *   GcsSource gcsSource = GcsSource.newBuilder().build();
+   *   Document response = documentsClient.reloadDocumentAsync(name, gcsSource).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the document to reload. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge Base
+   *     ID&amp;gt;/documents/&amp;lt;Document ID&amp;gt;`
+   * @param gcsSource The path for a Cloud Storage source file for reloading document content. If
+   *     not provided, the Document's existing source will be reloaded.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; reloadDocumentAsync(
+      DocumentName name, GcsSource gcsSource) {
+    ReloadDocumentRequest request =
+<span class="fc" id="L1225">        ReloadDocumentRequest.newBuilder()</span>
+<span class="pc bpc" id="L1226" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L1227">            .setGcsSource(gcsSource)</span>
+<span class="fc" id="L1228">            .build();</span>
+<span class="fc" id="L1229">    return reloadDocumentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Reloads the specified document from its specified source, content_uri or content. The
+   * previously loaded content of the document will be deleted. Note: Even when the content of the
+   * document has not changed, there still may be side effects because of internal implementation
+   * changes. Note: If the document source is Google Cloud Storage URI, its metadata will be
+   * replaced with the custom metadata from Google Cloud Storage if the `import_gcs_custom_metadata`
+   * field is set to true in the request.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   String name =
+   *       DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *               &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *           .toString();
+   *   GcsSource gcsSource = GcsSource.newBuilder().build();
+   *   Document response = documentsClient.reloadDocumentAsync(name, gcsSource).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the document to reload. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/knowledgeBases/&amp;lt;Knowledge Base
+   *     ID&amp;gt;/documents/&amp;lt;Document ID&amp;gt;`
+   * @param gcsSource The path for a Cloud Storage source file for reloading document content. If
+   *     not provided, the Document's existing source will be reloaded.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; reloadDocumentAsync(
+      String name, GcsSource gcsSource) {
+    ReloadDocumentRequest request =
+<span class="fc" id="L1277">        ReloadDocumentRequest.newBuilder().setName(name).setGcsSource(gcsSource).build();</span>
+<span class="fc" id="L1278">    return reloadDocumentAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Reloads the specified document from its specified source, content_uri or content. The
+   * previously loaded content of the document will be deleted. Note: Even when the content of the
+   * document has not changed, there still may be side effects because of internal implementation
+   * changes. Note: If the document source is Google Cloud Storage URI, its metadata will be
+   * replaced with the custom metadata from Google Cloud Storage if the `import_gcs_custom_metadata`
+   * field is set to true in the request.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   ReloadDocumentRequest request =
+   *       ReloadDocumentRequest.newBuilder()
+   *           .setName(
+   *               DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *                       &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *                   .toString())
+   *           .setImportGcsCustomMetadata(true)
+   *           .build();
+   *   Document response = documentsClient.reloadDocumentAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; reloadDocumentAsync(
+      ReloadDocumentRequest request) {
+<span class="fc" id="L1324">    return reloadDocumentOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Reloads the specified document from its specified source, content_uri or content. The
+   * previously loaded content of the document will be deleted. Note: Even when the content of the
+   * document has not changed, there still may be side effects because of internal implementation
+   * changes. Note: If the document source is Google Cloud Storage URI, its metadata will be
+   * replaced with the custom metadata from Google Cloud Storage if the `import_gcs_custom_metadata`
+   * field is set to true in the request.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   ReloadDocumentRequest request =
+   *       ReloadDocumentRequest.newBuilder()
+   *           .setName(
+   *               DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *                       &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *                   .toString())
+   *           .setImportGcsCustomMetadata(true)
+   *           .build();
+   *   OperationFuture&lt;Document, KnowledgeOperationMetadata&gt; future =
+   *       documentsClient.reloadDocumentOperationCallable().futureCall(request);
+   *   // Do something.
+   *   Document response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;ReloadDocumentRequest, Document, KnowledgeOperationMetadata&gt;
+      reloadDocumentOperationCallable() {
+<span class="fc" id="L1370">    return stub.reloadDocumentOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Reloads the specified document from its specified source, content_uri or content. The
+   * previously loaded content of the document will be deleted. Note: Even when the content of the
+   * document has not changed, there still may be side effects because of internal implementation
+   * changes. Note: If the document source is Google Cloud Storage URI, its metadata will be
+   * replaced with the custom metadata from Google Cloud Storage if the `import_gcs_custom_metadata`
+   * field is set to true in the request.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [KnowledgeOperationMetadata][google.cloud.dialogflow.v2beta1.KnowledgeOperationMetadata] -
+   * `response`: [Document][google.cloud.dialogflow.v2beta1.Document]
+   *
+   * &lt;p&gt;Note: The `projects.agent.knowledgeBases.documents` resource is deprecated; only use
+   * `projects.knowledgeBases.documents`.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (DocumentsClient documentsClient = DocumentsClient.create()) {
+   *   ReloadDocumentRequest request =
+   *       ReloadDocumentRequest.newBuilder()
+   *           .setName(
+   *               DocumentName.ofProjectKnowledgeBaseDocumentName(
+   *                       &quot;[PROJECT]&quot;, &quot;[KNOWLEDGE_BASE]&quot;, &quot;[DOCUMENT]&quot;)
+   *                   .toString())
+   *           .setImportGcsCustomMetadata(true)
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future = documentsClient.reloadDocumentCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ReloadDocumentRequest, Operation&gt; reloadDocumentCallable() {
+<span class="nc" id="L1414">    return stub.reloadDocumentCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L1419">    stub.close();</span>
+<span class="fc" id="L1420">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L1424">    stub.shutdown();</span>
+<span class="nc" id="L1425">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L1429">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L1434">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L1439">    stub.shutdownNow();</span>
+<span class="nc" id="L1440">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L1444">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListDocumentsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListDocumentsRequest,
+          ListDocumentsResponse,
+          Document,
+          ListDocumentsPage,
+          ListDocumentsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListDocumentsPagedResponse&gt; createAsync(
+        PageContext&lt;ListDocumentsRequest, ListDocumentsResponse, Document&gt; context,
+        ApiFuture&lt;ListDocumentsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListDocumentsPage&gt; futurePage =
+<span class="fc" id="L1459">          ListDocumentsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1460">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L1462">          input -&gt; new ListDocumentsPagedResponse(input),</span>
+<span class="fc" id="L1463">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListDocumentsPagedResponse(ListDocumentsPage page) {
+<span class="fc" id="L1467">      super(page, ListDocumentsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1468">    }</span>
+  }
+
+  public static class ListDocumentsPage
+      extends AbstractPage&lt;
+          ListDocumentsRequest, ListDocumentsResponse, Document, ListDocumentsPage&gt; {
+
+    private ListDocumentsPage(
+        PageContext&lt;ListDocumentsRequest, ListDocumentsResponse, Document&gt; context,
+        ListDocumentsResponse response) {
+<span class="fc" id="L1478">      super(context, response);</span>
+<span class="fc" id="L1479">    }</span>
+
+    private static ListDocumentsPage createEmptyPage() {
+<span class="fc" id="L1482">      return new ListDocumentsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListDocumentsPage createPage(
+        PageContext&lt;ListDocumentsRequest, ListDocumentsResponse, Document&gt; context,
+        ListDocumentsResponse response) {
+<span class="fc" id="L1489">      return new ListDocumentsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListDocumentsPage&gt; createPageAsync(
+        PageContext&lt;ListDocumentsRequest, ListDocumentsResponse, Document&gt; context,
+        ApiFuture&lt;ListDocumentsResponse&gt; futureResponse) {
+<span class="fc" id="L1496">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListDocumentsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListDocumentsRequest,
+          ListDocumentsResponse,
+          Document,
+          ListDocumentsPage,
+          ListDocumentsFixedSizeCollection&gt; {
+
+    private ListDocumentsFixedSizeCollection(List&lt;ListDocumentsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1509">      super(pages, collectionSize);</span>
+<span class="fc" id="L1510">    }</span>
+
+    private static ListDocumentsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1513">      return new ListDocumentsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListDocumentsFixedSizeCollection createCollection(
+        List&lt;ListDocumentsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1519">      return new ListDocumentsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

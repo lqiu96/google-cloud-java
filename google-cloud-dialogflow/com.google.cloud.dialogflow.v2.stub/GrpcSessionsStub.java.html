@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcSessionsStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2.stub</a> &gt; <span class="el_source">GrpcSessionsStub.java</span></div><h1>GrpcSessionsStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2.stub;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.DetectIntentRequest;
+import com.google.cloud.dialogflow.v2.DetectIntentResponse;
+import com.google.cloud.dialogflow.v2.StreamingDetectIntentRequest;
+import com.google.cloud.dialogflow.v2.StreamingDetectIntentResponse;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the Sessions service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcSessionsStub extends SessionsStub {
+  private static final MethodDescriptor&lt;DetectIntentRequest, DetectIntentResponse&gt;
+      detectIntentMethodDescriptor =
+<span class="fc" id="L48">          MethodDescriptor.&lt;DetectIntentRequest, DetectIntentResponse&gt;newBuilder()</span>
+<span class="fc" id="L49">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L50">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Sessions/DetectIntent&quot;)</span>
+<span class="fc" id="L51">              .setRequestMarshaller(ProtoUtils.marshaller(DetectIntentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L52">              .setResponseMarshaller(</span>
+<span class="fc" id="L53">                  ProtoUtils.marshaller(DetectIntentResponse.getDefaultInstance()))</span>
+<span class="fc" id="L54">              .build();</span>
+
+  private static final MethodDescriptor&lt;StreamingDetectIntentRequest, StreamingDetectIntentResponse&gt;
+<span class="fc" id="L57">      streamingDetectIntentMethodDescriptor =</span>
+<span class="fc" id="L58">          MethodDescriptor.&lt;StreamingDetectIntentRequest, StreamingDetectIntentResponse&gt;newBuilder()</span>
+<span class="fc" id="L59">              .setType(MethodDescriptor.MethodType.BIDI_STREAMING)</span>
+<span class="fc" id="L60">              .setFullMethodName(&quot;google.cloud.dialogflow.v2.Sessions/StreamingDetectIntent&quot;)</span>
+<span class="fc" id="L61">              .setRequestMarshaller(</span>
+<span class="fc" id="L62">                  ProtoUtils.marshaller(StreamingDetectIntentRequest.getDefaultInstance()))</span>
+<span class="fc" id="L63">              .setResponseMarshaller(</span>
+<span class="fc" id="L64">                  ProtoUtils.marshaller(StreamingDetectIntentResponse.getDefaultInstance()))</span>
+<span class="fc" id="L65">              .build();</span>
+
+  private final UnaryCallable&lt;DetectIntentRequest, DetectIntentResponse&gt; detectIntentCallable;
+  private final BidiStreamingCallable&lt;StreamingDetectIntentRequest, StreamingDetectIntentResponse&gt;
+      streamingDetectIntentCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcSessionsStub create(SessionsStubSettings settings) throws IOException {
+<span class="fc" id="L76">    return new GrpcSessionsStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcSessionsStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L80">    return new GrpcSessionsStub(SessionsStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcSessionsStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L85">    return new GrpcSessionsStub(</span>
+<span class="nc" id="L86">        SessionsStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcSessionsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcSessionsStub(SessionsStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L95">    this(settings, clientContext, new GrpcSessionsCallableFactory());</span>
+<span class="fc" id="L96">  }</span>
+
+  /**
+   * Constructs an instance of GrpcSessionsStub, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected GrpcSessionsStub(
+      SessionsStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L106">      throws IOException {</span>
+<span class="fc" id="L107">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L108">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;DetectIntentRequest, DetectIntentResponse&gt; detectIntentTransportSettings =
+<span class="fc" id="L111">        GrpcCallSettings.&lt;DetectIntentRequest, DetectIntentResponse&gt;newBuilder()</span>
+<span class="fc" id="L112">            .setMethodDescriptor(detectIntentMethodDescriptor)</span>
+<span class="fc" id="L113">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L115">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L116">                  params.put(&quot;session&quot;, String.valueOf(request.getSession()));</span>
+<span class="fc" id="L117">                  return params.build();</span>
+                })
+<span class="fc" id="L119">            .build();</span>
+    GrpcCallSettings&lt;StreamingDetectIntentRequest, StreamingDetectIntentResponse&gt;
+        streamingDetectIntentTransportSettings =
+            GrpcCallSettings
+<span class="fc" id="L123">                .&lt;StreamingDetectIntentRequest, StreamingDetectIntentResponse&gt;newBuilder()</span>
+<span class="fc" id="L124">                .setMethodDescriptor(streamingDetectIntentMethodDescriptor)</span>
+<span class="fc" id="L125">                .build();</span>
+
+<span class="fc" id="L127">    this.detectIntentCallable =</span>
+<span class="fc" id="L128">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L129">            detectIntentTransportSettings, settings.detectIntentSettings(), clientContext);</span>
+<span class="fc" id="L130">    this.streamingDetectIntentCallable =</span>
+<span class="fc" id="L131">        callableFactory.createBidiStreamingCallable(</span>
+            streamingDetectIntentTransportSettings,
+<span class="fc" id="L133">            settings.streamingDetectIntentSettings(),</span>
+            clientContext);
+
+<span class="fc" id="L136">    this.backgroundResources =</span>
+<span class="fc" id="L137">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L138">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="nc" id="L141">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DetectIntentRequest, DetectIntentResponse&gt; detectIntentCallable() {
+<span class="fc" id="L146">    return detectIntentCallable;</span>
+  }
+
+  @Override
+  public BidiStreamingCallable&lt;StreamingDetectIntentRequest, StreamingDetectIntentResponse&gt;
+      streamingDetectIntentCallable() {
+<span class="fc" id="L152">    return streamingDetectIntentCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L158">      backgroundResources.close();</span>
+<span class="nc" id="L159">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L160">      throw e;</span>
+<span class="nc" id="L161">    } catch (Exception e) {</span>
+<span class="nc" id="L162">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L163">    }</span>
+<span class="fc" id="L164">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L168">    backgroundResources.shutdown();</span>
+<span class="nc" id="L169">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L173">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L178">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L183">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L184">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L188">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

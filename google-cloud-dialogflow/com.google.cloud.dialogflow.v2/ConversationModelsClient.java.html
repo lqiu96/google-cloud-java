@@ -1,0 +1,1465 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ConversationModelsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2</a> &gt; <span class="el_source">ConversationModelsClient.java</span></div><h1>ConversationModelsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.stub.ConversationModelsStub;
+import com.google.cloud.dialogflow.v2.stub.ConversationModelsStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
+import com.google.protobuf.Empty;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Manages a collection of models for human agent assistant.
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+ *   String name = &quot;name3373707&quot;;
+ *   ConversationModel response = conversationModelsClient.getConversationModel(name);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the ConversationModelsClient object to clean up resources
+ * such as threads. In the example above, try-with-resources is used, which automatically calls
+ * close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of ConversationModelsSettings to
+ * create(). For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ConversationModelsSettings conversationModelsSettings =
+ *     ConversationModelsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * ConversationModelsClient conversationModelsClient =
+ *     ConversationModelsClient.create(conversationModelsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ConversationModelsSettings conversationModelsSettings =
+ *     ConversationModelsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * ConversationModelsClient conversationModelsClient =
+ *     ConversationModelsClient.create(conversationModelsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ConversationModelsClient implements BackgroundResource {
+  private final ConversationModelsSettings settings;
+  private final ConversationModelsStub stub;
+  private final OperationsClient operationsClient;
+
+  /** Constructs an instance of ConversationModelsClient with default settings. */
+  public static final ConversationModelsClient create() throws IOException {
+<span class="nc" id="L117">    return create(ConversationModelsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of ConversationModelsClient, using the given settings. The channels are
+   * created based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final ConversationModelsClient create(ConversationModelsSettings settings)
+      throws IOException {
+<span class="fc" id="L126">    return new ConversationModelsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of ConversationModelsClient, using the given stub for making calls. This
+   * is for advanced usage - prefer using create(ConversationModelsSettings).
+   */
+  public static final ConversationModelsClient create(ConversationModelsStub stub) {
+<span class="nc" id="L134">    return new ConversationModelsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of ConversationModelsClient, using the given settings. This is protected
+   * so that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+<span class="fc" id="L142">  protected ConversationModelsClient(ConversationModelsSettings settings) throws IOException {</span>
+<span class="fc" id="L143">    this.settings = settings;</span>
+<span class="fc" id="L144">    this.stub = ((ConversationModelsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L145">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="fc" id="L146">  }</span>
+
+<span class="nc" id="L148">  protected ConversationModelsClient(ConversationModelsStub stub) {</span>
+<span class="nc" id="L149">    this.settings = null;</span>
+<span class="nc" id="L150">    this.stub = stub;</span>
+<span class="nc" id="L151">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="nc" id="L152">  }</span>
+
+  public final ConversationModelsSettings getSettings() {
+<span class="nc" id="L155">    return settings;</span>
+  }
+
+  public ConversationModelsStub getStub() {
+<span class="nc" id="L159">    return stub;</span>
+  }
+
+  /**
+   * Returns the OperationsClient that can be used to query the status of a long-running operation
+   * returned by another API method call.
+   */
+  public final OperationsClient getOperationsClient() {
+<span class="nc" id="L167">    return operationsClient;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a model.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [CreateConversationModelOperationMetadata][google.cloud.dialogflow.v2.CreateConversationModelOperationMetadata]
+   * - `response`: [ConversationModel][google.cloud.dialogflow.v2.ConversationModel]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   String parent = &quot;parent-995424086&quot;;
+   *   ConversationModel conversationModel = ConversationModel.newBuilder().build();
+   *   ConversationModel response =
+   *       conversationModelsClient.createConversationModelAsync(parent, conversationModel).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent The project to create conversation model for. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;`
+   * @param conversationModel Required. The conversation model to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ConversationModel, CreateConversationModelOperationMetadata&gt;
+      createConversationModelAsync(String parent, ConversationModel conversationModel) {
+    CreateConversationModelRequest request =
+<span class="fc" id="L203">        CreateConversationModelRequest.newBuilder()</span>
+<span class="fc" id="L204">            .setParent(parent)</span>
+<span class="fc" id="L205">            .setConversationModel(conversationModel)</span>
+<span class="fc" id="L206">            .build();</span>
+<span class="fc" id="L207">    return createConversationModelAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a model.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [CreateConversationModelOperationMetadata][google.cloud.dialogflow.v2.CreateConversationModelOperationMetadata]
+   * - `response`: [ConversationModel][google.cloud.dialogflow.v2.ConversationModel]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   CreateConversationModelRequest request =
+   *       CreateConversationModelRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setConversationModel(ConversationModel.newBuilder().build())
+   *           .build();
+   *   ConversationModel response =
+   *       conversationModelsClient.createConversationModelAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ConversationModel, CreateConversationModelOperationMetadata&gt;
+      createConversationModelAsync(CreateConversationModelRequest request) {
+<span class="fc" id="L243">    return createConversationModelOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a model.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [CreateConversationModelOperationMetadata][google.cloud.dialogflow.v2.CreateConversationModelOperationMetadata]
+   * - `response`: [ConversationModel][google.cloud.dialogflow.v2.ConversationModel]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   CreateConversationModelRequest request =
+   *       CreateConversationModelRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setConversationModel(ConversationModel.newBuilder().build())
+   *           .build();
+   *   OperationFuture&lt;ConversationModel, CreateConversationModelOperationMetadata&gt; future =
+   *       conversationModelsClient.createConversationModelOperationCallable().futureCall(request);
+   *   // Do something.
+   *   ConversationModel response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          CreateConversationModelRequest,
+          ConversationModel,
+          CreateConversationModelOperationMetadata&gt;
+      createConversationModelOperationCallable() {
+<span class="fc" id="L281">    return stub.createConversationModelOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a model.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [CreateConversationModelOperationMetadata][google.cloud.dialogflow.v2.CreateConversationModelOperationMetadata]
+   * - `response`: [ConversationModel][google.cloud.dialogflow.v2.ConversationModel]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   CreateConversationModelRequest request =
+   *       CreateConversationModelRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setConversationModel(ConversationModel.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationModelsClient.createConversationModelCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateConversationModelRequest, Operation&gt;
+      createConversationModelCallable() {
+<span class="nc" id="L316">    return stub.createConversationModelCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   String name = &quot;name3373707&quot;;
+   *   ConversationModel response = conversationModelsClient.getConversationModel(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The conversation model to retrieve. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/conversationModels/&amp;lt;Conversation Model ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationModel getConversationModel(String name) {
+    GetConversationModelRequest request =
+<span class="fc" id="L340">        GetConversationModelRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L341">    return getConversationModel(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   GetConversationModelRequest request =
+   *       GetConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   ConversationModel response = conversationModelsClient.getConversationModel(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationModel getConversationModel(GetConversationModelRequest request) {
+<span class="fc" id="L364">    return getConversationModelCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   GetConversationModelRequest request =
+   *       GetConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   ApiFuture&lt;ConversationModel&gt; future =
+   *       conversationModelsClient.getConversationModelCallable().futureCall(request);
+   *   // Do something.
+   *   ConversationModel response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetConversationModelRequest, ConversationModel&gt;
+      getConversationModelCallable() {
+<span class="fc" id="L388">    return stub.getConversationModelCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists conversation models.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   String parent = &quot;parent-995424086&quot;;
+   *   for (ConversationModel element :
+   *       conversationModelsClient.listConversationModels(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list all conversation models for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationModelsPagedResponse listConversationModels(String parent) {
+    ListConversationModelsRequest request =
+<span class="fc" id="L415">        ListConversationModelsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L416">    return listConversationModels(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists conversation models.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   ListConversationModelsRequest request =
+   *       ListConversationModelsRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (ConversationModel element :
+   *       conversationModelsClient.listConversationModels(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationModelsPagedResponse listConversationModels(
+      ListConversationModelsRequest request) {
+<span class="fc" id="L447">    return listConversationModelsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists conversation models.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   ListConversationModelsRequest request =
+   *       ListConversationModelsRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;ConversationModel&gt; future =
+   *       conversationModelsClient.listConversationModelsPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (ConversationModel element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListConversationModelsRequest, ListConversationModelsPagedResponse&gt;
+      listConversationModelsPagedCallable() {
+<span class="fc" id="L477">    return stub.listConversationModelsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists conversation models.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   ListConversationModelsRequest request =
+   *       ListConversationModelsRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListConversationModelsResponse response =
+   *         conversationModelsClient.listConversationModelsCallable().call(request);
+   *     for (ConversationModel element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListConversationModelsRequest, ListConversationModelsResponse&gt;
+      listConversationModelsCallable() {
+<span class="nc" id="L514">    return stub.listConversationModelsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes a model.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeleteConversationModelOperationMetadata][google.cloud.dialogflow.v2.DeleteConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   String name = &quot;name3373707&quot;;
+   *   conversationModelsClient.deleteConversationModelAsync(name).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The conversation model to delete. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/conversationModels/&amp;lt;Conversation Model ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, DeleteConversationModelOperationMetadata&gt;
+      deleteConversationModelAsync(String name) {
+    DeleteConversationModelRequest request =
+<span class="fc" id="L548">        DeleteConversationModelRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L549">    return deleteConversationModelAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes a model.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeleteConversationModelOperationMetadata][google.cloud.dialogflow.v2.DeleteConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   DeleteConversationModelRequest request =
+   *       DeleteConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   conversationModelsClient.deleteConversationModelAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, DeleteConversationModelOperationMetadata&gt;
+      deleteConversationModelAsync(DeleteConversationModelRequest request) {
+<span class="fc" id="L582">    return deleteConversationModelOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes a model.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeleteConversationModelOperationMetadata][google.cloud.dialogflow.v2.DeleteConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   DeleteConversationModelRequest request =
+   *       DeleteConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   OperationFuture&lt;Empty, DeleteConversationModelOperationMetadata&gt; future =
+   *       conversationModelsClient.deleteConversationModelOperationCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          DeleteConversationModelRequest, Empty, DeleteConversationModelOperationMetadata&gt;
+      deleteConversationModelOperationCallable() {
+<span class="fc" id="L616">    return stub.deleteConversationModelOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes a model.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeleteConversationModelOperationMetadata][google.cloud.dialogflow.v2.DeleteConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   DeleteConversationModelRequest request =
+   *       DeleteConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationModelsClient.deleteConversationModelCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteConversationModelRequest, Operation&gt;
+      deleteConversationModelCallable() {
+<span class="nc" id="L649">    return stub.deleteConversationModelCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deploys a model. If a model is already deployed, deploying it has no effect. A model can only
+   * serve prediction requests after it gets deployed. For article suggestion, custom model will not
+   * be used unless it is deployed.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeployConversationModelOperationMetadata][google.cloud.dialogflow.v2.DeployConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   DeployConversationModelRequest request =
+   *       DeployConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   conversationModelsClient.deployConversationModelAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, DeployConversationModelOperationMetadata&gt;
+      deployConversationModelAsync(DeployConversationModelRequest request) {
+<span class="fc" id="L684">    return deployConversationModelOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deploys a model. If a model is already deployed, deploying it has no effect. A model can only
+   * serve prediction requests after it gets deployed. For article suggestion, custom model will not
+   * be used unless it is deployed.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeployConversationModelOperationMetadata][google.cloud.dialogflow.v2.DeployConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   DeployConversationModelRequest request =
+   *       DeployConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   OperationFuture&lt;Empty, DeployConversationModelOperationMetadata&gt; future =
+   *       conversationModelsClient.deployConversationModelOperationCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          DeployConversationModelRequest, Empty, DeployConversationModelOperationMetadata&gt;
+      deployConversationModelOperationCallable() {
+<span class="fc" id="L720">    return stub.deployConversationModelOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deploys a model. If a model is already deployed, deploying it has no effect. A model can only
+   * serve prediction requests after it gets deployed. For article suggestion, custom model will not
+   * be used unless it is deployed.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [DeployConversationModelOperationMetadata][google.cloud.dialogflow.v2.DeployConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   DeployConversationModelRequest request =
+   *       DeployConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationModelsClient.deployConversationModelCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeployConversationModelRequest, Operation&gt;
+      deployConversationModelCallable() {
+<span class="nc" id="L755">    return stub.deployConversationModelCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Undeploys a model. If the model is not deployed this method has no effect. If the model is
+   * currently being used: - For article suggestion, article suggestion will fallback to the default
+   * model if model is undeployed.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [UndeployConversationModelOperationMetadata][google.cloud.dialogflow.v2.UndeployConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   UndeployConversationModelRequest request =
+   *       UndeployConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   conversationModelsClient.undeployConversationModelAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;Empty, UndeployConversationModelOperationMetadata&gt;
+      undeployConversationModelAsync(UndeployConversationModelRequest request) {
+<span class="fc" id="L790">    return undeployConversationModelOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Undeploys a model. If the model is not deployed this method has no effect. If the model is
+   * currently being used: - For article suggestion, article suggestion will fallback to the default
+   * model if model is undeployed.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [UndeployConversationModelOperationMetadata][google.cloud.dialogflow.v2.UndeployConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   UndeployConversationModelRequest request =
+   *       UndeployConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   OperationFuture&lt;Empty, UndeployConversationModelOperationMetadata&gt; future =
+   *       conversationModelsClient.undeployConversationModelOperationCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          UndeployConversationModelRequest, Empty, UndeployConversationModelOperationMetadata&gt;
+      undeployConversationModelOperationCallable() {
+<span class="fc" id="L826">    return stub.undeployConversationModelOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Undeploys a model. If the model is not deployed this method has no effect. If the model is
+   * currently being used: - For article suggestion, article suggestion will fallback to the default
+   * model if model is undeployed.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [UndeployConversationModelOperationMetadata][google.cloud.dialogflow.v2.UndeployConversationModelOperationMetadata]
+   * - `response`: An [Empty
+   * message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#empty)
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   UndeployConversationModelRequest request =
+   *       UndeployConversationModelRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationModelsClient.undeployConversationModelCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UndeployConversationModelRequest, Operation&gt;
+      undeployConversationModelCallable() {
+<span class="nc" id="L861">    return stub.undeployConversationModelCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets an evaluation of conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   String name = &quot;name3373707&quot;;
+   *   ConversationModelEvaluation response =
+   *       conversationModelsClient.getConversationModelEvaluation(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The conversation model evaluation resource name. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/conversationModels/&amp;lt;Conversation Model
+   *     ID&amp;gt;/evaluations/&amp;lt;Evaluation ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationModelEvaluation getConversationModelEvaluation(String name) {
+    GetConversationModelEvaluationRequest request =
+<span class="fc" id="L887">        GetConversationModelEvaluationRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L888">    return getConversationModelEvaluation(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets an evaluation of conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   GetConversationModelEvaluationRequest request =
+   *       GetConversationModelEvaluationRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   ConversationModelEvaluation response =
+   *       conversationModelsClient.getConversationModelEvaluation(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationModelEvaluation getConversationModelEvaluation(
+      GetConversationModelEvaluationRequest request) {
+<span class="fc" id="L913">    return getConversationModelEvaluationCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Gets an evaluation of conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   GetConversationModelEvaluationRequest request =
+   *       GetConversationModelEvaluationRequest.newBuilder().setName(&quot;name3373707&quot;).build();
+   *   ApiFuture&lt;ConversationModelEvaluation&gt; future =
+   *       conversationModelsClient.getConversationModelEvaluationCallable().futureCall(request);
+   *   // Do something.
+   *   ConversationModelEvaluation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetConversationModelEvaluationRequest, ConversationModelEvaluation&gt;
+      getConversationModelEvaluationCallable() {
+<span class="fc" id="L937">    return stub.getConversationModelEvaluationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists evaluations of a conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   String parent = &quot;parent-995424086&quot;;
+   *   for (ConversationModelEvaluation element :
+   *       conversationModelsClient.listConversationModelEvaluations(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The conversation model resource name. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/conversationModels/&amp;lt;Conversation Model ID&amp;gt;`
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationModelEvaluationsPagedResponse listConversationModelEvaluations(
+      String parent) {
+    ListConversationModelEvaluationsRequest request =
+<span class="fc" id="L965">        ListConversationModelEvaluationsRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L966">    return listConversationModelEvaluations(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists evaluations of a conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   ListConversationModelEvaluationsRequest request =
+   *       ListConversationModelEvaluationsRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (ConversationModelEvaluation element :
+   *       conversationModelsClient.listConversationModelEvaluations(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationModelEvaluationsPagedResponse listConversationModelEvaluations(
+      ListConversationModelEvaluationsRequest request) {
+<span class="fc" id="L997">    return listConversationModelEvaluationsPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists evaluations of a conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   ListConversationModelEvaluationsRequest request =
+   *       ListConversationModelEvaluationsRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;ConversationModelEvaluation&gt; future =
+   *       conversationModelsClient
+   *           .listConversationModelEvaluationsPagedCallable()
+   *           .futureCall(request);
+   *   // Do something.
+   *   for (ConversationModelEvaluation element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;
+          ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsPagedResponse&gt;
+      listConversationModelEvaluationsPagedCallable() {
+<span class="fc" id="L1030">    return stub.listConversationModelEvaluationsPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Lists evaluations of a conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   ListConversationModelEvaluationsRequest request =
+   *       ListConversationModelEvaluationsRequest.newBuilder()
+   *           .setParent(&quot;parent-995424086&quot;)
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListConversationModelEvaluationsResponse response =
+   *         conversationModelsClient.listConversationModelEvaluationsCallable().call(request);
+   *     for (ConversationModelEvaluation element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;
+          ListConversationModelEvaluationsRequest, ListConversationModelEvaluationsResponse&gt;
+      listConversationModelEvaluationsCallable() {
+<span class="nc" id="L1068">    return stub.listConversationModelEvaluationsCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates evaluation of a conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   ConversationModelName parent =
+   *       ConversationModelName.ofProjectLocationConversationModelName(
+   *           &quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_MODEL]&quot;);
+   *   ConversationModelEvaluation conversationModelEvaluation =
+   *       ConversationModelEvaluation.newBuilder().build();
+   *   ConversationModelEvaluation response =
+   *       conversationModelsClient
+   *           .createConversationModelEvaluationAsync(parent, conversationModelEvaluation)
+   *           .get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The conversation model resource name. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversationModels/&amp;lt;Conversation Model ID&amp;gt;`
+   * @param conversationModelEvaluation Required. The conversation model evaluation to be created.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;
+          ConversationModelEvaluation, CreateConversationModelEvaluationOperationMetadata&gt;
+      createConversationModelEvaluationAsync(
+          ConversationModelName parent, ConversationModelEvaluation conversationModelEvaluation) {
+    CreateConversationModelEvaluationRequest request =
+<span class="fc" id="L1103">        CreateConversationModelEvaluationRequest.newBuilder()</span>
+<span class="pc bpc" id="L1104" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L1105">            .setConversationModelEvaluation(conversationModelEvaluation)</span>
+<span class="fc" id="L1106">            .build();</span>
+<span class="fc" id="L1107">    return createConversationModelEvaluationAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates evaluation of a conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   String parent =
+   *       ConversationModelName.ofProjectLocationConversationModelName(
+   *               &quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_MODEL]&quot;)
+   *           .toString();
+   *   ConversationModelEvaluation conversationModelEvaluation =
+   *       ConversationModelEvaluation.newBuilder().build();
+   *   ConversationModelEvaluation response =
+   *       conversationModelsClient
+   *           .createConversationModelEvaluationAsync(parent, conversationModelEvaluation)
+   *           .get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The conversation model resource name. Format: `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/conversationModels/&amp;lt;Conversation Model ID&amp;gt;`
+   * @param conversationModelEvaluation Required. The conversation model evaluation to be created.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;
+          ConversationModelEvaluation, CreateConversationModelEvaluationOperationMetadata&gt;
+      createConversationModelEvaluationAsync(
+          String parent, ConversationModelEvaluation conversationModelEvaluation) {
+    CreateConversationModelEvaluationRequest request =
+<span class="fc" id="L1143">        CreateConversationModelEvaluationRequest.newBuilder()</span>
+<span class="fc" id="L1144">            .setParent(parent)</span>
+<span class="fc" id="L1145">            .setConversationModelEvaluation(conversationModelEvaluation)</span>
+<span class="fc" id="L1146">            .build();</span>
+<span class="fc" id="L1147">    return createConversationModelEvaluationAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates evaluation of a conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   CreateConversationModelEvaluationRequest request =
+   *       CreateConversationModelEvaluationRequest.newBuilder()
+   *           .setParent(
+   *               ConversationModelName.ofProjectLocationConversationModelName(
+   *                       &quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_MODEL]&quot;)
+   *                   .toString())
+   *           .setConversationModelEvaluation(ConversationModelEvaluation.newBuilder().build())
+   *           .build();
+   *   ConversationModelEvaluation response =
+   *       conversationModelsClient.createConversationModelEvaluationAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;
+          ConversationModelEvaluation, CreateConversationModelEvaluationOperationMetadata&gt;
+      createConversationModelEvaluationAsync(CreateConversationModelEvaluationRequest request) {
+<span class="fc" id="L1179">    return createConversationModelEvaluationOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates evaluation of a conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   CreateConversationModelEvaluationRequest request =
+   *       CreateConversationModelEvaluationRequest.newBuilder()
+   *           .setParent(
+   *               ConversationModelName.ofProjectLocationConversationModelName(
+   *                       &quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_MODEL]&quot;)
+   *                   .toString())
+   *           .setConversationModelEvaluation(ConversationModelEvaluation.newBuilder().build())
+   *           .build();
+   *   OperationFuture&lt;
+   *           ConversationModelEvaluation, CreateConversationModelEvaluationOperationMetadata&gt;
+   *       future =
+   *           conversationModelsClient
+   *               .createConversationModelEvaluationOperationCallable()
+   *               .futureCall(request);
+   *   // Do something.
+   *   ConversationModelEvaluation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          CreateConversationModelEvaluationRequest,
+          ConversationModelEvaluation,
+          CreateConversationModelEvaluationOperationMetadata&gt;
+      createConversationModelEvaluationOperationCallable() {
+<span class="fc" id="L1216">    return stub.createConversationModelEvaluationOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates evaluation of a conversation model.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationModelsClient conversationModelsClient = ConversationModelsClient.create()) {
+   *   CreateConversationModelEvaluationRequest request =
+   *       CreateConversationModelEvaluationRequest.newBuilder()
+   *           .setParent(
+   *               ConversationModelName.ofProjectLocationConversationModelName(
+   *                       &quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;, &quot;[CONVERSATION_MODEL]&quot;)
+   *                   .toString())
+   *           .setConversationModelEvaluation(ConversationModelEvaluation.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationModelsClient.createConversationModelEvaluationCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateConversationModelEvaluationRequest, Operation&gt;
+      createConversationModelEvaluationCallable() {
+<span class="nc" id="L1246">    return stub.createConversationModelEvaluationCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L1251">    stub.close();</span>
+<span class="fc" id="L1252">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L1256">    stub.shutdown();</span>
+<span class="nc" id="L1257">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L1261">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L1266">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L1271">    stub.shutdownNow();</span>
+<span class="nc" id="L1272">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L1276">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListConversationModelsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListConversationModelsRequest,
+          ListConversationModelsResponse,
+          ConversationModel,
+          ListConversationModelsPage,
+          ListConversationModelsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListConversationModelsPagedResponse&gt; createAsync(
+        PageContext&lt;
+                ListConversationModelsRequest, ListConversationModelsResponse, ConversationModel&gt;
+            context,
+        ApiFuture&lt;ListConversationModelsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListConversationModelsPage&gt; futurePage =
+<span class="fc" id="L1293">          ListConversationModelsPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1294">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L1296">          input -&gt; new ListConversationModelsPagedResponse(input),</span>
+<span class="fc" id="L1297">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListConversationModelsPagedResponse(ListConversationModelsPage page) {
+<span class="fc" id="L1301">      super(page, ListConversationModelsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1302">    }</span>
+  }
+
+  public static class ListConversationModelsPage
+      extends AbstractPage&lt;
+          ListConversationModelsRequest,
+          ListConversationModelsResponse,
+          ConversationModel,
+          ListConversationModelsPage&gt; {
+
+    private ListConversationModelsPage(
+        PageContext&lt;
+                ListConversationModelsRequest, ListConversationModelsResponse, ConversationModel&gt;
+            context,
+        ListConversationModelsResponse response) {
+<span class="fc" id="L1317">      super(context, response);</span>
+<span class="fc" id="L1318">    }</span>
+
+    private static ListConversationModelsPage createEmptyPage() {
+<span class="fc" id="L1321">      return new ListConversationModelsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListConversationModelsPage createPage(
+        PageContext&lt;
+                ListConversationModelsRequest, ListConversationModelsResponse, ConversationModel&gt;
+            context,
+        ListConversationModelsResponse response) {
+<span class="fc" id="L1330">      return new ListConversationModelsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListConversationModelsPage&gt; createPageAsync(
+        PageContext&lt;
+                ListConversationModelsRequest, ListConversationModelsResponse, ConversationModel&gt;
+            context,
+        ApiFuture&lt;ListConversationModelsResponse&gt; futureResponse) {
+<span class="fc" id="L1339">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListConversationModelsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListConversationModelsRequest,
+          ListConversationModelsResponse,
+          ConversationModel,
+          ListConversationModelsPage,
+          ListConversationModelsFixedSizeCollection&gt; {
+
+    private ListConversationModelsFixedSizeCollection(
+        List&lt;ListConversationModelsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1353">      super(pages, collectionSize);</span>
+<span class="fc" id="L1354">    }</span>
+
+    private static ListConversationModelsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1357">      return new ListConversationModelsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListConversationModelsFixedSizeCollection createCollection(
+        List&lt;ListConversationModelsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1363">      return new ListConversationModelsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+
+  public static class ListConversationModelEvaluationsPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListConversationModelEvaluationsRequest,
+          ListConversationModelEvaluationsResponse,
+          ConversationModelEvaluation,
+          ListConversationModelEvaluationsPage,
+          ListConversationModelEvaluationsFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListConversationModelEvaluationsPagedResponse&gt; createAsync(
+        PageContext&lt;
+                ListConversationModelEvaluationsRequest,
+                ListConversationModelEvaluationsResponse,
+                ConversationModelEvaluation&gt;
+            context,
+        ApiFuture&lt;ListConversationModelEvaluationsResponse&gt; futureResponse) {
+      ApiFuture&lt;ListConversationModelEvaluationsPage&gt; futurePage =
+<span class="fc" id="L1383">          ListConversationModelEvaluationsPage.createEmptyPage()</span>
+<span class="fc" id="L1384">              .createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1385">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L1387">          input -&gt; new ListConversationModelEvaluationsPagedResponse(input),</span>
+<span class="fc" id="L1388">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListConversationModelEvaluationsPagedResponse(
+        ListConversationModelEvaluationsPage page) {
+<span class="fc" id="L1393">      super(page, ListConversationModelEvaluationsFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1394">    }</span>
+  }
+
+  public static class ListConversationModelEvaluationsPage
+      extends AbstractPage&lt;
+          ListConversationModelEvaluationsRequest,
+          ListConversationModelEvaluationsResponse,
+          ConversationModelEvaluation,
+          ListConversationModelEvaluationsPage&gt; {
+
+    private ListConversationModelEvaluationsPage(
+        PageContext&lt;
+                ListConversationModelEvaluationsRequest,
+                ListConversationModelEvaluationsResponse,
+                ConversationModelEvaluation&gt;
+            context,
+        ListConversationModelEvaluationsResponse response) {
+<span class="fc" id="L1411">      super(context, response);</span>
+<span class="fc" id="L1412">    }</span>
+
+    private static ListConversationModelEvaluationsPage createEmptyPage() {
+<span class="fc" id="L1415">      return new ListConversationModelEvaluationsPage(null, null);</span>
+    }
+
+    @Override
+    protected ListConversationModelEvaluationsPage createPage(
+        PageContext&lt;
+                ListConversationModelEvaluationsRequest,
+                ListConversationModelEvaluationsResponse,
+                ConversationModelEvaluation&gt;
+            context,
+        ListConversationModelEvaluationsResponse response) {
+<span class="fc" id="L1426">      return new ListConversationModelEvaluationsPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListConversationModelEvaluationsPage&gt; createPageAsync(
+        PageContext&lt;
+                ListConversationModelEvaluationsRequest,
+                ListConversationModelEvaluationsResponse,
+                ConversationModelEvaluation&gt;
+            context,
+        ApiFuture&lt;ListConversationModelEvaluationsResponse&gt; futureResponse) {
+<span class="fc" id="L1437">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListConversationModelEvaluationsFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListConversationModelEvaluationsRequest,
+          ListConversationModelEvaluationsResponse,
+          ConversationModelEvaluation,
+          ListConversationModelEvaluationsPage,
+          ListConversationModelEvaluationsFixedSizeCollection&gt; {
+
+    private ListConversationModelEvaluationsFixedSizeCollection(
+        List&lt;ListConversationModelEvaluationsPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1451">      super(pages, collectionSize);</span>
+<span class="fc" id="L1452">    }</span>
+
+    private static ListConversationModelEvaluationsFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1455">      return new ListConversationModelEvaluationsFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListConversationModelEvaluationsFixedSizeCollection createCollection(
+        List&lt;ListConversationModelEvaluationsPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1461">      return new ListConversationModelEvaluationsFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

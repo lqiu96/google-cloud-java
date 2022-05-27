@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ConversationProfilesSettings.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1</a> &gt; <span class="el_source">ConversationProfilesSettings.java</span></div><h1>ConversationProfilesSettings.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1;
+
+import static com.google.cloud.dialogflow.v2beta1.ConversationProfilesClient.ListConversationProfilesPagedResponse;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
+import com.google.api.gax.rpc.ApiClientHeaderProvider;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientSettings;
+import com.google.api.gax.rpc.OperationCallSettings;
+import com.google.api.gax.rpc.PagedCallSettings;
+import com.google.api.gax.rpc.TransportChannelProvider;
+import com.google.api.gax.rpc.UnaryCallSettings;
+import com.google.cloud.dialogflow.v2beta1.stub.ConversationProfilesStubSettings;
+import com.google.longrunning.Operation;
+import com.google.protobuf.Empty;
+import java.io.IOException;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Settings class to configure an instance of {@link ConversationProfilesClient}.
+ *
+ * &lt;p&gt;The default instance has everything set to sensible defaults:
+ *
+ * &lt;ul&gt;
+ *   &lt;li&gt;The default service address (dialogflow.googleapis.com) and default port (443) are used.
+ *   &lt;li&gt;Credentials are acquired automatically through Application Default Credentials.
+ *   &lt;li&gt;Retries are configured for idempotent methods but not for non-idempotent methods.
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;The builder of this class is recursive, so contained classes are themselves builders. When
+ * build() is called, the tree of builders is called to create the complete settings object.
+ *
+ * &lt;p&gt;For example, to set the total timeout of getConversationProfile to 30 seconds:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ConversationProfilesSettings.Builder conversationProfilesSettingsBuilder =
+ *     ConversationProfilesSettings.newBuilder();
+ * conversationProfilesSettingsBuilder
+ *     .getConversationProfileSettings()
+ *     .setRetrySettings(
+ *         conversationProfilesSettingsBuilder
+ *             .getConversationProfileSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .build());
+ * ConversationProfilesSettings conversationProfilesSettings =
+ *     conversationProfilesSettingsBuilder.build();
+ * }&lt;/pre&gt;
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ConversationProfilesSettings extends ClientSettings&lt;ConversationProfilesSettings&gt; {
+
+  /** Returns the object with the settings used for calls to listConversationProfiles. */
+  public PagedCallSettings&lt;
+          ListConversationProfilesRequest,
+          ListConversationProfilesResponse,
+          ListConversationProfilesPagedResponse&gt;
+      listConversationProfilesSettings() {
+<span class="nc" id="L85">    return ((ConversationProfilesStubSettings) getStubSettings())</span>
+<span class="nc" id="L86">        .listConversationProfilesSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to getConversationProfile. */
+  public UnaryCallSettings&lt;GetConversationProfileRequest, ConversationProfile&gt;
+      getConversationProfileSettings() {
+<span class="nc" id="L92">    return ((ConversationProfilesStubSettings) getStubSettings()).getConversationProfileSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to createConversationProfile. */
+  public UnaryCallSettings&lt;CreateConversationProfileRequest, ConversationProfile&gt;
+      createConversationProfileSettings() {
+<span class="nc" id="L98">    return ((ConversationProfilesStubSettings) getStubSettings())</span>
+<span class="nc" id="L99">        .createConversationProfileSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to updateConversationProfile. */
+  public UnaryCallSettings&lt;UpdateConversationProfileRequest, ConversationProfile&gt;
+      updateConversationProfileSettings() {
+<span class="nc" id="L105">    return ((ConversationProfilesStubSettings) getStubSettings())</span>
+<span class="nc" id="L106">        .updateConversationProfileSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to deleteConversationProfile. */
+  public UnaryCallSettings&lt;DeleteConversationProfileRequest, Empty&gt;
+      deleteConversationProfileSettings() {
+<span class="nc" id="L112">    return ((ConversationProfilesStubSettings) getStubSettings())</span>
+<span class="nc" id="L113">        .deleteConversationProfileSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to setSuggestionFeatureConfig. */
+  public UnaryCallSettings&lt;SetSuggestionFeatureConfigRequest, Operation&gt;
+      setSuggestionFeatureConfigSettings() {
+<span class="nc" id="L119">    return ((ConversationProfilesStubSettings) getStubSettings())</span>
+<span class="nc" id="L120">        .setSuggestionFeatureConfigSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to setSuggestionFeatureConfig. */
+  public OperationCallSettings&lt;
+          SetSuggestionFeatureConfigRequest,
+          ConversationProfile,
+          SetSuggestionFeatureConfigOperationMetadata&gt;
+      setSuggestionFeatureConfigOperationSettings() {
+<span class="nc" id="L129">    return ((ConversationProfilesStubSettings) getStubSettings())</span>
+<span class="nc" id="L130">        .setSuggestionFeatureConfigOperationSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to clearSuggestionFeatureConfig. */
+  public UnaryCallSettings&lt;ClearSuggestionFeatureConfigRequest, Operation&gt;
+      clearSuggestionFeatureConfigSettings() {
+<span class="nc" id="L136">    return ((ConversationProfilesStubSettings) getStubSettings())</span>
+<span class="nc" id="L137">        .clearSuggestionFeatureConfigSettings();</span>
+  }
+
+  /** Returns the object with the settings used for calls to clearSuggestionFeatureConfig. */
+  public OperationCallSettings&lt;
+          ClearSuggestionFeatureConfigRequest,
+          ConversationProfile,
+          ClearSuggestionFeatureConfigOperationMetadata&gt;
+      clearSuggestionFeatureConfigOperationSettings() {
+<span class="nc" id="L146">    return ((ConversationProfilesStubSettings) getStubSettings())</span>
+<span class="nc" id="L147">        .clearSuggestionFeatureConfigOperationSettings();</span>
+  }
+
+  public static final ConversationProfilesSettings create(ConversationProfilesStubSettings stub)
+      throws IOException {
+<span class="nc" id="L152">    return new ConversationProfilesSettings.Builder(stub.toBuilder()).build();</span>
+  }
+
+  /** Returns a builder for the default ExecutorProvider for this service. */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+<span class="nc" id="L157">    return ConversationProfilesStubSettings.defaultExecutorProviderBuilder();</span>
+  }
+
+  /** Returns the default service endpoint. */
+  public static String getDefaultEndpoint() {
+<span class="nc" id="L162">    return ConversationProfilesStubSettings.getDefaultEndpoint();</span>
+  }
+
+  /** Returns the default service scopes. */
+  public static List&lt;String&gt; getDefaultServiceScopes() {
+<span class="nc" id="L167">    return ConversationProfilesStubSettings.getDefaultServiceScopes();</span>
+  }
+
+  /** Returns a builder for the default credentials for this service. */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+<span class="nc" id="L172">    return ConversationProfilesStubSettings.defaultCredentialsProviderBuilder();</span>
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingGrpcChannelProvider.Builder defaultGrpcTransportProviderBuilder() {
+<span class="nc" id="L177">    return ConversationProfilesStubSettings.defaultGrpcTransportProviderBuilder();</span>
+  }
+
+  public static TransportChannelProvider defaultTransportChannelProvider() {
+<span class="nc" id="L181">    return ConversationProfilesStubSettings.defaultTransportChannelProvider();</span>
+  }
+
+  @BetaApi(&quot;The surface for customizing headers is not stable yet and may change in the future.&quot;)
+  public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
+<span class="nc" id="L186">    return ConversationProfilesStubSettings.defaultApiClientHeaderProviderBuilder();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder() {
+<span class="fc" id="L191">    return Builder.createDefault();</span>
+  }
+
+  /** Returns a new builder for this class. */
+  public static Builder newBuilder(ClientContext clientContext) {
+<span class="nc" id="L196">    return new Builder(clientContext);</span>
+  }
+
+  /** Returns a builder containing all the values of this settings class. */
+  public Builder toBuilder() {
+<span class="nc" id="L201">    return new Builder(this);</span>
+  }
+
+  protected ConversationProfilesSettings(Builder settingsBuilder) throws IOException {
+<span class="fc" id="L205">    super(settingsBuilder);</span>
+<span class="fc" id="L206">  }</span>
+
+  /** Builder for ConversationProfilesSettings. */
+  public static class Builder
+      extends ClientSettings.Builder&lt;ConversationProfilesSettings, Builder&gt; {
+
+    protected Builder() throws IOException {
+<span class="nc" id="L213">      this(((ClientContext) null));</span>
+<span class="nc" id="L214">    }</span>
+
+    protected Builder(ClientContext clientContext) {
+<span class="nc" id="L217">      super(ConversationProfilesStubSettings.newBuilder(clientContext));</span>
+<span class="nc" id="L218">    }</span>
+
+    protected Builder(ConversationProfilesSettings settings) {
+<span class="nc" id="L221">      super(settings.getStubSettings().toBuilder());</span>
+<span class="nc" id="L222">    }</span>
+
+    protected Builder(ConversationProfilesStubSettings.Builder stubSettings) {
+<span class="fc" id="L225">      super(stubSettings);</span>
+<span class="fc" id="L226">    }</span>
+
+    private static Builder createDefault() {
+<span class="fc" id="L229">      return new Builder(ConversationProfilesStubSettings.newBuilder());</span>
+    }
+
+    public ConversationProfilesStubSettings.Builder getStubSettingsBuilder() {
+<span class="nc" id="L233">      return ((ConversationProfilesStubSettings.Builder) getStubSettings());</span>
+    }
+
+    /**
+     * Applies the given settings updater function to all of the unary API methods in this service.
+     *
+     * &lt;p&gt;Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(
+        ApiFunction&lt;UnaryCallSettings.Builder&lt;?, ?&gt;, Void&gt; settingsUpdater) {
+<span class="nc" id="L243">      super.applyToAllUnaryMethods(</span>
+<span class="nc" id="L244">          getStubSettingsBuilder().unaryMethodSettingsBuilders(), settingsUpdater);</span>
+<span class="nc" id="L245">      return this;</span>
+    }
+
+    /** Returns the builder for the settings used for calls to listConversationProfiles. */
+    public PagedCallSettings.Builder&lt;
+            ListConversationProfilesRequest,
+            ListConversationProfilesResponse,
+            ListConversationProfilesPagedResponse&gt;
+        listConversationProfilesSettings() {
+<span class="nc" id="L254">      return getStubSettingsBuilder().listConversationProfilesSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to getConversationProfile. */
+    public UnaryCallSettings.Builder&lt;GetConversationProfileRequest, ConversationProfile&gt;
+        getConversationProfileSettings() {
+<span class="nc" id="L260">      return getStubSettingsBuilder().getConversationProfileSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to createConversationProfile. */
+    public UnaryCallSettings.Builder&lt;CreateConversationProfileRequest, ConversationProfile&gt;
+        createConversationProfileSettings() {
+<span class="nc" id="L266">      return getStubSettingsBuilder().createConversationProfileSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to updateConversationProfile. */
+    public UnaryCallSettings.Builder&lt;UpdateConversationProfileRequest, ConversationProfile&gt;
+        updateConversationProfileSettings() {
+<span class="nc" id="L272">      return getStubSettingsBuilder().updateConversationProfileSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to deleteConversationProfile. */
+    public UnaryCallSettings.Builder&lt;DeleteConversationProfileRequest, Empty&gt;
+        deleteConversationProfileSettings() {
+<span class="nc" id="L278">      return getStubSettingsBuilder().deleteConversationProfileSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to setSuggestionFeatureConfig. */
+    public UnaryCallSettings.Builder&lt;SetSuggestionFeatureConfigRequest, Operation&gt;
+        setSuggestionFeatureConfigSettings() {
+<span class="nc" id="L284">      return getStubSettingsBuilder().setSuggestionFeatureConfigSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to setSuggestionFeatureConfig. */
+    public OperationCallSettings.Builder&lt;
+            SetSuggestionFeatureConfigRequest,
+            ConversationProfile,
+            SetSuggestionFeatureConfigOperationMetadata&gt;
+        setSuggestionFeatureConfigOperationSettings() {
+<span class="nc" id="L293">      return getStubSettingsBuilder().setSuggestionFeatureConfigOperationSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to clearSuggestionFeatureConfig. */
+    public UnaryCallSettings.Builder&lt;ClearSuggestionFeatureConfigRequest, Operation&gt;
+        clearSuggestionFeatureConfigSettings() {
+<span class="nc" id="L299">      return getStubSettingsBuilder().clearSuggestionFeatureConfigSettings();</span>
+    }
+
+    /** Returns the builder for the settings used for calls to clearSuggestionFeatureConfig. */
+    public OperationCallSettings.Builder&lt;
+            ClearSuggestionFeatureConfigRequest,
+            ConversationProfile,
+            ClearSuggestionFeatureConfigOperationMetadata&gt;
+        clearSuggestionFeatureConfigOperationSettings() {
+<span class="nc" id="L308">      return getStubSettingsBuilder().clearSuggestionFeatureConfigOperationSettings();</span>
+    }
+
+    @Override
+    public ConversationProfilesSettings build() throws IOException {
+<span class="fc" id="L313">      return new ConversationProfilesSettings(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

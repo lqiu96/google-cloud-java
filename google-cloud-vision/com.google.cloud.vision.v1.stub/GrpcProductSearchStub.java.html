@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>GrpcProductSearchStub.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-vision</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.vision.v1.stub</a> &gt; <span class="el_source">GrpcProductSearchStub.java</span></div><h1>GrpcProductSearchStub.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.vision.v1.stub;
+
+import static com.google.cloud.vision.v1.ProductSearchClient.ListProductSetsPagedResponse;
+import static com.google.cloud.vision.v1.ProductSearchClient.ListProductsInProductSetPagedResponse;
+import static com.google.cloud.vision.v1.ProductSearchClient.ListProductsPagedResponse;
+import static com.google.cloud.vision.v1.ProductSearchClient.ListReferenceImagesPagedResponse;
+
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.GrpcCallSettings;
+import com.google.api.gax.grpc.GrpcStubCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.vision.v1.AddProductToProductSetRequest;
+import com.google.cloud.vision.v1.BatchOperationMetadata;
+import com.google.cloud.vision.v1.CreateProductRequest;
+import com.google.cloud.vision.v1.CreateProductSetRequest;
+import com.google.cloud.vision.v1.CreateReferenceImageRequest;
+import com.google.cloud.vision.v1.DeleteProductRequest;
+import com.google.cloud.vision.v1.DeleteProductSetRequest;
+import com.google.cloud.vision.v1.DeleteReferenceImageRequest;
+import com.google.cloud.vision.v1.GetProductRequest;
+import com.google.cloud.vision.v1.GetProductSetRequest;
+import com.google.cloud.vision.v1.GetReferenceImageRequest;
+import com.google.cloud.vision.v1.ImportProductSetsRequest;
+import com.google.cloud.vision.v1.ImportProductSetsResponse;
+import com.google.cloud.vision.v1.ListProductSetsRequest;
+import com.google.cloud.vision.v1.ListProductSetsResponse;
+import com.google.cloud.vision.v1.ListProductsInProductSetRequest;
+import com.google.cloud.vision.v1.ListProductsInProductSetResponse;
+import com.google.cloud.vision.v1.ListProductsRequest;
+import com.google.cloud.vision.v1.ListProductsResponse;
+import com.google.cloud.vision.v1.ListReferenceImagesRequest;
+import com.google.cloud.vision.v1.ListReferenceImagesResponse;
+import com.google.cloud.vision.v1.Product;
+import com.google.cloud.vision.v1.ProductSet;
+import com.google.cloud.vision.v1.PurgeProductsRequest;
+import com.google.cloud.vision.v1.ReferenceImage;
+import com.google.cloud.vision.v1.RemoveProductFromProductSetRequest;
+import com.google.cloud.vision.v1.UpdateProductRequest;
+import com.google.cloud.vision.v1.UpdateProductSetRequest;
+import com.google.common.collect.ImmutableMap;
+import com.google.longrunning.Operation;
+import com.google.longrunning.stub.GrpcOperationsStub;
+import com.google.protobuf.Empty;
+import io.grpc.MethodDescriptor;
+import io.grpc.protobuf.ProtoUtils;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * gRPC stub implementation for the ProductSearch service API.
+ *
+ * &lt;p&gt;This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class GrpcProductSearchStub extends ProductSearchStub {
+  private static final MethodDescriptor&lt;CreateProductSetRequest, ProductSet&gt;
+      createProductSetMethodDescriptor =
+<span class="fc" id="L79">          MethodDescriptor.&lt;CreateProductSetRequest, ProductSet&gt;newBuilder()</span>
+<span class="fc" id="L80">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L81">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/CreateProductSet&quot;)</span>
+<span class="fc" id="L82">              .setRequestMarshaller(</span>
+<span class="fc" id="L83">                  ProtoUtils.marshaller(CreateProductSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L84">              .setResponseMarshaller(ProtoUtils.marshaller(ProductSet.getDefaultInstance()))</span>
+<span class="fc" id="L85">              .build();</span>
+
+  private static final MethodDescriptor&lt;ListProductSetsRequest, ListProductSetsResponse&gt;
+      listProductSetsMethodDescriptor =
+<span class="fc" id="L89">          MethodDescriptor.&lt;ListProductSetsRequest, ListProductSetsResponse&gt;newBuilder()</span>
+<span class="fc" id="L90">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L91">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/ListProductSets&quot;)</span>
+<span class="fc" id="L92">              .setRequestMarshaller(</span>
+<span class="fc" id="L93">                  ProtoUtils.marshaller(ListProductSetsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L94">              .setResponseMarshaller(</span>
+<span class="fc" id="L95">                  ProtoUtils.marshaller(ListProductSetsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L96">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetProductSetRequest, ProductSet&gt;
+      getProductSetMethodDescriptor =
+<span class="fc" id="L100">          MethodDescriptor.&lt;GetProductSetRequest, ProductSet&gt;newBuilder()</span>
+<span class="fc" id="L101">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L102">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/GetProductSet&quot;)</span>
+<span class="fc" id="L103">              .setRequestMarshaller(</span>
+<span class="fc" id="L104">                  ProtoUtils.marshaller(GetProductSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L105">              .setResponseMarshaller(ProtoUtils.marshaller(ProductSet.getDefaultInstance()))</span>
+<span class="fc" id="L106">              .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateProductSetRequest, ProductSet&gt;
+      updateProductSetMethodDescriptor =
+<span class="fc" id="L110">          MethodDescriptor.&lt;UpdateProductSetRequest, ProductSet&gt;newBuilder()</span>
+<span class="fc" id="L111">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L112">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/UpdateProductSet&quot;)</span>
+<span class="fc" id="L113">              .setRequestMarshaller(</span>
+<span class="fc" id="L114">                  ProtoUtils.marshaller(UpdateProductSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L115">              .setResponseMarshaller(ProtoUtils.marshaller(ProductSet.getDefaultInstance()))</span>
+<span class="fc" id="L116">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteProductSetRequest, Empty&gt;
+      deleteProductSetMethodDescriptor =
+<span class="fc" id="L120">          MethodDescriptor.&lt;DeleteProductSetRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L121">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L122">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/DeleteProductSet&quot;)</span>
+<span class="fc" id="L123">              .setRequestMarshaller(</span>
+<span class="fc" id="L124">                  ProtoUtils.marshaller(DeleteProductSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L125">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L126">              .build();</span>
+
+  private static final MethodDescriptor&lt;CreateProductRequest, Product&gt;
+      createProductMethodDescriptor =
+<span class="fc" id="L130">          MethodDescriptor.&lt;CreateProductRequest, Product&gt;newBuilder()</span>
+<span class="fc" id="L131">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L132">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/CreateProduct&quot;)</span>
+<span class="fc" id="L133">              .setRequestMarshaller(</span>
+<span class="fc" id="L134">                  ProtoUtils.marshaller(CreateProductRequest.getDefaultInstance()))</span>
+<span class="fc" id="L135">              .setResponseMarshaller(ProtoUtils.marshaller(Product.getDefaultInstance()))</span>
+<span class="fc" id="L136">              .build();</span>
+
+  private static final MethodDescriptor&lt;ListProductsRequest, ListProductsResponse&gt;
+      listProductsMethodDescriptor =
+<span class="fc" id="L140">          MethodDescriptor.&lt;ListProductsRequest, ListProductsResponse&gt;newBuilder()</span>
+<span class="fc" id="L141">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L142">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/ListProducts&quot;)</span>
+<span class="fc" id="L143">              .setRequestMarshaller(ProtoUtils.marshaller(ListProductsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L144">              .setResponseMarshaller(</span>
+<span class="fc" id="L145">                  ProtoUtils.marshaller(ListProductsResponse.getDefaultInstance()))</span>
+<span class="fc" id="L146">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetProductRequest, Product&gt; getProductMethodDescriptor =
+<span class="fc" id="L149">      MethodDescriptor.&lt;GetProductRequest, Product&gt;newBuilder()</span>
+<span class="fc" id="L150">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L151">          .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/GetProduct&quot;)</span>
+<span class="fc" id="L152">          .setRequestMarshaller(ProtoUtils.marshaller(GetProductRequest.getDefaultInstance()))</span>
+<span class="fc" id="L153">          .setResponseMarshaller(ProtoUtils.marshaller(Product.getDefaultInstance()))</span>
+<span class="fc" id="L154">          .build();</span>
+
+  private static final MethodDescriptor&lt;UpdateProductRequest, Product&gt;
+      updateProductMethodDescriptor =
+<span class="fc" id="L158">          MethodDescriptor.&lt;UpdateProductRequest, Product&gt;newBuilder()</span>
+<span class="fc" id="L159">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L160">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/UpdateProduct&quot;)</span>
+<span class="fc" id="L161">              .setRequestMarshaller(</span>
+<span class="fc" id="L162">                  ProtoUtils.marshaller(UpdateProductRequest.getDefaultInstance()))</span>
+<span class="fc" id="L163">              .setResponseMarshaller(ProtoUtils.marshaller(Product.getDefaultInstance()))</span>
+<span class="fc" id="L164">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteProductRequest, Empty&gt; deleteProductMethodDescriptor =
+<span class="fc" id="L167">      MethodDescriptor.&lt;DeleteProductRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L168">          .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L169">          .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/DeleteProduct&quot;)</span>
+<span class="fc" id="L170">          .setRequestMarshaller(ProtoUtils.marshaller(DeleteProductRequest.getDefaultInstance()))</span>
+<span class="fc" id="L171">          .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L172">          .build();</span>
+
+  private static final MethodDescriptor&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+      createReferenceImageMethodDescriptor =
+<span class="fc" id="L176">          MethodDescriptor.&lt;CreateReferenceImageRequest, ReferenceImage&gt;newBuilder()</span>
+<span class="fc" id="L177">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L178">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/CreateReferenceImage&quot;)</span>
+<span class="fc" id="L179">              .setRequestMarshaller(</span>
+<span class="fc" id="L180">                  ProtoUtils.marshaller(CreateReferenceImageRequest.getDefaultInstance()))</span>
+<span class="fc" id="L181">              .setResponseMarshaller(ProtoUtils.marshaller(ReferenceImage.getDefaultInstance()))</span>
+<span class="fc" id="L182">              .build();</span>
+
+  private static final MethodDescriptor&lt;DeleteReferenceImageRequest, Empty&gt;
+      deleteReferenceImageMethodDescriptor =
+<span class="fc" id="L186">          MethodDescriptor.&lt;DeleteReferenceImageRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L187">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L188">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/DeleteReferenceImage&quot;)</span>
+<span class="fc" id="L189">              .setRequestMarshaller(</span>
+<span class="fc" id="L190">                  ProtoUtils.marshaller(DeleteReferenceImageRequest.getDefaultInstance()))</span>
+<span class="fc" id="L191">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L192">              .build();</span>
+
+  private static final MethodDescriptor&lt;ListReferenceImagesRequest, ListReferenceImagesResponse&gt;
+      listReferenceImagesMethodDescriptor =
+<span class="fc" id="L196">          MethodDescriptor.&lt;ListReferenceImagesRequest, ListReferenceImagesResponse&gt;newBuilder()</span>
+<span class="fc" id="L197">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L198">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/ListReferenceImages&quot;)</span>
+<span class="fc" id="L199">              .setRequestMarshaller(</span>
+<span class="fc" id="L200">                  ProtoUtils.marshaller(ListReferenceImagesRequest.getDefaultInstance()))</span>
+<span class="fc" id="L201">              .setResponseMarshaller(</span>
+<span class="fc" id="L202">                  ProtoUtils.marshaller(ListReferenceImagesResponse.getDefaultInstance()))</span>
+<span class="fc" id="L203">              .build();</span>
+
+  private static final MethodDescriptor&lt;GetReferenceImageRequest, ReferenceImage&gt;
+      getReferenceImageMethodDescriptor =
+<span class="fc" id="L207">          MethodDescriptor.&lt;GetReferenceImageRequest, ReferenceImage&gt;newBuilder()</span>
+<span class="fc" id="L208">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L209">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/GetReferenceImage&quot;)</span>
+<span class="fc" id="L210">              .setRequestMarshaller(</span>
+<span class="fc" id="L211">                  ProtoUtils.marshaller(GetReferenceImageRequest.getDefaultInstance()))</span>
+<span class="fc" id="L212">              .setResponseMarshaller(ProtoUtils.marshaller(ReferenceImage.getDefaultInstance()))</span>
+<span class="fc" id="L213">              .build();</span>
+
+  private static final MethodDescriptor&lt;AddProductToProductSetRequest, Empty&gt;
+      addProductToProductSetMethodDescriptor =
+<span class="fc" id="L217">          MethodDescriptor.&lt;AddProductToProductSetRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L218">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L219">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/AddProductToProductSet&quot;)</span>
+<span class="fc" id="L220">              .setRequestMarshaller(</span>
+<span class="fc" id="L221">                  ProtoUtils.marshaller(AddProductToProductSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L222">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L223">              .build();</span>
+
+  private static final MethodDescriptor&lt;RemoveProductFromProductSetRequest, Empty&gt;
+      removeProductFromProductSetMethodDescriptor =
+<span class="fc" id="L227">          MethodDescriptor.&lt;RemoveProductFromProductSetRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L228">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L229">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/RemoveProductFromProductSet&quot;)</span>
+<span class="fc" id="L230">              .setRequestMarshaller(</span>
+<span class="fc" id="L231">                  ProtoUtils.marshaller(RemoveProductFromProductSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L232">              .setResponseMarshaller(ProtoUtils.marshaller(Empty.getDefaultInstance()))</span>
+<span class="fc" id="L233">              .build();</span>
+
+  private static final MethodDescriptor&lt;
+          ListProductsInProductSetRequest, ListProductsInProductSetResponse&gt;
+      listProductsInProductSetMethodDescriptor =
+          MethodDescriptor
+<span class="fc" id="L239">              .&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse&gt;newBuilder()</span>
+<span class="fc" id="L240">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L241">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/ListProductsInProductSet&quot;)</span>
+<span class="fc" id="L242">              .setRequestMarshaller(</span>
+<span class="fc" id="L243">                  ProtoUtils.marshaller(ListProductsInProductSetRequest.getDefaultInstance()))</span>
+<span class="fc" id="L244">              .setResponseMarshaller(</span>
+<span class="fc" id="L245">                  ProtoUtils.marshaller(ListProductsInProductSetResponse.getDefaultInstance()))</span>
+<span class="fc" id="L246">              .build();</span>
+
+  private static final MethodDescriptor&lt;ImportProductSetsRequest, Operation&gt;
+      importProductSetsMethodDescriptor =
+<span class="fc" id="L250">          MethodDescriptor.&lt;ImportProductSetsRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L251">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L252">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/ImportProductSets&quot;)</span>
+<span class="fc" id="L253">              .setRequestMarshaller(</span>
+<span class="fc" id="L254">                  ProtoUtils.marshaller(ImportProductSetsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L255">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L256">              .build();</span>
+
+  private static final MethodDescriptor&lt;PurgeProductsRequest, Operation&gt;
+<span class="fc" id="L259">      purgeProductsMethodDescriptor =</span>
+<span class="fc" id="L260">          MethodDescriptor.&lt;PurgeProductsRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L261">              .setType(MethodDescriptor.MethodType.UNARY)</span>
+<span class="fc" id="L262">              .setFullMethodName(&quot;google.cloud.vision.v1.ProductSearch/PurgeProducts&quot;)</span>
+<span class="fc" id="L263">              .setRequestMarshaller(</span>
+<span class="fc" id="L264">                  ProtoUtils.marshaller(PurgeProductsRequest.getDefaultInstance()))</span>
+<span class="fc" id="L265">              .setResponseMarshaller(ProtoUtils.marshaller(Operation.getDefaultInstance()))</span>
+<span class="fc" id="L266">              .build();</span>
+
+  private final UnaryCallable&lt;CreateProductSetRequest, ProductSet&gt; createProductSetCallable;
+  private final UnaryCallable&lt;ListProductSetsRequest, ListProductSetsResponse&gt;
+      listProductSetsCallable;
+  private final UnaryCallable&lt;ListProductSetsRequest, ListProductSetsPagedResponse&gt;
+      listProductSetsPagedCallable;
+  private final UnaryCallable&lt;GetProductSetRequest, ProductSet&gt; getProductSetCallable;
+  private final UnaryCallable&lt;UpdateProductSetRequest, ProductSet&gt; updateProductSetCallable;
+  private final UnaryCallable&lt;DeleteProductSetRequest, Empty&gt; deleteProductSetCallable;
+  private final UnaryCallable&lt;CreateProductRequest, Product&gt; createProductCallable;
+  private final UnaryCallable&lt;ListProductsRequest, ListProductsResponse&gt; listProductsCallable;
+  private final UnaryCallable&lt;ListProductsRequest, ListProductsPagedResponse&gt;
+      listProductsPagedCallable;
+  private final UnaryCallable&lt;GetProductRequest, Product&gt; getProductCallable;
+  private final UnaryCallable&lt;UpdateProductRequest, Product&gt; updateProductCallable;
+  private final UnaryCallable&lt;DeleteProductRequest, Empty&gt; deleteProductCallable;
+  private final UnaryCallable&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+      createReferenceImageCallable;
+  private final UnaryCallable&lt;DeleteReferenceImageRequest, Empty&gt; deleteReferenceImageCallable;
+  private final UnaryCallable&lt;ListReferenceImagesRequest, ListReferenceImagesResponse&gt;
+      listReferenceImagesCallable;
+  private final UnaryCallable&lt;ListReferenceImagesRequest, ListReferenceImagesPagedResponse&gt;
+      listReferenceImagesPagedCallable;
+  private final UnaryCallable&lt;GetReferenceImageRequest, ReferenceImage&gt; getReferenceImageCallable;
+  private final UnaryCallable&lt;AddProductToProductSetRequest, Empty&gt; addProductToProductSetCallable;
+  private final UnaryCallable&lt;RemoveProductFromProductSetRequest, Empty&gt;
+      removeProductFromProductSetCallable;
+  private final UnaryCallable&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse&gt;
+      listProductsInProductSetCallable;
+  private final UnaryCallable&lt;
+          ListProductsInProductSetRequest, ListProductsInProductSetPagedResponse&gt;
+      listProductsInProductSetPagedCallable;
+  private final UnaryCallable&lt;ImportProductSetsRequest, Operation&gt; importProductSetsCallable;
+  private final OperationCallable&lt;
+          ImportProductSetsRequest, ImportProductSetsResponse, BatchOperationMetadata&gt;
+      importProductSetsOperationCallable;
+  private final UnaryCallable&lt;PurgeProductsRequest, Operation&gt; purgeProductsCallable;
+  private final OperationCallable&lt;PurgeProductsRequest, Empty, BatchOperationMetadata&gt;
+      purgeProductsOperationCallable;
+
+  private final BackgroundResource backgroundResources;
+  private final GrpcOperationsStub operationsStub;
+  private final GrpcStubCallableFactory callableFactory;
+
+  public static final GrpcProductSearchStub create(ProductSearchStubSettings settings)
+      throws IOException {
+<span class="fc" id="L313">    return new GrpcProductSearchStub(settings, ClientContext.create(settings));</span>
+  }
+
+  public static final GrpcProductSearchStub create(ClientContext clientContext) throws IOException {
+<span class="nc" id="L317">    return new GrpcProductSearchStub(ProductSearchStubSettings.newBuilder().build(), clientContext);</span>
+  }
+
+  public static final GrpcProductSearchStub create(
+      ClientContext clientContext, GrpcStubCallableFactory callableFactory) throws IOException {
+<span class="nc" id="L322">    return new GrpcProductSearchStub(</span>
+<span class="nc" id="L323">        ProductSearchStubSettings.newBuilder().build(), clientContext, callableFactory);</span>
+  }
+
+  /**
+   * Constructs an instance of GrpcProductSearchStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcProductSearchStub(ProductSearchStubSettings settings, ClientContext clientContext)
+      throws IOException {
+<span class="fc" id="L333">    this(settings, clientContext, new GrpcProductSearchCallableFactory());</span>
+<span class="fc" id="L334">  }</span>
+
+  /**
+   * Constructs an instance of GrpcProductSearchStub, using the given settings. This is protected so
+   * that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
+  protected GrpcProductSearchStub(
+      ProductSearchStubSettings settings,
+      ClientContext clientContext,
+      GrpcStubCallableFactory callableFactory)
+<span class="fc" id="L345">      throws IOException {</span>
+<span class="fc" id="L346">    this.callableFactory = callableFactory;</span>
+<span class="fc" id="L347">    this.operationsStub = GrpcOperationsStub.create(clientContext, callableFactory);</span>
+
+    GrpcCallSettings&lt;CreateProductSetRequest, ProductSet&gt; createProductSetTransportSettings =
+<span class="fc" id="L350">        GrpcCallSettings.&lt;CreateProductSetRequest, ProductSet&gt;newBuilder()</span>
+<span class="fc" id="L351">            .setMethodDescriptor(createProductSetMethodDescriptor)</span>
+<span class="fc" id="L352">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L354">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L355">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L356">                  return params.build();</span>
+                })
+<span class="fc" id="L358">            .build();</span>
+    GrpcCallSettings&lt;ListProductSetsRequest, ListProductSetsResponse&gt;
+        listProductSetsTransportSettings =
+<span class="fc" id="L361">            GrpcCallSettings.&lt;ListProductSetsRequest, ListProductSetsResponse&gt;newBuilder()</span>
+<span class="fc" id="L362">                .setMethodDescriptor(listProductSetsMethodDescriptor)</span>
+<span class="fc" id="L363">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L365">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L366">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L367">                      return params.build();</span>
+                    })
+<span class="fc" id="L369">                .build();</span>
+    GrpcCallSettings&lt;GetProductSetRequest, ProductSet&gt; getProductSetTransportSettings =
+<span class="fc" id="L371">        GrpcCallSettings.&lt;GetProductSetRequest, ProductSet&gt;newBuilder()</span>
+<span class="fc" id="L372">            .setMethodDescriptor(getProductSetMethodDescriptor)</span>
+<span class="fc" id="L373">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L375">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L376">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L377">                  return params.build();</span>
+                })
+<span class="fc" id="L379">            .build();</span>
+    GrpcCallSettings&lt;UpdateProductSetRequest, ProductSet&gt; updateProductSetTransportSettings =
+<span class="fc" id="L381">        GrpcCallSettings.&lt;UpdateProductSetRequest, ProductSet&gt;newBuilder()</span>
+<span class="fc" id="L382">            .setMethodDescriptor(updateProductSetMethodDescriptor)</span>
+<span class="fc" id="L383">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L385">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L386">                  params.put(&quot;product_set.name&quot;, String.valueOf(request.getProductSet().getName()));</span>
+<span class="fc" id="L387">                  return params.build();</span>
+                })
+<span class="fc" id="L389">            .build();</span>
+    GrpcCallSettings&lt;DeleteProductSetRequest, Empty&gt; deleteProductSetTransportSettings =
+<span class="fc" id="L391">        GrpcCallSettings.&lt;DeleteProductSetRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L392">            .setMethodDescriptor(deleteProductSetMethodDescriptor)</span>
+<span class="fc" id="L393">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L395">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L396">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L397">                  return params.build();</span>
+                })
+<span class="fc" id="L399">            .build();</span>
+    GrpcCallSettings&lt;CreateProductRequest, Product&gt; createProductTransportSettings =
+<span class="fc" id="L401">        GrpcCallSettings.&lt;CreateProductRequest, Product&gt;newBuilder()</span>
+<span class="fc" id="L402">            .setMethodDescriptor(createProductMethodDescriptor)</span>
+<span class="fc" id="L403">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L405">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L406">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L407">                  return params.build();</span>
+                })
+<span class="fc" id="L409">            .build();</span>
+    GrpcCallSettings&lt;ListProductsRequest, ListProductsResponse&gt; listProductsTransportSettings =
+<span class="fc" id="L411">        GrpcCallSettings.&lt;ListProductsRequest, ListProductsResponse&gt;newBuilder()</span>
+<span class="fc" id="L412">            .setMethodDescriptor(listProductsMethodDescriptor)</span>
+<span class="fc" id="L413">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L415">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L416">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L417">                  return params.build();</span>
+                })
+<span class="fc" id="L419">            .build();</span>
+    GrpcCallSettings&lt;GetProductRequest, Product&gt; getProductTransportSettings =
+<span class="fc" id="L421">        GrpcCallSettings.&lt;GetProductRequest, Product&gt;newBuilder()</span>
+<span class="fc" id="L422">            .setMethodDescriptor(getProductMethodDescriptor)</span>
+<span class="fc" id="L423">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L425">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L426">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L427">                  return params.build();</span>
+                })
+<span class="fc" id="L429">            .build();</span>
+    GrpcCallSettings&lt;UpdateProductRequest, Product&gt; updateProductTransportSettings =
+<span class="fc" id="L431">        GrpcCallSettings.&lt;UpdateProductRequest, Product&gt;newBuilder()</span>
+<span class="fc" id="L432">            .setMethodDescriptor(updateProductMethodDescriptor)</span>
+<span class="fc" id="L433">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L435">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L436">                  params.put(&quot;product.name&quot;, String.valueOf(request.getProduct().getName()));</span>
+<span class="fc" id="L437">                  return params.build();</span>
+                })
+<span class="fc" id="L439">            .build();</span>
+    GrpcCallSettings&lt;DeleteProductRequest, Empty&gt; deleteProductTransportSettings =
+<span class="fc" id="L441">        GrpcCallSettings.&lt;DeleteProductRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L442">            .setMethodDescriptor(deleteProductMethodDescriptor)</span>
+<span class="fc" id="L443">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L445">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L446">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L447">                  return params.build();</span>
+                })
+<span class="fc" id="L449">            .build();</span>
+    GrpcCallSettings&lt;CreateReferenceImageRequest, ReferenceImage&gt;
+        createReferenceImageTransportSettings =
+<span class="fc" id="L452">            GrpcCallSettings.&lt;CreateReferenceImageRequest, ReferenceImage&gt;newBuilder()</span>
+<span class="fc" id="L453">                .setMethodDescriptor(createReferenceImageMethodDescriptor)</span>
+<span class="fc" id="L454">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L456">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L457">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L458">                      return params.build();</span>
+                    })
+<span class="fc" id="L460">                .build();</span>
+    GrpcCallSettings&lt;DeleteReferenceImageRequest, Empty&gt; deleteReferenceImageTransportSettings =
+<span class="fc" id="L462">        GrpcCallSettings.&lt;DeleteReferenceImageRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L463">            .setMethodDescriptor(deleteReferenceImageMethodDescriptor)</span>
+<span class="fc" id="L464">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L466">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L467">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L468">                  return params.build();</span>
+                })
+<span class="fc" id="L470">            .build();</span>
+    GrpcCallSettings&lt;ListReferenceImagesRequest, ListReferenceImagesResponse&gt;
+        listReferenceImagesTransportSettings =
+<span class="fc" id="L473">            GrpcCallSettings.&lt;ListReferenceImagesRequest, ListReferenceImagesResponse&gt;newBuilder()</span>
+<span class="fc" id="L474">                .setMethodDescriptor(listReferenceImagesMethodDescriptor)</span>
+<span class="fc" id="L475">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L477">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L478">                      params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L479">                      return params.build();</span>
+                    })
+<span class="fc" id="L481">                .build();</span>
+    GrpcCallSettings&lt;GetReferenceImageRequest, ReferenceImage&gt; getReferenceImageTransportSettings =
+<span class="fc" id="L483">        GrpcCallSettings.&lt;GetReferenceImageRequest, ReferenceImage&gt;newBuilder()</span>
+<span class="fc" id="L484">            .setMethodDescriptor(getReferenceImageMethodDescriptor)</span>
+<span class="fc" id="L485">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L487">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L488">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L489">                  return params.build();</span>
+                })
+<span class="fc" id="L491">            .build();</span>
+    GrpcCallSettings&lt;AddProductToProductSetRequest, Empty&gt; addProductToProductSetTransportSettings =
+<span class="fc" id="L493">        GrpcCallSettings.&lt;AddProductToProductSetRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L494">            .setMethodDescriptor(addProductToProductSetMethodDescriptor)</span>
+<span class="fc" id="L495">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L497">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L498">                  params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L499">                  return params.build();</span>
+                })
+<span class="fc" id="L501">            .build();</span>
+    GrpcCallSettings&lt;RemoveProductFromProductSetRequest, Empty&gt;
+        removeProductFromProductSetTransportSettings =
+<span class="fc" id="L504">            GrpcCallSettings.&lt;RemoveProductFromProductSetRequest, Empty&gt;newBuilder()</span>
+<span class="fc" id="L505">                .setMethodDescriptor(removeProductFromProductSetMethodDescriptor)</span>
+<span class="fc" id="L506">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L508">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L509">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L510">                      return params.build();</span>
+                    })
+<span class="fc" id="L512">                .build();</span>
+    GrpcCallSettings&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse&gt;
+        listProductsInProductSetTransportSettings =
+            GrpcCallSettings
+<span class="fc" id="L516">                .&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse&gt;newBuilder()</span>
+<span class="fc" id="L517">                .setMethodDescriptor(listProductsInProductSetMethodDescriptor)</span>
+<span class="fc" id="L518">                .setParamsExtractor(</span>
+                    request -&gt; {
+<span class="fc" id="L520">                      ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L521">                      params.put(&quot;name&quot;, String.valueOf(request.getName()));</span>
+<span class="fc" id="L522">                      return params.build();</span>
+                    })
+<span class="fc" id="L524">                .build();</span>
+    GrpcCallSettings&lt;ImportProductSetsRequest, Operation&gt; importProductSetsTransportSettings =
+<span class="fc" id="L526">        GrpcCallSettings.&lt;ImportProductSetsRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L527">            .setMethodDescriptor(importProductSetsMethodDescriptor)</span>
+<span class="fc" id="L528">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L530">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L531">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L532">                  return params.build();</span>
+                })
+<span class="fc" id="L534">            .build();</span>
+    GrpcCallSettings&lt;PurgeProductsRequest, Operation&gt; purgeProductsTransportSettings =
+<span class="fc" id="L536">        GrpcCallSettings.&lt;PurgeProductsRequest, Operation&gt;newBuilder()</span>
+<span class="fc" id="L537">            .setMethodDescriptor(purgeProductsMethodDescriptor)</span>
+<span class="fc" id="L538">            .setParamsExtractor(</span>
+                request -&gt; {
+<span class="fc" id="L540">                  ImmutableMap.Builder&lt;String, String&gt; params = ImmutableMap.builder();</span>
+<span class="fc" id="L541">                  params.put(&quot;parent&quot;, String.valueOf(request.getParent()));</span>
+<span class="fc" id="L542">                  return params.build();</span>
+                })
+<span class="fc" id="L544">            .build();</span>
+
+<span class="fc" id="L546">    this.createProductSetCallable =</span>
+<span class="fc" id="L547">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L548">            createProductSetTransportSettings, settings.createProductSetSettings(), clientContext);</span>
+<span class="fc" id="L549">    this.listProductSetsCallable =</span>
+<span class="fc" id="L550">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L551">            listProductSetsTransportSettings, settings.listProductSetsSettings(), clientContext);</span>
+<span class="fc" id="L552">    this.listProductSetsPagedCallable =</span>
+<span class="fc" id="L553">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L554">            listProductSetsTransportSettings, settings.listProductSetsSettings(), clientContext);</span>
+<span class="fc" id="L555">    this.getProductSetCallable =</span>
+<span class="fc" id="L556">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L557">            getProductSetTransportSettings, settings.getProductSetSettings(), clientContext);</span>
+<span class="fc" id="L558">    this.updateProductSetCallable =</span>
+<span class="fc" id="L559">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L560">            updateProductSetTransportSettings, settings.updateProductSetSettings(), clientContext);</span>
+<span class="fc" id="L561">    this.deleteProductSetCallable =</span>
+<span class="fc" id="L562">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L563">            deleteProductSetTransportSettings, settings.deleteProductSetSettings(), clientContext);</span>
+<span class="fc" id="L564">    this.createProductCallable =</span>
+<span class="fc" id="L565">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L566">            createProductTransportSettings, settings.createProductSettings(), clientContext);</span>
+<span class="fc" id="L567">    this.listProductsCallable =</span>
+<span class="fc" id="L568">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L569">            listProductsTransportSettings, settings.listProductsSettings(), clientContext);</span>
+<span class="fc" id="L570">    this.listProductsPagedCallable =</span>
+<span class="fc" id="L571">        callableFactory.createPagedCallable(</span>
+<span class="fc" id="L572">            listProductsTransportSettings, settings.listProductsSettings(), clientContext);</span>
+<span class="fc" id="L573">    this.getProductCallable =</span>
+<span class="fc" id="L574">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L575">            getProductTransportSettings, settings.getProductSettings(), clientContext);</span>
+<span class="fc" id="L576">    this.updateProductCallable =</span>
+<span class="fc" id="L577">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L578">            updateProductTransportSettings, settings.updateProductSettings(), clientContext);</span>
+<span class="fc" id="L579">    this.deleteProductCallable =</span>
+<span class="fc" id="L580">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L581">            deleteProductTransportSettings, settings.deleteProductSettings(), clientContext);</span>
+<span class="fc" id="L582">    this.createReferenceImageCallable =</span>
+<span class="fc" id="L583">        callableFactory.createUnaryCallable(</span>
+            createReferenceImageTransportSettings,
+<span class="fc" id="L585">            settings.createReferenceImageSettings(),</span>
+            clientContext);
+<span class="fc" id="L587">    this.deleteReferenceImageCallable =</span>
+<span class="fc" id="L588">        callableFactory.createUnaryCallable(</span>
+            deleteReferenceImageTransportSettings,
+<span class="fc" id="L590">            settings.deleteReferenceImageSettings(),</span>
+            clientContext);
+<span class="fc" id="L592">    this.listReferenceImagesCallable =</span>
+<span class="fc" id="L593">        callableFactory.createUnaryCallable(</span>
+            listReferenceImagesTransportSettings,
+<span class="fc" id="L595">            settings.listReferenceImagesSettings(),</span>
+            clientContext);
+<span class="fc" id="L597">    this.listReferenceImagesPagedCallable =</span>
+<span class="fc" id="L598">        callableFactory.createPagedCallable(</span>
+            listReferenceImagesTransportSettings,
+<span class="fc" id="L600">            settings.listReferenceImagesSettings(),</span>
+            clientContext);
+<span class="fc" id="L602">    this.getReferenceImageCallable =</span>
+<span class="fc" id="L603">        callableFactory.createUnaryCallable(</span>
+            getReferenceImageTransportSettings,
+<span class="fc" id="L605">            settings.getReferenceImageSettings(),</span>
+            clientContext);
+<span class="fc" id="L607">    this.addProductToProductSetCallable =</span>
+<span class="fc" id="L608">        callableFactory.createUnaryCallable(</span>
+            addProductToProductSetTransportSettings,
+<span class="fc" id="L610">            settings.addProductToProductSetSettings(),</span>
+            clientContext);
+<span class="fc" id="L612">    this.removeProductFromProductSetCallable =</span>
+<span class="fc" id="L613">        callableFactory.createUnaryCallable(</span>
+            removeProductFromProductSetTransportSettings,
+<span class="fc" id="L615">            settings.removeProductFromProductSetSettings(),</span>
+            clientContext);
+<span class="fc" id="L617">    this.listProductsInProductSetCallable =</span>
+<span class="fc" id="L618">        callableFactory.createUnaryCallable(</span>
+            listProductsInProductSetTransportSettings,
+<span class="fc" id="L620">            settings.listProductsInProductSetSettings(),</span>
+            clientContext);
+<span class="fc" id="L622">    this.listProductsInProductSetPagedCallable =</span>
+<span class="fc" id="L623">        callableFactory.createPagedCallable(</span>
+            listProductsInProductSetTransportSettings,
+<span class="fc" id="L625">            settings.listProductsInProductSetSettings(),</span>
+            clientContext);
+<span class="fc" id="L627">    this.importProductSetsCallable =</span>
+<span class="fc" id="L628">        callableFactory.createUnaryCallable(</span>
+            importProductSetsTransportSettings,
+<span class="fc" id="L630">            settings.importProductSetsSettings(),</span>
+            clientContext);
+<span class="fc" id="L632">    this.importProductSetsOperationCallable =</span>
+<span class="fc" id="L633">        callableFactory.createOperationCallable(</span>
+            importProductSetsTransportSettings,
+<span class="fc" id="L635">            settings.importProductSetsOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+<span class="fc" id="L638">    this.purgeProductsCallable =</span>
+<span class="fc" id="L639">        callableFactory.createUnaryCallable(</span>
+<span class="fc" id="L640">            purgeProductsTransportSettings, settings.purgeProductsSettings(), clientContext);</span>
+<span class="fc" id="L641">    this.purgeProductsOperationCallable =</span>
+<span class="fc" id="L642">        callableFactory.createOperationCallable(</span>
+            purgeProductsTransportSettings,
+<span class="fc" id="L644">            settings.purgeProductsOperationSettings(),</span>
+            clientContext,
+            operationsStub);
+
+<span class="fc" id="L648">    this.backgroundResources =</span>
+<span class="fc" id="L649">        new BackgroundResourceAggregation(clientContext.getBackgroundResources());</span>
+<span class="fc" id="L650">  }</span>
+
+  public GrpcOperationsStub getOperationsStub() {
+<span class="fc" id="L653">    return operationsStub;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateProductSetRequest, ProductSet&gt; createProductSetCallable() {
+<span class="fc" id="L658">    return createProductSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListProductSetsRequest, ListProductSetsResponse&gt; listProductSetsCallable() {
+<span class="nc" id="L663">    return listProductSetsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListProductSetsRequest, ListProductSetsPagedResponse&gt;
+      listProductSetsPagedCallable() {
+<span class="fc" id="L669">    return listProductSetsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetProductSetRequest, ProductSet&gt; getProductSetCallable() {
+<span class="fc" id="L674">    return getProductSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateProductSetRequest, ProductSet&gt; updateProductSetCallable() {
+<span class="fc" id="L679">    return updateProductSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteProductSetRequest, Empty&gt; deleteProductSetCallable() {
+<span class="fc" id="L684">    return deleteProductSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateProductRequest, Product&gt; createProductCallable() {
+<span class="fc" id="L689">    return createProductCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListProductsRequest, ListProductsResponse&gt; listProductsCallable() {
+<span class="nc" id="L694">    return listProductsCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListProductsRequest, ListProductsPagedResponse&gt; listProductsPagedCallable() {
+<span class="fc" id="L699">    return listProductsPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetProductRequest, Product&gt; getProductCallable() {
+<span class="fc" id="L704">    return getProductCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;UpdateProductRequest, Product&gt; updateProductCallable() {
+<span class="fc" id="L709">    return updateProductCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteProductRequest, Empty&gt; deleteProductCallable() {
+<span class="fc" id="L714">    return deleteProductCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;CreateReferenceImageRequest, ReferenceImage&gt; createReferenceImageCallable() {
+<span class="fc" id="L719">    return createReferenceImageCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;DeleteReferenceImageRequest, Empty&gt; deleteReferenceImageCallable() {
+<span class="fc" id="L724">    return deleteReferenceImageCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListReferenceImagesRequest, ListReferenceImagesResponse&gt;
+      listReferenceImagesCallable() {
+<span class="nc" id="L730">    return listReferenceImagesCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListReferenceImagesRequest, ListReferenceImagesPagedResponse&gt;
+      listReferenceImagesPagedCallable() {
+<span class="fc" id="L736">    return listReferenceImagesPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;GetReferenceImageRequest, ReferenceImage&gt; getReferenceImageCallable() {
+<span class="fc" id="L741">    return getReferenceImageCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;AddProductToProductSetRequest, Empty&gt; addProductToProductSetCallable() {
+<span class="fc" id="L746">    return addProductToProductSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;RemoveProductFromProductSetRequest, Empty&gt;
+      removeProductFromProductSetCallable() {
+<span class="fc" id="L752">    return removeProductFromProductSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListProductsInProductSetRequest, ListProductsInProductSetResponse&gt;
+      listProductsInProductSetCallable() {
+<span class="nc" id="L758">    return listProductsInProductSetCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ListProductsInProductSetRequest, ListProductsInProductSetPagedResponse&gt;
+      listProductsInProductSetPagedCallable() {
+<span class="fc" id="L764">    return listProductsInProductSetPagedCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;ImportProductSetsRequest, Operation&gt; importProductSetsCallable() {
+<span class="nc" id="L769">    return importProductSetsCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;
+          ImportProductSetsRequest, ImportProductSetsResponse, BatchOperationMetadata&gt;
+      importProductSetsOperationCallable() {
+<span class="fc" id="L776">    return importProductSetsOperationCallable;</span>
+  }
+
+  @Override
+  public UnaryCallable&lt;PurgeProductsRequest, Operation&gt; purgeProductsCallable() {
+<span class="nc" id="L781">    return purgeProductsCallable;</span>
+  }
+
+  @Override
+  public OperationCallable&lt;PurgeProductsRequest, Empty, BatchOperationMetadata&gt;
+      purgeProductsOperationCallable() {
+<span class="fc" id="L787">    return purgeProductsOperationCallable;</span>
+  }
+
+  @Override
+  public final void close() {
+    try {
+<span class="fc" id="L793">      backgroundResources.close();</span>
+<span class="nc" id="L794">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L795">      throw e;</span>
+<span class="nc" id="L796">    } catch (Exception e) {</span>
+<span class="nc" id="L797">      throw new IllegalStateException(&quot;Failed to close resource&quot;, e);</span>
+<span class="fc" id="L798">    }</span>
+<span class="fc" id="L799">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L803">    backgroundResources.shutdown();</span>
+<span class="nc" id="L804">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L808">    return backgroundResources.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L813">    return backgroundResources.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L818">    backgroundResources.shutdownNow();</span>
+<span class="nc" id="L819">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L823">    return backgroundResources.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

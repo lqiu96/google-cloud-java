@@ -1,0 +1,1350 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ConversationProfilesClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2</a> &gt; <span class="el_source">ConversationProfilesClient.java</span></div><h1>ConversationProfilesClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.PageContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2.stub.ConversationProfilesStub;
+import com.google.cloud.dialogflow.v2.stub.ConversationProfilesStubSettings;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.longrunning.Operation;
+import com.google.longrunning.OperationsClient;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: Service for managing
+ * [ConversationProfiles][google.cloud.dialogflow.v2.ConversationProfile].
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (ConversationProfilesClient conversationProfilesClient =
+ *     ConversationProfilesClient.create()) {
+ *   ConversationProfileName name =
+ *       ConversationProfileName.ofProjectConversationProfileName(
+ *           &quot;[PROJECT]&quot;, &quot;[CONVERSATION_PROFILE]&quot;);
+ *   ConversationProfile response = conversationProfilesClient.getConversationProfile(name);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the ConversationProfilesClient object to clean up
+ * resources such as threads. In the example above, try-with-resources is used, which automatically
+ * calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of ConversationProfilesSettings
+ * to create(). For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ConversationProfilesSettings conversationProfilesSettings =
+ *     ConversationProfilesSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * ConversationProfilesClient conversationProfilesClient =
+ *     ConversationProfilesClient.create(conversationProfilesSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * ConversationProfilesSettings conversationProfilesSettings =
+ *     ConversationProfilesSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * ConversationProfilesClient conversationProfilesClient =
+ *     ConversationProfilesClient.create(conversationProfilesSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@Generated(&quot;by gapic-generator-java&quot;)
+public class ConversationProfilesClient implements BackgroundResource {
+  private final ConversationProfilesSettings settings;
+  private final ConversationProfilesStub stub;
+  private final OperationsClient operationsClient;
+
+  /** Constructs an instance of ConversationProfilesClient with default settings. */
+  public static final ConversationProfilesClient create() throws IOException {
+<span class="nc" id="L122">    return create(ConversationProfilesSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of ConversationProfilesClient, using the given settings. The channels
+   * are created based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final ConversationProfilesClient create(ConversationProfilesSettings settings)
+      throws IOException {
+<span class="fc" id="L131">    return new ConversationProfilesClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of ConversationProfilesClient, using the given stub for making calls.
+   * This is for advanced usage - prefer using create(ConversationProfilesSettings).
+   */
+  public static final ConversationProfilesClient create(ConversationProfilesStub stub) {
+<span class="nc" id="L139">    return new ConversationProfilesClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of ConversationProfilesClient, using the given settings. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
+<span class="fc" id="L147">  protected ConversationProfilesClient(ConversationProfilesSettings settings) throws IOException {</span>
+<span class="fc" id="L148">    this.settings = settings;</span>
+<span class="fc" id="L149">    this.stub = ((ConversationProfilesStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L150">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="fc" id="L151">  }</span>
+
+<span class="nc" id="L153">  protected ConversationProfilesClient(ConversationProfilesStub stub) {</span>
+<span class="nc" id="L154">    this.settings = null;</span>
+<span class="nc" id="L155">    this.stub = stub;</span>
+<span class="nc" id="L156">    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());</span>
+<span class="nc" id="L157">  }</span>
+
+  public final ConversationProfilesSettings getSettings() {
+<span class="nc" id="L160">    return settings;</span>
+  }
+
+  public ConversationProfilesStub getStub() {
+<span class="nc" id="L164">    return stub;</span>
+  }
+
+  /**
+   * Returns the OperationsClient that can be used to query the status of a long-running operation
+   * returned by another API method call.
+   */
+  public final OperationsClient getOperationsClient() {
+<span class="nc" id="L172">    return operationsClient;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation profiles in the specified project.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   for (ConversationProfile element :
+   *       conversationProfilesClient.listConversationProfiles(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list all conversation profiles from. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationProfilesPagedResponse listConversationProfiles(LocationName parent) {
+    ListConversationProfilesRequest request =
+<span class="fc" id="L200">        ListConversationProfilesRequest.newBuilder()</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L202">            .build();</span>
+<span class="fc" id="L203">    return listConversationProfiles(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation profiles in the specified project.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ProjectName parent = ProjectName.of(&quot;[PROJECT]&quot;);
+   *   for (ConversationProfile element :
+   *       conversationProfilesClient.listConversationProfiles(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list all conversation profiles from. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationProfilesPagedResponse listConversationProfiles(ProjectName parent) {
+    ListConversationProfilesRequest request =
+<span class="fc" id="L231">        ListConversationProfilesRequest.newBuilder()</span>
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L233">            .build();</span>
+<span class="fc" id="L234">    return listConversationProfiles(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation profiles in the specified project.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   String parent = ProjectName.of(&quot;[PROJECT]&quot;).toString();
+   *   for (ConversationProfile element :
+   *       conversationProfilesClient.listConversationProfiles(parent).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to list all conversation profiles from. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationProfilesPagedResponse listConversationProfiles(String parent) {
+    ListConversationProfilesRequest request =
+<span class="fc" id="L262">        ListConversationProfilesRequest.newBuilder().setParent(parent).build();</span>
+<span class="fc" id="L263">    return listConversationProfiles(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation profiles in the specified project.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ListConversationProfilesRequest request =
+   *       ListConversationProfilesRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   for (ConversationProfile element :
+   *       conversationProfilesClient.listConversationProfiles(request).iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ListConversationProfilesPagedResponse listConversationProfiles(
+      ListConversationProfilesRequest request) {
+<span class="fc" id="L295">    return listConversationProfilesPagedCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation profiles in the specified project.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ListConversationProfilesRequest request =
+   *       ListConversationProfilesRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   ApiFuture&lt;ConversationProfile&gt; future =
+   *       conversationProfilesClient.listConversationProfilesPagedCallable().futureCall(request);
+   *   // Do something.
+   *   for (ConversationProfile element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListConversationProfilesRequest, ListConversationProfilesPagedResponse&gt;
+      listConversationProfilesPagedCallable() {
+<span class="fc" id="L326">    return stub.listConversationProfilesPagedCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Returns the list of all conversation profiles in the specified project.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ListConversationProfilesRequest request =
+   *       ListConversationProfilesRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setPageSize(883849137)
+   *           .setPageToken(&quot;pageToken873572522&quot;)
+   *           .build();
+   *   while (true) {
+   *     ListConversationProfilesResponse response =
+   *         conversationProfilesClient.listConversationProfilesCallable().call(request);
+   *     for (ConversationProfile element : response.getResponsesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ListConversationProfilesRequest, ListConversationProfilesResponse&gt;
+      listConversationProfilesCallable() {
+<span class="nc" id="L364">    return stub.listConversationProfilesCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified conversation profile.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ConversationProfileName name =
+   *       ConversationProfileName.ofProjectConversationProfileName(
+   *           &quot;[PROJECT]&quot;, &quot;[CONVERSATION_PROFILE]&quot;);
+   *   ConversationProfile response = conversationProfilesClient.getConversationProfile(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name of the conversation profile. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/conversationProfiles/&amp;lt;Conversation Profile ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationProfile getConversationProfile(ConversationProfileName name) {
+    GetConversationProfileRequest request =
+<span class="fc" id="L392">        GetConversationProfileRequest.newBuilder()</span>
+<span class="pc bpc" id="L393" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L394">            .build();</span>
+<span class="fc" id="L395">    return getConversationProfile(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified conversation profile.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   String name =
+   *       ConversationProfileName.ofProjectConversationProfileName(
+   *               &quot;[PROJECT]&quot;, &quot;[CONVERSATION_PROFILE]&quot;)
+   *           .toString();
+   *   ConversationProfile response = conversationProfilesClient.getConversationProfile(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The resource name of the conversation profile. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/conversationProfiles/&amp;lt;Conversation Profile ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationProfile getConversationProfile(String name) {
+    GetConversationProfileRequest request =
+<span class="fc" id="L424">        GetConversationProfileRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L425">    return getConversationProfile(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified conversation profile.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   GetConversationProfileRequest request =
+   *       GetConversationProfileRequest.newBuilder()
+   *           .setName(
+   *               ConversationProfileName.ofProjectConversationProfileName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION_PROFILE]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ConversationProfile response = conversationProfilesClient.getConversationProfile(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationProfile getConversationProfile(GetConversationProfileRequest request) {
+<span class="fc" id="L454">    return getConversationProfileCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Retrieves the specified conversation profile.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   GetConversationProfileRequest request =
+   *       GetConversationProfileRequest.newBuilder()
+   *           .setName(
+   *               ConversationProfileName.ofProjectConversationProfileName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION_PROFILE]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ApiFuture&lt;ConversationProfile&gt; future =
+   *       conversationProfilesClient.getConversationProfileCallable().futureCall(request);
+   *   // Do something.
+   *   ConversationProfile response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;GetConversationProfileRequest, ConversationProfile&gt;
+      getConversationProfileCallable() {
+<span class="fc" id="L484">    return stub.getConversationProfileCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a conversation profile in the specified project.
+   *
+   * &lt;p&gt;[ConversationProfile.CreateTime][] and [ConversationProfile.UpdateTime][] aren't populated
+   * in the response. You can retrieve them via
+   * [GetConversationProfile][google.cloud.dialogflow.v2.ConversationProfiles.GetConversationProfile]
+   * API.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   LocationName parent = LocationName.of(&quot;[PROJECT]&quot;, &quot;[LOCATION]&quot;);
+   *   ConversationProfile conversationProfile = ConversationProfile.newBuilder().build();
+   *   ConversationProfile response =
+   *       conversationProfilesClient.createConversationProfile(parent, conversationProfile);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to create a conversation profile for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @param conversationProfile Required. The conversation profile to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationProfile createConversationProfile(
+      LocationName parent, ConversationProfile conversationProfile) {
+    CreateConversationProfileRequest request =
+<span class="fc" id="L518">        CreateConversationProfileRequest.newBuilder()</span>
+<span class="pc bpc" id="L519" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L520">            .setConversationProfile(conversationProfile)</span>
+<span class="fc" id="L521">            .build();</span>
+<span class="fc" id="L522">    return createConversationProfile(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a conversation profile in the specified project.
+   *
+   * &lt;p&gt;[ConversationProfile.CreateTime][] and [ConversationProfile.UpdateTime][] aren't populated
+   * in the response. You can retrieve them via
+   * [GetConversationProfile][google.cloud.dialogflow.v2.ConversationProfiles.GetConversationProfile]
+   * API.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ProjectName parent = ProjectName.of(&quot;[PROJECT]&quot;);
+   *   ConversationProfile conversationProfile = ConversationProfile.newBuilder().build();
+   *   ConversationProfile response =
+   *       conversationProfilesClient.createConversationProfile(parent, conversationProfile);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to create a conversation profile for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @param conversationProfile Required. The conversation profile to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationProfile createConversationProfile(
+      ProjectName parent, ConversationProfile conversationProfile) {
+    CreateConversationProfileRequest request =
+<span class="fc" id="L556">        CreateConversationProfileRequest.newBuilder()</span>
+<span class="pc bpc" id="L557" title="1 of 2 branches missed.">            .setParent(parent == null ? null : parent.toString())</span>
+<span class="fc" id="L558">            .setConversationProfile(conversationProfile)</span>
+<span class="fc" id="L559">            .build();</span>
+<span class="fc" id="L560">    return createConversationProfile(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a conversation profile in the specified project.
+   *
+   * &lt;p&gt;[ConversationProfile.CreateTime][] and [ConversationProfile.UpdateTime][] aren't populated
+   * in the response. You can retrieve them via
+   * [GetConversationProfile][google.cloud.dialogflow.v2.ConversationProfiles.GetConversationProfile]
+   * API.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   String parent = ProjectName.of(&quot;[PROJECT]&quot;).toString();
+   *   ConversationProfile conversationProfile = ConversationProfile.newBuilder().build();
+   *   ConversationProfile response =
+   *       conversationProfilesClient.createConversationProfile(parent, conversationProfile);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param parent Required. The project to create a conversation profile for. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;`.
+   * @param conversationProfile Required. The conversation profile to create.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationProfile createConversationProfile(
+      String parent, ConversationProfile conversationProfile) {
+    CreateConversationProfileRequest request =
+<span class="fc" id="L594">        CreateConversationProfileRequest.newBuilder()</span>
+<span class="fc" id="L595">            .setParent(parent)</span>
+<span class="fc" id="L596">            .setConversationProfile(conversationProfile)</span>
+<span class="fc" id="L597">            .build();</span>
+<span class="fc" id="L598">    return createConversationProfile(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a conversation profile in the specified project.
+   *
+   * &lt;p&gt;[ConversationProfile.CreateTime][] and [ConversationProfile.UpdateTime][] aren't populated
+   * in the response. You can retrieve them via
+   * [GetConversationProfile][google.cloud.dialogflow.v2.ConversationProfiles.GetConversationProfile]
+   * API.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   CreateConversationProfileRequest request =
+   *       CreateConversationProfileRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setConversationProfile(ConversationProfile.newBuilder().build())
+   *           .build();
+   *   ConversationProfile response = conversationProfilesClient.createConversationProfile(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationProfile createConversationProfile(
+      CreateConversationProfileRequest request) {
+<span class="fc" id="L631">    return createConversationProfileCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Creates a conversation profile in the specified project.
+   *
+   * &lt;p&gt;[ConversationProfile.CreateTime][] and [ConversationProfile.UpdateTime][] aren't populated
+   * in the response. You can retrieve them via
+   * [GetConversationProfile][google.cloud.dialogflow.v2.ConversationProfiles.GetConversationProfile]
+   * API.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   CreateConversationProfileRequest request =
+   *       CreateConversationProfileRequest.newBuilder()
+   *           .setParent(ProjectName.of(&quot;[PROJECT]&quot;).toString())
+   *           .setConversationProfile(ConversationProfile.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;ConversationProfile&gt; future =
+   *       conversationProfilesClient.createConversationProfileCallable().futureCall(request);
+   *   // Do something.
+   *   ConversationProfile response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;CreateConversationProfileRequest, ConversationProfile&gt;
+      createConversationProfileCallable() {
+<span class="fc" id="L664">    return stub.createConversationProfileCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified conversation profile.
+   *
+   * &lt;p&gt;[ConversationProfile.CreateTime][] and [ConversationProfile.UpdateTime][] aren't populated
+   * in the response. You can retrieve them via
+   * [GetConversationProfile][google.cloud.dialogflow.v2.ConversationProfiles.GetConversationProfile]
+   * API.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ConversationProfile conversationProfile = ConversationProfile.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   ConversationProfile response =
+   *       conversationProfilesClient.updateConversationProfile(conversationProfile, updateMask);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param conversationProfile Required. The conversation profile to update.
+   * @param updateMask Required. The mask to control which fields to update.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationProfile updateConversationProfile(
+      ConversationProfile conversationProfile, FieldMask updateMask) {
+    UpdateConversationProfileRequest request =
+<span class="fc" id="L697">        UpdateConversationProfileRequest.newBuilder()</span>
+<span class="fc" id="L698">            .setConversationProfile(conversationProfile)</span>
+<span class="fc" id="L699">            .setUpdateMask(updateMask)</span>
+<span class="fc" id="L700">            .build();</span>
+<span class="fc" id="L701">    return updateConversationProfile(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified conversation profile.
+   *
+   * &lt;p&gt;[ConversationProfile.CreateTime][] and [ConversationProfile.UpdateTime][] aren't populated
+   * in the response. You can retrieve them via
+   * [GetConversationProfile][google.cloud.dialogflow.v2.ConversationProfiles.GetConversationProfile]
+   * API.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   UpdateConversationProfileRequest request =
+   *       UpdateConversationProfileRequest.newBuilder()
+   *           .setConversationProfile(ConversationProfile.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ConversationProfile response = conversationProfilesClient.updateConversationProfile(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final ConversationProfile updateConversationProfile(
+      UpdateConversationProfileRequest request) {
+<span class="fc" id="L734">    return updateConversationProfileCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Updates the specified conversation profile.
+   *
+   * &lt;p&gt;[ConversationProfile.CreateTime][] and [ConversationProfile.UpdateTime][] aren't populated
+   * in the response. You can retrieve them via
+   * [GetConversationProfile][google.cloud.dialogflow.v2.ConversationProfiles.GetConversationProfile]
+   * API.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   UpdateConversationProfileRequest request =
+   *       UpdateConversationProfileRequest.newBuilder()
+   *           .setConversationProfile(ConversationProfile.newBuilder().build())
+   *           .setUpdateMask(FieldMask.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;ConversationProfile&gt; future =
+   *       conversationProfilesClient.updateConversationProfileCallable().futureCall(request);
+   *   // Do something.
+   *   ConversationProfile response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;UpdateConversationProfileRequest, ConversationProfile&gt;
+      updateConversationProfileCallable() {
+<span class="fc" id="L767">    return stub.updateConversationProfileCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified conversation profile.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ConversationProfileName name =
+   *       ConversationProfileName.ofProjectConversationProfileName(
+   *           &quot;[PROJECT]&quot;, &quot;[CONVERSATION_PROFILE]&quot;);
+   *   conversationProfilesClient.deleteConversationProfile(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the conversation profile to delete. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/conversationProfiles/&amp;lt;Conversation Profile ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteConversationProfile(ConversationProfileName name) {
+    DeleteConversationProfileRequest request =
+<span class="fc" id="L795">        DeleteConversationProfileRequest.newBuilder()</span>
+<span class="pc bpc" id="L796" title="1 of 2 branches missed.">            .setName(name == null ? null : name.toString())</span>
+<span class="fc" id="L797">            .build();</span>
+<span class="fc" id="L798">    deleteConversationProfile(request);</span>
+<span class="fc" id="L799">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified conversation profile.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   String name =
+   *       ConversationProfileName.ofProjectConversationProfileName(
+   *               &quot;[PROJECT]&quot;, &quot;[CONVERSATION_PROFILE]&quot;)
+   *           .toString();
+   *   conversationProfilesClient.deleteConversationProfile(name);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param name Required. The name of the conversation profile to delete. Format:
+   *     `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/conversationProfiles/&amp;lt;Conversation Profile ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteConversationProfile(String name) {
+    DeleteConversationProfileRequest request =
+<span class="fc" id="L827">        DeleteConversationProfileRequest.newBuilder().setName(name).build();</span>
+<span class="fc" id="L828">    deleteConversationProfile(request);</span>
+<span class="fc" id="L829">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified conversation profile.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   DeleteConversationProfileRequest request =
+   *       DeleteConversationProfileRequest.newBuilder()
+   *           .setName(
+   *               ConversationProfileName.ofProjectConversationProfileName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION_PROFILE]&quot;)
+   *                   .toString())
+   *           .build();
+   *   conversationProfilesClient.deleteConversationProfile(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final void deleteConversationProfile(DeleteConversationProfileRequest request) {
+<span class="fc" id="L857">    deleteConversationProfileCallable().call(request);</span>
+<span class="fc" id="L858">  }</span>
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Deletes the specified conversation profile.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   DeleteConversationProfileRequest request =
+   *       DeleteConversationProfileRequest.newBuilder()
+   *           .setName(
+   *               ConversationProfileName.ofProjectConversationProfileName(
+   *                       &quot;[PROJECT]&quot;, &quot;[CONVERSATION_PROFILE]&quot;)
+   *                   .toString())
+   *           .build();
+   *   ApiFuture&lt;Empty&gt; future =
+   *       conversationProfilesClient.deleteConversationProfileCallable().futureCall(request);
+   *   // Do something.
+   *   future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DeleteConversationProfileRequest, Empty&gt;
+      deleteConversationProfileCallable() {
+<span class="fc" id="L887">    return stub.deleteConversationProfileCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds or updates a suggestion feature in a conversation profile. If the conversation profile
+   * contains the type of suggestion feature for the participant role, it will update it. Otherwise
+   * it will insert the suggestion feature.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [SetSuggestionFeatureConfigOperationMetadata][google.cloud.dialogflow.v2.SetSuggestionFeatureConfigOperationMetadata]
+   * - `response`: [ConversationProfile][google.cloud.dialogflow.v2.ConversationProfile]
+   *
+   * &lt;p&gt;If a long running operation to add or update suggestion feature config for the same
+   * conversation profile, participant role and suggestion feature type exists, please cancel the
+   * existing long running operation before sending such request, otherwise the request will be
+   * rejected.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   String conversationProfile = &quot;conversationProfile1691597734&quot;;
+   *   ConversationProfile response =
+   *       conversationProfilesClient.setSuggestionFeatureConfigAsync(conversationProfile).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param conversationProfile Required. The Conversation Profile to add or update the suggestion
+   *     feature config. Format: `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/conversationProfiles/&amp;lt;Conversation Profile ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ConversationProfile, SetSuggestionFeatureConfigOperationMetadata&gt;
+      setSuggestionFeatureConfigAsync(String conversationProfile) {
+    SetSuggestionFeatureConfigRequest request =
+<span class="fc" id="L930">        SetSuggestionFeatureConfigRequest.newBuilder()</span>
+<span class="fc" id="L931">            .setConversationProfile(conversationProfile)</span>
+<span class="fc" id="L932">            .build();</span>
+<span class="fc" id="L933">    return setSuggestionFeatureConfigAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds or updates a suggestion feature in a conversation profile. If the conversation profile
+   * contains the type of suggestion feature for the participant role, it will update it. Otherwise
+   * it will insert the suggestion feature.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [SetSuggestionFeatureConfigOperationMetadata][google.cloud.dialogflow.v2.SetSuggestionFeatureConfigOperationMetadata]
+   * - `response`: [ConversationProfile][google.cloud.dialogflow.v2.ConversationProfile]
+   *
+   * &lt;p&gt;If a long running operation to add or update suggestion feature config for the same
+   * conversation profile, participant role and suggestion feature type exists, please cancel the
+   * existing long running operation before sending such request, otherwise the request will be
+   * rejected.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   SetSuggestionFeatureConfigRequest request =
+   *       SetSuggestionFeatureConfigRequest.newBuilder()
+   *           .setConversationProfile(&quot;conversationProfile1691597734&quot;)
+   *           .setSuggestionFeatureConfig(
+   *               HumanAgentAssistantConfig.SuggestionFeatureConfig.newBuilder().build())
+   *           .build();
+   *   ConversationProfile response =
+   *       conversationProfilesClient.setSuggestionFeatureConfigAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ConversationProfile, SetSuggestionFeatureConfigOperationMetadata&gt;
+      setSuggestionFeatureConfigAsync(SetSuggestionFeatureConfigRequest request) {
+<span class="fc" id="L978">    return setSuggestionFeatureConfigOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds or updates a suggestion feature in a conversation profile. If the conversation profile
+   * contains the type of suggestion feature for the participant role, it will update it. Otherwise
+   * it will insert the suggestion feature.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [SetSuggestionFeatureConfigOperationMetadata][google.cloud.dialogflow.v2.SetSuggestionFeatureConfigOperationMetadata]
+   * - `response`: [ConversationProfile][google.cloud.dialogflow.v2.ConversationProfile]
+   *
+   * &lt;p&gt;If a long running operation to add or update suggestion feature config for the same
+   * conversation profile, participant role and suggestion feature type exists, please cancel the
+   * existing long running operation before sending such request, otherwise the request will be
+   * rejected.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   SetSuggestionFeatureConfigRequest request =
+   *       SetSuggestionFeatureConfigRequest.newBuilder()
+   *           .setConversationProfile(&quot;conversationProfile1691597734&quot;)
+   *           .setSuggestionFeatureConfig(
+   *               HumanAgentAssistantConfig.SuggestionFeatureConfig.newBuilder().build())
+   *           .build();
+   *   OperationFuture&lt;ConversationProfile, SetSuggestionFeatureConfigOperationMetadata&gt; future =
+   *       conversationProfilesClient
+   *           .setSuggestionFeatureConfigOperationCallable()
+   *           .futureCall(request);
+   *   // Do something.
+   *   ConversationProfile response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          SetSuggestionFeatureConfigRequest,
+          ConversationProfile,
+          SetSuggestionFeatureConfigOperationMetadata&gt;
+      setSuggestionFeatureConfigOperationCallable() {
+<span class="fc" id="L1027">    return stub.setSuggestionFeatureConfigOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Adds or updates a suggestion feature in a conversation profile. If the conversation profile
+   * contains the type of suggestion feature for the participant role, it will update it. Otherwise
+   * it will insert the suggestion feature.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [SetSuggestionFeatureConfigOperationMetadata][google.cloud.dialogflow.v2.SetSuggestionFeatureConfigOperationMetadata]
+   * - `response`: [ConversationProfile][google.cloud.dialogflow.v2.ConversationProfile]
+   *
+   * &lt;p&gt;If a long running operation to add or update suggestion feature config for the same
+   * conversation profile, participant role and suggestion feature type exists, please cancel the
+   * existing long running operation before sending such request, otherwise the request will be
+   * rejected.
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   SetSuggestionFeatureConfigRequest request =
+   *       SetSuggestionFeatureConfigRequest.newBuilder()
+   *           .setConversationProfile(&quot;conversationProfile1691597734&quot;)
+   *           .setSuggestionFeatureConfig(
+   *               HumanAgentAssistantConfig.SuggestionFeatureConfig.newBuilder().build())
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationProfilesClient.setSuggestionFeatureConfigCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;SetSuggestionFeatureConfigRequest, Operation&gt;
+      setSuggestionFeatureConfigCallable() {
+<span class="nc" id="L1071">    return stub.setSuggestionFeatureConfigCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Clears a suggestion feature from a conversation profile for the given participant role.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [ClearSuggestionFeatureConfigOperationMetadata][google.cloud.dialogflow.v2.ClearSuggestionFeatureConfigOperationMetadata]
+   * - `response`: [ConversationProfile][google.cloud.dialogflow.v2.ConversationProfile]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   String conversationProfile = &quot;conversationProfile1691597734&quot;;
+   *   ConversationProfile response =
+   *       conversationProfilesClient.clearSuggestionFeatureConfigAsync(conversationProfile).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param conversationProfile Required. The Conversation Profile to add or update the suggestion
+   *     feature config. Format: `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/conversationProfiles/&amp;lt;Conversation Profile ID&amp;gt;`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ConversationProfile, ClearSuggestionFeatureConfigOperationMetadata&gt;
+      clearSuggestionFeatureConfigAsync(String conversationProfile) {
+    ClearSuggestionFeatureConfigRequest request =
+<span class="fc" id="L1107">        ClearSuggestionFeatureConfigRequest.newBuilder()</span>
+<span class="fc" id="L1108">            .setConversationProfile(conversationProfile)</span>
+<span class="fc" id="L1109">            .build();</span>
+<span class="fc" id="L1110">    return clearSuggestionFeatureConfigAsync(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Clears a suggestion feature from a conversation profile for the given participant role.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [ClearSuggestionFeatureConfigOperationMetadata][google.cloud.dialogflow.v2.ClearSuggestionFeatureConfigOperationMetadata]
+   * - `response`: [ConversationProfile][google.cloud.dialogflow.v2.ConversationProfile]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ClearSuggestionFeatureConfigRequest request =
+   *       ClearSuggestionFeatureConfigRequest.newBuilder()
+   *           .setConversationProfile(&quot;conversationProfile1691597734&quot;)
+   *           .build();
+   *   ConversationProfile response =
+   *       conversationProfilesClient.clearSuggestionFeatureConfigAsync(request).get();
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final OperationFuture&lt;ConversationProfile, ClearSuggestionFeatureConfigOperationMetadata&gt;
+      clearSuggestionFeatureConfigAsync(ClearSuggestionFeatureConfigRequest request) {
+<span class="fc" id="L1146">    return clearSuggestionFeatureConfigOperationCallable().futureCall(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Clears a suggestion feature from a conversation profile for the given participant role.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [ClearSuggestionFeatureConfigOperationMetadata][google.cloud.dialogflow.v2.ClearSuggestionFeatureConfigOperationMetadata]
+   * - `response`: [ConversationProfile][google.cloud.dialogflow.v2.ConversationProfile]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ClearSuggestionFeatureConfigRequest request =
+   *       ClearSuggestionFeatureConfigRequest.newBuilder()
+   *           .setConversationProfile(&quot;conversationProfile1691597734&quot;)
+   *           .build();
+   *   OperationFuture&lt;ConversationProfile, ClearSuggestionFeatureConfigOperationMetadata&gt; future =
+   *       conversationProfilesClient
+   *           .clearSuggestionFeatureConfigOperationCallable()
+   *           .futureCall(request);
+   *   // Do something.
+   *   ConversationProfile response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final OperationCallable&lt;
+          ClearSuggestionFeatureConfigRequest,
+          ConversationProfile,
+          ClearSuggestionFeatureConfigOperationMetadata&gt;
+      clearSuggestionFeatureConfigOperationCallable() {
+<span class="fc" id="L1186">    return stub.clearSuggestionFeatureConfigOperationCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Clears a suggestion feature from a conversation profile for the given participant role.
+   *
+   * &lt;p&gt;This method is a [long-running
+   * operation](https://cloud.google.com/dialogflow/es/docs/how/long-running-operations). The
+   * returned `Operation` type has the following method-specific fields:
+   *
+   * &lt;p&gt;- `metadata`:
+   * [ClearSuggestionFeatureConfigOperationMetadata][google.cloud.dialogflow.v2.ClearSuggestionFeatureConfigOperationMetadata]
+   * - `response`: [ConversationProfile][google.cloud.dialogflow.v2.ConversationProfile]
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (ConversationProfilesClient conversationProfilesClient =
+   *     ConversationProfilesClient.create()) {
+   *   ClearSuggestionFeatureConfigRequest request =
+   *       ClearSuggestionFeatureConfigRequest.newBuilder()
+   *           .setConversationProfile(&quot;conversationProfile1691597734&quot;)
+   *           .build();
+   *   ApiFuture&lt;Operation&gt; future =
+   *       conversationProfilesClient.clearSuggestionFeatureConfigCallable().futureCall(request);
+   *   // Do something.
+   *   Operation response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;ClearSuggestionFeatureConfigRequest, Operation&gt;
+      clearSuggestionFeatureConfigCallable() {
+<span class="nc" id="L1221">    return stub.clearSuggestionFeatureConfigCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L1226">    stub.close();</span>
+<span class="fc" id="L1227">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L1231">    stub.shutdown();</span>
+<span class="nc" id="L1232">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L1236">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L1241">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L1246">    stub.shutdownNow();</span>
+<span class="nc" id="L1247">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L1251">    return stub.awaitTermination(duration, unit);</span>
+  }
+
+  public static class ListConversationProfilesPagedResponse
+      extends AbstractPagedListResponse&lt;
+          ListConversationProfilesRequest,
+          ListConversationProfilesResponse,
+          ConversationProfile,
+          ListConversationProfilesPage,
+          ListConversationProfilesFixedSizeCollection&gt; {
+
+    public static ApiFuture&lt;ListConversationProfilesPagedResponse&gt; createAsync(
+        PageContext&lt;
+                ListConversationProfilesRequest,
+                ListConversationProfilesResponse,
+                ConversationProfile&gt;
+            context,
+        ApiFuture&lt;ListConversationProfilesResponse&gt; futureResponse) {
+      ApiFuture&lt;ListConversationProfilesPage&gt; futurePage =
+<span class="fc" id="L1270">          ListConversationProfilesPage.createEmptyPage().createPageAsync(context, futureResponse);</span>
+<span class="fc" id="L1271">      return ApiFutures.transform(</span>
+          futurePage,
+<span class="fc" id="L1273">          input -&gt; new ListConversationProfilesPagedResponse(input),</span>
+<span class="fc" id="L1274">          MoreExecutors.directExecutor());</span>
+    }
+
+    private ListConversationProfilesPagedResponse(ListConversationProfilesPage page) {
+<span class="fc" id="L1278">      super(page, ListConversationProfilesFixedSizeCollection.createEmptyCollection());</span>
+<span class="fc" id="L1279">    }</span>
+  }
+
+  public static class ListConversationProfilesPage
+      extends AbstractPage&lt;
+          ListConversationProfilesRequest,
+          ListConversationProfilesResponse,
+          ConversationProfile,
+          ListConversationProfilesPage&gt; {
+
+    private ListConversationProfilesPage(
+        PageContext&lt;
+                ListConversationProfilesRequest,
+                ListConversationProfilesResponse,
+                ConversationProfile&gt;
+            context,
+        ListConversationProfilesResponse response) {
+<span class="fc" id="L1296">      super(context, response);</span>
+<span class="fc" id="L1297">    }</span>
+
+    private static ListConversationProfilesPage createEmptyPage() {
+<span class="fc" id="L1300">      return new ListConversationProfilesPage(null, null);</span>
+    }
+
+    @Override
+    protected ListConversationProfilesPage createPage(
+        PageContext&lt;
+                ListConversationProfilesRequest,
+                ListConversationProfilesResponse,
+                ConversationProfile&gt;
+            context,
+        ListConversationProfilesResponse response) {
+<span class="fc" id="L1311">      return new ListConversationProfilesPage(context, response);</span>
+    }
+
+    @Override
+    public ApiFuture&lt;ListConversationProfilesPage&gt; createPageAsync(
+        PageContext&lt;
+                ListConversationProfilesRequest,
+                ListConversationProfilesResponse,
+                ConversationProfile&gt;
+            context,
+        ApiFuture&lt;ListConversationProfilesResponse&gt; futureResponse) {
+<span class="fc" id="L1322">      return super.createPageAsync(context, futureResponse);</span>
+    }
+  }
+
+  public static class ListConversationProfilesFixedSizeCollection
+      extends AbstractFixedSizeCollection&lt;
+          ListConversationProfilesRequest,
+          ListConversationProfilesResponse,
+          ConversationProfile,
+          ListConversationProfilesPage,
+          ListConversationProfilesFixedSizeCollection&gt; {
+
+    private ListConversationProfilesFixedSizeCollection(
+        List&lt;ListConversationProfilesPage&gt; pages, int collectionSize) {
+<span class="fc" id="L1336">      super(pages, collectionSize);</span>
+<span class="fc" id="L1337">    }</span>
+
+    private static ListConversationProfilesFixedSizeCollection createEmptyCollection() {
+<span class="fc" id="L1340">      return new ListConversationProfilesFixedSizeCollection(null, 0);</span>
+    }
+
+    @Override
+    protected ListConversationProfilesFixedSizeCollection createCollection(
+        List&lt;ListConversationProfilesPage&gt; pages, int collectionSize) {
+<span class="nc" id="L1346">      return new ListConversationProfilesFixedSizeCollection(pages, collectionSize);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

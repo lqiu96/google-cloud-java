@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SessionsClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">CoverageAggregator</a> &gt; <a href="../index.html" class="el_bundle">google-cloud-dialogflow</a> &gt; <a href="index.source.html" class="el_package">com.google.cloud.dialogflow.v2beta1</a> &gt; <span class="el_source">SessionsClient.java</span></div><h1>SessionsClient.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.cloud.dialogflow.v2beta1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.BidiStreamingCallable;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.dialogflow.v2beta1.stub.SessionsStub;
+import com.google.cloud.dialogflow.v2beta1.stub.SessionsStubSettings;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS.
+/**
+ * Service Description: A service used for session interactions.
+ *
+ * &lt;p&gt;For more information, see the [API interactions
+ * guide](https://cloud.google.com/dialogflow/docs/api-overview).
+ *
+ * &lt;p&gt;This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * try (SessionsClient sessionsClient = SessionsClient.create()) {
+ *   SessionName session = SessionName.ofProjectSessionName(&quot;[PROJECT]&quot;, &quot;[SESSION]&quot;);
+ *   QueryInput queryInput = QueryInput.newBuilder().build();
+ *   DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
+ * }
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Note: close() needs to be called on the SessionsClient object to clean up resources such as
+ * threads. In the example above, try-with-resources is used, which automatically calls close().
+ *
+ * &lt;p&gt;The surface of this class includes several types of Java methods for each of the API's
+ * methods:
+ *
+ * &lt;ol&gt;
+ *   &lt;li&gt;A &quot;flattened&quot; method. With this type of method, the fields of the request type have been
+ *       converted into function parameters. It may be the case that not all fields are available as
+ *       parameters, and not every API method will have a flattened method entry point.
+ *   &lt;li&gt;A &quot;request object&quot; method. This type of method only takes one parameter, a request object,
+ *       which must be constructed before the call. Not every API method will have a request object
+ *       method.
+ *   &lt;li&gt;A &quot;callable&quot; method. This type of method takes no parameters and returns an immutable API
+ *       callable object, which can be used to initiate calls to the service.
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;See the individual methods for example code.
+ *
+ * &lt;p&gt;Many parameters require resource names to be formatted in a particular way. To assist with
+ * these names, this class includes a format method for each type of name, and additionally a parse
+ * method to extract the individual identifiers contained within names that are returned.
+ *
+ * &lt;p&gt;This class can be customized by passing in a custom instance of SessionsSettings to create().
+ * For example:
+ *
+ * &lt;p&gt;To customize credentials:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * SessionsSettings sessionsSettings =
+ *     SessionsSettings.newBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * SessionsClient sessionsClient = SessionsClient.create(sessionsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;To customize the endpoint:
+ *
+ * &lt;pre&gt;{@code
+ * // This snippet has been automatically generated for illustrative purposes only.
+ * // It may require modifications to work in your environment.
+ * SessionsSettings sessionsSettings =
+ *     SessionsSettings.newBuilder().setEndpoint(myEndpoint).build();
+ * SessionsClient sessionsClient = SessionsClient.create(sessionsSettings);
+ * }&lt;/pre&gt;
+ *
+ * &lt;p&gt;Please refer to the GitHub repository's samples for more quickstart code snippets.
+ */
+@BetaApi
+@Generated(&quot;by gapic-generator-java&quot;)
+public class SessionsClient implements BackgroundResource {
+  private final SessionsSettings settings;
+  private final SessionsStub stub;
+
+  /** Constructs an instance of SessionsClient with default settings. */
+  public static final SessionsClient create() throws IOException {
+<span class="nc" id="L107">    return create(SessionsSettings.newBuilder().build());</span>
+  }
+
+  /**
+   * Constructs an instance of SessionsClient, using the given settings. The channels are created
+   * based on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static final SessionsClient create(SessionsSettings settings) throws IOException {
+<span class="fc" id="L115">    return new SessionsClient(settings);</span>
+  }
+
+  /**
+   * Constructs an instance of SessionsClient, using the given stub for making calls. This is for
+   * advanced usage - prefer using create(SessionsSettings).
+   */
+  public static final SessionsClient create(SessionsStub stub) {
+<span class="nc" id="L123">    return new SessionsClient(stub);</span>
+  }
+
+  /**
+   * Constructs an instance of SessionsClient, using the given settings. This is protected so that
+   * it is easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+<span class="fc" id="L130">  protected SessionsClient(SessionsSettings settings) throws IOException {</span>
+<span class="fc" id="L131">    this.settings = settings;</span>
+<span class="fc" id="L132">    this.stub = ((SessionsStubSettings) settings.getStubSettings()).createStub();</span>
+<span class="fc" id="L133">  }</span>
+
+<span class="nc" id="L135">  protected SessionsClient(SessionsStub stub) {</span>
+<span class="nc" id="L136">    this.settings = null;</span>
+<span class="nc" id="L137">    this.stub = stub;</span>
+<span class="nc" id="L138">  }</span>
+
+  public final SessionsSettings getSettings() {
+<span class="nc" id="L141">    return settings;</span>
+  }
+
+  public SessionsStub getStub() {
+<span class="nc" id="L145">    return stub;</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Processes a natural language query and returns structured, actionable data as a result. This
+   * method is not idempotent, because it may cause contexts and session entity types to be updated,
+   * which in turn might affect results of future queries.
+   *
+   * &lt;p&gt;If you might use [Agent Assist](https://cloud.google.com/dialogflow/docs/#aa) or other CCAI
+   * products now or in the future, consider using
+   * [AnalyzeContent][google.cloud.dialogflow.v2beta1.Participants.AnalyzeContent] instead of
+   * `DetectIntent`. `AnalyzeContent` has additional functionality for Agent Assist and other CCAI
+   * products.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic. See [Versions and
+   * environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SessionsClient sessionsClient = SessionsClient.create()) {
+   *   SessionName session = SessionName.ofProjectSessionName(&quot;[PROJECT]&quot;, &quot;[SESSION]&quot;);
+   *   QueryInput queryInput = QueryInput.newBuilder().build();
+   *   DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param session Required. The name of the session this query is sent to. Supported formats: -
+   *     `projects/&amp;lt;Project ID&amp;gt;/agent/sessions/&amp;lt;Session ID&amp;gt;, - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/sessions/&amp;lt;Session ID&amp;gt;`, -
+   *     `projects/&amp;lt;Project ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;/users/&amp;lt;User
+   *     ID&amp;gt;/sessions/&amp;lt;Session ID&amp;gt;`, - `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;/users/&amp;lt;User ID&amp;gt;/sessions/&amp;lt;Session
+   *     ID&amp;gt;`,
+   *     &lt;p&gt;If `Location ID` is not specified we assume default 'us' location. If `Environment ID`
+   *     is not specified, we assume default 'draft' environment (`Environment ID` might be referred
+   *     to as environment name at some places). If `User ID` is not specified, we are using &quot;-&quot;.
+   *     It's up to the API caller to choose an appropriate `Session ID` and `User Id`. They can be
+   *     a random number or some type of user and session identifiers (preferably hashed). The
+   *     length of the `Session ID` and `User ID` must not exceed 36 characters. For more
+   *     information, see the [API interactions
+   *     guide](https://cloud.google.com/dialogflow/docs/api-overview).
+   *     &lt;p&gt;Note: Always use agent versions for production traffic. See [Versions and
+   *     environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   * @param queryInput Required. The input specification. It can be set to:
+   *     &lt;p&gt;1. an audio config which instructs the speech recognizer how to process the speech
+   *     audio,
+   *     &lt;p&gt;2. a conversational query in the form of text, or
+   *     &lt;p&gt;3. an event that specifies which intent to trigger.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final DetectIntentResponse detectIntent(SessionName session, QueryInput queryInput) {
+    DetectIntentRequest request =
+<span class="fc" id="L201">        DetectIntentRequest.newBuilder()</span>
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">            .setSession(session == null ? null : session.toString())</span>
+<span class="fc" id="L203">            .setQueryInput(queryInput)</span>
+<span class="fc" id="L204">            .build();</span>
+<span class="fc" id="L205">    return detectIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Processes a natural language query and returns structured, actionable data as a result. This
+   * method is not idempotent, because it may cause contexts and session entity types to be updated,
+   * which in turn might affect results of future queries.
+   *
+   * &lt;p&gt;If you might use [Agent Assist](https://cloud.google.com/dialogflow/docs/#aa) or other CCAI
+   * products now or in the future, consider using
+   * [AnalyzeContent][google.cloud.dialogflow.v2beta1.Participants.AnalyzeContent] instead of
+   * `DetectIntent`. `AnalyzeContent` has additional functionality for Agent Assist and other CCAI
+   * products.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic. See [Versions and
+   * environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SessionsClient sessionsClient = SessionsClient.create()) {
+   *   String session = SessionName.ofProjectSessionName(&quot;[PROJECT]&quot;, &quot;[SESSION]&quot;).toString();
+   *   QueryInput queryInput = QueryInput.newBuilder().build();
+   *   DetectIntentResponse response = sessionsClient.detectIntent(session, queryInput);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param session Required. The name of the session this query is sent to. Supported formats: -
+   *     `projects/&amp;lt;Project ID&amp;gt;/agent/sessions/&amp;lt;Session ID&amp;gt;, - `projects/&amp;lt;Project
+   *     ID&amp;gt;/locations/&amp;lt;Location ID&amp;gt;/agent/sessions/&amp;lt;Session ID&amp;gt;`, -
+   *     `projects/&amp;lt;Project ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;/users/&amp;lt;User
+   *     ID&amp;gt;/sessions/&amp;lt;Session ID&amp;gt;`, - `projects/&amp;lt;Project ID&amp;gt;/locations/&amp;lt;Location
+   *     ID&amp;gt;/agent/environments/&amp;lt;Environment ID&amp;gt;/users/&amp;lt;User ID&amp;gt;/sessions/&amp;lt;Session
+   *     ID&amp;gt;`,
+   *     &lt;p&gt;If `Location ID` is not specified we assume default 'us' location. If `Environment ID`
+   *     is not specified, we assume default 'draft' environment (`Environment ID` might be referred
+   *     to as environment name at some places). If `User ID` is not specified, we are using &quot;-&quot;.
+   *     It's up to the API caller to choose an appropriate `Session ID` and `User Id`. They can be
+   *     a random number or some type of user and session identifiers (preferably hashed). The
+   *     length of the `Session ID` and `User ID` must not exceed 36 characters. For more
+   *     information, see the [API interactions
+   *     guide](https://cloud.google.com/dialogflow/docs/api-overview).
+   *     &lt;p&gt;Note: Always use agent versions for production traffic. See [Versions and
+   *     environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   * @param queryInput Required. The input specification. It can be set to:
+   *     &lt;p&gt;1. an audio config which instructs the speech recognizer how to process the speech
+   *     audio,
+   *     &lt;p&gt;2. a conversational query in the form of text, or
+   *     &lt;p&gt;3. an event that specifies which intent to trigger.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final DetectIntentResponse detectIntent(String session, QueryInput queryInput) {
+    DetectIntentRequest request =
+<span class="fc" id="L261">        DetectIntentRequest.newBuilder().setSession(session).setQueryInput(queryInput).build();</span>
+<span class="fc" id="L262">    return detectIntent(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Processes a natural language query and returns structured, actionable data as a result. This
+   * method is not idempotent, because it may cause contexts and session entity types to be updated,
+   * which in turn might affect results of future queries.
+   *
+   * &lt;p&gt;If you might use [Agent Assist](https://cloud.google.com/dialogflow/docs/#aa) or other CCAI
+   * products now or in the future, consider using
+   * [AnalyzeContent][google.cloud.dialogflow.v2beta1.Participants.AnalyzeContent] instead of
+   * `DetectIntent`. `AnalyzeContent` has additional functionality for Agent Assist and other CCAI
+   * products.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic. See [Versions and
+   * environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SessionsClient sessionsClient = SessionsClient.create()) {
+   *   DetectIntentRequest request =
+   *       DetectIntentRequest.newBuilder()
+   *           .setSession(SessionName.ofProjectSessionName(&quot;[PROJECT]&quot;, &quot;[SESSION]&quot;).toString())
+   *           .setQueryParams(QueryParameters.newBuilder().build())
+   *           .setQueryInput(QueryInput.newBuilder().build())
+   *           .setOutputAudioConfig(OutputAudioConfig.newBuilder().build())
+   *           .setOutputAudioConfigMask(FieldMask.newBuilder().build())
+   *           .setInputAudio(ByteString.EMPTY)
+   *           .build();
+   *   DetectIntentResponse response = sessionsClient.detectIntent(request);
+   * }
+   * }&lt;/pre&gt;
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final DetectIntentResponse detectIntent(DetectIntentRequest request) {
+<span class="fc" id="L303">    return detectIntentCallable().call(request);</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Processes a natural language query and returns structured, actionable data as a result. This
+   * method is not idempotent, because it may cause contexts and session entity types to be updated,
+   * which in turn might affect results of future queries.
+   *
+   * &lt;p&gt;If you might use [Agent Assist](https://cloud.google.com/dialogflow/docs/#aa) or other CCAI
+   * products now or in the future, consider using
+   * [AnalyzeContent][google.cloud.dialogflow.v2beta1.Participants.AnalyzeContent] instead of
+   * `DetectIntent`. `AnalyzeContent` has additional functionality for Agent Assist and other CCAI
+   * products.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic. See [Versions and
+   * environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SessionsClient sessionsClient = SessionsClient.create()) {
+   *   DetectIntentRequest request =
+   *       DetectIntentRequest.newBuilder()
+   *           .setSession(SessionName.ofProjectSessionName(&quot;[PROJECT]&quot;, &quot;[SESSION]&quot;).toString())
+   *           .setQueryParams(QueryParameters.newBuilder().build())
+   *           .setQueryInput(QueryInput.newBuilder().build())
+   *           .setOutputAudioConfig(OutputAudioConfig.newBuilder().build())
+   *           .setOutputAudioConfigMask(FieldMask.newBuilder().build())
+   *           .setInputAudio(ByteString.EMPTY)
+   *           .build();
+   *   ApiFuture&lt;DetectIntentResponse&gt; future =
+   *       sessionsClient.detectIntentCallable().futureCall(request);
+   *   // Do something.
+   *   DetectIntentResponse response = future.get();
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final UnaryCallable&lt;DetectIntentRequest, DetectIntentResponse&gt; detectIntentCallable() {
+<span class="fc" id="L344">    return stub.detectIntentCallable();</span>
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD.
+  /**
+   * Processes a natural language query in audio format in a streaming fashion and returns
+   * structured, actionable data as a result. This method is only available via the gRPC API (not
+   * REST).
+   *
+   * &lt;p&gt;If you might use [Agent Assist](https://cloud.google.com/dialogflow/docs/#aa) or other CCAI
+   * products now or in the future, consider using
+   * [StreamingAnalyzeContent][google.cloud.dialogflow.v2beta1.Participants.StreamingAnalyzeContent]
+   * instead of `StreamingDetectIntent`. `StreamingAnalyzeContent` has additional functionality for
+   * Agent Assist and other CCAI products.
+   *
+   * &lt;p&gt;Note: Always use agent versions for production traffic. See [Versions and
+   * environments](https://cloud.google.com/dialogflow/es/docs/agents-versions).
+   *
+   * &lt;p&gt;Sample code:
+   *
+   * &lt;pre&gt;{@code
+   * // This snippet has been automatically generated for illustrative purposes only.
+   * // It may require modifications to work in your environment.
+   * try (SessionsClient sessionsClient = SessionsClient.create()) {
+   *   BidiStream&lt;StreamingDetectIntentRequest, StreamingDetectIntentResponse&gt; bidiStream =
+   *       sessionsClient.streamingDetectIntentCallable().call();
+   *   StreamingDetectIntentRequest request =
+   *       StreamingDetectIntentRequest.newBuilder()
+   *           .setSession(SessionName.ofProjectSessionName(&quot;[PROJECT]&quot;, &quot;[SESSION]&quot;).toString())
+   *           .setQueryParams(QueryParameters.newBuilder().build())
+   *           .setQueryInput(QueryInput.newBuilder().build())
+   *           .setSingleUtterance(true)
+   *           .setOutputAudioConfig(OutputAudioConfig.newBuilder().build())
+   *           .setOutputAudioConfigMask(FieldMask.newBuilder().build())
+   *           .setInputAudio(ByteString.EMPTY)
+   *           .build();
+   *   bidiStream.send(request);
+   *   for (StreamingDetectIntentResponse response : bidiStream) {
+   *     // Do something when a response is received.
+   *   }
+   * }
+   * }&lt;/pre&gt;
+   */
+  public final BidiStreamingCallable&lt;StreamingDetectIntentRequest, StreamingDetectIntentResponse&gt;
+      streamingDetectIntentCallable() {
+<span class="fc" id="L389">    return stub.streamingDetectIntentCallable();</span>
+  }
+
+  @Override
+  public final void close() {
+<span class="fc" id="L394">    stub.close();</span>
+<span class="fc" id="L395">  }</span>
+
+  @Override
+  public void shutdown() {
+<span class="nc" id="L399">    stub.shutdown();</span>
+<span class="nc" id="L400">  }</span>
+
+  @Override
+  public boolean isShutdown() {
+<span class="nc" id="L404">    return stub.isShutdown();</span>
+  }
+
+  @Override
+  public boolean isTerminated() {
+<span class="nc" id="L409">    return stub.isTerminated();</span>
+  }
+
+  @Override
+  public void shutdownNow() {
+<span class="nc" id="L414">    stub.shutdownNow();</span>
+<span class="nc" id="L415">  }</span>
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+<span class="nc" id="L419">    return stub.awaitTermination(duration, unit);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
