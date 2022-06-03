@@ -267,7 +267,6 @@
               <nohelp>true</nohelp>
               <source>8</source>
               <failOnError>false</failOnError>
-              <failOnWarnings>false</failOnWarnings>
               <groups>
                 <group>
                   <title>Test helpers packages</title>
@@ -286,15 +285,6 @@
                 <link>https://googleapis.github.io/api-common-java/1.9.1/apidocs/</link>
               </links>
             </configuration>
-            <executions>
-              <execution>
-                <id>aggregate</id>
-                <goals>
-                  <goal>aggregate</goal>
-                </goals>
-                <phase>site</phase>
-              </execution>
-            </executions>
 <!--            <reportSets>-->
 <!--              <reportSet>-->
 <!--                <id>aggregate</id>-->
@@ -307,6 +297,58 @@
         </plugins>
     </build>
 <!--      </reporting>-->
+    </profile>
+    <profile>
+      <id>docFX-test</id>
+      <activation>
+        <property>
+          <name>docFX-test</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.4.0</version>
+            <configuration>
+              <doclint>none</doclint>
+              <show>protected</show>
+              <nohelp>true</nohelp>
+              <outputDirectory>/usr/local/google/home/lawrenceqiu/IdeaProjects/google-cloud-java/output</outputDirectory>
+              <source>8</source>
+              <failOnError>false</failOnError>
+              <groups>
+                <group>
+                  <title>Test helpers packages</title>
+                  <packages>com.google.cloud.testing</packages>
+                </group>
+                <group>
+                  <title>SPI packages</title>
+                  <packages>com.google.cloud.spi*</packages>
+                </group>
+              </groups>
+
+              <links>
+                <link>https://grpc.io/grpc-java/javadoc/</link>
+                <link>https://developers.google.com/protocol-buffers/docs/reference/java/</link>
+                <link>https://googleapis.dev/java/google-auth-library/latest/</link>
+                <link>https://googleapis.dev/java/gax/latest/</link>
+                <link>https://googleapis.github.io/api-common-java/1.9.1/apidocs/</link>
+              </links>
+            </configuration>
+            <executions>
+              <execution>
+                <id>aggregate</id>
+                <goals>
+                  <goal>aggregate</goal>
+                </goals>
+                <phase>site</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 </project>
