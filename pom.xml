@@ -238,4 +238,54 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>docFX</id>
+      <activation>
+        <property>
+          <name>docFX</name>
+        </property>
+      </activation>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.4.0</version>
+            <configuration>
+              <doclet>com.microsoft.doclet.DocFxDoclet</doclet>
+              <docletPath>/usr/local/google/home/lawrenceqiu/java-docfx-doclet-1.6.0-jar-with-dependencies.jar</docletPath>
+              <useStandardDocletOptions>false</useStandardDocletOptions>
+              <additionalOptions>
+                -outputpath /usr/local/google/home/lawrenceqiu/IdeaProjects/google-cloud-java/output
+                -projectname monorepo
+              </additionalOptions>
+              <doclint>none</doclint>
+              <show>protected</show>
+              <nohelp>true</nohelp>
+              <source>8</source>
+              <aggregate>true</aggregate>
+<!--              <failOnError>false</failOnError>-->
+            </configuration>
+            <reportSets>
+              <reportSet>
+                <id>aggregate</id>
+                <inherited>false</inherited>
+                <reports>
+                  <report>aggregate</report>
+                </reports>
+              </reportSet>
+              <reportSet>
+                <id>default</id>
+                <reports>
+                  <report>javadoc</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+  </profiles>
 </project>
