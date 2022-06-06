@@ -82,6 +82,7 @@ Libraries are available on GitHub and Maven Central for developing Java applicat
 | [Profiler](https://github.com/googleapis/java-profiler) | [![stable][stable-stability]][stable-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-profiler.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-profiler&core=gav) |
 | [Pub/Sub](https://github.com/googleapis/java-pubsub) | [![stable][stable-stability]][stable-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-pubsub.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-pubsub&core=gav) |
 | [Pub/Sub Lite](https://github.com/googleapis/java-pubsublite) | [![stable][stable-stability]][stable-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-pubsublite.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-pubsublite&core=gav) |
+| [Pub/Sub Lite Kafka Shim](https://github.com/googleapis/java-pubsublite-kafka) | [![stable][stable-stability]][stable-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/pubsublite-kafka.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:pubsublite-kafka&core=gav) |
 | [Recommender](https://github.com/googleapis/java-recommender) | [![stable][stable-stability]][stable-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-recommender.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-recommender&core=gav) |
 | [Redis](https://github.com/googleapis/java-redis) | [![stable][stable-stability]][stable-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-redis.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-redis&core=gav) |
 | [Resource Manager API](https://github.com/googleapis/java-resourcemanager) | [![stable][stable-stability]][stable-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-resourcemanager.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-resourcemanager&core=gav) |
@@ -142,7 +143,6 @@ Libraries are available on GitHub and Maven Central for developing Java applicat
 | [Phishing Protection](https://github.com/googleapis/java-phishingprotection) | [![preview][preview-stability]][preview-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-phishingprotection.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-phishingprotection&core=gav) |
 | [Private Catalog](https://github.com/googleapis/java-private-catalog) | [![preview][preview-stability]][preview-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-private-catalog.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-private-catalog&core=gav) |
 | [Pub/Sub Lite Flink Connector](https://github.com/googleapis/java-pubsublite-flink) | [![preview][preview-stability]][preview-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-pubsublite-flink.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-pubsublite-flink&core=gav) |
-| [Pub/Sub Lite Kafka Shim](https://github.com/googleapis/java-pubsublite-kafka) | [![preview][preview-stability]][preview-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/pubsublite-kafka.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:pubsublite-kafka&core=gav) |
 | [Pub/Sub Lite Spark Connector](https://github.com/googleapis/java-pubsublite-spark) | [![preview][preview-stability]][preview-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/pubsublite-spark-sql-streaming.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:pubsublite-spark-sql-streaming&core=gav) |
 | [Recommendations AI](https://github.com/googleapis/java-recommendations-ai) | [![preview][preview-stability]][preview-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-recommendations-ai.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-recommendations-ai&core=gav) |
 | [Run](https://github.com/googleapis/java-run) | [![preview][preview-stability]][preview-description] | [![Maven](https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-run.svg)](https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-run&core=gav) |
@@ -284,20 +284,15 @@ To get help, follow the instructions in the [Troubleshooting document](https://g
 
 ## Configuring a Proxy
 
-### HTTP Clients
+Google Cloud client libraries use HTTPS and gRPC in underlying communication
+with the services.
+In both protocols, you can configure a proxy using `https.proxyHost`
+and (optional) `https.proxyPort` properties.
 
-For HTTP clients, a proxy can be configured by using `http.proxyHost`, `https.proxyHost`, and
-related system properties as documented by
-[Java Networking and Proxies](https://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.html).
+### gRPC Custom Proxy Configuration
 
-### gRPC Clients
-
-For gRPC clients, a proxy can be configured by using the
-`GRPC_PROXY_EXP` environment variable as documented by
-the gRPC [release notes](https://github.com/grpc/grpc-java/releases/tag/v1.0.3).
-Please note that gRPC proxy support is currently experimental.
-
-For a more custom proxy, you will need supply a `ProxyDetector` to the `ManagedChannelBuilder`:
+For a more custom proxy with gRPC, you will need supply a `ProxyDetector` to
+the `ManagedChannelBuilder`:
 
 ```java
 import com.google.api.core.ApiFunction;
