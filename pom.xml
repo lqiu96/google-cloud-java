@@ -12,6 +12,13 @@
   <description>
     Root project for Google Cloud clients and their dependencies
   </description>
+
+  <parent>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>google-cloud-shared-config</artifactId>
+    <version>1.4.0</version>
+  </parent>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -236,119 +243,101 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.4.0</version>
+        <configuration>
+          <doclet>com.microsoft.doclet.DocFxDoclet</doclet>
+          <docletPath>/usr/local/google/home/lawrenceqiu/java-docfx-doclet-1.6.0-jar-with-dependencies.jar</docletPath>
+          <useStandardDocletOptions>false</useStandardDocletOptions>
+          <additionalOptions>
+            -outputpath /usr/local/google/home/lawrenceqiu/IdeaProjects/google-cloud-java/output
+            -projectname monorepo
+          </additionalOptions>
+          <doclint>none</doclint>
+          <show>protected</show>
+          <nohelp>true</nohelp>
+          <source>11</source>
+          <failOnError>false</failOnError>
+          <groups>
+            <group>
+              <title>Test helpers packages</title>
+              <packages>com.google.cloud.testing</packages>
+            </group>
+            <group>
+              <title>SPI packages</title>
+              <packages>com.google.cloud.spi*</packages>
+            </group>
+          </groups>
+          <links>
+            <link>https://grpc.io/grpc-java/javadoc/</link>
+            <link>https://developers.google.com/protocol-buffers/docs/reference/java/</link>
+            <link>https://googleapis.dev/java/google-auth-library/latest/</link>
+            <link>https://googleapis.dev/java/gax/latest/</link>
+            <link>https://googleapis.github.io/api-common-java/1.9.1/apidocs/</link>
+          </links>
+        </configuration>
+        <executions>
+          <execution>
+            <id>aggregate</id>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>docFX</id>
-      <activation>
-        <property>
-          <name>docFX</name>
-        </property>
-      </activation>
-      <build>
-<!--      <reporting>-->
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.4.0</version>
-            <configuration>
-              <doclet>com.microsoft.doclet.DocFxDoclet</doclet>
-              <docletPath>/usr/local/google/home/lawrenceqiu/java-docfx-doclet-1.6.0-jar-with-dependencies.jar</docletPath>
-              <useStandardDocletOptions>false</useStandardDocletOptions>
-              <additionalOptions>
-                -outputpath /usr/local/google/home/lawrenceqiu/IdeaProjects/google-cloud-java/output
-                -projectname monorepo
-              </additionalOptions>
-              <doclint>none</doclint>
-              <show>protected</show>
-              <nohelp>true</nohelp>
-              <source>8</source>
-              <failOnError>false</failOnError>
-              <groups>
-                <group>
-                  <title>Test helpers packages</title>
-                  <packages>com.google.cloud.testing</packages>
-                </group>
-                <group>
-                  <title>SPI packages</title>
-                  <packages>com.google.cloud.spi*</packages>
-                </group>
-              </groups>
-              <links>
-                <link>https://grpc.io/grpc-java/javadoc/</link>
-                <link>https://developers.google.com/protocol-buffers/docs/reference/java/</link>
-                <link>https://googleapis.dev/java/google-auth-library/latest/</link>
-                <link>https://googleapis.dev/java/gax/latest/</link>
-                <link>https://googleapis.github.io/api-common-java/1.9.1/apidocs/</link>
-              </links>
-            </configuration>
-<!--            <reportSets>-->
-<!--              <reportSet>-->
-<!--                <id>aggregate</id>-->
-<!--                <reports>-->
-<!--                  <report>aggregate</report>-->
-<!--                </reports>-->
-<!--              </reportSet>-->
-<!--            </reportSets>-->
-          </plugin>
-        </plugins>
-    </build>
-<!--      </reporting>-->
-    </profile>
-    <profile>
-      <id>docFX-test</id>
-      <activation>
-        <property>
-          <name>docFX-test</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.4.0</version>
-            <configuration>
-              <doclint>none</doclint>
-              <show>protected</show>
-              <nohelp>true</nohelp>
-              <outputDirectory>/usr/local/google/home/lawrenceqiu/IdeaProjects/google-cloud-java/output</outputDirectory>
-              <source>8</source>
-              <failOnError>false</failOnError>
-              <groups>
-                <group>
-                  <title>Test helpers packages</title>
-                  <packages>com.google.cloud.testing</packages>
-                </group>
-                <group>
-                  <title>SPI packages</title>
-                  <packages>com.google.cloud.spi*</packages>
-                </group>
-              </groups>
-
-              <links>
-                <link>https://grpc.io/grpc-java/javadoc/</link>
-                <link>https://developers.google.com/protocol-buffers/docs/reference/java/</link>
-                <link>https://googleapis.dev/java/google-auth-library/latest/</link>
-                <link>https://googleapis.dev/java/gax/latest/</link>
-                <link>https://googleapis.github.io/api-common-java/1.9.1/apidocs/</link>
-              </links>
-            </configuration>
-            <executions>
-              <execution>
-                <id>aggregate</id>
-                <goals>
-                  <goal>aggregate</goal>
-                </goals>
-                <phase>site</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+<!--  <profiles>-->
+<!--    <profile>-->
+<!--      <id>docFX</id>-->
+<!--      <activation>-->
+<!--        <property>-->
+<!--          <name>docFX</name>-->
+<!--        </property>-->
+<!--      </activation>-->
+<!--      <build>-->
+<!--        <plugins>-->
+<!--          <plugin>-->
+<!--            <groupId>org.apache.maven.plugins</groupId>-->
+<!--            <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--            <version>3.4.0</version>-->
+<!--            <configuration>-->
+<!--              <doclet>com.microsoft.doclet.DocFxDoclet</doclet>-->
+<!--              <docletPath>/usr/local/google/home/lawrenceqiu/java-docfx-doclet-1.6.0-jar-with-dependencies.jar</docletPath>-->
+<!--              <useStandardDocletOptions>false</useStandardDocletOptions>-->
+<!--              <additionalOptions>-->
+<!--                -outputpath /usr/local/google/home/lawrenceqiu/IdeaProjects/google-cloud-java/output-->
+<!--                -projectname monorepo-->
+<!--              </additionalOptions>-->
+<!--              <doclint>none</doclint>-->
+<!--              <show>protected</show>-->
+<!--              <nohelp>true</nohelp>-->
+<!--              <source>11</source>-->
+<!--              <failOnError>false</failOnError>-->
+<!--              <groups>-->
+<!--                <group>-->
+<!--                  <title>Test helpers packages</title>-->
+<!--                  <packages>com.google.cloud.testing</packages>-->
+<!--                </group>-->
+<!--                <group>-->
+<!--                  <title>SPI packages</title>-->
+<!--                  <packages>com.google.cloud.spi*</packages>-->
+<!--                </group>-->
+<!--              </groups>-->
+<!--              <links>-->
+<!--                <link>https://grpc.io/grpc-java/javadoc/</link>-->
+<!--                <link>https://developers.google.com/protocol-buffers/docs/reference/java/</link>-->
+<!--                <link>https://googleapis.dev/java/google-auth-library/latest/</link>-->
+<!--                <link>https://googleapis.dev/java/gax/latest/</link>-->
+<!--                <link>https://googleapis.github.io/api-common-java/1.9.1/apidocs/</link>-->
+<!--              </links>-->
+<!--            </configuration>-->
+<!--          </plugin>-->
+<!--        </plugins>-->
+<!--      </build>-->
+<!--    </profile>-->
+<!--  </profiles>-->
 </project>

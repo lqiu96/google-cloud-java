@@ -12,9 +12,9 @@
   </description>
 
   <parent>
-    <groupId>com.google.cloud</groupId>
-    <artifactId>google-cloud-shared-config</artifactId>
-    <version>1.4.0</version>
+    <groupId>com.google.api</groupId>
+    <artifactId>google-cloud-java</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
 
   <developers>
@@ -160,44 +160,44 @@
           <packaging>jar</packaging>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.4.0</version>
-        <reportSets>
-          <reportSet>
-            <id>html</id>
-            <reports>
-              <report>aggregate</report>
-              <report>javadoc</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <doclint>none</doclint>
-          <show>protected</show>
-          <nohelp>true</nohelp>
-          <outputDirectory>${project.build.directory}/javadoc</outputDirectory>
-          <groups>
-            <group>
-              <title>Test helpers packages</title>
-              <packages>com.google.cloud.testing</packages>
-            </group>
-            <group>
-              <title>SPI packages</title>
-              <packages>com.google.cloud.spi*</packages>
-            </group>
-          </groups>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--        <version>3.4.0</version>-->
+<!--        <reportSets>-->
+<!--          <reportSet>-->
+<!--            <id>html</id>-->
+<!--            <reports>-->
+<!--              <report>aggregate</report>-->
+<!--              <report>javadoc</report>-->
+<!--            </reports>-->
+<!--          </reportSet>-->
+<!--        </reportSets>-->
+<!--        <configuration>-->
+<!--          <doclint>none</doclint>-->
+<!--          <show>protected</show>-->
+<!--          <nohelp>true</nohelp>-->
+<!--          <outputDirectory>${project.build.directory}/javadoc</outputDirectory>-->
+<!--          <groups>-->
+<!--            <group>-->
+<!--              <title>Test helpers packages</title>-->
+<!--              <packages>com.google.cloud.testing</packages>-->
+<!--            </group>-->
+<!--            <group>-->
+<!--              <title>SPI packages</title>-->
+<!--              <packages>com.google.cloud.spi*</packages>-->
+<!--            </group>-->
+<!--          </groups>-->
 
-          <links>
-            <link>https://grpc.io/grpc-java/javadoc/</link>
-            <link>https://developers.google.com/protocol-buffers/docs/reference/java/</link>
-            <link>https://googleapis.dev/java/google-auth-library/latest/</link>
-            <link>https://googleapis.dev/java/gax/latest/</link>
-            <link>https://googleapis.github.io/api-common-java/${google.api-common.version}/apidocs/</link>
-          </links>
-        </configuration>
-      </plugin>
+<!--          <links>-->
+<!--            <link>https://grpc.io/grpc-java/javadoc/</link>-->
+<!--            <link>https://developers.google.com/protocol-buffers/docs/reference/java/</link>-->
+<!--            <link>https://googleapis.dev/java/google-auth-library/latest/</link>-->
+<!--            <link>https://googleapis.dev/java/gax/latest/</link>-->
+<!--            <link>https://googleapis.github.io/api-common-java/${google.api-common.version}/apidocs/</link>-->
+<!--          </links>-->
+<!--        </configuration>-->
+<!--      </plugin>-->
     </plugins>
   </reporting>
 </project>
