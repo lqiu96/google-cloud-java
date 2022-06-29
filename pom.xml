@@ -253,7 +253,7 @@
           <failOnError>false</failOnError>
           <additionalOptions>
             -outputpath /usr/local/google/home/lawrenceqiu/IdeaProjects/google-cloud-java/output
-            -projectname google-cloud-java
+            -projectname ${project.artifactId}
           </additionalOptions>
           <doclint>none</doclint>
           <show>protected</show>
