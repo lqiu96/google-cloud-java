@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FOLDER_PREFIX="cloud.google.com/java"
+PREFIX="google-cloud"
 VERSION="${1:-1.0.0}"
 OUTPUT_FOLDER="aggregate_docs"
 
@@ -19,8 +19,14 @@ while IFS= read -r line; do
   cd ..
   mv output "${OUTPUT_FOLDER}/${module}"
   cd "${OUTPUT_FOLDER}/${module}"
+
+  # Module Name is with the 'java-' portion removed
+  # cut separates based on the '-' delimiter and selects from index 2 onwards (1 indexed)
+  module_name=$(echo "${module}" | cut -d'-' -f2-)
+  # tarball is named {language}-{name}-{version}
+  # i.e. java-google-cloud-aiplatform-100.0.0
   docuploader create-metadata \
-   --name "${FOLDER_PREFIX}/${module}" \
+   --name "${PREFIX}-${module_name}" \
    --version "${VERSION}" \
    --xrefs devsite://java/gax \
    --xrefs devsite://java/google-cloud-core \
