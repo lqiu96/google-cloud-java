@@ -1,18 +1,19 @@
 #!/bin/bash
 
-PREFIX="google-cloud"
 VERSION="${1:-1.0.0}"
 OUTPUT_FOLDER="aggregate_docs"
 
-#mvn clean install -T 1C -DskipTests -Dcheckstyle.skip -B -q
+mvn clean install -T 1C -DskipTests -Dcheckstyle.skip -B -q
 rm -rf $OUTPUT_FOLDER
 mkdir $OUTPUT_FOLDER
 
 echo "Creating docs for version: ${VERSION}"
 
 while IFS= read -r line; do
-  module=$line
+  module=$(echo "${line}" | cut -d "," -f 1)
+  bucket_module_name=$(echo "${line}" | cut -d "," -f 2)
 
+  echo "Module: ${module}, Bucket Module Name: ${bucket_module_name}"
   echo "Generating docs for ${module}"
   cd $module
   mvn javadoc:aggregate -B -q
@@ -20,13 +21,8 @@ while IFS= read -r line; do
   mv output "${OUTPUT_FOLDER}/${module}"
   cd "${OUTPUT_FOLDER}/${module}"
 
-  # Module Name is with the 'java-' portion removed
-  # cut separates based on the '-' delimiter and selects from index 2 onwards (1 indexed)
-  module_name=$(echo "${module}" | cut -d'-' -f2-)
-  # tarball is named {language}-{name}-{version}
-  # i.e. java-google-cloud-aiplatform-100.0.0
   docuploader create-metadata \
-   --name "${PREFIX}-${module_name}" \
+   --name "${bucket_module_name}" \
    --version "${VERSION}" \
    --xrefs devsite://java/gax \
    --xrefs devsite://java/google-cloud-core \
