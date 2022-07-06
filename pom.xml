@@ -84,6 +84,7 @@
     <version>1.4.0</version>
   </parent>
 
+  <!-- module names -->
   <modules>
     <module>java-accessapproval</module>
     <module>java-accesscontextmanager</module>
@@ -138,7 +139,6 @@
     <module>java-game-servers</module>
     <module>java-gke-connect-gateway</module>
     <module>java-gkehub</module>
-    <module>java-grafeas</module>
     <module>java-iam-admin</module>
     <module>java-iamcredentials</module>
     <module>java-ids</module>
