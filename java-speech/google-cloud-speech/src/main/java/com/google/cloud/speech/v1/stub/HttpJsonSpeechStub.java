@@ -339,8 +339,8 @@ public class HttpJsonSpeechStub extends SpeechStub {
       HttpJsonStubCallableFactory callableFactory)
       throws IOException {
     this.callableFactory = callableFactory;
-    HttpJsonOperationsStub httpJsonOperationsStub =
-        HttpJsonOperationsStub.create(clientContext, callableFactory, typeRegistry);
+//    HttpJsonOperationsStub httpJsonOperationsStub =
+//        HttpJsonOperationsStub.create(clientContext, callableFactory, typeRegistry);
 
     HttpJsonCallSettings<ListOperationsRequest, ListOperationsResponse>
         listOperationsTransportSettings =
