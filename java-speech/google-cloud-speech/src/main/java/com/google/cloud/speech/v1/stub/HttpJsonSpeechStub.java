@@ -18,7 +18,6 @@ package com.google.cloud.speech.v1.stub;
 
 import static com.google.cloud.speech.v1.SpeechClient.ListOperationsPagedResponse;
 
-import com.google.api.client.http.HttpMethods;
 import com.google.api.core.BetaApi;
 import com.google.api.core.InternalApi;
 import com.google.api.gax.core.BackgroundResource;
@@ -188,7 +187,8 @@ public class HttpJsonSpeechStub extends SpeechStub {
       getOperationMethodDescriptor =
           ApiMethodDescriptor.<GetOperationRequest, Operation>newBuilder()
               .setFullMethodName("google.longrunning.Operations/GetOperation")
-              .setHttpMethod(HttpMethods.GET)
+              .setHttpMethod("GET")
+              .setType(ApiMethodDescriptor.MethodType.UNARY)
               .setRequestFormatter(
                   ProtoMessageRequestFormatter.<GetOperationRequest>newBuilder()
                       .setPath(
@@ -200,12 +200,20 @@ public class HttpJsonSpeechStub extends SpeechStub {
                             serializer.putPathParam(fields, "name", request.getName());
                             return fields;
                           })
-                      .setQueryParamsExtractor(request -> new HashMap<>())
+                      .setQueryParamsExtractor(
+                          request -> {
+                            Map<String, List<String>> fields = new HashMap<>();
+                            ProtoRestSerializer<GetOperationRequest> serializer =
+                                ProtoRestSerializer.create();
+                            serializer.putQueryParam(fields, "$alt", "json;enum-encoding=int");
+                            return fields;
+                          })
                       .setRequestBodyExtractor(request -> null)
                       .build())
               .setResponseParser(
                   ProtoMessageResponseParser.<Operation>newBuilder()
                       .setDefaultInstance(Operation.getDefaultInstance())
+                      .setDefaultTypeRegistry(typeRegistry)
                       .build())
               .build();
 
@@ -372,7 +380,9 @@ public class HttpJsonSpeechStub extends SpeechStub {
         callableFactory.createUnaryCallable(
             cancelOperationTransportSettings, settings.cancelOperationSettings(), clientContext);
 
-    LongRunningClient longRunningClient = HttpJsonLongRunningClient.create(getOperationCallable, cancelOperationCallable, deleteOperationCallable);
+    LongRunningClient longRunningClient =
+        HttpJsonLongRunningClient.create(
+            getOperationCallable, cancelOperationCallable, deleteOperationCallable);
 
     HttpJsonCallSettings<RecognizeRequest, RecognizeResponse> recognizeTransportSettings =
         HttpJsonCallSettings.<RecognizeRequest, RecognizeResponse>newBuilder()
