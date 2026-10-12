@@ -354,6 +354,32 @@ public class FieldValue implements Serializable {
         && Objects.equals(useInt64Timestamps, other.useInt64Timestamps);
   }
 
+  // Reusable immutable singletons for NULL primitive cells (with and without int64 timestamps).
+  // When `value == null` and `attribute == Attribute.PRIMITIVE`, all fields of FieldValue
+  // (`attribute`, `value`, `useInt64Timestamps`) are immutable constants and every value getter
+  // throws NullPointerException on `checkNotNull(value)`. Reusing these two singletons avoids
+  // allocating a new 24-byte FieldValue instance for every NULL cell across large result sets.
+  private static final FieldValue NULL_PRIMITIVE = new FieldValue(Attribute.PRIMITIVE, null, false);
+
+  private static final FieldValue NULL_PRIMITIVE_INT64_TIMESTAMPS =
+      new FieldValue(Attribute.PRIMITIVE, null, true);
+
+  /**
+   * Java Serialization hook invoked by {@link java.io.ObjectInputStream} after deserializing a
+   * {@link FieldValue} instance.
+   *
+   * <p>Replaces deserialized primitive {@code null} instances with the canonical {@link
+   * #NULL_PRIMITIVE} or {@link #NULL_PRIMITIVE_INT64_TIMESTAMPS} singletons so that deserialized
+   * rows share the same cached instances as newly constructed rows instead of retaining duplicate
+   * heap objects.
+   */
+  private Object readResolve() {
+    if (value == null && attribute == Attribute.PRIMITIVE && useInt64Timestamps != null) {
+      return useInt64Timestamps ? NULL_PRIMITIVE_INT64_TIMESTAMPS : NULL_PRIMITIVE;
+    }
+    return this;
+  }
+
   /**
    * Creates an instance of {@code FieldValue}, useful for testing.
    *
@@ -375,6 +401,12 @@ public class FieldValue implements Serializable {
 
   @BetaApi
   public static FieldValue of(Attribute attribute, Object value, Boolean useInt64Timestamps) {
+    // Only reuse the cached singletons when `useInt64Timestamps` is non-null so that callers
+    // explicitly passing `useInt64Timestamps = null` still observe `getUseInt64Timestamps() ==
+    // null`.
+    if (value == null && attribute == Attribute.PRIMITIVE && useInt64Timestamps != null) {
+      return useInt64Timestamps ? NULL_PRIMITIVE_INT64_TIMESTAMPS : NULL_PRIMITIVE;
+    }
     return new FieldValue(attribute, value, useInt64Timestamps);
   }
 
@@ -435,7 +467,8 @@ public class FieldValue implements Serializable {
     // Pattern is [sign]Y-M [sign]D [sign]H:M:S[.F]
     Pattern pattern =
         Pattern.compile(
-            "(?<sign1>[+-])?(?<year>\\d+)-(?<month>\\d+) (?<sign2>[-|+])?(?<day>\\d+) (?<sign3>[-|+])?(?<hours>\\d+):(?<minutes>\\d+):(?<seconds>\\d+)(\\.(?<fraction>\\d+))?");
+            "(?<sign1>[+-])?(?<year>\\d+)-(?<month>\\d+) (?<sign2>[-|+])?(?<day>\\d+)"
+                + " (?<sign3>[-|+])?(?<hours>\\d+):(?<minutes>\\d+):(?<seconds>\\d+)(\\.(?<fraction>\\d+))?");
     Matcher matcher = pattern.matcher(interval);
     if (!matcher.find()) {
       throw new IllegalArgumentException();

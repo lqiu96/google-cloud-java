@@ -225,4 +225,26 @@ class FieldValueListTest {
         assertThrows(IllegalArgumentException.class, () -> fieldValues.get("nonexistent"));
     assertNotNull(exception);
   }
+
+  @Test
+  void testFromPbUnmodifiableAndWithSchema() {
+    FieldValueList fromPbList = FieldValueList.fromPb(fieldValuesPb, null);
+    assertThrows(UnsupportedOperationException.class, () -> fromPbList.add(booleanFv));
+    assertThrows(UnsupportedOperationException.class, () -> fromPbList.set(0, booleanFv));
+    assertThrows(UnsupportedOperationException.class, () -> fromPbList.remove(0));
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> {
+          java.util.Iterator<FieldValue> it = fromPbList.iterator();
+          it.next();
+          it.remove();
+        });
+
+    FieldValueList withSchemaList = fromPbList.withSchema(schema);
+    assertEquals(fieldValues, withSchemaList);
+    assertEquals(booleanFv, withSchemaList.get("first"));
+
+    FieldValueList emptyFromPb = FieldValueList.fromPb(ImmutableList.of(), null);
+    assertEquals(0, emptyFromPb.size());
+  }
 }

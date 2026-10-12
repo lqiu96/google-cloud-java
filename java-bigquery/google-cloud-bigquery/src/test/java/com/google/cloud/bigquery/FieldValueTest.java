@@ -19,7 +19,9 @@ package com.google.cloud.bigquery;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.api.client.util.Data;
@@ -232,6 +234,33 @@ public class FieldValueTest {
     for (Entry<String, PeriodDuration> entry : intervalToPeriodDuration.entrySet()) {
       assertEquals(FieldValue.parseCanonicalInterval(entry.getKey()), entry.getValue());
       System.out.println(FieldValue.parseCanonicalInterval(entry.getKey()));
+    }
+  }
+
+  @Test
+  public void testNullPrimitiveSingletons() throws Exception {
+    FieldValue nullFalse = FieldValue.fromPb(NULL_FIELD);
+    FieldValue nullTrue = FieldValue.fromPb(NULL_FIELD, null, true);
+    assertSame(FieldValue.of(FieldValue.Attribute.PRIMITIVE, null, false), nullFalse);
+    assertSame(FieldValue.of(FieldValue.Attribute.PRIMITIVE, null, true), nullTrue);
+    assertNotSame(nullFalse, nullTrue);
+    assertNull(FieldValue.of(FieldValue.Attribute.PRIMITIVE, null, null).getUseInt64Timestamps());
+
+    // Verify Java serialization round-trip preserves singleton identity via readResolve()
+    assertSame(nullFalse, roundTripSerialize(nullFalse));
+    assertSame(nullTrue, roundTripSerialize(nullTrue));
+    FieldValue nonNull = FieldValue.fromPb(BOOLEAN_FIELD);
+    assertEquals(nonNull, roundTripSerialize(nonNull));
+  }
+
+  private static FieldValue roundTripSerialize(FieldValue value) throws Exception {
+    java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+    try (java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(baos)) {
+      oos.writeObject(value);
+    }
+    try (java.io.ObjectInputStream ois =
+        new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray()))) {
+      return (FieldValue) ois.readObject();
     }
   }
 }

@@ -73,6 +73,7 @@ import io.opentelemetry.context.Scope;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -402,7 +403,8 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               // BigQueryReadClient across page fetches. Custom BigQuery implementations that do
               // not extend BigQueryImpl cannot provide the managed gRPC storage read client.
               throw new IllegalStateException(
-                  "Arrow query result pagination requires an instance of BigQueryImpl to manage BigQueryReadClient lifecycle");
+                  "Arrow query result pagination requires an instance of BigQueryImpl to manage"
+                      + " BigQueryReadClient lifecycle");
             }
             bqReadClient = ((BigQueryImpl) service).getBigQueryReadClient(location);
           }
@@ -2219,17 +2221,25 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
 
   private static Iterable<FieldValueList> transformTableData(
       Iterable<TableRow> tableDataPb, final Schema schema, boolean useInt64Timestamps) {
-    return ImmutableList.copyOf(
-        Iterables.transform(
-            tableDataPb != null ? tableDataPb : ImmutableList.<TableRow>of(),
-            new Function<TableRow, FieldValueList>() {
-              FieldList fields = schema != null ? schema.getFields() : null;
-
-              @Override
-              public FieldValueList apply(TableRow rowPb) {
-                return FieldValueList.fromPb(rowPb.getF(), fields, useInt64Timestamps);
-              }
-            }));
+    if (tableDataPb == null
+        || (tableDataPb instanceof Collection && ((Collection<?>) tableDataPb).isEmpty())) {
+      return ImmutableList.of();
+    }
+    FieldList fields = schema != null ? schema.getFields() : null;
+    // `Iterables.transform(Iterable, Function)` returns a lazy `FluentIterable` view that does
+    // not implement `Collection`. Passing it to `ImmutableList.copyOf(Iterable)` falls back to
+    // `ImmutableList.copyOf(Iterator)`, which starts with a 4-element `Object[]` and repeatedly
+    // reallocates and copies the backing array by 1.5x (19 resizes for a 50,000-row page).
+    // Pre-sizing via `ImmutableList.builderWithExpectedSize` allocates the exact backing array
+    // once and avoids allocating the `Iterables.transform` view and iterator.
+    ImmutableList.Builder<FieldValueList> builder =
+        (tableDataPb instanceof Collection)
+            ? ImmutableList.builderWithExpectedSize(((Collection<?>) tableDataPb).size())
+            : ImmutableList.builder();
+    for (TableRow rowPb : tableDataPb) {
+      builder.add(FieldValueList.fromPb(rowPb.getF(), fields, useInt64Timestamps));
+    }
+    return builder.build();
   }
 
   @Override
