@@ -45,7 +45,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
@@ -57,6 +56,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -825,17 +825,22 @@ class ConnectionImpl implements Connection {
   /* Helper method that parse and populate a page with TableRows */
   private static Iterable<FieldValueList> getIterableFieldValueList(
       Iterable<TableRow> tableDataPb, final Schema schema) {
-    return ImmutableList.copyOf(
-        Iterables.transform(
-            tableDataPb != null ? tableDataPb : ImmutableList.of(),
-            new Function<TableRow, FieldValueList>() {
-              final FieldList fields = schema != null ? schema.getFields() : null;
-
-              @Override
-              public FieldValueList apply(TableRow rowPb) {
-                return FieldValueList.fromPb(rowPb.getF(), fields);
-              }
-            }));
+    if (tableDataPb == null
+        || (tableDataPb instanceof Collection && ((Collection<?>) tableDataPb).isEmpty())) {
+      return ImmutableList.of();
+    }
+    final FieldList fields = schema != null ? schema.getFields() : null;
+    // Pre-size the ImmutableList builder from the known row count instead of passing
+    // `Iterables.transform(...)` (which is not a Collection) to `ImmutableList.copyOf(Iterable)`,
+    // avoiding repeated `Object[]` reallocations across large pages.
+    ImmutableList.Builder<FieldValueList> builder =
+        (tableDataPb instanceof Collection)
+            ? ImmutableList.builderWithExpectedSize(((Collection<?>) tableDataPb).size())
+            : ImmutableList.builder();
+    for (TableRow rowPb : tableDataPb) {
+      builder.add(FieldValueList.fromPb(rowPb.getF(), fields));
+    }
+    return builder.build();
   }
 
   /* Helper method that determines the optimal number of caches pages to improve read performance */

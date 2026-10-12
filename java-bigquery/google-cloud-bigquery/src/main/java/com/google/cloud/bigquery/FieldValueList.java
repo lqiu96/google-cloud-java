@@ -20,8 +20,7 @@ import com.google.api.core.BetaApi;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,10 +39,20 @@ public class FieldValueList extends AbstractList<FieldValue> implements Serializ
   private final List<FieldValue> row;
 
   private FieldValueList(List<FieldValue> row, FieldList schema) {
+    this(row, schema, false);
+  }
+
+  /**
+   * Internal constructor that optionally skips the defensive {@link ImmutableList#copyOf} copy when
+   * {@code trusted} is {@code true} (used by {@link #fromPb} and {@link #withSchema}, where the
+   * backing list is already newly allocated and unmodifiable). Public factory methods ({@link #of})
+   * pass {@code trusted = false} to defensively copy caller-supplied lists.
+   */
+  private FieldValueList(List<FieldValue> row, FieldList schema, boolean trusted) {
     if (schema != null && row.size() != schema.size()) {
       throw new IllegalArgumentException("Row size and fields schema sizes should match");
     }
-    this.row = ImmutableList.copyOf(row);
+    this.row = trusted ? row : ImmutableList.copyOf(row);
     this.schema = schema;
   }
 
@@ -67,7 +76,8 @@ public class FieldValueList extends AbstractList<FieldValue> implements Serializ
   public FieldValue get(String name) {
     if (schema == null) {
       throw new UnsupportedOperationException(
-          "Retrieving field value by name is not supported when there is no fields schema provided");
+          "Retrieving field value by name is not supported when there is no fields schema"
+              + " provided");
     }
     return get(schema.getIndex(name));
   }
@@ -108,7 +118,8 @@ public class FieldValueList extends AbstractList<FieldValue> implements Serializ
   }
 
   FieldValueList withSchema(FieldList schema) {
-    return new FieldValueList(this.row, schema);
+    // Reuse `this.row` directly since it is already owned by FieldValueList and never mutated.
+    return new FieldValueList(this.row, schema, true);
   }
 
   static FieldValueList fromPb(List<?> rowPb, FieldList schema) {
@@ -116,22 +127,28 @@ public class FieldValueList extends AbstractList<FieldValue> implements Serializ
   }
 
   static FieldValueList fromPb(List<?> rowPb, FieldList schema, Boolean useInt64Timestamps) {
-    List<FieldValue> row = new ArrayList<>(rowPb.size());
-    if (schema != null) {
-      if (schema.size() != rowPb.size()) {
-        throw new IllegalArgumentException("Row size and fields schema sizes should match");
-      }
-      Iterator<Field> schemaIter = schema.iterator();
-      Iterator<?> rowPbIter = rowPb.iterator();
-      while (rowPbIter.hasNext() && schemaIter.hasNext()) {
-        row.add(FieldValue.fromPb(rowPbIter.next(), schemaIter.next(), useInt64Timestamps));
-      }
-    } else {
-      for (Object cellPb : rowPb) {
-        row.add(FieldValue.fromPb(cellPb, null, useInt64Timestamps));
-      }
+    int size = rowPb.size();
+    if (schema != null && schema.size() != size) {
+      throw new IllegalArgumentException("Row size and fields schema sizes should match");
+    }
+    if (size == 0) {
+      return new FieldValueList(ImmutableList.of(), schema, true);
+    }
+    // 1. Allocate the backing FieldValue[] once and wrap it with Arrays.asList instead of
+    //    populating an intermediate ArrayList and copying it a second time via
+    //    ImmutableList.copyOf. Because `this.row` is private and only accessed via `get(int)` and
+    //    `size()`, and `FieldValueList` extends `AbstractList` without overriding `set`, `add`, or
+    //    `remove`, all mutation attempts (including via `iterator().remove()`, `listIterator()`,
+    //    and `subList()`) throw `UnsupportedOperationException`, while `Arrays$ArrayList`
+    //    preserves `RandomAccess` and `Serializable`.
+    // 2. Use an indexed loop (`rowPb.get(i)` and `schema.get(i)`) rather than `rowPb.iterator()`
+    //    and `schema.iterator()` to avoid allocating two Iterator instances per row.
+    FieldValue[] row = new FieldValue[size];
+    for (int i = 0; i < size; i++) {
+      Field fieldSchema = (schema != null) ? schema.get(i) : null;
+      row[i] = FieldValue.fromPb(rowPb.get(i), fieldSchema, useInt64Timestamps);
     }
 
-    return FieldValueList.of(row, schema);
+    return new FieldValueList(Arrays.asList(row), schema, true);
   }
 }
