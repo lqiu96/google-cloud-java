@@ -121,4 +121,18 @@ class FieldListTest {
 
     assertEquals(fieldsSchema, FieldList.fromPb(fieldsSchema.toPb()));
   }
+
+  @Test
+  void testGetIndexExactLowerAndMixedCase() {
+    assertEquals(0, fieldsSchema.getIndex(FIELD_NAME1));
+    assertEquals(1, fieldsSchema.getIndex(FIELD_NAME2));
+    assertEquals(2, fieldsSchema.getIndex(FIELD_NAME3));
+    assertEquals(0, fieldsSchema.getIndex(FIELD_NAME_CASE_INSENSITIVE1));
+    assertEquals(1, fieldsSchema.getIndex(FIELD_NAME_CASE_INSENSITIVE2));
+    assertEquals(2, fieldsSchema.getIndex(FIELD_NAME_CASE_INSENSITIVE3));
+    assertEquals(0, fieldsSchema.getIndex(FIELD_NAME_CASE_INSENSITIVE4));
+    assertEquals(1, fieldsSchema.getIndex(FIELD_NAME_CASE_INSENSITIVE5));
+    assertEquals(2, fieldsSchema.getIndex(FIELD_NAME_CASE_INSENSITIVE6));
+    assertThrows(IllegalArgumentException.class, () -> fieldsSchema.getIndex(FIELD_NAME4));
+  }
 }
