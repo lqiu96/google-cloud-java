@@ -73,6 +73,7 @@ import io.opentelemetry.context.Scope;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -746,23 +747,27 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               serviceOptions.isOpenTelemetryTracingEnabled(),
               serviceOptions.getOpenTelemetryTracer());
       String nextPageToken = result.x();
-      Iterable<Project> projects =
-          Iterables.transform(
-              result.y() != null ? result.y() : ImmutableList.<ProjectList.Projects>of(),
-              new Function<ProjectList.Projects, Project>() {
-                @Override
-                public Project apply(ProjectList.Projects projectPb) {
-                  return new Project(
-                      projectPb.getId(),
-                      projectPb.getNumericId() != null
-                          ? String.valueOf(projectPb.getNumericId())
-                          : null,
-                      projectPb.getProjectReference() != null
-                          ? projectPb.getProjectReference().getProjectId()
-                          : null,
-                      projectPb.getFriendlyName());
-                }
-              });
+      Iterable<ProjectList.Projects> projectsPb = result.y();
+      ImmutableList<Project> projects;
+      if (projectsPb == null) {
+        projects = ImmutableList.of();
+      } else {
+        ImmutableList.Builder<Project> builder =
+            projectsPb instanceof Collection
+                ? ImmutableList.builderWithExpectedSize(((Collection<?>) projectsPb).size())
+                : ImmutableList.builder();
+        for (ProjectList.Projects projectPb : projectsPb) {
+          builder.add(
+              new Project(
+                  projectPb.getId(),
+                  projectPb.getNumericId() != null ? String.valueOf(projectPb.getNumericId()) : null,
+                  projectPb.getProjectReference() != null
+                      ? projectPb.getProjectReference().getProjectId()
+                      : null,
+                  projectPb.getFriendlyName()));
+        }
+        projects = builder.build();
+      }
       return new PageImpl<>(
           new ProjectPageFetcher(serviceOptions, nextPageToken, optionsMap),
           nextPageToken,
@@ -1129,17 +1134,23 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               serviceOptions.isOpenTelemetryTracingEnabled(),
               serviceOptions.getOpenTelemetryTracer());
       String cursor = result.x();
+      Iterable<com.google.api.services.bigquery.model.Dataset> datasetsPb = result.y();
+      ImmutableList<Dataset> datasets;
+      if (datasetsPb == null) {
+        datasets = ImmutableList.of();
+      } else {
+        BigQuery service = serviceOptions.getService();
+        ImmutableList.Builder<Dataset> builder =
+            datasetsPb instanceof Collection
+                ? ImmutableList.builderWithExpectedSize(((Collection<?>) datasetsPb).size())
+                : ImmutableList.builder();
+        for (com.google.api.services.bigquery.model.Dataset datasetPb : datasetsPb) {
+          builder.add(Dataset.fromPb(service, datasetPb));
+        }
+        datasets = builder.build();
+      }
       return new PageImpl<>(
-          new DatasetPageFetcher(projectId, serviceOptions, cursor, optionsMap),
-          cursor,
-          Iterables.transform(
-              result.y(),
-              new Function<com.google.api.services.bigquery.model.Dataset, Dataset>() {
-                @Override
-                public Dataset apply(com.google.api.services.bigquery.model.Dataset dataset) {
-                  return Dataset.fromPb(serviceOptions.getService(), dataset);
-                }
-              }));
+          new DatasetPageFetcher(projectId, serviceOptions, cursor, optionsMap), cursor, datasets);
     } catch (BigQueryRetryHelperException e) {
       throw BigQueryException.translateAndThrow(e);
     }
@@ -1938,15 +1949,21 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               serviceOptions.isOpenTelemetryTracingEnabled(),
               serviceOptions.getOpenTelemetryTracer());
       String cursor = result.x();
-      Iterable<Table> tables =
-          Iterables.transform(
-              result.y(),
-              new Function<com.google.api.services.bigquery.model.Table, Table>() {
-                @Override
-                public Table apply(com.google.api.services.bigquery.model.Table table) {
-                  return Table.fromPb(serviceOptions.getService(), table);
-                }
-              });
+      Iterable<com.google.api.services.bigquery.model.Table> tablesPb = result.y();
+      ImmutableList<Table> tables;
+      if (tablesPb == null) {
+        tables = ImmutableList.of();
+      } else {
+        BigQuery service = serviceOptions.getService();
+        ImmutableList.Builder<Table> builder =
+            tablesPb instanceof Collection
+                ? ImmutableList.builderWithExpectedSize(((Collection<?>) tablesPb).size())
+                : ImmutableList.builder();
+        for (com.google.api.services.bigquery.model.Table tablePb : tablesPb) {
+          builder.add(Table.fromPb(service, tablePb));
+        }
+        tables = builder.build();
+      }
       return new PageImpl<>(
           new TablePageFetcher(datasetId, serviceOptions, cursor, optionsMap), cursor, tables);
     } catch (BigQueryRetryHelperException e) {
@@ -1979,15 +1996,21 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               serviceOptions.isOpenTelemetryTracingEnabled(),
               serviceOptions.getOpenTelemetryTracer());
       String cursor = result.x();
-      Iterable<Model> models =
-          Iterables.transform(
-              result.y(),
-              new Function<com.google.api.services.bigquery.model.Model, Model>() {
-                @Override
-                public Model apply(com.google.api.services.bigquery.model.Model model) {
-                  return Model.fromPb(serviceOptions.getService(), model);
-                }
-              });
+      Iterable<com.google.api.services.bigquery.model.Model> modelsPb = result.y();
+      ImmutableList<Model> models;
+      if (modelsPb == null) {
+        models = ImmutableList.of();
+      } else {
+        BigQuery service = serviceOptions.getService();
+        ImmutableList.Builder<Model> builder =
+            modelsPb instanceof Collection
+                ? ImmutableList.builderWithExpectedSize(((Collection<?>) modelsPb).size())
+                : ImmutableList.builder();
+        for (com.google.api.services.bigquery.model.Model modelPb : modelsPb) {
+          builder.add(Model.fromPb(service, modelPb));
+        }
+        models = builder.build();
+      }
       return new PageImpl<>(
           new ModelPageFetcher(datasetId, serviceOptions, cursor, optionsMap), cursor, models);
     } catch (BigQueryRetryHelperException e) {
@@ -2020,15 +2043,21 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               serviceOptions.isOpenTelemetryTracingEnabled(),
               serviceOptions.getOpenTelemetryTracer());
       String cursor = result.x();
-      Iterable<Routine> routines =
-          Iterables.transform(
-              result.y(),
-              new Function<com.google.api.services.bigquery.model.Routine, Routine>() {
-                @Override
-                public Routine apply(com.google.api.services.bigquery.model.Routine routinePb) {
-                  return Routine.fromPb(serviceOptions.getService(), routinePb);
-                }
-              });
+      Iterable<com.google.api.services.bigquery.model.Routine> routinesPb = result.y();
+      ImmutableList<Routine> routines;
+      if (routinesPb == null) {
+        routines = ImmutableList.of();
+      } else {
+        BigQuery service = serviceOptions.getService();
+        ImmutableList.Builder<Routine> builder =
+            routinesPb instanceof Collection
+                ? ImmutableList.builderWithExpectedSize(((Collection<?>) routinesPb).size())
+                : ImmutableList.builder();
+        for (com.google.api.services.bigquery.model.Routine routinePb : routinesPb) {
+          builder.add(Routine.fromPb(service, routinePb));
+        }
+        routines = builder.build();
+      }
       return new PageImpl<>(
           new RoutinePageFetcher(datasetId, serviceOptions, cursor, optionsMap), cursor, routines);
     } catch (BigQueryRetryHelperException e) {
@@ -2335,15 +2364,21 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               serviceOptions.isOpenTelemetryTracingEnabled(),
               serviceOptions.getOpenTelemetryTracer());
       String cursor = result.x();
-      Iterable<Job> jobs =
-          Iterables.transform(
-              result.y(),
-              new Function<com.google.api.services.bigquery.model.Job, Job>() {
-                @Override
-                public Job apply(com.google.api.services.bigquery.model.Job job) {
-                  return Job.fromPb(serviceOptions.getService(), job);
-                }
-              });
+      Iterable<com.google.api.services.bigquery.model.Job> jobsPb = result.y();
+      ImmutableList<Job> jobs;
+      if (jobsPb == null) {
+        jobs = ImmutableList.of();
+      } else {
+        BigQuery service = serviceOptions.getService();
+        ImmutableList.Builder<Job> builder =
+            jobsPb instanceof Collection
+                ? ImmutableList.builderWithExpectedSize(((Collection<?>) jobsPb).size())
+                : ImmutableList.builder();
+        for (com.google.api.services.bigquery.model.Job jobPb : jobsPb) {
+          builder.add(Job.fromPb(service, jobPb));
+        }
+        jobs = builder.build();
+      }
       return new PageImpl<>(new JobPageFetcher(serviceOptions, cursor, optionsMap), cursor, jobs);
     } catch (BigQueryRetryHelperException e) {
       throw BigQueryException.translateAndThrow(e);
