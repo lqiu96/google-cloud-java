@@ -100,14 +100,21 @@ public final class GoogleSheetsOptions extends FormatOptions {
 
   @Override
   public int hashCode() {
-    return Objects.hash(getType(), skipLeadingRows);
+    return Objects.hash(getType(), skipLeadingRows, range);
   }
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this
-        || obj instanceof GoogleSheetsOptions
-            && Objects.equals(toPb(), ((GoogleSheetsOptions) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof GoogleSheetsOptions)) {
+      return false;
+    }
+    GoogleSheetsOptions other = (GoogleSheetsOptions) obj;
+    return Objects.equals(getType(), other.getType())
+        && Objects.equals(skipLeadingRows, other.skipLeadingRows)
+        && Objects.equals(range, other.range);
   }
 
   com.google.api.services.bigquery.model.GoogleSheetsOptions toPb() {
