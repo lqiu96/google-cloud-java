@@ -62,7 +62,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -2053,23 +2052,13 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
     requestPb.setIgnoreUnknownValues(request.ignoreUnknownValues());
     requestPb.setSkipInvalidRows(request.skipInvalidRows());
     requestPb.setTemplateSuffix(request.getTemplateSuffix());
-    // Using an array of size 1 here to have a mutable boolean variable, which can
-    // be modified in
-    // an anonymous inner class.
-    final boolean[] allInsertIdsSet = {true};
-    List<Rows> rowsPb =
-        FluentIterable.from(request.getRows())
-            .transform(
-                new Function<RowToInsert, Rows>() {
-                  @Override
-                  public Rows apply(RowToInsert rowToInsert) {
-                    allInsertIdsSet[0] &= rowToInsert.getId() != null;
-                    return new Rows()
-                        .setInsertId(rowToInsert.getId())
-                        .setJson(rowToInsert.getContent());
-                  }
-                })
-            .toList();
+    List<RowToInsert> rows = request.getRows();
+    List<Rows> rowsPb = new ArrayList<>(rows.size());
+    boolean allInsertIdsSet = true;
+    for (RowToInsert rowToInsert : rows) {
+      allInsertIdsSet &= rowToInsert.getId() != null;
+      rowsPb.add(new Rows().setInsertId(rowToInsert.getId()).setJson(rowToInsert.getContent()));
+    }
     requestPb.setRows(rowsPb);
 
     TableDataInsertAllResponse responsePb;
@@ -2084,7 +2073,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               .startSpan();
     }
     try (Scope insertAllScope = insertAll != null ? insertAll.makeCurrent() : null) {
-      if (allInsertIdsSet[0]) {
+      if (allInsertIdsSet) {
         // allowing retries only if all row insertIds are set (used for deduplication)
         try {
           responsePb =
@@ -2447,11 +2436,9 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
     }
 
     if (results.getErrors() != null) {
-      List<BigQueryError> bigQueryErrors =
-          Lists.transform(results.getErrors(), BigQueryError.FROM_PB_FUNCTION);
       // Throwing BigQueryException since there may be no JobId and we want to stay consistent
       // with the case where there is an HTTP error
-      throw new BigQueryException(bigQueryErrors);
+      throw new BigQueryException(fromErrorPbList(results.getErrors()));
     }
 
     long numRows;
@@ -2533,6 +2520,15 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
         .setCacheHit(results.getCacheHit());
   }
 
+  private static ImmutableList<BigQueryError> fromErrorPbList(List<ErrorProto> errorsPb) {
+    ImmutableList.Builder<BigQueryError> builder =
+        ImmutableList.builderWithExpectedSize(errorsPb.size());
+    for (ErrorProto errorProto : errorsPb) {
+      builder.add(errorProto != null ? BigQueryError.fromPb(errorProto) : null);
+    }
+    return builder.build();
+  }
+
   private static long getNumRows(com.google.api.services.bigquery.model.QueryResponse results) {
     if (results.getNumDmlAffectedRows() == null && results.getTotalRows() == null) {
       return 0L;
@@ -2591,9 +2587,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
     }
 
     if (results.getErrors() != null) {
-      List<BigQueryError> bigQueryErrors =
-          Lists.transform(results.getErrors(), BigQueryError.FROM_PB_FUNCTION);
-      throw new BigQueryException(bigQueryErrors);
+      throw new BigQueryException(fromErrorPbList(results.getErrors()));
     }
 
     // If the query is incomplete (took longer than the fast-path timeout), transition
@@ -2862,9 +2856,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
         }
 
         if (results.getErrors() != null && !results.getErrors().isEmpty()) {
-          List<BigQueryError> bigQueryErrors =
-              Lists.transform(results.getErrors(), BigQueryError.FROM_PB_FUNCTION);
-          throw new BigQueryException(bigQueryErrors);
+          throw new BigQueryException(fromErrorPbList(results.getErrors()));
         }
 
         JobId actualJobId =

@@ -19,14 +19,11 @@ package com.google.cloud.bigquery;
 import com.google.api.services.bigquery.model.ErrorProto;
 import com.google.api.services.bigquery.model.TableDataInsertAllResponse;
 import com.google.api.services.bigquery.model.TableDataInsertAllResponse.InsertErrors;
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -93,19 +90,17 @@ public class InsertAllResponse implements Serializable {
   TableDataInsertAllResponse toPb() {
     TableDataInsertAllResponse responsePb = new TableDataInsertAllResponse();
     if (!insertErrors.isEmpty()) {
-      responsePb.setInsertErrors(
-          ImmutableList.copyOf(
-              Iterables.transform(
-                  insertErrors.entrySet(),
-                  new Function<Map.Entry<Long, List<BigQueryError>>, InsertErrors>() {
-                    @Override
-                    public InsertErrors apply(Map.Entry<Long, List<BigQueryError>> entry) {
-                      return new InsertErrors()
-                          .setIndex(entry.getKey())
-                          .setErrors(
-                              Lists.transform(entry.getValue(), BigQueryError.TO_PB_FUNCTION));
-                    }
-                  })));
+      ImmutableList.Builder<InsertErrors> errorsBuilder =
+          ImmutableList.builderWithExpectedSize(insertErrors.size());
+      for (Map.Entry<Long, List<BigQueryError>> entry : insertErrors.entrySet()) {
+        List<BigQueryError> rowErrors = entry.getValue();
+        List<ErrorProto> errorsPb = new ArrayList<>(rowErrors.size());
+        for (BigQueryError error : rowErrors) {
+          errorsPb.add(error != null ? error.toPb() : null);
+        }
+        errorsBuilder.add(new InsertErrors().setIndex(entry.getKey()).setErrors(errorsPb));
+      }
+      responsePb.setInsertErrors(errorsBuilder.build());
     }
     return responsePb;
   }
@@ -114,14 +109,24 @@ public class InsertAllResponse implements Serializable {
     Map<Long, List<BigQueryError>> insertErrors = null;
     if (responsePb.getInsertErrors() != null) {
       List<InsertErrors> errorsPb = responsePb.getInsertErrors();
-      insertErrors = Maps.newHashMapWithExpectedSize(errorsPb.size());
+      ImmutableMap.Builder<Long, List<BigQueryError>> mapBuilder =
+          ImmutableMap.builderWithExpectedSize(errorsPb.size());
       for (InsertErrors errorPb : errorsPb) {
-        insertErrors.put(
-            errorPb.getIndex(),
-            Lists.transform(
-                errorPb.getErrors() != null ? errorPb.getErrors() : ImmutableList.<ErrorProto>of(),
-                BigQueryError.FROM_PB_FUNCTION));
+        List<ErrorProto> rowErrorsPb = errorPb.getErrors();
+        ImmutableList<BigQueryError> rowErrors;
+        if (rowErrorsPb != null && !rowErrorsPb.isEmpty()) {
+          ImmutableList.Builder<BigQueryError> rowErrorsBuilder =
+              ImmutableList.builderWithExpectedSize(rowErrorsPb.size());
+          for (ErrorProto errorProto : rowErrorsPb) {
+            rowErrorsBuilder.add(errorProto != null ? BigQueryError.fromPb(errorProto) : null);
+          }
+          rowErrors = rowErrorsBuilder.build();
+        } else {
+          rowErrors = ImmutableList.of();
+        }
+        mapBuilder.put(errorPb.getIndex(), rowErrors);
       }
+      insertErrors = mapBuilder.buildKeepingLast();
     }
     return new InsertAllResponse(insertErrors);
   }
