@@ -32,6 +32,7 @@ import com.google.cloud.bigquery.BigQueryRetryHelper.BigQueryRetryHelperExceptio
 import com.google.cloud.bigquery.JobStatistics.QueryStatistics;
 import com.google.cloud.bigquery.JobStatistics.SessionInfo;
 import com.google.cloud.bigquery.spi.v2.BigQueryRpc;
+import com.google.cloud.bigquery.spi.v2.HttpBigQueryRpc;
 import com.google.cloud.bigquery.storage.v1.ArrowRecordBatch;
 import com.google.cloud.bigquery.storage.v1.ArrowSchema;
 import com.google.cloud.bigquery.storage.v1.BigQueryReadClient;
@@ -57,6 +58,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -825,17 +827,32 @@ class ConnectionImpl implements Connection {
   /* Helper method that parse and populate a page with TableRows */
   private static Iterable<FieldValueList> getIterableFieldValueList(
       Iterable<TableRow> tableDataPb, final Schema schema) {
-    return ImmutableList.copyOf(
-        Iterables.transform(
-            tableDataPb != null ? tableDataPb : ImmutableList.of(),
-            new Function<TableRow, FieldValueList>() {
-              final FieldList fields = schema != null ? schema.getFields() : null;
-
-              @Override
-              public FieldValueList apply(TableRow rowPb) {
-                return FieldValueList.fromPb(rowPb.getF(), fields);
-              }
-            }));
+    if (tableDataPb == null) {
+      return ImmutableList.of();
+    }
+    List<FieldValueList> streamed =
+        HttpBigQueryRpc.extractFieldValueLists(tableDataPb, schema, false);
+    if (streamed != null) {
+      return streamed;
+    }
+    FieldList fields = schema != null ? schema.getFields() : null;
+    if (tableDataPb instanceof Collection) {
+      Collection<TableRow> rows = (Collection<TableRow>) tableDataPb;
+      if (rows.isEmpty()) {
+        return ImmutableList.of();
+      }
+      ImmutableList.Builder<FieldValueList> builder =
+          ImmutableList.builderWithExpectedSize(rows.size());
+      for (TableRow rowPb : rows) {
+        builder.add(FieldValueList.fromPb(rowPb.getF(), fields));
+      }
+      return builder.build();
+    }
+    ImmutableList.Builder<FieldValueList> builder = ImmutableList.builder();
+    for (TableRow rowPb : tableDataPb) {
+      builder.add(FieldValueList.fromPb(rowPb.getF(), fields));
+    }
+    return builder.build();
   }
 
   /* Helper method that determines the optimal number of caches pages to improve read performance */

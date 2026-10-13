@@ -73,6 +73,7 @@ import io.opentelemetry.context.Scope;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -2219,17 +2220,32 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
 
   private static Iterable<FieldValueList> transformTableData(
       Iterable<TableRow> tableDataPb, final Schema schema, boolean useInt64Timestamps) {
-    return ImmutableList.copyOf(
-        Iterables.transform(
-            tableDataPb != null ? tableDataPb : ImmutableList.<TableRow>of(),
-            new Function<TableRow, FieldValueList>() {
-              FieldList fields = schema != null ? schema.getFields() : null;
-
-              @Override
-              public FieldValueList apply(TableRow rowPb) {
-                return FieldValueList.fromPb(rowPb.getF(), fields, useInt64Timestamps);
-              }
-            }));
+    if (tableDataPb == null) {
+      return ImmutableList.of();
+    }
+    List<FieldValueList> streamed =
+        HttpBigQueryRpc.extractFieldValueLists(tableDataPb, schema, useInt64Timestamps);
+    if (streamed != null) {
+      return streamed;
+    }
+    FieldList fields = schema != null ? schema.getFields() : null;
+    if (tableDataPb instanceof Collection) {
+      Collection<TableRow> rows = (Collection<TableRow>) tableDataPb;
+      if (rows.isEmpty()) {
+        return ImmutableList.of();
+      }
+      ImmutableList.Builder<FieldValueList> builder =
+          ImmutableList.builderWithExpectedSize(rows.size());
+      for (TableRow rowPb : rows) {
+        builder.add(FieldValueList.fromPb(rowPb.getF(), fields, useInt64Timestamps));
+      }
+      return builder.build();
+    }
+    ImmutableList.Builder<FieldValueList> builder = ImmutableList.builder();
+    for (TableRow rowPb : tableDataPb) {
+      builder.add(FieldValueList.fromPb(rowPb.getF(), fields, useInt64Timestamps));
+    }
+    return builder.build();
   }
 
   @Override
