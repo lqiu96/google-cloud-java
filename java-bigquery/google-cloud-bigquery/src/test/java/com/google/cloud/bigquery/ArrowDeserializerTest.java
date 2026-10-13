@@ -729,11 +729,13 @@ public class ArrowDeserializerTest {
         FieldValue int64Val =
             ArrowDeserializer.arrowVectorToFieldValue(
                 int64Vector, 0, LegacySQLTypeName.INTEGER, Field.Mode.NULLABLE, null, "int64_col");
+        assertEquals(9876543210L, int64Val.getLongValue());
         assertEquals("9876543210", int64Val.getStringValue());
 
         FieldValue int32Val =
             ArrowDeserializer.arrowVectorToFieldValue(
                 int32Vector, 0, LegacySQLTypeName.INTEGER, Field.Mode.NULLABLE, null, "int32_col");
+        assertEquals(42L, int32Val.getLongValue());
         assertEquals("42", int32Val.getStringValue());
 
         FieldValue strVal =
@@ -744,11 +746,13 @@ public class ArrowDeserializerTest {
         FieldValue boolVal =
             ArrowDeserializer.arrowVectorToFieldValue(
                 boolVector, 0, LegacySQLTypeName.BOOLEAN, Field.Mode.NULLABLE, null, "bool_col");
+        assertTrue(boolVal.getBooleanValue());
         assertEquals("true", boolVal.getStringValue());
 
         FieldValue floatVal =
             ArrowDeserializer.arrowVectorToFieldValue(
                 floatVector, 0, LegacySQLTypeName.FLOAT, Field.Mode.NULLABLE, null, "float_col");
+        assertEquals(3.14159, floatVal.getDoubleValue(), 0.0);
         assertEquals("3.14159", floatVal.getStringValue());
 
         FieldValue dateVal =
@@ -764,11 +768,14 @@ public class ArrowDeserializerTest {
         FieldValue tsVal =
             ArrowDeserializer.arrowVectorToFieldValue(
                 tsVector, 0, LegacySQLTypeName.TIMESTAMP, Field.Mode.NULLABLE, null, "ts_col");
+        assertEquals(1408452095220000L, tsVal.getTimestampValue());
         assertEquals("1408452095.220000", tsVal.getStringValue());
 
         FieldValue bytesVal =
             ArrowDeserializer.arrowVectorToFieldValue(
                 bytesVector, 0, LegacySQLTypeName.BYTES, Field.Mode.NULLABLE, null, "bytes_col");
+        org.junit.jupiter.api.Assertions.assertArrayEquals(
+            "raw_data".getBytes(StandardCharsets.UTF_8), bytesVal.getBytesValue());
         assertEquals(
             BaseEncoding.base64().encode("raw_data".getBytes(StandardCharsets.UTF_8)),
             bytesVal.getStringValue());
@@ -776,6 +783,7 @@ public class ArrowDeserializerTest {
         FieldValue decVal =
             ArrowDeserializer.arrowVectorToFieldValue(
                 decVector, 0, LegacySQLTypeName.NUMERIC, Field.Mode.NULLABLE, null, "num_col");
+        assertEquals(new BigDecimal("123.456000000"), decVal.getNumericValue());
         assertEquals("123.456000000", decVal.getStringValue());
       }
     }

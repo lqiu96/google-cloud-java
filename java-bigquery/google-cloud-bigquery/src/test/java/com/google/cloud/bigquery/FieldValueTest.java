@@ -234,4 +234,41 @@ public class FieldValueTest {
       System.out.println(FieldValue.parseCanonicalInterval(entry.getKey()));
     }
   }
+
+  @Test
+  public void testTypedFieldValuesAndLazyStringMaterialization() {
+    FieldValue longVal = FieldValue.ofLong(9876543210L);
+    assertFalse(longVal.isNull());
+    assertEquals(9876543210L, longVal.getLongValue());
+    assertEquals(9876543210.0, longVal.getDoubleValue(), 0.0);
+    assertEquals("9876543210", longVal.getStringValue());
+    assertEquals(FieldValue.of(FieldValue.Attribute.PRIMITIVE, "9876543210"), longVal);
+    assertEquals(
+        FieldValue.of(FieldValue.Attribute.PRIMITIVE, "9876543210").hashCode(), longVal.hashCode());
+
+    FieldValue doubleVal = FieldValue.ofDouble(3.14159);
+    assertFalse(doubleVal.isNull());
+    assertEquals(3.14159, doubleVal.getDoubleValue(), 0.0);
+    assertEquals("3.14159", doubleVal.getStringValue());
+    assertEquals(FieldValue.of(FieldValue.Attribute.PRIMITIVE, "3.14159"), doubleVal);
+
+    FieldValue tsVal = FieldValue.ofTimestampMicros(1408452095220000L);
+    assertFalse(tsVal.isNull());
+    assertEquals(1408452095220000L, tsVal.getTimestampValue());
+    assertEquals("1408452095.220000", tsVal.getStringValue());
+    assertEquals(FieldValue.of(FieldValue.Attribute.PRIMITIVE, "1408452095.220000"), tsVal);
+
+    BigDecimal decimal = new BigDecimal("123456789.123456789");
+    FieldValue numVal = FieldValue.ofNumeric(decimal);
+    assertFalse(numVal.isNull());
+    assertEquals(decimal, numVal.getNumericValue());
+    assertEquals("123456789.123456789", numVal.getStringValue());
+    assertEquals(FieldValue.of(FieldValue.Attribute.PRIMITIVE, "123456789.123456789"), numVal);
+
+    FieldValue bytesVal = FieldValue.ofBytes(BYTES);
+    assertFalse(bytesVal.isNull());
+    assertArrayEquals(BYTES, bytesVal.getBytesValue());
+    assertEquals(BYTES_BASE64, bytesVal.getStringValue());
+    assertEquals(FieldValue.of(FieldValue.Attribute.PRIMITIVE, BYTES_BASE64), bytesVal);
+  }
 }
