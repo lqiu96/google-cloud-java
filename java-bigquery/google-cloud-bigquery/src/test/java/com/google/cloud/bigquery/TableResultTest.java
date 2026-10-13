@@ -18,6 +18,7 @@ package com.google.cloud.bigquery;
 
 import static com.google.cloud.bigquery.FieldValue.Attribute.PRIMITIVE;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.api.gax.paging.Page;
 import com.google.cloud.PageImpl;
@@ -25,6 +26,10 @@ import com.google.cloud.bigquery.JobStatistics.QueryStatistics;
 import com.google.cloud.bigquery.JobStatistics.QueryStatistics.StatementType;
 import com.google.cloud.bigquery.JobStatistics.SessionInfo;
 import com.google.common.collect.ImmutableList;
+import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 class TableResultTest {
@@ -259,5 +264,113 @@ class TableResultTest {
     assertThat(result1.toString()).contains("totalBytesBilled=100");
     assertThat(result1.toString()).contains("cacheHit=true");
     assertThat(result1.toString()).contains("sessionId=" + SESSION_ID_1);
+  }
+
+  @Test
+  void testIterateAllPrefetchesNextPageAsynchronously() throws InterruptedException {
+    final CountDownLatch prefetchStarted = new CountDownLatch(1);
+    final CountDownLatch allowPage1Return = new CountDownLatch(1);
+    final Page<FieldValueList> page1 =
+        new PageImpl<>(null, null, ImmutableList.of(newFieldValueList("2")));
+    Page<FieldValueList> page0 =
+        new PageImpl<>(
+            new PageImpl.NextPageFetcher<FieldValueList>() {
+              @Override
+              public Page<FieldValueList> getNextPage() {
+                prefetchStarted.countDown();
+                try {
+                  allowPage1Return.await(5, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                }
+                return page1;
+              }
+            },
+            "cursor-1",
+            ImmutableList.of(newFieldValueList("0"), newFieldValueList("1")));
+
+    TableResult result =
+        TableResult.newBuilder()
+            .setSchema(SCHEMA)
+            .setTotalRows(3L)
+            .setPageNoSchema(page0)
+            .setRowsInPage(2L)
+            .build();
+
+    Iterator<FieldValueList> iterator = result.iterateAll().iterator();
+    assertThat(iterator.next()).isEqualTo(newFieldValueList("0").withSchema(SCHEMA.getFields()));
+    // While still on page 0, page 1 prefetch should already have started in the background.
+    assertThat(prefetchStarted.await(5, TimeUnit.SECONDS)).isTrue();
+    allowPage1Return.countDown();
+    assertThat(iterator.next()).isEqualTo(newFieldValueList("1").withSchema(SCHEMA.getFields()));
+    assertThat(iterator.next()).isEqualTo(newFieldValueList("2").withSchema(SCHEMA.getFields()));
+    assertThat(iterator.hasNext()).isFalse();
+  }
+
+  @Test
+  void testIterateAllBoundsLookaheadToOnePage() throws InterruptedException {
+    final AtomicInteger fetchedPages = new AtomicInteger(0);
+    final CountDownLatch page1Fetched = new CountDownLatch(1);
+    final Page<FieldValueList> page2 =
+        new PageImpl<>(null, null, ImmutableList.of(newFieldValueList("2")));
+    final Page<FieldValueList> page1 =
+        new PageImpl<>(
+            new PageImpl.NextPageFetcher<FieldValueList>() {
+              @Override
+              public Page<FieldValueList> getNextPage() {
+                fetchedPages.incrementAndGet();
+                return page2;
+              }
+            },
+            "cursor-2",
+            ImmutableList.of(newFieldValueList("1")));
+    Page<FieldValueList> page0 =
+        new PageImpl<>(
+            new PageImpl.NextPageFetcher<FieldValueList>() {
+              @Override
+              public Page<FieldValueList> getNextPage() {
+                fetchedPages.incrementAndGet();
+                page1Fetched.countDown();
+                return page1;
+              }
+            },
+            "cursor-1",
+            ImmutableList.of(newFieldValueList("0")));
+
+    TableResult result =
+        TableResult.newBuilder().setTotalRows(3L).setPageNoSchema(page0).setRowsInPage(1L).build();
+
+    Iterator<FieldValueList> iterator = result.iterateAll().iterator();
+    assertThat(iterator.next()).isEqualTo(newFieldValueList("0"));
+    assertThat(page1Fetched.await(5, TimeUnit.SECONDS)).isTrue();
+    // Only page 1 should be prefetched while consuming page 0. Page 2 must not be fetched yet.
+    assertThat(fetchedPages.get()).isEqualTo(1);
+    assertThat(iterator.next()).isEqualTo(newFieldValueList("1"));
+    assertThat(iterator.next()).isEqualTo(newFieldValueList("2"));
+    assertThat(iterator.hasNext()).isFalse();
+    assertThat(fetchedPages.get()).isEqualTo(2);
+  }
+
+  @Test
+  void testIterateAllPropagatesExceptionAtPageBoundary() {
+    Page<FieldValueList> page0 =
+        new PageImpl<>(
+            new PageImpl.NextPageFetcher<FieldValueList>() {
+              @Override
+              public Page<FieldValueList> getNextPage() {
+                throw new BigQueryException(500, "Failed to fetch page 1");
+              }
+            },
+            "cursor-1",
+            ImmutableList.of(newFieldValueList("0")));
+
+    TableResult result =
+        TableResult.newBuilder().setTotalRows(2L).setPageNoSchema(page0).setRowsInPage(1L).build();
+
+    Iterator<FieldValueList> iterator = result.iterateAll().iterator();
+    assertThat(iterator.hasNext()).isTrue();
+    assertThat(iterator.next()).isEqualTo(newFieldValueList("0"));
+    BigQueryException thrown = assertThrows(BigQueryException.class, iterator::hasNext);
+    assertThat(thrown).hasMessageThat().contains("Failed to fetch page 1");
   }
 }
