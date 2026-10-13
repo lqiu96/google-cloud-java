@@ -655,6 +655,9 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
           .retryOnRegEx(BigQueryErrorMessages.RetryRegExPatterns.RATE_LIMIT_EXCEEDED_REGEX)
           .build(); // retry config with Error Messages and RegEx for RateLimitExceeded Error
 
+  private static final Pattern ALREADY_EXISTS_JOB_PATTERN =
+      Pattern.compile(".*Already.*Exists:.*Job.*", Pattern.CASE_INSENSITIVE);
+
   BigQueryImpl(BigQueryOptions options) {
     super(options);
     bigQueryRpc = options.getBigQueryRpcV2();
@@ -980,8 +983,8 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
             && createException.getCause() != null
             && createException.getCause().getMessage() != null) {
 
-          Pattern pattern = Pattern.compile(".*Already.*Exists:.*Job.*", Pattern.CASE_INSENSITIVE);
-          Matcher matcher = pattern.matcher(createException.getCause().getMessage());
+          Matcher matcher =
+              ALREADY_EXISTS_JOB_PATTERN.matcher(createException.getCause().getMessage());
 
           if (matcher.find()) {
             // If the Job ALREADY EXISTS, retrieve it.

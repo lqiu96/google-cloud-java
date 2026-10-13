@@ -17,15 +17,32 @@ package com.google.cloud.bigquery;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class BigQueryRetryConfig {
   private final ImmutableSet<String> retriableErrorMessages;
   private final ImmutableSet<String> retriableRegExes;
+  private final ImmutableList<String> lowerCaseRetriableErrorMessages;
+  private final ImmutableList<Pattern> compiledRetriableRegExes;
 
   private BigQueryRetryConfig(Builder builder) {
     retriableErrorMessages = builder.retriableErrorMessages.build();
     retriableRegExes = builder.retriableRegExes.build();
+    ImmutableList.Builder<String> lowerMessagesBuilder =
+        ImmutableList.builderWithExpectedSize(retriableErrorMessages.size());
+    for (String errorMessage : retriableErrorMessages) {
+      lowerMessagesBuilder.add(errorMessage.toLowerCase(Locale.ROOT));
+    }
+    lowerCaseRetriableErrorMessages = lowerMessagesBuilder.build();
+    ImmutableList.Builder<Pattern> patternsBuilder =
+        ImmutableList.builderWithExpectedSize(retriableRegExes.size());
+    for (String regExPattern : retriableRegExes) {
+      patternsBuilder.add(Pattern.compile(regExPattern, Pattern.CASE_INSENSITIVE));
+    }
+    compiledRetriableRegExes = patternsBuilder.build();
   }
 
   public ImmutableSet<String> getRetriableErrorMessages() {
@@ -34,6 +51,14 @@ public class BigQueryRetryConfig {
 
   public ImmutableSet<String> getRetriableRegExes() {
     return retriableRegExes;
+  }
+
+  ImmutableList<String> getLowerCaseRetriableErrorMessages() {
+    return lowerCaseRetriableErrorMessages;
+  }
+
+  ImmutableList<Pattern> getCompiledRetriableRegExes() {
+    return compiledRetriableRegExes;
   }
 
   // BigQueryRetryConfig builder
