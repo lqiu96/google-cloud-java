@@ -23,7 +23,6 @@ import com.google.cloud.bigquery.storage.v1.ReadRowsResponse;
 import com.google.cloud.bigquery.storage.v1.ReadSession;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
-import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.Collections;
 import java.util.Iterator;
@@ -526,7 +525,7 @@ class ArrowQueryResultImpl implements ArrowQueryResult {
      * @throws IOException if deserialization fails
      */
     private void loadBatch(ByteString byteString) throws IOException {
-      loadBatch(Channels.newChannel(byteString.newInput()));
+      loadBatch(ArrowDeserializer.newByteStringChannel(byteString));
     }
 
     /**

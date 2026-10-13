@@ -899,4 +899,42 @@ public class ArrowDeserializerTest {
       }
     }
   }
+
+  @Test
+  public void testNewByteStringChannelReadsIncrementalSlicesAndCloses() throws IOException {
+    byte[] source = "0123456789abcdef".getBytes(StandardCharsets.UTF_8);
+    ByteString byteString = ByteString.copyFrom(source);
+    java.nio.channels.ReadableByteChannel channel =
+        ArrowDeserializer.newByteStringChannel(byteString);
+    assertTrue(channel.isOpen());
+
+    java.nio.ByteBuffer dst = java.nio.ByteBuffer.allocate(6);
+    assertEquals(6, channel.read(dst));
+    dst.flip();
+    byte[] chunk1 = new byte[6];
+    dst.get(chunk1);
+    assertEquals("012345", new String(chunk1, StandardCharsets.UTF_8));
+
+    dst.clear();
+    assertEquals(6, channel.read(dst));
+    dst.flip();
+    byte[] chunk2 = new byte[6];
+    dst.get(chunk2);
+    assertEquals("6789ab", new String(chunk2, StandardCharsets.UTF_8));
+
+    dst.clear();
+    assertEquals(4, channel.read(dst));
+    dst.flip();
+    byte[] chunk3 = new byte[4];
+    dst.get(chunk3);
+    assertEquals("cdef", new String(chunk3, StandardCharsets.UTF_8));
+
+    dst.clear();
+    assertEquals(-1, channel.read(dst));
+
+    channel.close();
+    assertFalse(channel.isOpen());
+    assertThrows(
+        java.nio.channels.ClosedChannelException.class, () -> channel.read(java.nio.ByteBuffer.allocate(4)));
+  }
 }
