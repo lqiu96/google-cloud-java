@@ -223,6 +223,27 @@ public class QueryRequestInfoTest {
     assertTrue(requestLosslessTsPb.getFormatOptions().getUseInt64Timestamp());
   }
 
+  @Test
+  public void testDefaultJobCreationModeAndParameters() {
+    QueryJobConfiguration unparameterizedConfig = QueryJobConfiguration.of(QUERY);
+    QueryRequestInfo infoWithDefault =
+        new QueryRequestInfo(
+            unparameterizedConfig,
+            DataFormatOptions.newBuilder().build(),
+            JobCreationMode.JOB_CREATION_OPTIONAL);
+    QueryRequest requestPb = infoWithDefault.toPb();
+    assertEquals("JOB_CREATION_OPTIONAL", requestPb.getJobCreationMode());
+    assertEquals(null, requestPb.getQueryParameters());
+
+    QueryJobConfiguration namedParamConfig =
+        QueryJobConfiguration.newBuilder(QUERY).setNamedParameters(NAME_PARAMETER).build();
+    QueryRequestInfo namedInfo =
+        new QueryRequestInfo(namedParamConfig, DataFormatOptions.newBuilder().build());
+    assertEquals(
+        namedParamConfig.toPb().getQuery().getQueryParameters(),
+        namedInfo.toPb().getQueryParameters());
+  }
+
   /*
   Ref: https://github.com/googleapis/java-bigquery/issues/2083
   Refactoring to remove the assert4j dependency which was causing RequireUpperBoundDeps Error
