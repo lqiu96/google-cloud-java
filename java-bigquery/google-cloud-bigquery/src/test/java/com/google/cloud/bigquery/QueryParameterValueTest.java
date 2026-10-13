@@ -535,6 +535,13 @@ public class QueryParameterValueTest {
     assertThat(recordField.getType()).isEqualTo(StandardSQLTypeName.STRUCT);
     assertThat(recordField.getStructTypes()).isNotNull();
     assertThat(recordField.getStructValues()).isNotNull();
+    assertThat(recordField.getStructTypes()).isSameInstanceAs(recordField.getStructValues());
+    assertThat(queryParameterValue.getStructTypes())
+        .isSameInstanceAs(queryParameterValue.getStructValues());
+
+    QueryParameterValue nullStructValue = QueryParameterValue.fromPb(null, parameterType);
+    assertThat(nullStructValue.getType()).isEqualTo(StandardSQLTypeName.STRUCT);
+    assertThat(nullStructValue.getStructValues()).isEmpty();
   }
 
   @Test
