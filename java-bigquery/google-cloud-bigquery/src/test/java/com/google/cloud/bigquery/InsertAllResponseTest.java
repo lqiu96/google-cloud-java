@@ -19,6 +19,7 @@ package com.google.cloud.bigquery;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableList;
@@ -63,8 +64,9 @@ public class InsertAllResponseTest {
 
   @Test
   public void testToPbAndFromPb() {
-    compareInsertAllResponse(
-        INSERT_ALL_RESPONSE, InsertAllResponse.fromPb(INSERT_ALL_RESPONSE.toPb()));
+    InsertAllResponse fromPb = InsertAllResponse.fromPb(INSERT_ALL_RESPONSE.toPb());
+    compareInsertAllResponse(INSERT_ALL_RESPONSE, fromPb);
+    assertSame(fromPb.getErrorsFor(0L).get(0), fromPb.getErrorsFor(0L).get(0));
     compareInsertAllResponse(
         EMPTY_INSERT_ALL_RESPONSE, InsertAllResponse.fromPb(EMPTY_INSERT_ALL_RESPONSE.toPb()));
   }

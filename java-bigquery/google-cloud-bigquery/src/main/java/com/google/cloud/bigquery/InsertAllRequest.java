@@ -173,7 +173,7 @@ public final class InsertAllRequest implements Serializable {
 
     /** Sets the rows to insert as a list of {@link RowToInsert} objects. */
     public Builder setRows(Iterable<RowToInsert> rows) {
-      this.rows = Lists.newLinkedList(checkNotNull(rows));
+      this.rows = Lists.newArrayList(checkNotNull(rows));
       return this;
     }
 
