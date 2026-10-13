@@ -28,7 +28,7 @@ import com.google.api.gax.retrying.TimedRetryAlgorithmWithContext;
 import com.google.api.services.bigquery.model.ErrorProto;
 import com.google.api.services.bigquery.model.Job;
 import java.time.Duration;
-import java.util.Iterator;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CancellationException;
 import java.util.logging.Level;
@@ -70,13 +70,14 @@ public class BigQueryRetryAlgorithm<ResponseT> extends RetryAlgorithm<ResponseT>
         nextAttemptSettings == null ? Duration.ZERO : nextAttemptSettings.getRetryDelayDuration();
     String errorMessage = previousThrowable != null ? previousThrowable.getMessage() : "";
 
-    // Implementing shouldRetryBasedOnBigQueryRetryConfig so that we can retry exceptions based on
-    // the exception messages
+    // Short-circuit when createNextAttempt returned null or timing disallows retry so
+    // shouldRetryBasedOnResult and shouldRetryBasedOnBigQueryRetryConfig are not evaluated twice
     boolean shouldRetry =
-        (shouldRetryBasedOnResult(context, previousThrowable, previousResponse)
+        nextAttemptSettings != null
+            && shouldRetryBasedOnTiming(context, nextAttemptSettings)
+            && (shouldRetryBasedOnResult(context, previousThrowable, previousResponse)
                 || shouldRetryBasedOnBigQueryRetryConfig(
-                    previousThrowable, bigQueryRetryConfig, previousResponse))
-            && shouldRetryBasedOnTiming(context, nextAttemptSettings);
+                    previousThrowable, bigQueryRetryConfig, previousResponse));
 
     if (LOG.isLoggable(Level.FINEST)) {
       LOG.log(
@@ -116,23 +117,15 @@ public class BigQueryRetryAlgorithm<ResponseT> extends RetryAlgorithm<ResponseT>
     }
 
     if (errorDesc != null) {
-      errorDesc = errorDesc.toLowerCase(); // for case insensitive comparison
-      for (Iterator<String> retriableMessages =
-              bigQueryRetryConfig.getRetriableErrorMessages().iterator();
-          retriableMessages.hasNext(); ) {
-        if (errorDesc.contains(
-            retriableMessages
-                .next()
-                .toLowerCase())) { // Error message should be retried, implementing cases
-          // insensitive match
+      String lowerErrorDesc = errorDesc.toLowerCase(Locale.ROOT);
+      for (String retriableMessage : bigQueryRetryConfig.getLowerCaseRetriableErrorMessages()) {
+        if (lowerErrorDesc.contains(retriableMessage)) {
           return true;
         }
       }
-      // Check if there's a regex which matches the error message. This avoids too many regex
-      // matches which is expensive
-      for (Iterator<String> retriableRegExes = bigQueryRetryConfig.getRetriableRegExes().iterator();
-          retriableRegExes.hasNext(); ) {
-        if (matchRegEx(retriableRegExes.next(), errorDesc)) {
+      // Check if there's a pre-compiled regex which matches the error message.
+      for (Pattern retriablePattern : bigQueryRetryConfig.getCompiledRetriableRegExes()) {
+        if (retriablePattern.matcher(errorDesc).matches()) {
           return true;
         }
       }
@@ -142,7 +135,7 @@ public class BigQueryRetryAlgorithm<ResponseT> extends RetryAlgorithm<ResponseT>
 
   public static boolean matchRegEx(
       String retriableRegEx, String errorDesc) { // cases insensitive match regex matching
-    return Pattern.matches(retriableRegEx.toLowerCase(), errorDesc.toLowerCase());
+    return Pattern.compile(retriableRegEx, Pattern.CASE_INSENSITIVE).matcher(errorDesc).matches();
   }
 
   /*Duplicating this method as it can not be inherited from the RetryAlgorithm due to the default access modifier*/
