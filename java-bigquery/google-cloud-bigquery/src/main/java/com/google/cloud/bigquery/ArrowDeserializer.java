@@ -18,7 +18,6 @@ package com.google.cloud.bigquery;
 
 import com.google.cloud.bigquery.storage.v1.ReadRowsResponse;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.BaseEncoding;
 import java.io.IOException;
@@ -42,6 +41,7 @@ import org.apache.arrow.vector.Float8Vector;
 import org.apache.arrow.vector.IntVector;
 import org.apache.arrow.vector.TimeMicroVector;
 import org.apache.arrow.vector.TimeStampVector;
+import org.apache.arrow.vector.VarBinaryVector;
 import org.apache.arrow.vector.VarCharVector;
 import org.apache.arrow.vector.VectorLoader;
 import org.apache.arrow.vector.VectorSchemaRoot;
@@ -51,6 +51,7 @@ import org.apache.arrow.vector.ipc.ReadChannel;
 import org.apache.arrow.vector.ipc.message.ArrowRecordBatch;
 import org.apache.arrow.vector.ipc.message.MessageSerializer;
 import org.apache.arrow.vector.util.ByteArrayReadableSeekableByteChannel;
+import org.apache.arrow.vector.util.ReusableByteArray;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -155,6 +156,9 @@ final class ArrowDeserializer {
     try (BufferAllocator childAllocator = createChildAllocator("loadArrowRows");
         VectorSchemaRoot root = VectorSchemaRoot.create(arrowSchema, childAllocator)) {
       VectorLoader loader = new VectorLoader(root);
+      List<FieldVector> vectors = root.getFieldVectors();
+      FieldList fields = schema.getFields();
+      ReusableByteArray reusableBytes = new ReusableByteArray();
       while (rowBatch.size() < pageSize
           && iterator.hasNext()
           && (totalRowsReturned + rowBatch.size() < maxResults)) {
@@ -179,9 +183,9 @@ final class ArrowDeserializer {
             for (int i = 0; i < batchRowCount; i++) {
               if (rowBatch.size() < pageSize
                   && (totalRowsReturned + rowBatch.size() < maxResults)) {
-                rowBatch.add(arrowRootToFieldValueList(root, i, schema));
+                rowBatch.add(arrowRootToFieldValueList(vectors, i, fields, reusableBytes));
               } else if (totalRowsReturned + rowBatch.size() + buffer.size() < maxResults) {
-                buffer.add(arrowRootToFieldValueList(root, i, schema));
+                buffer.add(arrowRootToFieldValueList(vectors, i, fields, reusableBytes));
               } else {
                 break;
               }
@@ -232,9 +236,12 @@ final class ArrowDeserializer {
       VectorLoader loader = new VectorLoader(root);
       loader.load(deserializedBatch);
       int rowCount = root.getRowCount();
+      List<FieldVector> vectors = root.getFieldVectors();
+      FieldList fields = schema.getFields();
+      ReusableByteArray reusableBytes = new ReusableByteArray();
       List<FieldValueList> rows = new ArrayList<>(rowCount);
       for (int i = 0; i < rowCount; i++) {
-        rows.add(arrowRootToFieldValueList(root, i, schema));
+        rows.add(arrowRootToFieldValueList(vectors, i, fields, reusableBytes));
       }
       return ImmutableList.copyOf(rows);
     }
@@ -252,16 +259,26 @@ final class ArrowDeserializer {
    */
   static FieldValueList arrowRootToFieldValueList(
       VectorSchemaRoot root, int rowIndex, Schema schema) {
-    if (root.getFieldVectors().size() != schema.getFields().size()) {
+    return arrowRootToFieldValueList(
+        root.getFieldVectors(), rowIndex, schema.getFields(), new ReusableByteArray());
+  }
+
+  private static FieldValueList arrowRootToFieldValueList(
+      List<FieldVector> vectors,
+      int rowIndex,
+      FieldList fields,
+      ReusableByteArray reusableBytes) {
+    int numCols = vectors.size();
+    if (numCols != fields.size()) {
       throw new IllegalArgumentException(
           String.format(
               "Schema mismatch: Arrow vector count (%d) does not match BigQuery schema field count (%d)",
-              root.getFieldVectors().size(), schema.getFields().size()));
+              numCols, fields.size()));
     }
-    List<FieldValue> fieldValues = new ArrayList<>();
-    for (int colIndex = 0; colIndex < root.getFieldVectors().size(); colIndex++) {
-      FieldVector vector = root.getVector(colIndex);
-      Field bqField = schema.getFields().get(colIndex);
+    List<FieldValue> fieldValues = new ArrayList<>(numCols);
+    for (int colIndex = 0; colIndex < numCols; colIndex++) {
+      FieldVector vector = vectors.get(colIndex);
+      Field bqField = fields.get(colIndex);
       fieldValues.add(
           arrowVectorToFieldValue(
               vector,
@@ -269,9 +286,10 @@ final class ArrowDeserializer {
               bqField.getType(),
               bqField.getMode(),
               bqField.getSubFields(),
-              bqField.getName()));
+              bqField.getName(),
+              reusableBytes));
     }
-    return FieldValueList.of(fieldValues, schema.getFields());
+    return FieldValueList.of(fieldValues, fields);
   }
 
   /**
@@ -296,6 +314,18 @@ final class ArrowDeserializer {
       Field.Mode mode,
       @Nullable FieldList subFields,
       String name) {
+    return arrowVectorToFieldValue(
+        vector, rowIndex, type, mode, subFields, name, new ReusableByteArray());
+  }
+
+  private static FieldValue arrowVectorToFieldValue(
+      FieldVector vector,
+      int rowIndex,
+      LegacySQLTypeName type,
+      Field.Mode mode,
+      @Nullable FieldList subFields,
+      String name,
+      ReusableByteArray reusableBytes) {
     if (mode == Field.Mode.REPEATED) {
       if (vector.isNull(rowIndex)) {
         return FieldValue.of(
@@ -321,7 +351,8 @@ final class ArrowDeserializer {
       List<FieldValue> elements = new ArrayList<>(end - start);
       for (int k = start; k < end; k++) {
         elements.add(
-            arrowVectorToFieldValue(dataVector, k, type, Field.Mode.NULLABLE, subFields, name));
+            arrowVectorToFieldValue(
+                dataVector, k, type, Field.Mode.NULLABLE, subFields, name, reusableBytes));
       }
       return FieldValue.of(FieldValue.Attribute.REPEATED, FieldValueList.of(elements, subFields));
     }
@@ -349,7 +380,8 @@ final class ArrowDeserializer {
                 childBqField.getType(),
                 childBqField.getMode(),
                 childBqField.getSubFields(),
-                childBqField.getName()));
+                childBqField.getName(),
+                reusableBytes));
       }
       return FieldValue.of(FieldValue.Attribute.RECORD, FieldValueList.of(elements, subFields));
     }
@@ -375,7 +407,20 @@ final class ArrowDeserializer {
         stringVal = String.valueOf(vector.getObject(rowIndex));
       }
     } else if (vector instanceof VarCharVector) {
-      stringVal = new String(((VarCharVector) vector).get(rowIndex), StandardCharsets.UTF_8);
+      // Read into the batch-scoped ReusableByteArray to avoid allocating an intermediate
+      // byte[length] per cell before decoding UTF-8 into String.
+      ((VarCharVector) vector).read(rowIndex, reusableBytes);
+      stringVal =
+          new String(
+              reusableBytes.getBuffer(),
+              0,
+              (int) reusableBytes.getLength(),
+              StandardCharsets.UTF_8);
+    } else if (vector instanceof VarBinaryVector) {
+      ((VarBinaryVector) vector).read(rowIndex, reusableBytes);
+      stringVal =
+          BaseEncoding.base64()
+              .encode(reusableBytes.getBuffer(), 0, (int) reusableBytes.getLength());
     } else if (vector instanceof IntVector) {
       stringVal = Integer.toString(((IntVector) vector).get(rowIndex));
     } else if (vector instanceof BigIntVector) {
@@ -405,8 +450,8 @@ final class ArrowDeserializer {
    *
    * <p>This matches the decimal timestamp format returned by the BigQuery REST API and expected by
    * {@link FieldValue#getTimestampValue()}, which parses the string into a {@link
-   * java.math.BigDecimal}. Uses {@link Strings#padStart} to avoid the performance overhead of
-   * {@link String#format} during row deserialization.
+   * java.math.BigDecimal}. Writes directly into a pre-sized {@link StringBuilder} to avoid
+   * intermediate string allocations during row deserialization.
    *
    * @param micros the timestamp value in microseconds since Unix epoch
    * @return the formatted timestamp string
@@ -414,11 +459,19 @@ final class ArrowDeserializer {
   @VisibleForTesting
   static String formatTimestampMicros(long micros) {
     long seconds = micros / 1_000_000L;
-    long remainingMicros = Math.abs(micros % 1_000_000L);
-    String fraction = Strings.padStart(Long.toString(remainingMicros), 6, '0');
+    int remainingMicros = (int) Math.abs(micros % 1_000_000L);
+    StringBuilder sb = new StringBuilder(24);
     if (micros < 0 && seconds == 0) {
-      return "-0." + fraction;
+      sb.append("-0.");
+    } else {
+      sb.append(seconds).append('.');
     }
-    return seconds + "." + fraction;
+    sb.append((char) ('0' + (remainingMicros / 100_000)));
+    sb.append((char) ('0' + ((remainingMicros / 10_000) % 10)));
+    sb.append((char) ('0' + ((remainingMicros / 1_000) % 10)));
+    sb.append((char) ('0' + ((remainingMicros / 100) % 10)));
+    sb.append((char) ('0' + ((remainingMicros / 10) % 10)));
+    sb.append((char) ('0' + (remainingMicros % 10)));
+    return sb.toString();
   }
 }
