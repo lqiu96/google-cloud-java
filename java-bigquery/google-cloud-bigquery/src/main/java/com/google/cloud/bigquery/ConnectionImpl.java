@@ -1081,6 +1081,11 @@ class ConnectionImpl implements Connection {
               throw BigQueryException.translateAndThrow(e);
             }
           } finally { // logic needed for graceful shutdown
+            try {
+              reader.close();
+            } catch (RuntimeException e) {
+              logger.log(Level.WARNING, "\n Error while closing ArrowRowReader ", e);
+            }
             // marking end of stream
             try {
               buffer.put(
@@ -1100,7 +1105,8 @@ class ConnectionImpl implements Connection {
     queryTaskExecutor.execute(arrowStreamProcessor);
   }
 
-  private class ArrowRowReader
+  @VisibleForTesting
+  class ArrowRowReader
       implements AutoCloseable { // TODO: Update to recent version of Arrow to avoid memoryleak
 
     BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
@@ -1108,8 +1114,11 @@ class ConnectionImpl implements Connection {
     // Decoder object will be reused to avoid re-allocation and too much garbage collection.
     private final VectorSchemaRoot root;
     private final VectorLoader loader;
+    private final Map<String, Integer> arrowNameToIndex;
+    private FieldVector[] orderedVectors;
 
-    private ArrowRowReader(ArrowSchema arrowSchema, Map<String, Integer> arrowNameToIndex)
+    @VisibleForTesting
+    ArrowRowReader(ArrowSchema arrowSchema, Map<String, Integer> arrowNameToIndex)
         throws IOException {
       org.apache.arrow.vector.types.pojo.Schema schema =
           MessageSerializer.deserializeSchema(
@@ -1124,6 +1133,7 @@ class ConnectionImpl implements Connection {
             fields.get(i).getName(),
             i); // mapping for getting against the field name in the result set
       }
+      this.arrowNameToIndex = arrowNameToIndex;
       root = new VectorSchemaRoot(vectors);
       loader = new VectorLoader(root);
     }
@@ -1131,7 +1141,8 @@ class ConnectionImpl implements Connection {
     /**
      * @param batch object returned from the ReadRowsResponse.
      */
-    private void processRows(
+    @VisibleForTesting
+    void processRows(
         ArrowRecordBatch batch, BlockingQueue<BigQueryResultImpl.Row> buffer, Schema schema)
         throws IOException { // deserialize the values and consume the hash of the values
       try {
@@ -1146,12 +1157,22 @@ class ConnectionImpl implements Connection {
         // Release buffers from batch (they are still held in the vectors in root).
         deserializedBatch.close();
 
-        // Parse the vectors using BQ Schema. Deserialize the data at the row level and add it to
-        // the
-        // buffer
+        // Resolve vectors in BigQuery schema field order once so the inner loop indexes
+        // into an ordinal array instead of linearly scanning VectorSchemaRoot per cell.
         FieldList fields = schema.getFields();
+        int numCols = fields.size();
+        if (orderedVectors == null || orderedVectors.length != numCols) {
+          orderedVectors = new FieldVector[numCols];
+          for (int col = 0; col < numCols; col++) {
+            String fieldName = fields.get(col).getName();
+            Integer vecIdx = arrowNameToIndex.get(fieldName);
+            orderedVectors[col] =
+                vecIdx != null ? root.getVector(vecIdx) : root.getVector(fieldName);
+          }
+        }
+        int rowCount = root.getRowCount();
         for (int rowNum = 0;
-            rowNum < root.getRowCount();
+            rowNum < rowCount;
             rowNum++) { // for the given number of rows in the batch
 
           if (Thread.currentThread().isInterrupted()
@@ -1159,17 +1180,13 @@ class ConnectionImpl implements Connection {
             break; // exit the loop, root will be cleared in the finally block
           }
 
-          Map<String, Object> curRow = new HashMap<>();
-          for (int col = 0; col < fields.size(); col++) { // iterate all the vectors for a given row
-            com.google.cloud.bigquery.Field field = fields.get(col);
-            FieldVector curFieldVec =
-                root.getVector(
-                    field.getName()); // can be accessed using the index or Vector/column name
-            curRow.put(field.getName(), curFieldVec.getObject(rowNum)); // Added the raw value
+          Object[] curRow = new Object[numCols];
+          for (int col = 0; col < numCols; col++) { // iterate all the vectors for a given row
+            FieldVector curFieldVec = orderedVectors[col];
+            curRow[col] = curFieldVec != null ? curFieldVec.getObject(rowNum) : null;
           }
           buffer.put(new BigQueryResultImpl.Row(curRow));
         }
-        root.clear();
       } catch (RuntimeException | InterruptedException e) {
         throw BigQueryException.translateAndThrow(e);
       } finally {
