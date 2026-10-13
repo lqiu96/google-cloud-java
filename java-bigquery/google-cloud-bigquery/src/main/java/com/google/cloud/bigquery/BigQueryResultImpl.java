@@ -26,6 +26,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -114,6 +115,8 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
   }
 
   private class BigQueryResultSet extends AbstractJdbcResultSet {
+    private static final int DRAIN_BATCH_SIZE = 256;
+    private final ArrayDeque<T> localBatch = new ArrayDeque<>(DRAIN_BATCH_SIZE);
     private boolean hasReachedEnd =
         false; // flag which will be set to true when we have encountered a EndOfStream or when
     // curTup.isLast(). Ref: https://github.com/googleapis/java-bigquery/issues/2033
@@ -200,15 +203,22 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         return false;
       }
       try {
-        cursor = buffer.take(); // advance the cursor,Potentially blocking operation
+        cursor = localBatch.pollFirst();
+        if (cursor == null) {
+          cursor = buffer.take(); // advance the cursor,Potentially blocking operation
+          // Drain available queued rows into a consumer-local batch to amortize lock acquisitions.
+          buffer.drainTo(localBatch, DRAIN_BATCH_SIZE);
+        }
         if (isEndOfStream(cursor)) { // check for end of stream
           cursor = null;
+          localBatch.clear();
           hasReachedEnd = true;
           return false;
         } else if (cursor instanceof Row) {
           Row curTup = (Row) cursor;
           if (curTup.isLast()) { // last Tuple
             cursor = null;
+            localBatch.clear();
             hasReachedEnd = true;
             return false;
           }

@@ -316,4 +316,37 @@ class BigQueryResultImplTest {
     assertThat(resultSet.wasNull()).isFalse();
     assertThat(resultSet.next()).isFalse();
   }
+
+  @Test
+  void testResultSetBatchDrainingPreservesFifoOrderAndEof()
+      throws InterruptedException, SQLException {
+    int numRows = 600;
+    BlockingQueue<AbstractList<FieldValue>> buffer =
+        new java.util.concurrent.ArrayBlockingQueue<>(numRows + 2);
+    Schema singleColSchema =
+        Schema.of(
+            Field.newBuilder("id", StandardSQLTypeName.INT64)
+                .setMode(Field.Mode.NULLABLE)
+                .build());
+    FieldList singleColFields = FieldList.of(Field.of("id", LegacySQLTypeName.INTEGER));
+
+    for (int i = 0; i < numRows; i++) {
+      buffer.put(
+          FieldValueList.of(
+              ImmutableList.of(FieldValue.of(Attribute.PRIMITIVE, Integer.toString(i))),
+              singleColFields));
+    }
+    buffer.put(new EndOfFieldValueList());
+
+    BigQueryResultImpl<AbstractList<FieldValue>> bigQueryResult =
+        new BigQueryResultImpl<>(singleColSchema, numRows, buffer, null);
+    ResultSet resultSet = bigQueryResult.getResultSet();
+
+    for (int i = 0; i < numRows; i++) {
+      assertThat(resultSet.next()).isTrue();
+      assertThat(resultSet.getInt("id")).isEqualTo(i);
+    }
+    assertThat(resultSet.next()).isFalse();
+    assertThat(resultSet.next()).isFalse();
+  }
 }
