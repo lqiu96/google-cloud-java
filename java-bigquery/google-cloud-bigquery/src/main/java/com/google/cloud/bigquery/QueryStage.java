@@ -741,7 +741,8 @@ public class QueryStage implements Serializable {
     builder.setStartMs(stagePb.getStartMs());
     builder.setStatus(stagePb.getStatus());
     if (stagePb.getSteps() != null) {
-      builder.setSteps(Lists.transform(stagePb.getSteps(), QueryStep.FROM_PB_FUNCTION));
+      builder.setSteps(
+          ImmutableList.copyOf(Lists.transform(stagePb.getSteps(), QueryStep.FROM_PB_FUNCTION)));
     }
     builder.setWaitMsAvg(stagePb.getWaitMsAvg());
     builder.setWaitMsMax(stagePb.getWaitMsMax());

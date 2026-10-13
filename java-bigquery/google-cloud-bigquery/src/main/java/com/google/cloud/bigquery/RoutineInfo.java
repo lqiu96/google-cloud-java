@@ -23,6 +23,7 @@ import com.google.api.services.bigquery.model.Routine;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import io.opentelemetry.api.common.Attributes;
 import java.io.Serializable;
@@ -220,7 +221,8 @@ public class RoutineInfo implements Serializable {
       this.language = routinePb.getLanguage();
       if (routinePb.getArguments() != null) {
         this.argumentList =
-            Lists.transform(routinePb.getArguments(), RoutineArgument.FROM_PB_FUNCTION);
+            ImmutableList.copyOf(
+                Lists.transform(routinePb.getArguments(), RoutineArgument.FROM_PB_FUNCTION));
       }
       if (routinePb.getReturnType() != null) {
         this.returnType = StandardSQLDataType.fromPb(routinePb.getReturnType());

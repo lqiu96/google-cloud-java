@@ -46,6 +46,9 @@ public class BigQueryRetryHelper extends RetryHelper {
 
   private static final Logger LOG = Logger.getLogger(BigQueryRetryHelper.class.getName());
 
+  private static final ResultRetryAlgorithm<Object> WRAPPED_DEFAULT_EXCEPTION_HANDLER =
+      wrapDefaultAlgorithm(BigQueryBaseService.DEFAULT_BIGQUERY_EXCEPTION_HANDLER);
+
   public static <V> V runWithRetries(
       Callable<V> callable,
       RetrySettings retrySettings,
@@ -55,8 +58,24 @@ public class BigQueryRetryHelper extends RetryHelper {
       boolean isOpenTelemetryEnabled,
       Tracer openTelemetryTracer)
       throws RetryHelperException {
+    if (!isOpenTelemetryEnabled) {
+      try {
+        @SuppressWarnings("unchecked")
+        ResultRetryAlgorithm<V> algorithm = (ResultRetryAlgorithm<V>) resultRetryAlgorithm;
+        return run(
+            callable,
+            new ExponentialRetryAlgorithm(retrySettings, clock),
+            algorithm,
+            bigQueryRetryConfig);
+      } catch (Exception e) {
+        if (e.getCause() instanceof IOException) {
+          throw new BigQueryRetryHelperException(new BigQueryException((IOException) e.getCause()));
+        }
+        throw new BigQueryRetryHelperException(e.getCause());
+      }
+    }
     Span runWithRetries = null;
-    if (isOpenTelemetryEnabled && openTelemetryTracer != null) {
+    if (openTelemetryTracer != null) {
       runWithRetries =
           openTelemetryTracer
               .spanBuilder("com.google.cloud.bigquery.BigQueryRetryHelper.runWithRetries")
@@ -132,7 +151,7 @@ public class BigQueryRetryHelper extends RetryHelper {
   @SuppressWarnings("unchecked")
   static <V> ResultRetryAlgorithm<V> maybeWrapForHttpRetry(ResultRetryAlgorithm<?> algorithm) {
     if (algorithm == BigQueryBaseService.DEFAULT_BIGQUERY_EXCEPTION_HANDLER) {
-      return wrapDefaultAlgorithm((ResultRetryAlgorithm<V>) algorithm);
+      return (ResultRetryAlgorithm<V>) WRAPPED_DEFAULT_EXCEPTION_HANDLER;
     }
     return (ResultRetryAlgorithm<V>) algorithm;
   }

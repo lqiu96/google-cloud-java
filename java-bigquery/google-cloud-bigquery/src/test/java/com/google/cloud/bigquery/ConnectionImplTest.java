@@ -347,6 +347,16 @@ class ConnectionImplTest {
     assertEquals(2, fvl2.size());
     assertEquals("Value3", fvl2.get(0).getValue().toString());
     assertEquals("Value4", fvl2.get(1).getValue().toString());
+    AbstractList<FieldValue> eof = buffer.take();
+    assertNotNull(eof);
+    // Verify that completing the first query's buffer population does not shut down the
+    // connection's shared executor before connection.close() is called.
+    BlockingQueue<Tuple<Iterable<FieldValueList>, Boolean>> pageCache2 =
+        new LinkedBlockingDeque<>(2);
+    BlockingQueue<Tuple<TableDataList, Boolean>> rpcResponseQueue2 = new LinkedBlockingDeque<>(2);
+    rpcResponseQueue2.offer(Tuple.of(null, false));
+    connectionSpy.parseRpcDataAsync(TABLE_ROWS, QUERY_SCHEMA, pageCache2, rpcResponseQueue2);
+    assertNotNull(pageCache2.take());
     verify(connectionSpy, times(1))
         .populateBufferAsync(
             any(BlockingQueue.class), any(BlockingQueue.class), any(BlockingQueue.class));

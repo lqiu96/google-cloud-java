@@ -255,14 +255,15 @@ public class DatasetInfo implements Serializable {
       }
       if (datasetPb.getAccess() != null) {
         this.acl =
-            Lists.transform(
-                datasetPb.getAccess(),
-                new Function<Dataset.Access, Acl>() {
-                  @Override
-                  public Acl apply(Dataset.Access accessPb) {
-                    return Acl.fromPb(accessPb);
-                  }
-                });
+            ImmutableList.copyOf(
+                Lists.transform(
+                    datasetPb.getAccess(),
+                    new Function<Dataset.Access, Acl>() {
+                      @Override
+                      public Acl apply(Dataset.Access accessPb) {
+                        return Acl.fromPb(accessPb);
+                      }
+                    }));
       }
       this.creationTime = datasetPb.getCreationTime();
       this.defaultTableLifetime = datasetPb.getDefaultTableExpirationMs();

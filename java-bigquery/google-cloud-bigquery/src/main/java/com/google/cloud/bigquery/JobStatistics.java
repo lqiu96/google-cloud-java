@@ -31,6 +31,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.Serializable;
 import java.util.List;
@@ -644,18 +645,21 @@ public abstract class JobStatistics implements Serializable {
 
           if (statisticsPb.getQuery().getReferencedTables() != null) {
             this.referencedTables =
-                Lists.transform(
-                    statisticsPb.getQuery().getReferencedTables(), TableId.FROM_PB_FUNCTION);
+                ImmutableList.copyOf(
+                    Lists.transform(
+                        statisticsPb.getQuery().getReferencedTables(), TableId.FROM_PB_FUNCTION));
           }
           if (statisticsPb.getQuery().getQueryPlan() != null) {
             this.queryPlan =
-                Lists.transform(
-                    statisticsPb.getQuery().getQueryPlan(), QueryStage.FROM_PB_FUNCTION);
+                ImmutableList.copyOf(
+                    Lists.transform(
+                        statisticsPb.getQuery().getQueryPlan(), QueryStage.FROM_PB_FUNCTION));
           }
           if (statisticsPb.getQuery().getTimeline() != null) {
             this.timeline =
-                Lists.transform(
-                    statisticsPb.getQuery().getTimeline(), TimelineSample.FROM_PB_FUNCTION);
+                ImmutableList.copyOf(
+                    Lists.transform(
+                        statisticsPb.getQuery().getTimeline(), TimelineSample.FROM_PB_FUNCTION));
           }
           if (statisticsPb.getQuery().getSchema() != null) {
             this.schema = Schema.fromPb(statisticsPb.getQuery().getSchema());
@@ -1360,7 +1364,9 @@ public abstract class JobStatistics implements Serializable {
       }
       if (scriptStatistics.getStackFrames() != null) {
         builder.setStackFrames(
-            Lists.transform(scriptStatistics.getStackFrames(), ScriptStackFrame.FROM_PB_FUNCTION));
+            ImmutableList.copyOf(
+                Lists.transform(
+                    scriptStatistics.getStackFrames(), ScriptStackFrame.FROM_PB_FUNCTION)));
       }
       return builder.build();
     }
@@ -1650,9 +1656,11 @@ public abstract class JobStatistics implements Serializable {
       if (statisticsPb.getScriptStatistics() != null) {
         this.scriptStatistics = ScriptStatistics.fromPb(statisticsPb.getScriptStatistics());
       }
-      if (reservationUsage != null) {
+      if (statisticsPb.getReservationUsage() != null) {
         this.reservationUsage =
-            Lists.transform(statisticsPb.getReservationUsage(), ReservationUsage.FROM_PB_FUNCTION);
+            ImmutableList.copyOf(
+                Lists.transform(
+                    statisticsPb.getReservationUsage(), ReservationUsage.FROM_PB_FUNCTION));
       }
       if (statisticsPb.getTransactionInfo() != null) {
         this.transactionInfo = TransactionInfo.fromPb(statisticsPb.getTransactionInfo());

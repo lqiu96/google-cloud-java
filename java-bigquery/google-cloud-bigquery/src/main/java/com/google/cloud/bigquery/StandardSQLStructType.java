@@ -18,6 +18,7 @@ package com.google.cloud.bigquery;
 
 import com.google.api.services.bigquery.model.StandardSqlStructType;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.Serializable;
 import java.util.List;
@@ -57,7 +58,8 @@ public abstract class StandardSQLStructType implements Serializable {
     Builder builder = newBuilder();
     if (structTypePb.getFields() != null) {
       builder.setFields(
-          Lists.transform(structTypePb.getFields(), StandardSQLField.FROM_PB_FUNCTION));
+          ImmutableList.copyOf(
+              Lists.transform(structTypePb.getFields(), StandardSQLField.FROM_PB_FUNCTION)));
     }
     return builder.build();
   }

@@ -78,7 +78,7 @@ abstract class Annotations implements Serializable {
       return of(null);
     }
     if (pb == null || pb.isEmpty()) {
-      return of(Collections.<String, String>emptyMap());
+      return ZERO;
     }
 
     HashMap<String, String> map = new HashMap<>();
