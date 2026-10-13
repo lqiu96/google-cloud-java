@@ -17,6 +17,7 @@ package com.google.cloud.bigquery;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.Serializable;
 import java.util.List;
@@ -99,7 +100,9 @@ public abstract class BigtableColumnFamily implements Serializable {
       com.google.api.services.bigquery.model.BigtableColumnFamily columnFamily) {
     Builder builder = newBuilder();
     builder.setFamilyID(columnFamily.getFamilyId());
-    builder.setColumns(Lists.transform(columnFamily.getColumns(), BigtableColumn.FROM_PB_FUNCTION));
+    builder.setColumns(
+        ImmutableList.copyOf(
+            Lists.transform(columnFamily.getColumns(), BigtableColumn.FROM_PB_FUNCTION)));
     builder.setEncoding(columnFamily.getEncoding());
     builder.setOnlyReadLatest(columnFamily.getOnlyReadLatest());
     builder.setType(columnFamily.getType());

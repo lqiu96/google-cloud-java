@@ -44,9 +44,11 @@ public class AnnotationsTest {
 
   @Test
   void testFromToPb() {
+    assertThat(Annotations.fromPb(null)).isSameInstanceAs(Annotations.ZERO);
     assertThat(Annotations.fromPb(null).toPb()).isNull();
 
     HashMap<String, String> pb = new HashMap<>();
+    assertThat(Annotations.fromPb(pb)).isSameInstanceAs(Annotations.ZERO);
     assertThat(Annotations.fromPb(pb).toPb()).isNull();
 
     pb.put("a", "b");

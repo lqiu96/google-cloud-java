@@ -16,6 +16,7 @@
 package com.google.cloud.bigquery;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Objects;
@@ -145,7 +146,9 @@ public class BigtableOptions extends FormatOptions {
     builder.setReadRowkeyAsString(options.getReadRowkeyAsString());
     if (options.getColumnFamilies() != null) {
       builder.setColumnFamilies(
-          Lists.transform(options.getColumnFamilies(), BigtableColumnFamily.FROM_PB_FUNCTION));
+          ImmutableList.copyOf(
+              Lists.transform(
+                  options.getColumnFamilies(), BigtableColumnFamily.FROM_PB_FUNCTION)));
     }
     return builder.build();
   }

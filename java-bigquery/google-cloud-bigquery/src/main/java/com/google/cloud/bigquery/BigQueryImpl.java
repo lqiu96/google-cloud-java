@@ -68,6 +68,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Scope;
 import java.io.IOException;
@@ -3513,14 +3514,14 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
   }
 
   private static Attributes otelAttributesFromOptions(Option... options) {
-    Attributes attributes = Attributes.builder().build();
-    for (Option option : options) {
-      attributes =
-          attributes.toBuilder()
-              .put("bq.option." + option.getRpcOption().toString(), option.getValue().toString())
-              .build();
+    if (options == null || options.length == 0) {
+      return Attributes.empty();
     }
-    return attributes;
+    AttributesBuilder builder = Attributes.builder();
+    for (Option option : options) {
+      builder.put("bq.option." + option.getRpcOption().toString(), option.getValue().toString());
+    }
+    return builder.build();
   }
 
   private static Attributes otelAttributesFromQueryRequest(QueryRequest request) {

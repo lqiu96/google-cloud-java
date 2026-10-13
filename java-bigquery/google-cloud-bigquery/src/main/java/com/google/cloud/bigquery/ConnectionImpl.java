@@ -311,11 +311,7 @@ class ConnectionImpl implements Connection {
   private ListenableFuture<ExecuteSelectResponse> getExecuteSelectFuture(
       String sql, List<Parameter> parameters, Map<String, String>... labels)
       throws BigQuerySQLException {
-    ExecutorService execService =
-        Executors.newFixedThreadPool(
-            2); // two fixed threads. One for the async operation and the other for processing the
-    // callback
-    ListeningExecutorService lExecService = MoreExecutors.listeningDecorator(execService);
+    ListeningExecutorService lExecService = MoreExecutors.listeningDecorator(queryTaskExecutor);
     ListenableFuture<ExecuteSelectResponse> executeSelectFuture =
         lExecService.submit(
             () -> {
@@ -341,9 +337,7 @@ class ConnectionImpl implements Connection {
     Futures.addCallback(
         executeSelectFuture,
         new FutureCallback<ExecuteSelectResponse>() {
-          public void onSuccess(ExecuteSelectResponse result) {
-            execService.shutdownNow(); // shutdown the executor service as we do not need it
-          }
+          public void onSuccess(ExecuteSelectResponse result) {}
 
           public void onFailure(Throwable t) {
             logger.log(
@@ -360,10 +354,9 @@ class ConnectionImpl implements Connection {
                   "\n"
                       + String.format("Exception while closing the connection %s", e.getMessage()));
             }
-            execService.shutdownNow(); // shutdown the executor service as we do not need it
           }
         },
-        execService);
+        MoreExecutors.directExecutor());
 
     return executeSelectFuture;
   }
@@ -780,9 +773,6 @@ class ConnectionImpl implements Connection {
                 Level.WARNING,
                 "\n" + Thread.currentThread().getName() + " Interrupted @ populateBufferAsync",
                 e);
-          } finally {
-            queryTaskExecutor
-                .shutdownNow(); // Shutdown the thread pool. All the records are now processed
           }
         };
 
@@ -1093,7 +1083,6 @@ class ConnectionImpl implements Connection {
                   e);
             }
             bqReadClient.shutdownNow(); // Shutdown the read client
-            queryTaskExecutor.shutdownNow(); // Shutdown the thread pool
           }
         };
 
