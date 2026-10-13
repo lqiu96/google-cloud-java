@@ -20,9 +20,8 @@ import com.google.api.core.BetaApi;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Google BigQuery Table Field Values class, which represents a row in returned query result (table
@@ -108,6 +107,9 @@ public class FieldValueList extends AbstractList<FieldValue> implements Serializ
   }
 
   FieldValueList withSchema(FieldList schema) {
+    if (this.schema == schema || Objects.equals(this.schema, schema)) {
+      return this;
+    }
     return new FieldValueList(this.row, schema);
   }
 
@@ -116,22 +118,24 @@ public class FieldValueList extends AbstractList<FieldValue> implements Serializ
   }
 
   static FieldValueList fromPb(List<?> rowPb, FieldList schema, Boolean useInt64Timestamps) {
-    List<FieldValue> row = new ArrayList<>(rowPb.size());
+    if (rowPb == null) {
+      return FieldValueList.of(ImmutableList.of(), schema);
+    }
+    int size = rowPb.size();
+    if (schema != null && schema.size() != size) {
+      throw new IllegalArgumentException("Row size and fields schema sizes should match");
+    }
+    ImmutableList.Builder<FieldValue> row = ImmutableList.builderWithExpectedSize(size);
     if (schema != null) {
-      if (schema.size() != rowPb.size()) {
-        throw new IllegalArgumentException("Row size and fields schema sizes should match");
-      }
-      Iterator<Field> schemaIter = schema.iterator();
-      Iterator<?> rowPbIter = rowPb.iterator();
-      while (rowPbIter.hasNext() && schemaIter.hasNext()) {
-        row.add(FieldValue.fromPb(rowPbIter.next(), schemaIter.next(), useInt64Timestamps));
+      for (int i = 0; i < size; i++) {
+        row.add(FieldValue.fromPb(rowPb.get(i), schema.get(i), useInt64Timestamps));
       }
     } else {
-      for (Object cellPb : rowPb) {
-        row.add(FieldValue.fromPb(cellPb, null, useInt64Timestamps));
+      for (int i = 0; i < size; i++) {
+        row.add(FieldValue.fromPb(rowPb.get(i), null, useInt64Timestamps));
       }
     }
 
-    return FieldValueList.of(row, schema);
+    return FieldValueList.of(row.build(), schema);
   }
 }

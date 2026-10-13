@@ -1860,6 +1860,45 @@ public class HttpBigQueryRpcTest {
       assertEquals(Long.valueOf(2048L), resultsResponse.getTotalBytesProcessed());
       assertEquals(rawCells, resultsResponse.getRows().get(0).getF());
 
+      com.google.cloud.bigquery.Schema schema =
+          com.google.cloud.bigquery.Schema.of(
+              com.google.cloud.bigquery.Field.of(
+                  "col0", com.google.cloud.bigquery.LegacySQLTypeName.STRING),
+              com.google.cloud.bigquery.Field.of(
+                  "col1", com.google.cloud.bigquery.LegacySQLTypeName.INTEGER),
+              com.google.cloud.bigquery.Field.newBuilder(
+                      "col2", com.google.cloud.bigquery.LegacySQLTypeName.INTEGER)
+                  .setMode(com.google.cloud.bigquery.Field.Mode.REPEATED)
+                  .build(),
+              com.google.cloud.bigquery.Field.of(
+                  "col3",
+                  com.google.cloud.bigquery.LegacySQLTypeName.RECORD,
+                  com.google.cloud.bigquery.Field.of(
+                      "sub0", com.google.cloud.bigquery.LegacySQLTypeName.STRING),
+                  com.google.cloud.bigquery.Field.of(
+                      "sub1", com.google.cloud.bigquery.LegacySQLTypeName.STRING)),
+              com.google.cloud.bigquery.Field.newBuilder(
+                      "col4",
+                      com.google.cloud.bigquery.LegacySQLTypeName.RECORD,
+                      com.google.cloud.bigquery.Field.of(
+                          "elem", com.google.cloud.bigquery.LegacySQLTypeName.STRING))
+                  .setMode(com.google.cloud.bigquery.Field.Mode.REPEATED)
+                  .build());
+      List<com.google.cloud.bigquery.FieldValueList> extractedRows =
+          HttpBigQueryRpc.extractFieldValueLists(tableDataList.getRows(), schema, false);
+      assertNotNull(extractedRows);
+      assertEquals(1, extractedRows.size());
+      com.google.cloud.bigquery.FieldValueList row0 = extractedRows.get(0);
+      assertEquals("hello", row0.get("col0").getStringValue());
+      assertTrue(row0.get("col1").isNull());
+      assertEquals(2, row0.get("col2").getRepeatedValue().size());
+      assertEquals(10L, row0.get("col2").getRepeatedValue().get(0).getLongValue());
+      assertEquals("nested", row0.get("col3").getRecordValue().get("sub0").getStringValue());
+      assertTrue(row0.get("col3").getRecordValue().get("sub1").isNull());
+      assertEquals(
+          "elem1",
+          row0.get("col4").getRepeatedValue().get(0).getRecordValue().get(0).getStringValue());
+
       // Verify 204 No Content returns null and empty 200 OK throws IllegalArgumentException
       setMockResponse("");
       mockResponse.setStatusCode(204);

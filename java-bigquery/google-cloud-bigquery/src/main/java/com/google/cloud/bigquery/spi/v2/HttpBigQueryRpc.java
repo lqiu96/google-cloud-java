@@ -79,6 +79,14 @@ import com.google.api.services.bigquery.model.TestIamPermissionsResponse;
 import com.google.cloud.Tuple;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.Field;
+import com.google.cloud.bigquery.FieldList;
+import com.google.cloud.bigquery.FieldValue;
+import com.google.cloud.bigquery.FieldValue.Attribute;
+import com.google.cloud.bigquery.FieldValueList;
+import com.google.cloud.bigquery.LegacySQLTypeName;
+import com.google.cloud.bigquery.Range;
+import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.telemetry.BigQueryTelemetryTracer;
 import com.google.cloud.bigquery.telemetry.HttpTracingRequestInitializer;
 import com.google.cloud.http.HttpTransportOptions;
@@ -94,11 +102,13 @@ import io.opentelemetry.context.Scope;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.RandomAccess;
 
 @InternalExtensionOnly
 public class HttpBigQueryRpc implements BigQueryRpc {
@@ -2074,7 +2084,11 @@ public class HttpBigQueryRpc implements BigQueryRpc {
         }
         try (JsonParser parser =
             bigquery.getJsonFactory().createJsonParser(content, response.getContentCharset())) {
-          return parseRowResponse(parser, responseClass);
+          boolean useInt64Timestamps =
+              this.options != null
+                  && this.options.getDataFormatOptions() != null
+                  && this.options.getDataFormatOptions().useInt64Timestamp();
+          return parseRowResponse(parser, responseClass, useInt64Timestamps);
         }
       }
     } finally {
@@ -2104,9 +2118,10 @@ public class HttpBigQueryRpc implements BigQueryRpc {
    * handlers:
    *
    * <ol>
-   *   <li>{@code "rows"}: routed to {@link #parseTableRows(JsonParser)} so each row's {@code "f"}
-   *       and {@code "v"} entries are unwrapped directly without allocating {@code TableCell}
-   *       objects.
+   *   <li>{@code "rows"}: routed to {@link #parseTableRows(JsonParser, boolean)} so each row's
+   *       {@code "f"} and {@code "v"} entries are streamed directly into {@link FieldValue} and
+   *       {@link FieldValueList} instances without allocating intermediate {@code TableRow} or
+   *       {@code TableCell} objects.
    *   <li>Known {@code @Key} metadata fields (such as {@code "kind"}, {@code "totalRows"}, {@code
    *       "pageToken"}, {@code "schema"}, {@code "jobReference"}, {@code "errors"}): populated onto
    *       {@code result} using {@link ClassInfo} and {@link FieldInfo}.
@@ -2115,7 +2130,7 @@ public class HttpBigQueryRpc implements BigQueryRpc {
    * </ol>
    */
   private static <T extends GenericJson> T parseRowResponse(
-      JsonParser parser, Class<T> responseClass) throws IOException {
+      JsonParser parser, Class<T> responseClass, boolean useInt64Timestamps) throws IOException {
     // Step 1: Position the parser on the opening `{` (`START_OBJECT`) of the HTTP response.
     // A newly created JsonParser has `getCurrentToken() == null` until `nextToken()` is called.
     JsonToken token = parser.getCurrentToken();
@@ -2146,7 +2161,7 @@ public class HttpBigQueryRpc implements BigQueryRpc {
       FieldInfo fieldInfo = classInfo.getFieldInfo(fieldName);
       if ("rows".equals(fieldName)) {
         // Case 1 ("rows"): Stream and unwrap the `"rows": [ {"f": [...]}, ... ]` array directly.
-        List<TableRow> rows = parseTableRows(parser);
+        List<TableRow> rows = parseTableRows(parser, useInt64Timestamps);
         if (fieldInfo != null) {
           fieldInfo.setValue(result, rows);
         } else {
@@ -2182,225 +2197,286 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   }
 
   /**
-   * Parses the BigQuery REST v2 {@code "rows"} JSON array into a list of {@link TableRow} objects.
+   * Streams the BigQuery REST v2 {@code "rows"} JSON array directly into {@link FieldValue} cells
+   * and returns a lightweight {@link StreamedTableRowList} carrier.
    *
-   * <p>In BigQuery REST v2, {@code "rows"} is a JSON array where each element is a {@code TableRow}
-   * object containing a single field {@code "f"} that holds the row's positional cell array:
-   *
-   * <pre>{@code
-   * "rows": [
-   *   { "f": [ {"v": "alice"}, {"v": "10"} ] },   // Row 0 -> TableRow with getF() = ["alice", "10"]
-   *   { "f": [ {"v": "bob"},   {"v": null} ] }    // Row 1 -> TableRow with getF() = ["bob", JSON_NULL]
-   * ]
-   * }</pre>
-   *
-   * <p>{@code TableRow.getF()} has a declared generic return type of {@code List<TableCell>} (which
-   * erases to {@code List} at runtime), and its callers ({@code BigQueryImpl.transformTableData}
-   * and {@code ConnectionImpl.getIterableFieldValueList}) pass {@code rowPb.getF()} directly to
-   * {@code FieldValueList.fromPb(List<?> rowPb, ...)} -> {@code FieldValue.fromPb(Object cellPb,
-   * ...)}. Storing the unwrapped cell values in {@code TableRow.setF((List) cells)} avoids
-   * allocating transient {@code TableCell} and {@code ArrayMap} wrappers per cell.
+   * <p>When consumed by {@code BigQueryImpl.transformTableData} or {@code
+   * ConnectionImpl.getIterableFieldValueList} via {@link #extractFieldValueLists(Iterable, Schema,
+   * boolean)}, each row's pre-built {@link ImmutableList} of {@link FieldValue}s is wrapped
+   * directly into a {@link FieldValueList} without ever instantiating {@link TableRow} ({@code
+   * GenericJson} / {@code GenericData} / {@code EnumSet} / {@code ArrayMap}) or intermediate {@code
+   * ArrayList<Object>} cell buffers. If a caller accesses {@link List#get(int)} on {@code
+   * result.getRows()} directly, {@link StreamedTableRowList#get(int)} lazily constructs a {@link
+   * TableRow} on demand.
    */
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  private static List<TableRow> parseTableRows(JsonParser parser) throws IOException {
+  private static List<TableRow> parseTableRows(JsonParser parser, boolean useInt64Timestamps)
+      throws IOException {
     JsonToken token = parser.getCurrentToken();
     if (token == JsonToken.VALUE_NULL) {
-      // Example: `"rows": null`.
-      // Because `parseRowResponse` assigns this return value to the `List<TableRow> rows` field on
-      // TableDataList / QueryResponse / GetQueryResultsResponse via `fieldInfo.setValue`, the JSON
-      // null sentinel must be typed as a `List` (`Data.nullOf(ArrayList.class)`) rather than
-      // `JSON_NULL` (`Data.nullOf(Object.class)`, which is a plain `Object` and would fail with
-      // ClassCastException / IllegalArgumentException when assigned to a `List` field).
       return Data.nullOf(ArrayList.class);
     }
     if (token != JsonToken.START_ARRAY) {
-      // Defensive guard: if `"rows"` is not `[ ... ]`, skip its value subtree so the parser cursor
-      // stays aligned for the next top-level field in `parseRowResponse`.
       parser.skipChildren();
       return null;
     }
-    List<TableRow> rows = new ArrayList<>();
-    // Every row in a table has the same number of columns. `expectedCols` starts at `-1` before
-    // Row 0 is read; once Row 0's `"f"` array is parsed, `expectedCols` is set to Row 0's column
-    // count so Rows 1..N pre-allocate their cell lists to the exact column count.
+    ImmutableList.Builder<ImmutableList<FieldValue>> rows = ImmutableList.builder();
     int expectedCols = -1;
-    // Outer loop: iterate over each row object `{ "f": [ ... ] }` inside `"rows": [ ... ]` until
-    // the closing `]` (`JsonToken.END_ARRAY`) of `"rows"`.
     while (parser.nextToken() != JsonToken.END_ARRAY) {
       if (parser.getCurrentToken() != JsonToken.START_OBJECT) {
         parser.skipChildren();
         continue;
       }
-      List<Object> cells = null;
-      // Inner loop: iterate over the properties of a single row object `{ "f": [ ... ] }` until
-      // the closing `}` (`JsonToken.END_OBJECT`) of that row.
+      ImmutableList<FieldValue> cells = null;
       while (parser.nextToken() == JsonToken.FIELD_NAME) {
         String rowField = parser.getText();
-        // Advance from the field name `"f"` to the opening `[` (`JsonToken.START_ARRAY`) of the
-        // row's cell array.
         parser.nextToken();
         if ("f".equals(rowField) && parser.getCurrentToken() == JsonToken.START_ARRAY) {
-          // Parse `[ {"v": "alice"}, {"v": "10"} ]` into `["alice", "10"]` and record the column
-          // count for subsequent rows.
-          cells = parseRowCells(parser, expectedCols);
+          cells = parseRowCells(parser, useInt64Timestamps, expectedCols);
           expectedCols = cells.size();
         } else {
-          // Skip any unexpected extra field on the TableRow object so the parser stays aligned.
           parser.skipChildren();
         }
       }
-      TableRow row = new TableRow();
-      if (cells != null) {
-        // Store the unwrapped cell list on the TableRow (erased to `List` at runtime).
-        row.setF((List) cells);
-      }
-      rows.add(row);
+      rows.add(cells != null ? cells : ImmutableList.of());
     }
-    return rows;
+    return new StreamedTableRowList(rows.build(), useInt64Timestamps);
   }
 
   /**
-   * Parses the top-level {@code "f"} cell array of a single {@link TableRow} in a table or query
-   * response (and is not used for any other JSON array).
-   *
-   * <p>For example, given a row's {@code "f"} array:
-   *
-   * <pre>{@code
-   * [
-   *   {"v": "alice"},
-   *   {"v": null},
-   *   {"v": [{"v": "tag1"}, {"v": "tag2"}]},
-   *   {"v": {"f": [{"v": "Seattle"}, {"v": "WA"}]}}
-   * ]
-   * }</pre>
-   *
-   * <p>This method calls {@link #parseCellValue(JsonParser)} on each element and returns:
-   *
-   * <pre>{@code
-   * ["alice", JSON_NULL, ["tag1", "tag2"], {"f": ["Seattle", "WA"]}]
-   * }</pre>
-   *
-   * @param parser the active JSON stream positioned at the opening {@code [} ({@code START_ARRAY})
-   *     of {@code "f"}
-   * @param expectedCols the number of columns observed in previous rows of the same table page, or
-   *     {@code -1} on the first row before the table's column count is known
+   * Streams the {@code "f"} cell array of a single row directly into an {@link ImmutableList} of
+   * {@link FieldValue}s.
    */
-  private static List<Object> parseRowCells(JsonParser parser, int expectedCols)
-      throws IOException {
-    // On the first row of a response page (`expectedCols < 0`), the column count is not yet known,
-    // so we initialize the list with a default capacity of 16. Once the first row is parsed,
-    // `parseTableRows` records `expectedCols = cells.size()`, allowing every subsequent row in the
-    // page to pre-size its backing array to the exact number of columns in the table.
-    List<Object> cells = new ArrayList<>(expectedCols >= 0 ? expectedCols : 16);
-    // Advance through each cell element inside `"f": [ cell0, cell1, ... ]` until the closing `]`
-    // (`JsonToken.END_ARRAY`), unwrapping each cell via `parseCellValue`.
+  private static ImmutableList<FieldValue> parseRowCells(
+      JsonParser parser, boolean useInt64Timestamps, int expectedCols) throws IOException {
+    ImmutableList.Builder<FieldValue> cells =
+        ImmutableList.builderWithExpectedSize(expectedCols >= 0 ? expectedCols : 16);
     while (parser.nextToken() != JsonToken.END_ARRAY) {
-      cells.add(parseCellValue(parser));
+      cells.add(parseCellFieldValue(parser, useInt64Timestamps));
     }
-    return cells;
+    return cells.build();
   }
 
   private static final Object JSON_NULL = Data.nullOf(Object.class);
 
   /**
-   * Recursively parses a single BigQuery REST v2 {@code TableCell} (or nested value inside a cell)
-   * by unwrapping {@code {"v": ...}} envelopes and preserving {@code {"f": [...]}} struct maps.
-   *
-   * <p>Every cell in BigQuery REST v2 is built from combinations of {@code "v"} (value wrapper) and
-   * {@code "f"} (struct sub-field list). How this method transforms each common BigQuery column
-   * type:
-   *
-   * <ul>
-   *   <li><b>Case 1: Primitive scalar ({@code STRING}, {@code INT64}, {@code FLOAT64}, {@code
-   *       BOOL}, {@code TIMESTAMP}, {@code DATE}, {@code NUMERIC}, {@code BYTES}, etc.)</b><br>
-   *       Wire JSON: {@code {"v": "alice"}}<br>
-   *       {@code START_OBJECT} reads {@code firstKey = "v"} and recurses on {@code "alice"} (which
-   *       returns {@code "alice"}). Because {@code "v".equals(firstKey)}, it unwraps the object and
-   *       returns {@code "alice"} directly.
-   *   <li><b>Case 2: {@code NULL} cell (any column type)</b><br>
-   *       Wire JSON: {@code {"v": null}}<br>
-   *       {@code START_OBJECT} reads {@code firstKey = "v"} and recurses on {@code null} (which
-   *       returns {@link #JSON_NULL}). Unwrapping {@code "v"} returns {@link #JSON_NULL} ({@code
-   *       Data.nullOf(Object.class)}), matching {@code google-http-client} so {@code
-   *       Data.isNull(cell)} is {@code true}.
-   *   <li><b>Case 3: {@code REPEATED} ({@code ARRAY} of primitives)</b><br>
-   *       Wire JSON: {@code {"v": [{"v": "tag1"}, {"v": "tag2"}]}}<br>
-   *       Outer {@code {"v": ...}} unwraps to the JSON array {@code [...]}. The {@code START_ARRAY}
-   *       branch loops over each element and recursively calls {@code parseCellValue}, unwrapping
-   *       {@code {"v": "tag1"}} -> {@code "tag1"} and {@code {"v": "tag2"}} -> {@code "tag2"} to
-   *       return {@code ["tag1", "tag2"]}.
-   *   <li><b>Case 4: {@code RECORD} ({@code STRUCT})</b><br>
-   *       Wire JSON: {@code {"v": {"f": [{"v": "Seattle"}, {"v": "WA"}]}}}<br>
-   *       Outer {@code {"v": ...}} unwraps to the inner struct object {@code {"f": [...]}}. When
-   *       parsing the inner object, {@code firstKey} is {@code "f"} and {@code firstValue} is the
-   *       {@code START_ARRAY} result {@code ["Seattle", "WA"]} (after unwrapping each sub-cell's
-   *       {@code {"v": ...}}). Because {@code firstKey} is {@code "f"} (not {@code "v"}), the
-   *       single-key fast path returns {@code Collections.singletonMap("f", ["Seattle", "WA"])},
-   *       which {@code FieldValue.fromPb} identifies as a {@code RECORD} via {@code
-   *       cellMapPb.containsKey("f")}.
-   *   <li><b>Case 5: {@code REPEATED RECORD} ({@code ARRAY<STRUCT>})</b><br>
-   *       Wire JSON: {@code {"v": [{"v": {"f": [{"v": "a"}]}}, {"v": {"f": [{"v": "b"}]}}]}}<br>
-   *       Combines Case 3 and Case 4: outer {@code "v"} unwraps to a {@code List} where each array
-   *       element's {@code {"v": {"f": ...}}} unwraps its {@code "v"} to {@code singletonMap("f",
-   *       ...)}, returning {@code [{"f": ["a"]}, {"f": ["b"]}]}.
-   * </ul>
+   * Recursively streams a single BigQuery REST v2 {@code TableCell} (or nested value inside a cell)
+   * directly into a {@link FieldValue} by unwrapping {@code {"v": ...}} envelopes and converting
+   * {@code {"f": [...]}} struct objects into {@link Attribute#RECORD} {@link FieldValueList}s.
    */
-  private static Object parseCellValue(JsonParser parser) throws IOException {
+  private static FieldValue parseCellFieldValue(JsonParser parser, boolean useInt64Timestamps)
+      throws IOException {
     JsonToken token = parser.getCurrentToken();
-    // Base case 1: JSON `null` (e.g. the value inside `{"v": null}`).
     if (token == null || token == JsonToken.VALUE_NULL) {
-      return JSON_NULL;
+      return FieldValue.of(Attribute.PRIMITIVE, null, useInt64Timestamps);
     }
-    // Recursive case 1: JSON object `{ ... }`, which in BigQuery row data is either a cell value
-    // envelope `{"v": <value>}` or a RECORD/STRUCT object `{"f": [ <sub-cells> ]}`.
     if (token == JsonToken.START_OBJECT) {
-      if (parser.nextToken() != JsonToken.FIELD_NAME) {
-        return Collections.emptyMap();
-      }
-      // Read the first property's key (almost always `"v"` or `"f"`) and recursively parse its
-      // value.
-      String firstKey = parser.getText();
-      parser.nextToken();
-      Object firstValue = parseCellValue(parser);
-      if (parser.nextToken() == JsonToken.END_OBJECT) {
-        // Single-property object fast path (taken by all standard BigQuery cell and struct
-        // objects):
-        // - If `firstKey` is `"v"` (e.g. `{"v": "alice"}`, `{"v": null}`, `{"v": [...]}` or
-        //   `{"v": {"f": [...]}}`), unwrap the envelope and return `firstValue` directly.
-        // - If `firstKey` is `"f"` (e.g. the inner struct object `{"f": ["Seattle", "WA"]}` inside
-        //   a RECORD cell), keep the `"f"` key in a 16-byte `singletonMap("f", firstValue)` so
-        //   `FieldValue.fromPb` can read the struct's fields via `cellMapPb.get("f")`.
-        return "v".equals(firstKey) ? firstValue : Collections.singletonMap(firstKey, firstValue);
-      }
-      // Multi-property object fallback: if a JSON object ever contains more than one property,
-      // `parser` is now positioned at the second property's `FIELD_NAME` token. Consume all
-      // remaining `"key": value` pairs until the closing `}` (`END_OBJECT`) so no fields are lost
-      // and the streaming parser cursor stays aligned.
-      Map<String, Object> mapValue = new HashMap<>();
-      mapValue.put(firstKey, firstValue);
-      do {
+      FieldValue result = null;
+      while (parser.nextToken() == JsonToken.FIELD_NAME) {
         String key = parser.getText();
         parser.nextToken();
-        mapValue.put(key, parseCellValue(parser));
-      } while (parser.nextToken() == JsonToken.FIELD_NAME);
-      return mapValue;
-    }
-    // Recursive case 2: JSON array `[ ... ]`, which occurs inside:
-    // - A REPEATED (ARRAY) cell's `"v"` list: `[{"v": "tag1"}, {"v": "tag2"}]` -> `["tag1",
-    // "tag2"]`
-    // - A RECORD (STRUCT) cell's `"f"` list: `[{"v": "Seattle"}, {"v": "WA"}]` -> `["Seattle",
-    // "WA"]`
-    if (token == JsonToken.START_ARRAY) {
-      List<Object> list = new ArrayList<>();
-      while (parser.nextToken() != JsonToken.END_ARRAY) {
-        list.add(parseCellValue(parser));
+        if ("v".equals(key)) {
+          result = parseUnwrappedCellValue(parser, useInt64Timestamps);
+        } else if ("f".equals(key) && parser.getCurrentToken() == JsonToken.START_ARRAY) {
+          ImmutableList<FieldValue> subCells = parseRowCells(parser, useInt64Timestamps, -1);
+          result =
+              FieldValue.of(
+                  Attribute.RECORD,
+                  FieldValueList.of(subCells, (FieldList) null),
+                  useInt64Timestamps);
+        } else {
+          parser.skipChildren();
+        }
       }
-      return list;
+      return result != null
+          ? result
+          : FieldValue.of(Attribute.PRIMITIVE, null, useInt64Timestamps);
     }
-    // Base case 2: JSON primitive scalar (e.g. `"alice"` in `{"v": "alice"}`). BigQuery REST v2
-    // encodes all primitive scalar values as strings, which `FieldValue.fromPb` parses according to
-    // the column's schema type.
-    return parser.getText();
+    return parseUnwrappedCellValue(parser, useInt64Timestamps);
+  }
+
+  private static FieldValue parseUnwrappedCellValue(JsonParser parser, boolean useInt64Timestamps)
+      throws IOException {
+    JsonToken token = parser.getCurrentToken();
+    if (token == null || token == JsonToken.VALUE_NULL) {
+      return FieldValue.of(Attribute.PRIMITIVE, null, useInt64Timestamps);
+    }
+    if (token == JsonToken.START_OBJECT) {
+      return parseCellFieldValue(parser, useInt64Timestamps);
+    }
+    if (token == JsonToken.START_ARRAY) {
+      ImmutableList.Builder<FieldValue> elements = ImmutableList.builder();
+      while (parser.nextToken() != JsonToken.END_ARRAY) {
+        elements.add(parseCellFieldValue(parser, useInt64Timestamps));
+      }
+      return FieldValue.of(
+          Attribute.REPEATED,
+          FieldValueList.of(elements.build(), (FieldList) null),
+          useInt64Timestamps);
+    }
+    return FieldValue.of(Attribute.PRIMITIVE, parser.getText(), useInt64Timestamps);
+  }
+
+  /**
+   * Extracts pre-streamed {@link FieldValueList} rows directly from a {@code TableDataList}, {@code
+   * QueryResponse}, or {@code GetQueryResultsResponse} {@code rows} list when produced by {@link
+   * HttpBigQueryRpc}, or returns {@code null} if {@code tableDataPb} was constructed externally.
+   */
+  @InternalApi("internal to java-bigquery")
+  public static List<FieldValueList> extractFieldValueLists(
+      Iterable<TableRow> tableDataPb, Schema schema, boolean useInt64Timestamps) {
+    if (!(tableDataPb instanceof StreamedTableRowList)) {
+      return null;
+    }
+    return ((StreamedTableRowList) tableDataPb).toFieldValueLists(schema, useInt64Timestamps);
+  }
+
+  private static final class StreamedTableRowList extends AbstractList<TableRow>
+      implements RandomAccess {
+    private final ImmutableList<ImmutableList<FieldValue>> rows;
+    private final boolean useInt64Timestamps;
+
+    StreamedTableRowList(
+        ImmutableList<ImmutableList<FieldValue>> rows, boolean useInt64Timestamps) {
+      this.rows = rows;
+      this.useInt64Timestamps = useInt64Timestamps;
+    }
+
+    @Override
+    public int size() {
+      return rows.size();
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public TableRow get(int index) {
+      ImmutableList<FieldValue> rowCells = rows.get(index);
+      List<Object> rawCells = new ArrayList<>(rowCells.size());
+      for (int i = 0, n = rowCells.size(); i < n; i++) {
+        rawCells.add(toRawCellValue(rowCells.get(i)));
+      }
+      TableRow tableRow = new TableRow();
+      tableRow.setF((List) rawCells);
+      return tableRow;
+    }
+
+    private static Object toRawCellValue(FieldValue cell) {
+      if (cell == null || cell.isNull()) {
+        return JSON_NULL;
+      }
+      switch (cell.getAttribute()) {
+        case REPEATED:
+          List<FieldValue> repeated = cell.getRepeatedValue();
+          List<Object> rawList = new ArrayList<>(repeated.size());
+          for (int i = 0, n = repeated.size(); i < n; i++) {
+            rawList.add(toRawCellValue(repeated.get(i)));
+          }
+          return rawList;
+        case RECORD:
+          FieldValueList record = cell.getRecordValue();
+          List<Object> subCells = new ArrayList<>(record.size());
+          for (int i = 0, n = record.size(); i < n; i++) {
+            subCells.add(toRawCellValue(record.get(i)));
+          }
+          return Collections.singletonMap("f", subCells);
+        case PRIMITIVE:
+        default:
+          return cell.getStringValue();
+      }
+    }
+
+    ImmutableList<FieldValueList> toFieldValueLists(
+        Schema schema, boolean expectedUseInt64Timestamps) {
+      if (rows.isEmpty()) {
+        return ImmutableList.of();
+      }
+      FieldList fields = schema != null ? schema.getFields() : null;
+      boolean sameTimestampMode = (this.useInt64Timestamps == expectedUseInt64Timestamps);
+      boolean resolveCells = !sameTimestampMode || needsCellSchemaResolution(fields);
+      ImmutableList.Builder<FieldValueList> result =
+          ImmutableList.builderWithExpectedSize(rows.size());
+      for (int i = 0, n = rows.size(); i < n; i++) {
+        ImmutableList<FieldValue> rowCells = rows.get(i);
+        if (resolveCells) {
+          result.add(resolveRowCells(rowCells, fields, expectedUseInt64Timestamps));
+        } else {
+          result.add(FieldValueList.of(rowCells, fields));
+        }
+      }
+      return result.build();
+    }
+
+    private static boolean needsCellSchemaResolution(FieldList fields) {
+      if (fields == null) {
+        return false;
+      }
+      for (int i = 0, n = fields.size(); i < n; i++) {
+        Field field = fields.get(i);
+        if (field != null
+            && (field.getType() == LegacySQLTypeName.RANGE
+                || field.getType() == LegacySQLTypeName.RECORD
+                || field.getSubFields() != null)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    private static FieldValueList resolveRowCells(
+        List<FieldValue> rowCells, FieldList fields, boolean expectedUseInt64Timestamps) {
+      int size = rowCells.size();
+      if (fields != null && fields.size() != size) {
+        throw new IllegalArgumentException("Row size and fields schema sizes should match");
+      }
+      ImmutableList.Builder<FieldValue> resolved = ImmutableList.builderWithExpectedSize(size);
+      for (int i = 0; i < size; i++) {
+        Field field = fields != null ? fields.get(i) : null;
+        resolved.add(resolveCell(rowCells.get(i), field, expectedUseInt64Timestamps));
+      }
+      return FieldValueList.of(resolved.build(), fields);
+    }
+
+    private static FieldValue resolveCell(
+        FieldValue cell, Field field, boolean expectedUseInt64Timestamps) {
+      if (cell == null || cell.isNull()) {
+        return FieldValue.of(Attribute.PRIMITIVE, null, expectedUseInt64Timestamps);
+      }
+      switch (cell.getAttribute()) {
+        case PRIMITIVE:
+          if (field != null
+              && field.getType() == LegacySQLTypeName.RANGE
+              && field.getRangeElementType() != null) {
+            return FieldValue.of(
+                Attribute.RANGE,
+                Range.of(cell.getStringValue(), field.getRangeElementType()),
+                expectedUseInt64Timestamps);
+          }
+          if (Boolean.valueOf(expectedUseInt64Timestamps).equals(cell.getUseInt64Timestamps())) {
+            return cell;
+          }
+          return FieldValue.of(
+              Attribute.PRIMITIVE, cell.getStringValue(), expectedUseInt64Timestamps);
+        case RECORD:
+          FieldList subFields = field != null ? field.getSubFields() : null;
+          FieldValueList recordValue = cell.getRecordValue();
+          FieldValueList resolvedRecord =
+              resolveRowCells(recordValue, subFields, expectedUseInt64Timestamps);
+          return FieldValue.of(Attribute.RECORD, resolvedRecord, expectedUseInt64Timestamps);
+        case REPEATED:
+          if (Boolean.valueOf(expectedUseInt64Timestamps).equals(cell.getUseInt64Timestamps())) {
+            return cell;
+          }
+          FieldValueList repeatedValue = (FieldValueList) cell.getRepeatedValue();
+          FieldValueList resolvedRepeated =
+              resolveRowCells(repeatedValue, null, expectedUseInt64Timestamps);
+          return FieldValue.of(Attribute.REPEATED, resolvedRepeated, expectedUseInt64Timestamps);
+        case RANGE:
+        default:
+          if (Boolean.valueOf(expectedUseInt64Timestamps).equals(cell.getUseInt64Timestamps())) {
+            return cell;
+          }
+          return FieldValue.of(Attribute.RANGE, cell.getRangeValue(), expectedUseInt64Timestamps);
+      }
+    }
   }
 
   @Override

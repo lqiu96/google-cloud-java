@@ -368,6 +368,10 @@ public class FieldValue implements Serializable {
    * href="https://github.com/googleapis/google-cloud-java/pull/2891">this discussion</a> for more
    * context.
    */
+  private static final FieldValue NULL_PRIMITIVE = new FieldValue(Attribute.PRIMITIVE, null, false);
+  private static final FieldValue NULL_PRIMITIVE_INT64_TIMESTAMPS =
+      new FieldValue(Attribute.PRIMITIVE, null, true);
+
   @BetaApi
   public static FieldValue of(Attribute attribute, Object value) {
     return of(attribute, value, false);
@@ -375,6 +379,9 @@ public class FieldValue implements Serializable {
 
   @BetaApi
   public static FieldValue of(Attribute attribute, Object value, Boolean useInt64Timestamps) {
+    if (value == null && attribute == Attribute.PRIMITIVE && useInt64Timestamps != null) {
+      return useInt64Timestamps ? NULL_PRIMITIVE_INT64_TIMESTAMPS : NULL_PRIMITIVE;
+    }
     return new FieldValue(attribute, value, useInt64Timestamps);
   }
 
