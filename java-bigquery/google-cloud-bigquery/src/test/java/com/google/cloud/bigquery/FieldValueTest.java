@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.api.client.util.Data;
@@ -231,7 +232,19 @@ public class FieldValueTest {
         PeriodDuration.parse("P-99999Y-99999M9999DT999H999M999.999999999S"));
     for (Entry<String, PeriodDuration> entry : intervalToPeriodDuration.entrySet()) {
       assertEquals(FieldValue.parseCanonicalInterval(entry.getKey()), entry.getValue());
+      assertEquals(
+          FieldValue.of(FieldValue.Attribute.PRIMITIVE, entry.getKey()).getPeriodDuration(),
+          entry.getValue());
       System.out.println(FieldValue.parseCanonicalInterval(entry.getKey()));
     }
+    assertEquals(
+        PeriodDuration.parse("-P1Y2M3DT4H5M6.7S"),
+        FieldValue.of(FieldValue.Attribute.PRIMITIVE, "-P1Y2M3DT4H5M6.7S").getPeriodDuration());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> FieldValue.of(FieldValue.Attribute.PRIMITIVE, "not-an-interval").getPeriodDuration());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> FieldValue.of(FieldValue.Attribute.PRIMITIVE, "POINT(1 2)").getPeriodDuration());
   }
 }

@@ -48,6 +48,9 @@ public class FieldValue implements Serializable {
 
   private static final int MICROSECONDS = 1000000;
   private static final long serialVersionUID = 469098630191710062L;
+  private static final Pattern CANONICAL_INTERVAL_PATTERN =
+      Pattern.compile(
+          "(?<sign1>[+-])?(?<year>\\d+)-(?<month>\\d+) (?<sign2>[-|+])?(?<day>\\d+) (?<sign3>[-|+])?(?<hours>\\d+):(?<minutes>\\d+):(?<seconds>\\d+)(\\.(?<fraction>\\d+))?");
 
   private final Attribute attribute;
   private final Object value;
@@ -303,14 +306,34 @@ public class FieldValue implements Serializable {
    */
   @SuppressWarnings("unchecked")
   public PeriodDuration getPeriodDuration() {
-    checkNotNull(value);
-    try {
-      // Try parsing from ISO 8601
-      return PeriodDuration.parse(getStringValue());
-    } catch (DateTimeParseException dateTimeParseException) {
-      // Try parsing from canonical interval format
-      return parseCanonicalInterval(getStringValue());
+    String stringValue = getStringValue();
+    // BigQuery encodes INTERVAL values in canonical "[sign]Y-M [sign]D [sign]H:M:S[.F]" format,
+    // whereas ISO-8601 PeriodDuration strings always begin with 'P' (optionally preceded by '+'
+    // or '-'). Dispatching by prefix avoids throwing DateTimeParseException on every canonical
+    // interval cell.
+    if (isIso8601PeriodDuration(stringValue)) {
+      try {
+        return PeriodDuration.parse(stringValue);
+      } catch (DateTimeParseException dateTimeParseException) {
+        return parseCanonicalInterval(stringValue);
+      }
     }
+    return parseCanonicalInterval(stringValue);
+  }
+
+  private static boolean isIso8601PeriodDuration(String text) {
+    if (text.isEmpty()) {
+      return false;
+    }
+    char first = text.charAt(0);
+    if (first == 'P' || first == 'p') {
+      return true;
+    }
+    if ((first == '+' || first == '-') && text.length() > 1) {
+      char second = text.charAt(1);
+      return second == 'P' || second == 'p';
+    }
+    return false;
   }
 
   /**
@@ -433,10 +456,7 @@ public class FieldValue implements Serializable {
    */
   static PeriodDuration parseCanonicalInterval(String interval) throws IllegalArgumentException {
     // Pattern is [sign]Y-M [sign]D [sign]H:M:S[.F]
-    Pattern pattern =
-        Pattern.compile(
-            "(?<sign1>[+-])?(?<year>\\d+)-(?<month>\\d+) (?<sign2>[-|+])?(?<day>\\d+) (?<sign3>[-|+])?(?<hours>\\d+):(?<minutes>\\d+):(?<seconds>\\d+)(\\.(?<fraction>\\d+))?");
-    Matcher matcher = pattern.matcher(interval);
+    Matcher matcher = CANONICAL_INTERVAL_PATTERN.matcher(interval);
     if (!matcher.find()) {
       throw new IllegalArgumentException();
     }
@@ -462,21 +482,32 @@ public class FieldValue implements Serializable {
     if (Objects.equals(sign2, "-")) {
       dayInt *= -1;
     }
-    if (sign3 == null) {
-      sign3 = "";
+
+    long hoursLong = Long.parseLong(hours);
+    long minutesLong = Long.parseLong(minutes);
+    long secondsLong = Long.parseLong(seconds);
+    long totalSeconds =
+        Math.addExact(
+            Math.addExact(
+                Math.multiplyExact(hoursLong, 3600L), Math.multiplyExact(minutesLong, 60L)),
+            secondsLong);
+    long nanos = 0L;
+    if (fraction != null) {
+      if (fraction.length() > 9) {
+        throw new DateTimeParseException(
+            "Fraction exceeds 9 digits", interval, matcher.start("fraction"));
+      }
+      nanos = Long.parseLong(fraction);
+      for (int i = fraction.length(); i < 9; i++) {
+        nanos *= 10L;
+      }
+    }
+    if ("-".equals(sign3)) {
+      totalSeconds = -totalSeconds;
+      nanos = -nanos;
     }
 
-    String durationString =
-        sign3
-            + "PT"
-            + hours
-            + "H"
-            + minutes
-            + "M"
-            + seconds
-            + (fraction == null ? "" : "." + fraction)
-            + "S";
-
-    return PeriodDuration.of(Period.of(yearInt, monthInt, dayInt), Duration.parse(durationString));
+    return PeriodDuration.of(
+        Period.of(yearInt, monthInt, dayInt), Duration.ofSeconds(totalSeconds, nanos));
   }
 }
