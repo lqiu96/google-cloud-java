@@ -19,6 +19,7 @@ package com.google.cloud.bigquery;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.api.services.bigquery.model.QueryRequest;
@@ -141,7 +142,7 @@ public class QueryRequestInfoTest {
           .setReservation(RESERVATION)
           .build();
   QueryRequestInfo REQUEST_INFO =
-      new QueryRequestInfo(QUERY_JOB_CONFIGURATION, DataFormatOptions.newBuilder().build());
+      new QueryRequestInfo(QUERY_JOB_CONFIGURATION, DataFormatOptions.newBuilder().build(), null);
   private static final QueryJobConfiguration QUERY_JOB_CONFIGURATION_SUPPORTED =
       QueryJobConfiguration.newBuilder(QUERY)
           .setUseQueryCache(USE_QUERY_CACHE)
@@ -158,12 +159,12 @@ public class QueryRequestInfoTest {
           .build();
   QueryRequestInfo REQUEST_INFO_SUPPORTED =
       new QueryRequestInfo(
-          QUERY_JOB_CONFIGURATION_SUPPORTED, DataFormatOptions.newBuilder().build());
+          QUERY_JOB_CONFIGURATION_SUPPORTED, DataFormatOptions.newBuilder().build(), null);
   private static final QueryJobConfiguration QUERY_JOB_CONFIGURATION_WITH_TIMEOUT =
       QUERY_JOB_CONFIGURATION_SUPPORTED.toBuilder().setJobTimeoutMs(TIMEOUT).build();
   QueryRequestInfo REQUEST_INFO_WITH_TIMEOUT =
       new QueryRequestInfo(
-          QUERY_JOB_CONFIGURATION_WITH_TIMEOUT, DataFormatOptions.newBuilder().build());
+          QUERY_JOB_CONFIGURATION_WITH_TIMEOUT, DataFormatOptions.newBuilder().build(), null);
 
   private static final QueryJobConfiguration QUERY_JOB_CONFIGURATION_REQUIRED_SUPPORTED =
       QUERY_JOB_CONFIGURATION_SUPPORTED.toBuilder()
@@ -171,7 +172,7 @@ public class QueryRequestInfoTest {
           .build();
   QueryRequestInfo REQUEST_INFO_REQUIRED_SUPPORTED =
       new QueryRequestInfo(
-          QUERY_JOB_CONFIGURATION_REQUIRED_SUPPORTED, DataFormatOptions.newBuilder().build());
+          QUERY_JOB_CONFIGURATION_REQUIRED_SUPPORTED, DataFormatOptions.newBuilder().build(), null);
 
   @Test
   public void testIsFastQuerySupported() {
@@ -193,34 +194,75 @@ public class QueryRequestInfoTest {
   public void equalTo() {
     compareQueryRequestInfo(
         new QueryRequestInfo(
-            QUERY_JOB_CONFIGURATION_SUPPORTED, DataFormatOptions.newBuilder().build()),
+            QUERY_JOB_CONFIGURATION_SUPPORTED, DataFormatOptions.newBuilder().build(), null),
         REQUEST_INFO_SUPPORTED);
     compareQueryRequestInfo(
-        new QueryRequestInfo(QUERY_JOB_CONFIGURATION, DataFormatOptions.newBuilder().build()),
+        new QueryRequestInfo(QUERY_JOB_CONFIGURATION, DataFormatOptions.newBuilder().build(), null),
         REQUEST_INFO);
     compareQueryRequestInfo(
         new QueryRequestInfo(
-            QUERY_JOB_CONFIGURATION_WITH_TIMEOUT, DataFormatOptions.newBuilder().build()),
+            QUERY_JOB_CONFIGURATION_WITH_TIMEOUT, DataFormatOptions.newBuilder().build(), null),
         REQUEST_INFO_WITH_TIMEOUT);
     compareQueryRequestInfo(
         new QueryRequestInfo(
-            QUERY_JOB_CONFIGURATION_REQUIRED_SUPPORTED, DataFormatOptions.newBuilder().build()),
+            QUERY_JOB_CONFIGURATION_REQUIRED_SUPPORTED,
+            DataFormatOptions.newBuilder().build(),
+            null),
         REQUEST_INFO_REQUIRED_SUPPORTED);
   }
 
   @Test
   public void testInt64Timestamp() {
     QueryRequestInfo requestInfo =
-        new QueryRequestInfo(QUERY_JOB_CONFIGURATION, DataFormatOptions.newBuilder().build());
+        new QueryRequestInfo(QUERY_JOB_CONFIGURATION, DataFormatOptions.newBuilder().build(), null);
     QueryRequest requestPb = requestInfo.toPb();
     assertFalse(requestPb.getFormatOptions().getUseInt64Timestamp());
 
     QueryRequestInfo requestInfoLosslessTs =
         new QueryRequestInfo(
             QUERY_JOB_CONFIGURATION,
-            DataFormatOptions.newBuilder().useInt64Timestamp(true).build());
+            DataFormatOptions.newBuilder().useInt64Timestamp(true).build(),
+            null);
     QueryRequest requestLosslessTsPb = requestInfoLosslessTs.toPb();
     assertTrue(requestLosslessTsPb.getFormatOptions().getUseInt64Timestamp());
+  }
+
+  @Test
+  public void testDefaultJobCreationModeAndParameters() {
+    QueryJobConfiguration unparameterizedConfig = QueryJobConfiguration.of(QUERY);
+    QueryRequestInfo infoWithDefault =
+        new QueryRequestInfo(
+            unparameterizedConfig,
+            DataFormatOptions.newBuilder().build(),
+            JobCreationMode.JOB_CREATION_OPTIONAL);
+    QueryRequest requestPb = infoWithDefault.toPb();
+    assertEquals("JOB_CREATION_OPTIONAL", requestPb.getJobCreationMode());
+    assertNull(requestPb.getQueryParameters());
+
+    QueryRequestInfo explicitModeInfo =
+        new QueryRequestInfo(
+            QUERY_JOB_CONFIGURATION_REQUIRED_SUPPORTED,
+            DataFormatOptions.newBuilder().build(),
+            JobCreationMode.JOB_CREATION_OPTIONAL);
+    assertEquals("JOB_CREATION_REQUIRED", explicitModeInfo.toPb().getJobCreationMode());
+
+    QueryJobConfiguration namedParamConfig =
+        QueryJobConfiguration.newBuilder(QUERY).setNamedParameters(NAME_PARAMETER).build();
+    QueryRequestInfo namedInfo =
+        new QueryRequestInfo(namedParamConfig, DataFormatOptions.newBuilder().build(), null);
+    assertEquals(
+        namedParamConfig.toPb().getQuery().getQueryParameters(),
+        namedInfo.toPb().getQueryParameters());
+
+    QueryJobConfiguration positionalParamConfig =
+        QueryJobConfiguration.newBuilder(QUERY)
+            .setPositionalParameters(POSITIONAL_PARAMETER)
+            .build();
+    QueryRequestInfo positionalInfo =
+        new QueryRequestInfo(positionalParamConfig, DataFormatOptions.newBuilder().build(), null);
+    assertEquals(
+        positionalParamConfig.toPb().getQuery().getQueryParameters(),
+        positionalInfo.toPb().getQueryParameters());
   }
 
   /*
