@@ -20,7 +20,6 @@ import com.google.cloud.bigquery.storage.v1.ReadRowsResponse;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.BaseEncoding;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.channels.Channels;
@@ -37,11 +36,13 @@ import org.apache.arrow.memory.RootAllocator;
 import org.apache.arrow.vector.BigIntVector;
 import org.apache.arrow.vector.BitVector;
 import org.apache.arrow.vector.DateDayVector;
+import org.apache.arrow.vector.DecimalVector;
 import org.apache.arrow.vector.FieldVector;
 import org.apache.arrow.vector.Float8Vector;
 import org.apache.arrow.vector.IntVector;
 import org.apache.arrow.vector.TimeMicroVector;
 import org.apache.arrow.vector.TimeStampVector;
+import org.apache.arrow.vector.VarBinaryVector;
 import org.apache.arrow.vector.VarCharVector;
 import org.apache.arrow.vector.VectorLoader;
 import org.apache.arrow.vector.VectorSchemaRoot;
@@ -355,18 +356,20 @@ final class ArrowDeserializer {
     }
 
     // Handle primitive types
-    String stringVal;
     if (type == LegacySQLTypeName.TIMESTAMP) {
       TimeStampVector tsVector = (TimeStampVector) vector;
-      stringVal = formatTimestampMicros(tsVector.get(rowIndex));
+      return FieldValue.ofTimestampMicros(tsVector.get(rowIndex));
     } else if (type == LegacySQLTypeName.DATE) {
+      String stringVal;
       if (vector instanceof DateDayVector) {
         int days = ((DateDayVector) vector).get(rowIndex);
         stringVal = LocalDate.ofEpochDay(days).toString();
       } else {
         stringVal = String.valueOf(vector.getObject(rowIndex));
       }
+      return FieldValue.of(FieldValue.Attribute.PRIMITIVE, stringVal);
     } else if (type == LegacySQLTypeName.TIME) {
+      String stringVal;
       if (vector instanceof TimeMicroVector) {
         long microsOfDay = ((TimeMicroVector) vector).get(rowIndex);
         stringVal =
@@ -374,28 +377,33 @@ final class ArrowDeserializer {
       } else {
         stringVal = String.valueOf(vector.getObject(rowIndex));
       }
+      return FieldValue.of(FieldValue.Attribute.PRIMITIVE, stringVal);
     } else if (vector instanceof VarCharVector) {
-      stringVal = new String(((VarCharVector) vector).get(rowIndex), StandardCharsets.UTF_8);
+      String stringVal = new String(((VarCharVector) vector).get(rowIndex), StandardCharsets.UTF_8);
+      return FieldValue.of(FieldValue.Attribute.PRIMITIVE, stringVal);
     } else if (vector instanceof IntVector) {
-      stringVal = Integer.toString(((IntVector) vector).get(rowIndex));
+      return FieldValue.ofLong(((IntVector) vector).get(rowIndex));
     } else if (vector instanceof BigIntVector) {
-      stringVal = Long.toString(((BigIntVector) vector).get(rowIndex));
+      return FieldValue.ofLong(((BigIntVector) vector).get(rowIndex));
     } else if (vector instanceof BitVector) {
-      stringVal = ((BitVector) vector).get(rowIndex) == 1 ? "true" : "false";
+      String stringVal = ((BitVector) vector).get(rowIndex) == 1 ? "true" : "false";
+      return FieldValue.of(FieldValue.Attribute.PRIMITIVE, stringVal);
     } else if (vector instanceof Float8Vector) {
-      stringVal = Double.toString(((Float8Vector) vector).get(rowIndex));
+      return FieldValue.ofDouble(((Float8Vector) vector).get(rowIndex));
+    } else if (vector instanceof VarBinaryVector) {
+      return FieldValue.ofBytes(((VarBinaryVector) vector).get(rowIndex));
+    } else if (vector instanceof DecimalVector) {
+      return FieldValue.ofNumeric(((DecimalVector) vector).getObject(rowIndex));
     } else {
       Object value = vector.getObject(rowIndex);
       if (value instanceof byte[]) {
-        stringVal = BaseEncoding.base64().encode((byte[]) value);
+        return FieldValue.ofBytes((byte[]) value);
       } else if (value instanceof BigDecimal) {
-        stringVal = ((BigDecimal) value).toPlainString();
+        return FieldValue.ofNumeric((BigDecimal) value);
       } else {
-        stringVal = String.valueOf(value);
+        return FieldValue.of(FieldValue.Attribute.PRIMITIVE, String.valueOf(value));
       }
     }
-
-    return FieldValue.of(FieldValue.Attribute.PRIMITIVE, stringVal);
   }
 
   /**
