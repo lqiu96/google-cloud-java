@@ -26,7 +26,6 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -120,15 +119,15 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
     private boolean wasNull = false;
 
     private class BigQueryArrayResult implements java.sql.Array {
-      List<Object> array;
+      List<?> array;
 
       public BigQueryArrayResult(Object array) {
+        // Wrap Object[] views directly and retain existing List/FieldValueList instances
+        // without copying elements into a new ArrayList on every getArray call.
         if (array instanceof Object[]) {
-          this.array = new ArrayList<>(Arrays.asList((Object[]) array));
-        } else if (array instanceof FieldValueList) {
-          this.array = new ArrayList<>((FieldValueList) array);
+          this.array = Arrays.asList((Object[]) array);
         } else {
-          this.array = (List<Object>) array;
+          this.array = (List<?>) array;
         }
       }
 
@@ -383,6 +382,22 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
       }
     }
 
+    private int parseFieldValueInt(FieldValue fieldValue) {
+      String str = fieldValue.getStringValue();
+      if (str.indexOf('.') == -1 && str.indexOf('e') == -1 && str.indexOf('E') == -1) {
+        return Integer.parseInt(str);
+      }
+      return fieldValue.getNumericValue().intValue();
+    }
+
+    private long parseFieldValueLong(FieldValue fieldValue) {
+      String str = fieldValue.getStringValue();
+      if (str.indexOf('.') == -1 && str.indexOf('e') == -1 && str.indexOf('E') == -1) {
+        return Long.parseLong(str);
+      }
+      return fieldValue.getNumericValue().longValue();
+    }
+
     @Override
     public int getInt(String fieldName) throws SQLException {
       if (fieldName == null) {
@@ -398,7 +413,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return 0;
         }
         wasNull = false;
-        return fieldValue.getNumericValue().intValue();
+        return parseFieldValueInt(fieldValue);
       } else { // Data received from Read API (Arrow)
         Object currentVal = getCurrentValueForReadApiData(fieldName);
         if (currentVal == null) {
@@ -428,7 +443,8 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           wasNull = true;
           return 0;
         }
-        return fieldValue.getNumericValue().intValue();
+        wasNull = false;
+        return parseFieldValueInt(fieldValue);
       } else { // Data received from Read API (Arrow)
         return getInt(schemaFieldList.get(columnIndex).getName());
       }
@@ -448,7 +464,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return 0L;
         }
         wasNull = false;
-        return fieldValue.getNumericValue().longValue();
+        return parseFieldValueLong(fieldValue);
       } else { // Data received from Read API (Arrow)
         Object curVal = getCurrentValueForReadApiData(fieldName);
         if (curVal == null) {
@@ -473,7 +489,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return 0L;
         }
         wasNull = false;
-        return fieldValue.getNumericValue().longValue();
+        return parseFieldValueLong(fieldValue);
       } else { // Data received from Read API (Arrow)
         return getLong(schemaFieldList.get(columnIndex).getName());
       }
@@ -493,7 +509,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return 0.0d;
         }
         wasNull = false;
-        return fieldValue.getNumericValue().doubleValue();
+        return fieldValue.getDoubleValue();
       } else { // Data received from Read API (Arrow)
         Object curVal = getCurrentValueForReadApiData(fieldName);
         if (curVal == null) {
@@ -501,7 +517,10 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return 0.0d;
         }
         wasNull = false;
-        return new BigDecimal(curVal.toString()).doubleValue();
+        if (curVal instanceof Number) {
+          return ((Number) curVal).doubleValue();
+        }
+        return Double.parseDouble(curVal.toString());
       }
     }
 
@@ -517,7 +536,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return 0.0d;
         }
         wasNull = false;
-        return fieldValue.getNumericValue().doubleValue();
+        return fieldValue.getDoubleValue();
       } else { // Data received from Read API (Arrow)
         return getDouble(schemaFieldList.get(columnIndex).getName());
       }
@@ -537,7 +556,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return null;
         }
         wasNull = false;
-        return BigDecimal.valueOf(fieldValue.getNumericValue().doubleValue());
+        return fieldValue.getNumericValue();
       } else { // Data received from Read API (Arrow)
         Object curVal = getCurrentValueForReadApiData(fieldName);
         if (curVal == null) {
@@ -545,7 +564,14 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return null;
         }
         wasNull = false;
-        return BigDecimal.valueOf(getDouble(fieldName));
+        if (curVal instanceof BigDecimal) {
+          return (BigDecimal) curVal;
+        } else if (curVal instanceof Long || curVal instanceof Integer) {
+          return BigDecimal.valueOf(((Number) curVal).longValue());
+        } else if (curVal instanceof Number) {
+          return BigDecimal.valueOf(((Number) curVal).doubleValue());
+        }
+        return new BigDecimal(curVal.toString());
       }
     }
 
@@ -560,7 +586,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return null;
         }
         wasNull = false;
-        return BigDecimal.valueOf(fieldValue.getNumericValue().doubleValue());
+        return fieldValue.getNumericValue();
       } else { // Data received from Read API (Arrow)
         return getBigDecimal(schemaFieldList.get(columnIndex).getName());
       }
@@ -751,19 +777,23 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
     private Time getTimeFromFieldVal(FieldValue fieldValue) throws SQLException {
       // Time ranges from 00:00:00 to 23:59:59.99999. in BigQuery. Parsing it to java.sql.Time
       String strTime = fieldValue.getStringValue();
-      String[] timeSplt = strTime.split(":");
-      if (timeSplt.length != 3) {
+      int firstColon = strTime.indexOf(':');
+      int secondColon = firstColon != -1 ? strTime.indexOf(':', firstColon + 1) : -1;
+      if (firstColon == -1
+          || secondColon == -1
+          || strTime.indexOf(':', secondColon + 1) != -1) {
         throw new SQLException("Can not parse the value " + strTime + " to java.sql.Time");
       }
-      int hr = Integer.parseInt(timeSplt[0]);
-      int min = Integer.parseInt(timeSplt[1]);
-      int sec, nanoSec = 0;
-      if (timeSplt[2].contains(".")) {
-        String[] secSplt = timeSplt[2].split("\\.");
-        sec = Integer.parseInt(secSplt[0]);
-        nanoSec = Integer.parseInt(secSplt[1]);
+      int hr = Integer.parseInt(strTime.substring(0, firstColon));
+      int min = Integer.parseInt(strTime.substring(firstColon + 1, secondColon));
+      int sec;
+      int nanoSec = 0;
+      int dotIndex = strTime.indexOf('.', secondColon + 1);
+      if (dotIndex != -1) {
+        sec = Integer.parseInt(strTime.substring(secondColon + 1, dotIndex));
+        nanoSec = Integer.parseInt(strTime.substring(dotIndex + 1));
       } else {
-        sec = Integer.parseInt(timeSplt[2]);
+        sec = Integer.parseInt(strTime.substring(secondColon + 1));
       }
       return Time.valueOf(LocalTime.of(hr, min, sec, nanoSec));
     }
