@@ -899,4 +899,50 @@ public class ArrowDeserializerTest {
       }
     }
   }
+
+  @Test
+  public void testDeserializeRecordBatch_varyingLengthStringsAndBytesDoNotBleed()
+      throws IOException {
+    try (BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
+        VarCharVector strVec = new VarCharVector("str_col", allocator);
+        VarBinaryVector binVec = new VarBinaryVector("bin_col", allocator)) {
+      String longStr = "a_very_long_string_that_grows_the_reusable_byte_buffer_capacity_first";
+      String shortStr = "tiny";
+      String emptyStr = "";
+      byte[] longBytes = "long_binary_payload_for_testing_slice_length".getBytes(StandardCharsets.UTF_8);
+      byte[] shortBytes = "ab".getBytes(StandardCharsets.UTF_8);
+      byte[] emptyBytes = new byte[0];
+
+      strVec.allocateNew(3);
+      strVec.set(0, longStr.getBytes(StandardCharsets.UTF_8));
+      strVec.set(1, shortStr.getBytes(StandardCharsets.UTF_8));
+      strVec.set(2, emptyStr.getBytes(StandardCharsets.UTF_8));
+      strVec.setValueCount(3);
+
+      binVec.allocateNew(3);
+      binVec.set(0, longBytes);
+      binVec.set(1, shortBytes);
+      binVec.set(2, emptyBytes);
+      binVec.setValueCount(3);
+
+      try (VectorSchemaRoot root = new VectorSchemaRoot(ImmutableList.of(strVec, binVec))) {
+        org.apache.arrow.vector.types.pojo.Schema arrowSchema = root.getSchema();
+        Schema bqSchema = ArrowPojoUtils.arrowSchemaToBigQuerySchema(arrowSchema);
+        byte[] recordBatchBytes = serializeVectorSchemaRoot(root, allocator);
+
+        List<FieldValueList> rows =
+            ArrowDeserializer.deserializeRecordBatch(recordBatchBytes, bqSchema, arrowSchema);
+        assertEquals(3, rows.size());
+        assertEquals(longStr, rows.get(0).get("str_col").getStringValue());
+        assertEquals(shortStr, rows.get(1).get("str_col").getStringValue());
+        assertEquals(emptyStr, rows.get(2).get("str_col").getStringValue());
+        assertEquals(
+            BaseEncoding.base64().encode(longBytes), rows.get(0).get("bin_col").getStringValue());
+        assertEquals(
+            BaseEncoding.base64().encode(shortBytes), rows.get(1).get("bin_col").getStringValue());
+        assertEquals(
+            BaseEncoding.base64().encode(emptyBytes), rows.get(2).get("bin_col").getStringValue());
+      }
+    }
+  }
 }
