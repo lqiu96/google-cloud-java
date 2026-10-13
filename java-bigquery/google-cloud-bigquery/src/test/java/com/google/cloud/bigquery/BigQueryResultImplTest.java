@@ -316,4 +316,76 @@ class BigQueryResultImplTest {
     assertThat(resultSet.wasNull()).isFalse();
     assertThat(resultSet.next()).isFalse();
   }
+
+  @Test
+  void testResultSetReadApiOrdinalArrayRow() throws InterruptedException, SQLException {
+    BlockingQueue<BigQueryResultImpl.Row> buffer = new LinkedBlockingDeque<>(BUFFER_SIZE);
+
+    Object[] rowValues =
+        new Object[] {
+          false,
+          1L,
+          1.5,
+          new Text("string_value"),
+          BYTES,
+          EXPECTED_TIMESTAMP.getTime() * 1000,
+          EXPECTED_TIME.getTime() * 1000,
+          DATE_INT,
+          EXPECTED_INT_ARRAY,
+          STRING_ARRAY
+        };
+    buffer.put(new BigQueryResultImpl.Row(rowValues));
+
+    Object[] nullValues = new Object[10];
+    buffer.put(new BigQueryResultImpl.Row(nullValues));
+    buffer.put(new BigQueryResultImpl.Row(null, true));
+
+    BigQueryResultImpl<BigQueryResultImpl.Row> bigQueryResult =
+        new BigQueryResultImpl<>(SCHEMA, 2, buffer, null);
+    ResultSet resultSet = bigQueryResult.getResultSet();
+
+    assertThat(resultSet.next()).isTrue();
+    // Verify both fieldName and columnIndex getters on array-backed Row
+    assertThat(resultSet.getBoolean("boolean")).isFalse();
+    assertThat(resultSet.getBoolean(0)).isFalse();
+    assertThat(resultSet.wasNull()).isFalse();
+    assertThat(resultSet.getInt("long")).isEqualTo(1);
+    assertThat(resultSet.getInt(1)).isEqualTo(1);
+    assertThat(resultSet.getLong("long")).isEqualTo(1L);
+    assertThat(resultSet.getLong(1)).isEqualTo(1L);
+    assertThat(resultSet.getDouble("double")).isEqualTo(1.5);
+    assertThat(resultSet.getDouble(2)).isEqualTo(1.5);
+    assertThat(resultSet.getBigDecimal("double")).isEqualTo(BigDecimal.valueOf(1.5));
+    assertThat(resultSet.getBigDecimal(2)).isEqualTo(BigDecimal.valueOf(1.5));
+    assertThat(resultSet.getObject("string")).isEqualTo(new Text("string_value"));
+    assertThat(resultSet.getObject(3)).isEqualTo(new Text("string_value"));
+    assertThat(resultSet.getString("string")).isEqualTo("string_value");
+    assertThat(resultSet.getString(3)).isEqualTo("string_value");
+    assertThat(resultSet.getBytes("bytes")).isEqualTo(BYTES);
+    assertThat(resultSet.getBytes(4)).isEqualTo(BYTES);
+    assertThat(resultSet.getTimestamp("timestamp")).isEqualTo(EXPECTED_TIMESTAMP);
+    assertThat(resultSet.getTimestamp(5)).isEqualTo(EXPECTED_TIMESTAMP);
+    assertThat(resultSet.getTime("time").getTime()).isEqualTo(EXPECTED_TIME.getTime());
+    assertThat(resultSet.getTime(6).getTime()).isEqualTo(EXPECTED_TIME.getTime());
+    assertThat(resultSet.getDate("date")).isNotNull();
+    assertThat(resultSet.getDate(7)).isNotNull();
+    assertThat(resultSet.getArray("intArray").getArray()).isEqualTo(EXPECTED_INT_ARRAY);
+    assertThat(resultSet.getArray(8).getArray()).isEqualTo(EXPECTED_INT_ARRAY);
+    assertThat(resultSet.getArray("stringArray").getArray()).isEqualTo(EXPECTED_STRING_ARRAY);
+    assertThat(resultSet.getArray(9).getArray()).isEqualTo(EXPECTED_STRING_ARRAY);
+
+    assertThat(resultSet.next()).isTrue();
+    assertThat(resultSet.getString(3)).isNull();
+    assertThat(resultSet.wasNull()).isTrue();
+    assertThat(resultSet.getInt(1)).isEqualTo(0);
+    assertThat(resultSet.wasNull()).isTrue();
+    assertThat(resultSet.getLong(1)).isEqualTo(0L);
+    assertThat(resultSet.wasNull()).isTrue();
+    assertThat(resultSet.getDouble(2)).isEqualTo(0.0);
+    assertThat(resultSet.wasNull()).isTrue();
+    assertThat(resultSet.getBigDecimal(2)).isNull();
+    assertThat(resultSet.wasNull()).isTrue();
+
+    assertThat(resultSet.next()).isFalse();
+  }
 }

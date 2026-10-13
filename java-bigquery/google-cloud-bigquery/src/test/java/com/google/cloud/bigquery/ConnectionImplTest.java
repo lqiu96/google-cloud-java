@@ -794,4 +794,73 @@ class ConnectionImplTest {
     assertTrue(connectionSpy.getPageCacheSize(100000000, QUERY_SCHEMA) <= 20);
     verify(connectionSpy, times(2)).getPageCacheSize(any(Integer.class), any(Schema.class));
   }
+
+  @Test
+  void testArrowRowReaderProducesOrdinalArrayRows() throws Exception {
+    try (org.apache.arrow.memory.BufferAllocator allocator =
+        new org.apache.arrow.memory.RootAllocator(Long.MAX_VALUE)) {
+      org.apache.arrow.vector.VarCharVector countryVec =
+          new org.apache.arrow.vector.VarCharVector("country", allocator);
+      countryVec.allocateNew(2);
+      countryVec.set(0, "USA".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      countryVec.set(1, "CAN".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      countryVec.setValueCount(2);
+
+      org.apache.arrow.vector.VarCharVector stateVec =
+          new org.apache.arrow.vector.VarCharVector("state_name", allocator);
+      stateVec.allocateNew(2);
+      stateVec.set(0, "CA".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      stateVec.set(1, "ON".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      stateVec.setValueCount(2);
+
+      try (org.apache.arrow.vector.VectorSchemaRoot root =
+          new org.apache.arrow.vector.VectorSchemaRoot(ImmutableList.of(countryVec, stateVec))) {
+        java.io.ByteArrayOutputStream schemaOut = new java.io.ByteArrayOutputStream();
+        org.apache.arrow.vector.ipc.message.MessageSerializer.serialize(
+            new org.apache.arrow.vector.ipc.WriteChannel(
+                java.nio.channels.Channels.newChannel(schemaOut)),
+            root.getSchema());
+        com.google.cloud.bigquery.storage.v1.ArrowSchema arrowSchemaPb =
+            com.google.cloud.bigquery.storage.v1.ArrowSchema.newBuilder()
+                .setSerializedSchema(
+                    com.google.protobuf.ByteString.copyFrom(schemaOut.toByteArray()))
+                .build();
+
+        java.io.ByteArrayOutputStream batchOut = new java.io.ByteArrayOutputStream();
+        org.apache.arrow.vector.VectorUnloader unloader =
+            new org.apache.arrow.vector.VectorUnloader(root);
+        try (org.apache.arrow.vector.ipc.message.ArrowRecordBatch batch =
+            unloader.getRecordBatch()) {
+          org.apache.arrow.vector.ipc.message.MessageSerializer.serialize(
+              new org.apache.arrow.vector.ipc.WriteChannel(
+                  java.nio.channels.Channels.newChannel(batchOut)),
+              batch);
+        }
+        com.google.cloud.bigquery.storage.v1.ArrowRecordBatch batchPb =
+            com.google.cloud.bigquery.storage.v1.ArrowRecordBatch.newBuilder()
+                .setSerializedRecordBatch(
+                    com.google.protobuf.ByteString.copyFrom(batchOut.toByteArray()))
+                .build();
+
+        Map<String, Integer> arrowNameToIndex = new HashMap<>();
+        BlockingQueue<BigQueryResultImpl.Row> rowBuffer = new LinkedBlockingDeque<>(10);
+        try (ConnectionImpl.ArrowRowReader reader =
+            connection.new ArrowRowReader(arrowSchemaPb, arrowNameToIndex)) {
+          reader.processRows(batchPb, rowBuffer, QUERY_SCHEMA);
+        }
+        rowBuffer.put(new BigQueryResultImpl.Row(null, true));
+
+        BigQueryResultImpl<BigQueryResultImpl.Row> result =
+            new BigQueryResultImpl<>(QUERY_SCHEMA, 2, rowBuffer, null);
+        java.sql.ResultSet rs = result.getResultSet();
+        assertTrue(rs.next());
+        assertEquals("USA", rs.getString("country"));
+        assertEquals("CA", rs.getString(1));
+        assertTrue(rs.next());
+        assertEquals("CAN", rs.getString(0));
+        assertEquals("ON", rs.getString("state_name"));
+        assertFalse(rs.next());
+      }
+    }
+  }
 }
