@@ -19,6 +19,7 @@ package com.google.cloud.bigquery;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.api.client.util.Data;
@@ -224,5 +225,18 @@ class FieldValueListTest {
     IllegalArgumentException exception =
         assertThrows(IllegalArgumentException.class, () -> fieldValues.get("nonexistent"));
     assertNotNull(exception);
+  }
+
+  @Test
+  void testWithSchemaShortCircuitsWhenSchemaMatches() {
+    assertSame(fieldValues, fieldValues.withSchema(schema));
+    FieldList equivalentSchema = FieldList.of(schema);
+    assertSame(fieldValues, fieldValues.withSchema(equivalentSchema));
+
+    FieldValueList noSchema = FieldValueList.fromPb(fieldValuesPb, null);
+    assertSame(noSchema, noSchema.withSchema(null));
+    FieldValueList attached = noSchema.withSchema(schema);
+    assertEquals(fieldValues, attached);
+    assertSame(attached, attached.withSchema(schema));
   }
 }
