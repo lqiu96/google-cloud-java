@@ -23,16 +23,31 @@ import com.google.cloud.bigquery.JobStatistics.QueryStatistics.StatementType;
 import com.google.cloud.bigquery.JobStatistics.SessionInfo;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.jspecify.annotations.Nullable;
 
 @AutoValue
 public abstract class TableResult implements Page<FieldValueList>, Serializable {
 
   private static final long serialVersionUID = 1L;
+
+  private static final ExecutorService PREFETCH_EXECUTOR =
+      Executors.newCachedThreadPool(
+          new ThreadFactoryBuilder()
+              .setDaemon(true)
+              .setNameFormat("bigquery-table-result-prefetch-%d")
+              .build());
 
   @AutoValue.Builder
   public abstract static class Builder {
@@ -206,12 +221,86 @@ public abstract class TableResult implements Page<FieldValueList>, Serializable 
 
   @Override
   public Iterable<FieldValueList> iterateAll() {
-    return addSchema(getPageNoSchema().iterateAll());
+    return addSchema(prefetchIterateAll(getPageNoSchema()));
   }
 
   @Override
   public Iterable<FieldValueList> getValues() {
     return addSchema(getPageNoSchema().getValues());
+  }
+
+  private static Iterable<FieldValueList> prefetchIterateAll(final Page<FieldValueList> firstPage) {
+    return new Iterable<FieldValueList>() {
+      @Override
+      public Iterator<FieldValueList> iterator() {
+        return new PrefetchingPageIterator(firstPage);
+      }
+    };
+  }
+
+  private static final class PrefetchingPageIterator extends AbstractIterator<FieldValueList> {
+    private Page<FieldValueList> currentPage;
+    private Iterator<FieldValueList> currentPageIterator;
+    private @Nullable Future<Page<FieldValueList>> nextPageFuture;
+    private boolean prefetchStartedForCurrentPage;
+
+    PrefetchingPageIterator(Page<FieldValueList> firstPage) {
+      this.currentPage = firstPage;
+      this.currentPageIterator = firstPage.getValues().iterator();
+    }
+
+    @Override
+    protected FieldValueList computeNext() {
+      while (!currentPageIterator.hasNext()) {
+        if (!prefetchStartedForCurrentPage) {
+          currentPage = currentPage.hasNextPage() ? currentPage.getNextPage() : null;
+        } else if (nextPageFuture != null) {
+          currentPage = getPrefetchedPage(nextPageFuture);
+          nextPageFuture = null;
+        } else {
+          currentPage = null;
+        }
+        prefetchStartedForCurrentPage = false;
+        if (currentPage == null) {
+          return endOfData();
+        }
+        currentPageIterator = currentPage.getValues().iterator();
+      }
+      if (!prefetchStartedForCurrentPage) {
+        prefetchStartedForCurrentPage = true;
+        if (currentPage.hasNextPage()) {
+          final Page<FieldValueList> pageToFetchFrom = currentPage;
+          nextPageFuture =
+              PREFETCH_EXECUTOR.submit(
+                  new Callable<Page<FieldValueList>>() {
+                    @Override
+                    public Page<FieldValueList> call() {
+                      return pageToFetchFrom.getNextPage();
+                    }
+                  });
+        }
+      }
+      return currentPageIterator.next();
+    }
+
+    private static Page<FieldValueList> getPrefetchedPage(Future<Page<FieldValueList>> future) {
+      try {
+        return future.get();
+      } catch (ExecutionException e) {
+        Throwable cause = e.getCause();
+        if (cause instanceof RuntimeException) {
+          throw (RuntimeException) cause;
+        }
+        if (cause instanceof Error) {
+          throw (Error) cause;
+        }
+        throw new RuntimeException(cause);
+      } catch (InterruptedException e) {
+        future.cancel(true);
+        Thread.currentThread().interrupt();
+        throw new BigQueryException(0, "Interrupted while prefetching next page of results", e);
+      }
+    }
   }
 
   private Iterable<FieldValueList> addSchema(Iterable<FieldValueList> iter) {
