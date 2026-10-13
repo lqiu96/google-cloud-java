@@ -21,9 +21,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.BaseEncoding;
+import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.channels.Channels;
+import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -80,6 +83,51 @@ final class ArrowDeserializer {
   }
 
   private ArrowDeserializer() {}
+
+  /**
+   * Returns a lightweight, unsynchronized {@link ReadableByteChannel} backed directly by the
+   * read-only {@link ByteBuffer} view of a protobuf {@link ByteString}, avoiding {@code
+   * Channels.newChannel(byteString.newInput())} transfer buffers and {@link
+   * ByteString#toByteArray()} array copies.
+   */
+  static ReadableByteChannel newByteStringChannel(ByteString byteString) {
+    return new ByteBufferReadableByteChannel(byteString.asReadOnlyByteBuffer());
+  }
+
+  private static final class ByteBufferReadableByteChannel implements ReadableByteChannel {
+    private final ByteBuffer buffer;
+    private boolean open = true;
+
+    ByteBufferReadableByteChannel(ByteBuffer buffer) {
+      this.buffer = buffer;
+    }
+
+    @Override
+    public int read(ByteBuffer dst) throws IOException {
+      if (!open) {
+        throw new ClosedChannelException();
+      }
+      if (!buffer.hasRemaining()) {
+        return -1;
+      }
+      int toRead = Math.min(dst.remaining(), buffer.remaining());
+      int oldLimit = buffer.limit();
+      buffer.limit(buffer.position() + toRead);
+      dst.put(buffer);
+      buffer.limit(oldLimit);
+      return toRead;
+    }
+
+    @Override
+    public boolean isOpen() {
+      return open;
+    }
+
+    @Override
+    public void close() {
+      open = false;
+    }
+  }
 
   /**
    * Deserializes a raw binary Arrow schema payload into an Apache Arrow Schema object.
@@ -163,8 +211,7 @@ final class ArrowDeserializer {
           com.google.cloud.bigquery.storage.v1.ArrowRecordBatch batch =
               response.getArrowRecordBatch();
           try (ReadChannel readChannel =
-                  new ReadChannel(
-                      Channels.newChannel(batch.getSerializedRecordBatch().newInput()));
+                  new ReadChannel(newByteStringChannel(batch.getSerializedRecordBatch()));
               ArrowRecordBatch deserializedBatch =
                   MessageSerializer.deserializeRecordBatch(readChannel, childAllocator)) {
             if (deserializedBatch == null) {

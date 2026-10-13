@@ -80,7 +80,6 @@ import org.apache.arrow.vector.VectorSchemaRoot;
 import org.apache.arrow.vector.ipc.ReadChannel;
 import org.apache.arrow.vector.ipc.message.MessageSerializer;
 import org.apache.arrow.vector.types.pojo.Field;
-import org.apache.arrow.vector.util.ByteArrayReadableSeekableByteChannel;
 
 /** Implementation for {@link Connection}, the generic BigQuery connection API (not JDBC). */
 class ConnectionImpl implements Connection {
@@ -1114,8 +1113,7 @@ class ConnectionImpl implements Connection {
       org.apache.arrow.vector.types.pojo.Schema schema =
           MessageSerializer.deserializeSchema(
               new org.apache.arrow.vector.ipc.ReadChannel(
-                  new ByteArrayReadableSeekableByteChannel(
-                      arrowSchema.getSerializedSchema().toByteArray())));
+                  ArrowDeserializer.newByteStringChannel(arrowSchema.getSerializedSchema())));
       List<FieldVector> vectors = new ArrayList<>();
       List<Field> fields = schema.getFields();
       for (int i = 0; i < fields.size(); i++) {
@@ -1138,8 +1136,7 @@ class ConnectionImpl implements Connection {
         org.apache.arrow.vector.ipc.message.ArrowRecordBatch deserializedBatch =
             MessageSerializer.deserializeRecordBatch(
                 new ReadChannel(
-                    new ByteArrayReadableSeekableByteChannel(
-                        batch.getSerializedRecordBatch().toByteArray())),
+                    ArrowDeserializer.newByteStringChannel(batch.getSerializedRecordBatch())),
                 allocator);
 
         loader.load(deserializedBatch);
