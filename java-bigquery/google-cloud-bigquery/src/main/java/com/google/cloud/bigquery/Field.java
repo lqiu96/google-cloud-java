@@ -443,6 +443,7 @@ public final class Field implements Serializable {
     return Objects.hash(
         name,
         type,
+        subFields,
         mode,
         description,
         policyTags,
@@ -457,7 +458,26 @@ public final class Field implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof Field && Objects.equals(toPb(), ((Field) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Field)) {
+      return false;
+    }
+    Field other = (Field) obj;
+    return Objects.equals(name, other.name)
+        && Objects.equals(type, other.type)
+        && Objects.equals(subFields, other.subFields)
+        && Objects.equals(mode, other.mode)
+        && Objects.equals(description, other.description)
+        && Objects.equals(policyTags, other.policyTags)
+        && Objects.equals(maxLength, other.maxLength)
+        && Objects.equals(scale, other.scale)
+        && Objects.equals(precision, other.precision)
+        && Objects.equals(timestampPrecision, other.timestampPrecision)
+        && Objects.equals(defaultValueExpression, other.defaultValueExpression)
+        && Objects.equals(collation, other.collation)
+        && Objects.equals(rangeElementType, other.rangeElementType);
   }
 
   /** Returns a Field object with given name and type. */

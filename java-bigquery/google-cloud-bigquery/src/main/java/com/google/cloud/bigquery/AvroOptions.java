@@ -86,8 +86,15 @@ public final class AvroOptions extends FormatOptions {
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this
-        || obj instanceof AvroOptions && Objects.equals(toPb(), ((AvroOptions) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof AvroOptions)) {
+      return false;
+    }
+    AvroOptions other = (AvroOptions) obj;
+    return Objects.equals(getType(), other.getType())
+        && Objects.equals(useAvroLogicalTypes, other.useAvroLogicalTypes);
   }
 
   com.google.api.services.bigquery.model.AvroOptions toPb() {

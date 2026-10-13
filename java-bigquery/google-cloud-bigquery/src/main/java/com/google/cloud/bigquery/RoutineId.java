@@ -80,8 +80,16 @@ public final class RoutineId implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this
-        || obj instanceof RoutineId && Objects.equals(toPb(), ((RoutineId) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof RoutineId)) {
+      return false;
+    }
+    RoutineId other = (RoutineId) obj;
+    return Objects.equals(project, other.project)
+        && Objects.equals(dataset, other.dataset)
+        && Objects.equals(routine, other.routine);
   }
 
   @Override
