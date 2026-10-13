@@ -64,10 +64,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -544,16 +544,16 @@ class ConnectionImpl implements Connection {
     BigQueryResultStats bigQueryResultStats = getBigQueryResultSetStats(jobId);
 
     // Keeps the deserialized records at the row level, which is consumed by BigQueryResult
-    bufferFvl = new LinkedBlockingDeque<>(getBufferSize());
+    bufferFvl = new ArrayBlockingQueue<>(getBufferSize());
 
     // Keeps the parsed FieldValueLists
     BlockingQueue<Tuple<Iterable<FieldValueList>, Boolean>> pageCache =
-        new LinkedBlockingDeque<>(
+        new ArrayBlockingQueue<>(
             getPageCacheSize(connectionSettings.getNumBufferedRows(), schema));
 
     // Keeps the raw RPC responses
     BlockingQueue<Tuple<TableDataList, Boolean>> rpcResponseQueue =
-        new LinkedBlockingDeque<>(
+        new ArrayBlockingQueue<>(
             getPageCacheSize(connectionSettings.getNumBufferedRows(), schema));
 
     runNextPageTaskAsync(firstPage.getPageToken(), getDestinationTable(jobId), rpcResponseQueue);
@@ -598,12 +598,12 @@ class ConnectionImpl implements Connection {
     BigQueryResultStats bigQueryResultStats =
         new BigQueryResultStatsImpl(queryStatistics, sessionInfo);
 
-    bufferFvl = new LinkedBlockingDeque<>(getBufferSize());
+    bufferFvl = new ArrayBlockingQueue<>(getBufferSize());
     BlockingQueue<Tuple<Iterable<FieldValueList>, Boolean>> pageCache =
-        new LinkedBlockingDeque<>(
+        new ArrayBlockingQueue<>(
             getPageCacheSize(connectionSettings.getNumBufferedRows(), schema));
     BlockingQueue<Tuple<TableDataList, Boolean>> rpcResponseQueue =
-        new LinkedBlockingDeque<>(
+        new ArrayBlockingQueue<>(
             getPageCacheSize(connectionSettings.getNumBufferedRows(), schema));
 
     JobId jobId = JobId.fromPb(results.getJobReference());
@@ -1027,7 +1027,7 @@ class ConnectionImpl implements Connection {
           // DO a regex check using order by and use multiple streams
           ;
       ReadSession readSession = bqReadClient.createReadSession(builder.build());
-      bufferRow = new LinkedBlockingDeque<>(getBufferSize());
+      bufferRow = new ArrayBlockingQueue<>(getBufferSize());
       Map<String, Integer> arrowNameToIndex = new HashMap<>();
       // deserialize and populate the buffer async, so that the client isn't blocked
       processArrowStreamAsync(
