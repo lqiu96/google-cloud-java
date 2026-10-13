@@ -1979,7 +1979,11 @@ public class HttpBigQueryRpc implements BigQueryRpc {
         requestFactory.buildPostRequest(url, new JsonHttpContent(jsonFactory, loadJob));
     httpRequest.getHeaders().set("X-Upload-Content-Value", "application/octet-stream");
     HttpResponse response = httpRequest.execute();
-    return response.getHeaders().getLocation();
+    try {
+      return response.getHeaders().getLocation();
+    } finally {
+      response.disconnect();
+    }
   }
 
   @Override
@@ -2011,6 +2015,9 @@ public class HttpBigQueryRpc implements BigQueryRpc {
             .getRequestFactory()
             .buildPutRequest(url, new ByteArrayContent(null, toWrite, toWriteOffset, length));
     httpRequest.setParser(bigquery.getObjectParser());
+    // Disable throwing HttpResponseException on non-2xx responses so intermediate chunks
+    // returning HTTP 308 Resume Incomplete do not pay exception and stack-trace overhead.
+    httpRequest.setThrowExceptionOnExecuteError(false);
     long limit = destOffset + length;
     StringBuilder range = new StringBuilder("bytes ");
     range.append(destOffset).append('-').append(limit - 1).append('/');
@@ -2025,22 +2032,31 @@ public class HttpBigQueryRpc implements BigQueryRpc {
     IOException exception = null;
     HttpResponse response = null;
     try {
-      response = httpRequest.execute();
-      code = response.getStatusCode();
-      message = response.getStatusMessage();
-    } catch (HttpResponseException ex) {
-      exception = ex;
-      code = ex.getStatusCode();
-      message = ex.getStatusMessage();
-    }
-    if (!last && code != HTTP_RESUME_INCOMPLETE
-        || last && !(code == HTTP_OK || code == HTTP_CREATED)) {
-      if (exception != null) {
-        throw exception;
+      try {
+        response = httpRequest.execute();
+        code = response.getStatusCode();
+        message = response.getStatusMessage();
+      } catch (HttpResponseException ex) {
+        exception = ex;
+        code = ex.getStatusCode();
+        message = ex.getStatusMessage();
       }
-      throw new BigQueryException(code, message);
+      if (!last && code != HTTP_RESUME_INCOMPLETE
+          || last && !(code == HTTP_OK || code == HTTP_CREATED)) {
+        if (exception != null) {
+          throw exception;
+        }
+        if (response != null && !response.isSuccessStatusCode()) {
+          throw new HttpResponseException(response);
+        }
+        throw new BigQueryException(code, message);
+      }
+      return last && response != null ? response.parseAs(Job.class) : null;
+    } finally {
+      if (response != null) {
+        response.disconnect();
+      }
     }
-    return last && response != null ? response.parseAs(Job.class) : null;
   }
 
   @Override

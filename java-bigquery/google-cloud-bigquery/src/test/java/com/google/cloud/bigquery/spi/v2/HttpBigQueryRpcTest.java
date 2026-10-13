@@ -1783,5 +1783,61 @@ public class HttpBigQueryRpcTest {
 
       verifyNoSpans();
     }
+
+    @Test
+    public void testWriteSkipExceptionTranslationResumeIncompleteAndLastChunk() throws Exception {
+      setMockResponse("");
+      mockResponse.setStatusCode(308);
+      byte[] payload = new byte[] {1, 2, 3, 4};
+
+      Job intermediateResult =
+          rpc.writeSkipExceptionTranslation(
+              "https://bigquery.googleapis.com/upload/bigquery/v2/projects/p/jobs?upload_id=123",
+              payload,
+              0,
+              0L,
+              payload.length,
+              false);
+      assertNull(intermediateResult);
+      verifyRequest("PUT", "upload_id=123");
+
+      setMockResponse(
+          "{\"kind\":\"bigquery#job\",\"jobReference\":{\"projectId\":\""
+              + PROJECT_ID
+              + "\",\"jobId\":\""
+              + JOB_ID
+              + "\"}}");
+      mockResponse.setStatusCode(200);
+      Job finalResult =
+          rpc.writeSkipExceptionTranslation(
+              "https://bigquery.googleapis.com/upload/bigquery/v2/projects/p/jobs?upload_id=123",
+              payload,
+              0,
+              4L,
+              payload.length,
+              true);
+      assertNotNull(finalResult);
+      assertEquals(JOB_ID, finalResult.getJobReference().getJobId());
+    }
+
+    @Test
+    public void testWriteSkipExceptionTranslationErrorThrowsHttpResponseException() {
+      setMockResponse("{\"error\":{\"code\":503,\"message\":\"Service Unavailable\"}}");
+      mockResponse.setStatusCode(503);
+      byte[] payload = new byte[] {1, 2, 3, 4};
+
+      com.google.api.client.http.HttpResponseException ex =
+          assertThrows(
+              com.google.api.client.http.HttpResponseException.class,
+              () ->
+                  rpc.writeSkipExceptionTranslation(
+                      "https://bigquery.googleapis.com/upload/bigquery/v2/projects/p/jobs?upload_id=123",
+                      payload,
+                      0,
+                      0L,
+                      payload.length,
+                      false));
+      assertEquals(503, ex.getStatusCode());
+    }
   }
 }
