@@ -48,11 +48,13 @@ public abstract class Range implements Serializable {
   /** Returns the start and end values of this range. */
   public ImmutableMap<String, String> getValues() {
     ImmutableMap.Builder<String, String> result = ImmutableMap.builder();
-    if (!getStart().isNull()) {
-      result.put("start", getStart().getStringValue());
+    String start = getStartInner();
+    if (start != null) {
+      result.put("start", start);
     }
-    if (!getEnd().isNull()) {
-      result.put("end", getEnd().getStringValue());
+    String end = getEndInner();
+    if (end != null) {
+      result.put("end", end);
     }
     return result.build();
   }

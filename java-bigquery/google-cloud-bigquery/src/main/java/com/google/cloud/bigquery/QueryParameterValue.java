@@ -146,8 +146,10 @@ public abstract class QueryParameterValue implements Serializable {
 
     /** Sets struct values. The type must set to STRUCT. */
     public Builder setStructValues(Map<String, QueryParameterValue> structValues) {
-      setStructTypes(ImmutableMap.copyOf(structValues));
-      return setStructValuesInner(ImmutableMap.copyOf(structValues));
+      ImmutableMap<String, QueryParameterValue> copiedStructValues =
+          ImmutableMap.copyOf(structValues);
+      setStructTypes(copiedStructValues);
+      return setStructValuesInner(copiedStructValues);
     }
 
     abstract Builder setStructValuesInner(Map<String, QueryParameterValue> structValues);
@@ -398,7 +400,7 @@ public abstract class QueryParameterValue implements Serializable {
    * Creates a {@code QueryParameterValue} object with a type of ARRAY the given array element type.
    */
   public static <T> QueryParameterValue array(T[] array, StandardSQLTypeName type) {
-    List<QueryParameterValue> listValues = new ArrayList<>();
+    List<QueryParameterValue> listValues = new ArrayList<>(array.length);
     for (T obj : array) {
       if (type == StandardSQLTypeName.STRUCT) {
         listValues.add((QueryParameterValue) obj);
@@ -551,29 +553,46 @@ public abstract class QueryParameterValue implements Serializable {
    */
   @VisibleForTesting
   static void validateTimestamp(String timestamp) {
-    // Check if the string has greater than nanosecond precision (>9 digits in fractional second)
-    Matcher matcher = ISO8601_TIMESTAMP_HIGH_PRECISION_PATTERN.matcher(timestamp);
-    if (matcher.find()) {
-      // Group 1 is the fractional second part of the ISO8601 string
-      String fraction = matcher.group(1);
-      // Pos 10-12 of the fractional second are guaranteed to be digits. The regex only
-      // matches the fraction section as long as they are digits.
-      if (fraction.length() > 12) {
-        throw new IllegalArgumentException(
-            "Fractional second portion of ISO8601 only supports up to picosecond (12 digits) in BigQuery");
-      }
+    // Check if the string has greater than nanosecond precision (>9 digits in fractional second).
+    // Guard the regex Matcher allocation with a fast check for at least 10 digits after the dot.
+    if (hasHighPrecisionFraction(timestamp)) {
+      Matcher matcher = ISO8601_TIMESTAMP_HIGH_PRECISION_PATTERN.matcher(timestamp);
+      if (matcher.find()) {
+        // Group 1 is the fractional second part of the ISO8601 string
+        String fraction = matcher.group(1);
+        // Pos 10-12 of the fractional second are guaranteed to be digits. The regex only
+        // matches the fraction section as long as they are digits.
+        if (fraction.length() > 12) {
+          throw new IllegalArgumentException(
+              "Fractional second portion of ISO8601 only supports up to picosecond (12 digits) in BigQuery");
+        }
 
-      // Replace the entire fractional second portion with just the nanosecond portion.
-      // The new timestamp will be validated against the JDK's DateTimeFormatter
-      String truncatedFraction = fraction.substring(0, 9);
-      timestamp =
-          new StringBuilder(timestamp)
-              .replace(matcher.start(1), matcher.end(1), truncatedFraction)
-              .toString();
+        // Replace the entire fractional second portion with just the nanosecond portion.
+        // The new timestamp will be validated against the JDK's DateTimeFormatter
+        String truncatedFraction = fraction.substring(0, 9);
+        timestamp =
+            new StringBuilder(timestamp)
+                .replace(matcher.start(1), matcher.end(1), truncatedFraction)
+                .toString();
+      }
     }
 
     // It is valid as long as DateTimeFormatter doesn't throw an exception
     checkFormat(timestamp, TIMESTAMP_VALIDATOR);
+  }
+
+  private static boolean hasHighPrecisionFraction(String timestamp) {
+    int dotIndex = timestamp.indexOf('.');
+    if (dotIndex < 0 || timestamp.length() - dotIndex <= 10) {
+      return false;
+    }
+    for (int i = dotIndex + 1; i <= dotIndex + 10; i++) {
+      char c = timestamp.charAt(i);
+      if (c < '0' || c > '9') {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static void checkFormat(Object value, DateTimeFormatter formatter) {
@@ -610,16 +629,18 @@ public abstract class QueryParameterValue implements Serializable {
     }
     if (getType() == StandardSQLTypeName.RANGE) {
       RangeValue rangeValue = new RangeValue();
-      if (!getRangeValues().getStart().isNull()) {
+      String start = getRangeValues().getStartInner();
+      if (start != null) {
         com.google.api.services.bigquery.model.QueryParameterValue startValue =
             new com.google.api.services.bigquery.model.QueryParameterValue();
-        startValue.setValue(getRangeValues().getStart().getStringValue());
+        startValue.setValue(start);
         rangeValue.setStart(startValue);
       }
-      if (!getRangeValues().getEnd().isNull()) {
+      String end = getRangeValues().getEndInner();
+      if (end != null) {
         com.google.api.services.bigquery.model.QueryParameterValue endValue =
             new com.google.api.services.bigquery.model.QueryParameterValue();
-        endValue.setValue(getRangeValues().getEnd().getStringValue());
+        endValue.setValue(end);
         rangeValue.setEnd(endValue);
       }
       valuePb.setRangeValue(rangeValue);
@@ -642,7 +663,8 @@ public abstract class QueryParameterValue implements Serializable {
       }
     }
     if (getStructTypes() != null) {
-      List<QueryParameterType.StructTypes> structTypes = new ArrayList<>();
+      List<QueryParameterType.StructTypes> structTypes =
+          new ArrayList<>(getStructTypes().size());
       for (Map.Entry<String, QueryParameterValue> entry : getStructTypes().entrySet()) {
         QueryParameterType.StructTypes structType = new QueryParameterType.StructTypes();
         structType.setName(entry.getKey());
@@ -665,7 +687,6 @@ public abstract class QueryParameterValue implements Serializable {
       com.google.api.services.bigquery.model.QueryParameterValue valuePb,
       QueryParameterType typePb) {
     Builder valueBuilder = newBuilder();
-    Map<String, QueryParameterType> parameterTypes = new HashMap<>();
     StandardSQLTypeName type = StandardSQLTypeName.valueOf(typePb.getType());
     valueBuilder.setType(type);
     if (type == StandardSQLTypeName.ARRAY) {
@@ -673,7 +694,8 @@ public abstract class QueryParameterValue implements Serializable {
       if (valuePb == null || valuePb.getArrayValues() == null) {
         valueBuilder.setArrayValues(ImmutableList.<QueryParameterValue>of());
       } else {
-        ImmutableList.Builder<QueryParameterValue> arrayValues = ImmutableList.builder();
+        ImmutableList.Builder<QueryParameterValue> arrayValues =
+            ImmutableList.builderWithExpectedSize(valuePb.getArrayValues().size());
         for (com.google.api.services.bigquery.model.QueryParameterValue elementValuePb :
             valuePb.getArrayValues()) {
           arrayValues.add(fromPb(elementValuePb, typePb.getArrayType()));
@@ -681,22 +703,26 @@ public abstract class QueryParameterValue implements Serializable {
         valueBuilder.setArrayValues(arrayValues.build());
       }
     } else if (type == StandardSQLTypeName.STRUCT) {
-      Map<String, QueryParameterValue> structTypes = new HashMap<>();
-      for (QueryParameterType.StructTypes types : typePb.getStructTypes()) {
-        structTypes.put(
-            types.getName(),
-            QueryParameterValue.newBuilder()
-                .setType(StandardSQLTypeName.valueOf(types.getType().getType()))
-                .build());
-      }
-      valueBuilder.setStructTypes(structTypes);
       if (valuePb == null || valuePb.getStructValues() == null) {
+        Map<String, QueryParameterValue> structTypes =
+            new HashMap<>(typePb.getStructTypes().size());
+        for (QueryParameterType.StructTypes types : typePb.getStructTypes()) {
+          structTypes.put(
+              types.getName(),
+              QueryParameterValue.newBuilder()
+                  .setType(StandardSQLTypeName.valueOf(types.getType().getType()))
+                  .build());
+        }
+        valueBuilder.setStructTypes(structTypes);
         valueBuilder.setStructValues(ImmutableMap.<String, QueryParameterValue>of());
       } else {
-        Map<String, QueryParameterValue> structValues = new HashMap<>();
+        Map<String, QueryParameterType> parameterTypes =
+            new HashMap<>(typePb.getStructTypes().size());
         for (QueryParameterType.StructTypes structType : typePb.getStructTypes()) {
           parameterTypes.put(structType.getName(), structType.getType());
         }
+        Map<String, QueryParameterValue> structValues =
+            new HashMap<>(valuePb.getStructValues().size());
         for (Map.Entry<String, com.google.api.services.bigquery.model.QueryParameterValue>
             structValue : valuePb.getStructValues().entrySet()) {
           structValues.put(
