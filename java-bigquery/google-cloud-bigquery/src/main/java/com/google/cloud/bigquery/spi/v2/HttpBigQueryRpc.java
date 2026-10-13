@@ -18,10 +18,13 @@ package com.google.cloud.bigquery.spi.v2;
 
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_NOT_MODIFIED;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
@@ -31,8 +34,16 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
+import com.google.api.client.json.GenericJson;
 import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.JsonParser;
+import com.google.api.client.json.JsonToken;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.ClassInfo;
+import com.google.api.client.util.Data;
+import com.google.api.client.util.FieldInfo;
+import com.google.api.client.util.Preconditions;
+import com.google.api.client.util.Types;
 import com.google.api.core.InternalApi;
 import com.google.api.core.InternalExtensionOnly;
 import com.google.api.services.bigquery.Bigquery;
@@ -62,6 +73,7 @@ import com.google.api.services.bigquery.model.TableDataInsertAllResponse;
 import com.google.api.services.bigquery.model.TableDataList;
 import com.google.api.services.bigquery.model.TableList;
 import com.google.api.services.bigquery.model.TableReference;
+import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TestIamPermissionsRequest;
 import com.google.api.services.bigquery.model.TestIamPermissionsResponse;
 import com.google.cloud.Tuple;
@@ -80,7 +92,11 @@ import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.context.Scope;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -139,7 +155,9 @@ public class HttpBigQueryRpc implements BigQueryRpc {
     if (!this.options.hasValidUniverseDomain()) {
       String errorMessage =
           String.format(
-              "The configured universe domain %s does not match the universe domain found in the credentials %s. If you haven't configured the universe domain explicitly, `googleapis.com` is the default.",
+              "The configured universe domain %s does not match the universe domain found in the"
+                  + " credentials %s. If you haven't configured the universe domain explicitly,"
+                  + " `googleapis.com` is the default.",
               this.options.getUniverseDomain(), this.options.getCredentials().getUniverseDomain());
       throw new BigQueryException(HTTP_UNAUTHORIZED, errorMessage);
     }
@@ -1457,7 +1475,7 @@ public class HttpBigQueryRpc implements BigQueryRpc {
           if (span != null) {
             span.setAttribute("bq.rpc.page_token", bqListRequest.getPageToken());
           }
-          return bqListRequest.execute();
+          return executeAndParseRowResponse(bqListRequest, TableDataList.class);
         });
   }
 
@@ -1519,7 +1537,7 @@ public class HttpBigQueryRpc implements BigQueryRpc {
           if (span != null) {
             span.setAttribute("bq.rpc.page_token", bqListRequest.getPageToken());
           }
-          return bqListRequest.execute();
+          return executeAndParseRowResponse(bqListRequest, TableDataList.class);
         });
   }
 
@@ -1860,7 +1878,7 @@ public class HttpBigQueryRpc implements BigQueryRpc {
           if (span != null) {
             span.setAttribute("bq.rpc.page_token", queryRequest.getPageToken());
           }
-          return queryRequest.execute();
+          return executeAndParseRowResponse(queryRequest, GetQueryResultsResponse.class);
         });
   }
 
@@ -1913,7 +1931,7 @@ public class HttpBigQueryRpc implements BigQueryRpc {
           if (span != null) {
             span.setAttribute("bq.rpc.page_token", queryRequest.getPageToken());
           }
-          return queryRequest.execute();
+          return executeAndParseRowResponse(queryRequest, GetQueryResultsResponse.class);
         });
   }
 
@@ -1951,8 +1969,438 @@ public class HttpBigQueryRpc implements BigQueryRpc {
             queryRequest.getUriTemplate(),
             null),
         span -> {
-          return queryRequest.execute();
+          return executeAndParseRowResponse(queryRequest, QueryResponse.class);
         });
+  }
+
+  /**
+   * Executes a BigQuery REST request that returns row data ({@link TableDataList}, {@link
+   * QueryResponse}, or {@link GetQueryResultsResponse}) and parses its JSON stream directly without
+   * reflectively instantiating {@link com.google.api.services.bigquery.model.TableCell} wrappers
+   * for every cell.
+   *
+   * <h3>BigQuery REST v2 Wire Format ({@code "f"} and {@code "v"})</h3>
+   *
+   * <p>In the BigQuery REST v2 protocol, every row in {@code "rows"} is encoded using only two JSON
+   * keys: {@code "f"} (the positional list of fields in a row or {@code RECORD}/{@code STRUCT}) and
+   * {@code "v"} (the value wrapper around each cell or {@code REPEATED}/{@code ARRAY} element):
+   *
+   * <pre>{@code
+   * {
+   *   "kind": "bigquery#tableDataList",
+   *   "totalRows": "1",
+   *   "pageToken": "token123",
+   *   "rows": [
+   *     {
+   *       "f": [
+   *         {"v": "alice"},                                     // 1. Primitive (STRING, INT64, etc.)
+   *         {"v": null},                                        // 2. NULL cell
+   *         {"v": [{"v": "tag1"}, {"v": "tag2"}]},              // 3. REPEATED (ARRAY<STRING>)
+   *         {"v": {"f": [{"v": "Seattle"}, {"v": "WA"}]}},      // 4. RECORD (STRUCT<city, state>)
+   *         {"v": [{"v": {"f": [{"v": "a"}]}},                  // 5. REPEATED RECORD (ARRAY<STRUCT>)
+   *                {"v": {"f": [{"v": "b"}]}}]}
+   *       ]
+   *     }
+   *   ]
+   * }
+   * }</pre>
+   *
+   * <h3>Why {@code TableCell} Instantiation Can Be Skipped</h3>
+   *
+   * <p>When reading table or query rows, the caller ({@code BigQueryImpl} or {@code
+   * ConnectionImpl}) already has the table {@code Schema} and immediately passes each {@code
+   * TableRow.getF()} list to {@code FieldValueList.fromPb(List<?> rowPb, ...)} -> {@code
+   * FieldValue.fromPb(Object cellPb, ...)}. {@code FieldValue.fromPb} only needs the unwrapped
+   * value inside {@code "v"} (and the {@code {"f": [...]}} map for a {@code RECORD}).
+   *
+   * <p>Standard {@code request.execute()} uses {@code google-http-client}'s reflective {@link
+   * JsonParser#parse}, which calls {@link Data#newMapInstance(Class)} -> {@link
+   * Types#newInstance(Class)} for every {@code {"v": ...}} object. Because {@code TableCell}
+   * extends {@link GenericJson} -> {@link com.google.api.client.util.GenericData}, each cell
+   * reflectively invokes {@code Class.getDeclaredConstructor()} (allocating a {@code Class[0]}
+   * array) and allocates an {@code EnumSet}, an {@code ArrayMap} for {@code unknownFields}, and the
+   * {@code TableCell} wrapper itself, only for {@code FieldValue.fromPb} to immediately call {@code
+   * cell.getV()} and discard the {@code TableCell}.
+   *
+   * <p>Instead, {@link #parseTableRows(JsonParser)} and {@link #parseCellValue(JsonParser)} unwrap
+   * every {@code {"v": ...}} envelope on the fly as tokens are streamed from the {@link
+   * JsonParser}. For the example row above, {@code row.getF()} is populated directly with:
+   *
+   * <pre>{@code
+   * [
+   *   "alice",                                // 1. Primitive: unwrapped String
+   *   JSON_NULL,                              // 2. NULL: Data.nullOf(Object.class)
+   *   ["tag1", "tag2"],                       // 3. REPEATED: List of unwrapped elements
+   *   {"f": ["Seattle", "WA"]},               // 4. RECORD: singletonMap("f", List of sub-cells)
+   *   [{"f": ["a"]}, {"f": ["b"]}]            // 5. REPEATED RECORD: List of singletonMap("f", ...)
+   * ]
+   * }</pre>
+   *
+   * <p>All top-level response metadata fields ({@code schema}, {@code pageToken}, {@code
+   * totalRows}, {@code jobReference}, {@code errors}, etc.) are still delegated to {@link
+   * ClassInfo}/{@link JsonParser} for full compatibility.
+   *
+   * <p>References:
+   *
+   * <ul>
+   *   <li>BigQuery REST v2 Discovery specification ({@code TableDataList}, {@code QueryResponse},
+   *       {@code GetQueryResultsResponse}, {@code TableRow}, {@code TableCell}): <a
+   *       href="https://bigquery.googleapis.com/$discovery/rest?version=v2">
+   *       https://bigquery.googleapis.com/$discovery/rest?version=v2</a>
+   *   <li>BigQuery REST v2 {@code tabledata.list} reference: <a
+   *       href="https://cloud.google.com/bigquery/docs/reference/rest/v2/tabledata/list">
+   *       https://cloud.google.com/bigquery/docs/reference/rest/v2/tabledata/list</a>
+   * </ul>
+   */
+  private <T extends GenericJson> T executeAndParseRowResponse(
+      AbstractGoogleJsonClientRequest<T> request, Class<T> responseClass) throws IOException {
+    // executeUnparsed() performs the same HTTP status validation and GZIP response decompression
+    // as execute(), while exposing the raw InputStream so we can drive the JsonParser directly.
+    HttpResponse response = request.executeUnparsed();
+    try {
+      // Match HttpResponse.parseAs(Class) / hasMessageBody(): responses to HEAD requests or
+      // 1xx, 204 No Content, and 304 Not Modified responses have no message body.
+      int statusCode = response.getStatusCode();
+      if ("HEAD".equals(request.getRequestMethod())
+          || statusCode / 100 == 1
+          || statusCode == HTTP_NO_CONTENT
+          || statusCode == HTTP_NOT_MODIFIED) {
+        response.ignore();
+        return null;
+      }
+      try (InputStream content = response.getContent()) {
+        if (content == null) {
+          return null;
+        }
+        try (JsonParser parser =
+            bigquery.getJsonFactory().createJsonParser(content, response.getContentCharset())) {
+          return parseRowResponse(parser, responseClass);
+        }
+      }
+    } finally {
+      response.disconnect();
+    }
+  }
+
+  /**
+   * Parses a top-level BigQuery JSON response object ({@link TableDataList}, {@link QueryResponse},
+   * or {@link GetQueryResultsResponse}).
+   *
+   * <p>For example, given a top-level response payload:
+   *
+   * <pre>{@code
+   * {
+   *   "kind": "bigquery#tableDataList",
+   *   "totalRows": "2",
+   *   "pageToken": "token123",
+   *   "rows": [
+   *     {"f": [{"v": "alice"}, {"v": "10"}]},
+   *     {"f": [{"v": "bob"},   {"v": "20"}]}
+   *   ]
+   * }
+   * }</pre>
+   *
+   * <p>This method loops through each top-level JSON field name and routes it to one of three
+   * handlers:
+   *
+   * <ol>
+   *   <li>{@code "rows"}: routed to {@link #parseTableRows(JsonParser)} so each row's {@code "f"}
+   *       and {@code "v"} entries are unwrapped directly without allocating {@code TableCell}
+   *       objects.
+   *   <li>Known {@code @Key} metadata fields (such as {@code "kind"}, {@code "totalRows"}, {@code
+   *       "pageToken"}, {@code "schema"}, {@code "jobReference"}, {@code "errors"}): populated onto
+   *       {@code result} using {@link ClassInfo} and {@link FieldInfo}.
+   *   <li>Unrecognized top-level fields: stored in {@code result.set(fieldName, ...)} ({@code
+   *       GenericData.unknownFields}).
+   * </ol>
+   */
+  private static <T extends GenericJson> T parseRowResponse(
+      JsonParser parser, Class<T> responseClass) throws IOException {
+    // Step 1: Position the parser on the opening `{` (`START_OBJECT`) of the HTTP response.
+    // A newly created JsonParser has `getCurrentToken() == null` until `nextToken()` is called.
+    JsonToken token = parser.getCurrentToken();
+    if (token == null) {
+      token = parser.nextToken();
+    }
+    // Match google-http-client's JsonParser.startParsing(), which uses Preconditions.checkArgument
+    // (throwing IllegalArgumentException rather than NullPointerException) when a response that is
+    // expected to carry a JSON body is completely empty.
+    Preconditions.checkArgument(token != null, "no JSON input found");
+    // Step 2: Instantiate the empty response container (TableDataList, QueryResponse, or
+    // GetQueryResultsResponse) and attach the JsonFactory so GenericJson.toString() /
+    // toPrettyString() work identically to standard request.execute() responses.
+    T result = Types.newInstance(responseClass);
+    result.setFactory(parser.getFactory());
+    if (token != JsonToken.START_OBJECT) {
+      parser.skipChildren();
+      return result;
+    }
+    // Step 3: Iterate through each top-level key-value pair inside `{ ... }` until the closing `}`
+    // (`JsonToken.END_OBJECT`).
+    ClassInfo classInfo = ClassInfo.of(responseClass);
+    while (parser.nextToken() == JsonToken.FIELD_NAME) {
+      // Read the top-level field name (e.g. "kind", "totalRows", "schema", "rows") and advance the
+      // parser cursor to the first token of that field's value.
+      String fieldName = parser.getText();
+      parser.nextToken();
+      FieldInfo fieldInfo = classInfo.getFieldInfo(fieldName);
+      if ("rows".equals(fieldName)) {
+        // Case 1 ("rows"): Stream and unwrap the `"rows": [ {"f": [...]}, ... ]` array directly.
+        List<TableRow> rows = parseTableRows(parser);
+        if (fieldInfo != null) {
+          fieldInfo.setValue(result, rows);
+        } else {
+          result.set("rows", rows);
+        }
+      } else if (fieldInfo != null) {
+        // Case 2 (Known @Key metadata field on TableDataList / QueryResponse /
+        // GetQueryResultsResponse):
+        if (parser.getCurrentToken() == JsonToken.VALUE_STRING
+            && Data.isPrimitive(fieldInfo.getGenericType())) {
+          // Subcase 2a (String token for a scalar/primitive Java field, e.g. `"kind": "..."`,
+          // `"pageToken": "token123"`, or `@JsonString` 64-bit integers like `"totalRows": "2"`):
+          // In BigQuery REST v2, 64-bit integer fields (`totalRows`, `totalBytesProcessed`, etc.)
+          // are sent as JSON strings and annotated with `@JsonString`. Calling
+          // `parser.parse(Type, false)` directly would fail on `@JsonString` fields because it
+          // passes `Field context = null` internally and rejects string-encoded numbers.
+          // `Data.parsePrimitiveValue` converts both `String` fields and `@JsonString` numeric
+          // fields (`Long`, `BigInteger`, etc.) directly from the string text.
+          fieldInfo.setValue(
+              result, Data.parsePrimitiveValue(fieldInfo.getGenericType(), parser.getText()));
+        } else {
+          // Subcase 2b (Structured or non-string metadata field, e.g. `"schema": {...}`,
+          // `"jobReference": {...}`, `"errors": [...]`, `"jobComplete": true`, or `null`):
+          // Delegate to google-http-client's standard type-driven parser.
+          fieldInfo.setValue(result, parser.parse(fieldInfo.getGenericType(), false));
+        }
+      } else {
+        // Case 3 (Unrecognized top-level field): preserve in GenericData.unknownFields.
+        result.set(fieldName, parser.parse(Object.class, false));
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Parses the BigQuery REST v2 {@code "rows"} JSON array into a list of {@link TableRow} objects.
+   *
+   * <p>In BigQuery REST v2, {@code "rows"} is a JSON array where each element is a {@code TableRow}
+   * object containing a single field {@code "f"} that holds the row's positional cell array:
+   *
+   * <pre>{@code
+   * "rows": [
+   *   { "f": [ {"v": "alice"}, {"v": "10"} ] },   // Row 0 -> TableRow with getF() = ["alice", "10"]
+   *   { "f": [ {"v": "bob"},   {"v": null} ] }    // Row 1 -> TableRow with getF() = ["bob", JSON_NULL]
+   * ]
+   * }</pre>
+   *
+   * <p>{@code TableRow.getF()} has a declared generic return type of {@code List<TableCell>} (which
+   * erases to {@code List} at runtime), and its callers ({@code BigQueryImpl.transformTableData}
+   * and {@code ConnectionImpl.getIterableFieldValueList}) pass {@code rowPb.getF()} directly to
+   * {@code FieldValueList.fromPb(List<?> rowPb, ...)} -> {@code FieldValue.fromPb(Object cellPb,
+   * ...)}. Storing the unwrapped cell values in {@code TableRow.setF((List) cells)} avoids
+   * allocating transient {@code TableCell} and {@code ArrayMap} wrappers per cell.
+   */
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private static List<TableRow> parseTableRows(JsonParser parser) throws IOException {
+    JsonToken token = parser.getCurrentToken();
+    if (token == JsonToken.VALUE_NULL) {
+      // Example: `"rows": null`.
+      // Because `parseRowResponse` assigns this return value to the `List<TableRow> rows` field on
+      // TableDataList / QueryResponse / GetQueryResultsResponse via `fieldInfo.setValue`, the JSON
+      // null sentinel must be typed as a `List` (`Data.nullOf(ArrayList.class)`) rather than
+      // `JSON_NULL` (`Data.nullOf(Object.class)`, which is a plain `Object` and would fail with
+      // ClassCastException / IllegalArgumentException when assigned to a `List` field).
+      return Data.nullOf(ArrayList.class);
+    }
+    if (token != JsonToken.START_ARRAY) {
+      // Defensive guard: if `"rows"` is not `[ ... ]`, skip its value subtree so the parser cursor
+      // stays aligned for the next top-level field in `parseRowResponse`.
+      parser.skipChildren();
+      return null;
+    }
+    List<TableRow> rows = new ArrayList<>();
+    // Every row in a table has the same number of columns. `expectedCols` starts at `-1` before
+    // Row 0 is read; once Row 0's `"f"` array is parsed, `expectedCols` is set to Row 0's column
+    // count so Rows 1..N pre-allocate their cell lists to the exact column count.
+    int expectedCols = -1;
+    // Outer loop: iterate over each row object `{ "f": [ ... ] }` inside `"rows": [ ... ]` until
+    // the closing `]` (`JsonToken.END_ARRAY`) of `"rows"`.
+    while (parser.nextToken() != JsonToken.END_ARRAY) {
+      if (parser.getCurrentToken() != JsonToken.START_OBJECT) {
+        parser.skipChildren();
+        continue;
+      }
+      List<Object> cells = null;
+      // Inner loop: iterate over the properties of a single row object `{ "f": [ ... ] }` until
+      // the closing `}` (`JsonToken.END_OBJECT`) of that row.
+      while (parser.nextToken() == JsonToken.FIELD_NAME) {
+        String rowField = parser.getText();
+        // Advance from the field name `"f"` to the opening `[` (`JsonToken.START_ARRAY`) of the
+        // row's cell array.
+        parser.nextToken();
+        if ("f".equals(rowField) && parser.getCurrentToken() == JsonToken.START_ARRAY) {
+          // Parse `[ {"v": "alice"}, {"v": "10"} ]` into `["alice", "10"]` and record the column
+          // count for subsequent rows.
+          cells = parseRowCells(parser, expectedCols);
+          expectedCols = cells.size();
+        } else {
+          // Skip any unexpected extra field on the TableRow object so the parser stays aligned.
+          parser.skipChildren();
+        }
+      }
+      TableRow row = new TableRow();
+      if (cells != null) {
+        // Store the unwrapped cell list on the TableRow (erased to `List` at runtime).
+        row.setF((List) cells);
+      }
+      rows.add(row);
+    }
+    return rows;
+  }
+
+  /**
+   * Parses the top-level {@code "f"} cell array of a single {@link TableRow} in a table or query
+   * response (and is not used for any other JSON array).
+   *
+   * <p>For example, given a row's {@code "f"} array:
+   *
+   * <pre>{@code
+   * [
+   *   {"v": "alice"},
+   *   {"v": null},
+   *   {"v": [{"v": "tag1"}, {"v": "tag2"}]},
+   *   {"v": {"f": [{"v": "Seattle"}, {"v": "WA"}]}}
+   * ]
+   * }</pre>
+   *
+   * <p>This method calls {@link #parseCellValue(JsonParser)} on each element and returns:
+   *
+   * <pre>{@code
+   * ["alice", JSON_NULL, ["tag1", "tag2"], {"f": ["Seattle", "WA"]}]
+   * }</pre>
+   *
+   * @param parser the active JSON stream positioned at the opening {@code [} ({@code START_ARRAY})
+   *     of {@code "f"}
+   * @param expectedCols the number of columns observed in previous rows of the same table page, or
+   *     {@code -1} on the first row before the table's column count is known
+   */
+  private static List<Object> parseRowCells(JsonParser parser, int expectedCols)
+      throws IOException {
+    // On the first row of a response page (`expectedCols < 0`), the column count is not yet known,
+    // so we initialize the list with a default capacity of 16. Once the first row is parsed,
+    // `parseTableRows` records `expectedCols = cells.size()`, allowing every subsequent row in the
+    // page to pre-size its backing array to the exact number of columns in the table.
+    List<Object> cells = new ArrayList<>(expectedCols >= 0 ? expectedCols : 16);
+    // Advance through each cell element inside `"f": [ cell0, cell1, ... ]` until the closing `]`
+    // (`JsonToken.END_ARRAY`), unwrapping each cell via `parseCellValue`.
+    while (parser.nextToken() != JsonToken.END_ARRAY) {
+      cells.add(parseCellValue(parser));
+    }
+    return cells;
+  }
+
+  private static final Object JSON_NULL = Data.nullOf(Object.class);
+
+  /**
+   * Recursively parses a single BigQuery REST v2 {@code TableCell} (or nested value inside a cell)
+   * by unwrapping {@code {"v": ...}} envelopes and preserving {@code {"f": [...]}} struct maps.
+   *
+   * <p>Every cell in BigQuery REST v2 is built from combinations of {@code "v"} (value wrapper) and
+   * {@code "f"} (struct sub-field list). How this method transforms each common BigQuery column
+   * type:
+   *
+   * <ul>
+   *   <li><b>Case 1: Primitive scalar ({@code STRING}, {@code INT64}, {@code FLOAT64}, {@code
+   *       BOOL}, {@code TIMESTAMP}, {@code DATE}, {@code NUMERIC}, {@code BYTES}, etc.)</b><br>
+   *       Wire JSON: {@code {"v": "alice"}}<br>
+   *       {@code START_OBJECT} reads {@code firstKey = "v"} and recurses on {@code "alice"} (which
+   *       returns {@code "alice"}). Because {@code "v".equals(firstKey)}, it unwraps the object and
+   *       returns {@code "alice"} directly.
+   *   <li><b>Case 2: {@code NULL} cell (any column type)</b><br>
+   *       Wire JSON: {@code {"v": null}}<br>
+   *       {@code START_OBJECT} reads {@code firstKey = "v"} and recurses on {@code null} (which
+   *       returns {@link #JSON_NULL}). Unwrapping {@code "v"} returns {@link #JSON_NULL} ({@code
+   *       Data.nullOf(Object.class)}), matching {@code google-http-client} so {@code
+   *       Data.isNull(cell)} is {@code true}.
+   *   <li><b>Case 3: {@code REPEATED} ({@code ARRAY} of primitives)</b><br>
+   *       Wire JSON: {@code {"v": [{"v": "tag1"}, {"v": "tag2"}]}}<br>
+   *       Outer {@code {"v": ...}} unwraps to the JSON array {@code [...]}. The {@code START_ARRAY}
+   *       branch loops over each element and recursively calls {@code parseCellValue}, unwrapping
+   *       {@code {"v": "tag1"}} -> {@code "tag1"} and {@code {"v": "tag2"}} -> {@code "tag2"} to
+   *       return {@code ["tag1", "tag2"]}.
+   *   <li><b>Case 4: {@code RECORD} ({@code STRUCT})</b><br>
+   *       Wire JSON: {@code {"v": {"f": [{"v": "Seattle"}, {"v": "WA"}]}}}<br>
+   *       Outer {@code {"v": ...}} unwraps to the inner struct object {@code {"f": [...]}}. When
+   *       parsing the inner object, {@code firstKey} is {@code "f"} and {@code firstValue} is the
+   *       {@code START_ARRAY} result {@code ["Seattle", "WA"]} (after unwrapping each sub-cell's
+   *       {@code {"v": ...}}). Because {@code firstKey} is {@code "f"} (not {@code "v"}), the
+   *       single-key fast path returns {@code Collections.singletonMap("f", ["Seattle", "WA"])},
+   *       which {@code FieldValue.fromPb} identifies as a {@code RECORD} via {@code
+   *       cellMapPb.containsKey("f")}.
+   *   <li><b>Case 5: {@code REPEATED RECORD} ({@code ARRAY<STRUCT>})</b><br>
+   *       Wire JSON: {@code {"v": [{"v": {"f": [{"v": "a"}]}}, {"v": {"f": [{"v": "b"}]}}]}}<br>
+   *       Combines Case 3 and Case 4: outer {@code "v"} unwraps to a {@code List} where each array
+   *       element's {@code {"v": {"f": ...}}} unwraps its {@code "v"} to {@code singletonMap("f",
+   *       ...)}, returning {@code [{"f": ["a"]}, {"f": ["b"]}]}.
+   * </ul>
+   */
+  private static Object parseCellValue(JsonParser parser) throws IOException {
+    JsonToken token = parser.getCurrentToken();
+    // Base case 1: JSON `null` (e.g. the value inside `{"v": null}`).
+    if (token == null || token == JsonToken.VALUE_NULL) {
+      return JSON_NULL;
+    }
+    // Recursive case 1: JSON object `{ ... }`, which in BigQuery row data is either a cell value
+    // envelope `{"v": <value>}` or a RECORD/STRUCT object `{"f": [ <sub-cells> ]}`.
+    if (token == JsonToken.START_OBJECT) {
+      if (parser.nextToken() != JsonToken.FIELD_NAME) {
+        return Collections.emptyMap();
+      }
+      // Read the first property's key (almost always `"v"` or `"f"`) and recursively parse its
+      // value.
+      String firstKey = parser.getText();
+      parser.nextToken();
+      Object firstValue = parseCellValue(parser);
+      if (parser.nextToken() == JsonToken.END_OBJECT) {
+        // Single-property object fast path (taken by all standard BigQuery cell and struct
+        // objects):
+        // - If `firstKey` is `"v"` (e.g. `{"v": "alice"}`, `{"v": null}`, `{"v": [...]}` or
+        //   `{"v": {"f": [...]}}`), unwrap the envelope and return `firstValue` directly.
+        // - If `firstKey` is `"f"` (e.g. the inner struct object `{"f": ["Seattle", "WA"]}` inside
+        //   a RECORD cell), keep the `"f"` key in a 16-byte `singletonMap("f", firstValue)` so
+        //   `FieldValue.fromPb` can read the struct's fields via `cellMapPb.get("f")`.
+        return "v".equals(firstKey) ? firstValue : Collections.singletonMap(firstKey, firstValue);
+      }
+      // Multi-property object fallback: if a JSON object ever contains more than one property,
+      // `parser` is now positioned at the second property's `FIELD_NAME` token. Consume all
+      // remaining `"key": value` pairs until the closing `}` (`END_OBJECT`) so no fields are lost
+      // and the streaming parser cursor stays aligned.
+      Map<String, Object> mapValue = new HashMap<>();
+      mapValue.put(firstKey, firstValue);
+      do {
+        String key = parser.getText();
+        parser.nextToken();
+        mapValue.put(key, parseCellValue(parser));
+      } while (parser.nextToken() == JsonToken.FIELD_NAME);
+      return mapValue;
+    }
+    // Recursive case 2: JSON array `[ ... ]`, which occurs inside:
+    // - A REPEATED (ARRAY) cell's `"v"` list: `[{"v": "tag1"}, {"v": "tag2"}]` -> `["tag1",
+    // "tag2"]`
+    // - A RECORD (STRUCT) cell's `"f"` list: `[{"v": "Seattle"}, {"v": "WA"}]` -> `["Seattle",
+    // "WA"]`
+    if (token == JsonToken.START_ARRAY) {
+      List<Object> list = new ArrayList<>();
+      while (parser.nextToken() != JsonToken.END_ARRAY) {
+        list.add(parseCellValue(parser));
+      }
+      return list;
+    }
+    // Base case 2: JSON primitive scalar (e.g. `"alice"` in `{"v": "alice"}`). BigQuery REST v2
+    // encodes all primitive scalar values as strings, which `FieldValue.fromPb` parses according to
+    // the column's schema type.
+    return parser.getText();
   }
 
   @Override

@@ -267,7 +267,8 @@ public class HttpBigQueryRpcTest {
     @Test
     public void testListDatasetsTelemetry() throws Exception {
       setMockResponse(
-          "{\"kind\":\"bigquery#datasetList\",\"datasets\":[], \"nextPageToken\":\"next-page-token\"}");
+          "{\"kind\":\"bigquery#datasetList\",\"datasets\":[],"
+              + " \"nextPageToken\":\"next-page-token\"}");
 
       rpc.listDatasetsSkipExceptionTranslation(PROJECT_ID, new HashMap<>());
 
@@ -283,7 +284,8 @@ public class HttpBigQueryRpcTest {
     @Test
     public void testListProjects() throws Exception {
       setMockResponse(
-          "{\"kind\":\"bigquery#projectList\",\"projects\":[{\"id\":\"p1\",\"friendlyName\":\"Project 1\"}], \"nextPageToken\":\"token2\"}");
+          "{\"kind\":\"bigquery#projectList\",\"projects\":[{\"id\":\"p1\",\"friendlyName\":\"Project"
+              + " 1\"}], \"nextPageToken\":\"token2\"}");
 
       Map<BigQueryRpc.Option, Object> options = new java.util.HashMap<>();
       options.put(BigQueryRpc.Option.MAX_RESULTS, 10L);
@@ -590,7 +592,8 @@ public class HttpBigQueryRpcTest {
     @Test
     public void testListRoutinesTelemetry() throws Exception {
       setMockResponse(
-          "{\"kind\":\"bigquery#routineList\",\"routines\":[], \"nextPageToken\":\"next-page-token\"}");
+          "{\"kind\":\"bigquery#routineList\",\"routines\":[],"
+              + " \"nextPageToken\":\"next-page-token\"}");
 
       rpc.listRoutinesSkipExceptionTranslation(PROJECT_ID, DATASET_ID, new HashMap<>());
 
@@ -1114,7 +1117,9 @@ public class HttpBigQueryRpcTest {
       mockResponse.setStatusCode(400);
       mockResponse.setContentType(Json.MEDIA_TYPE);
       mockResponse.setContent(
-          "{\"error\":{\"code\":400,\"message\":\"Invalid request\",\"errors\":[{\"message\":\"Invalid request\",\"domain\":\"global\",\"reason\":\"invalid\"}]}}");
+          "{\"error\":{\"code\":400,\"message\":\"Invalid"
+              + " request\",\"errors\":[{\"message\":\"Invalid"
+              + " request\",\"domain\":\"global\",\"reason\":\"invalid\"}]}}");
 
       assertThrows(
           IOException.class,
@@ -1782,6 +1787,93 @@ public class HttpBigQueryRpcTest {
       }
 
       verifyNoSpans();
+    }
+
+    @Test
+    public void testStreamingRowCellUnwrappingInListTableDataAndQueries() throws Exception {
+      String rowJson =
+          "\"rows\":["
+              + "{\"f\":["
+              + "{\"v\":\"hello\"},"
+              + "{\"v\":null},"
+              + "{\"v\":[{\"v\":\"10\"},{\"v\":\"20\"}]},"
+              + "{\"v\":{\"f\":[{\"v\":\"nested\"},{\"v\":null}]}},"
+              + "{\"v\":[{\"v\":{\"f\":[{\"v\":\"elem1\"}]}}]}"
+              + "]}"
+              + "]";
+
+      setMockResponse(
+          "{\"kind\":\"bigquery#tableDataList\",\"etag\":\"etag-1\",\"totalRows\":\"1\","
+              + "\"pageToken\":\"next-page\","
+              + rowJson
+              + "}");
+
+      com.google.api.services.bigquery.model.TableDataList tableDataList =
+          rpc.listTableDataSkipExceptionTranslation(
+              PROJECT_ID, DATASET_ID, TABLE_ID, new HashMap<>());
+      assertEquals("bigquery#tableDataList", tableDataList.getKind());
+      assertEquals("etag-1", tableDataList.getEtag());
+      assertEquals(Long.valueOf(1L), tableDataList.getTotalRows());
+      assertEquals("next-page", tableDataList.getPageToken());
+      assertEquals(1, tableDataList.getRows().size());
+
+      List<?> rawCells = tableDataList.getRows().get(0).getF();
+      assertEquals(5, rawCells.size());
+      assertEquals("hello", rawCells.get(0));
+      assertTrue(com.google.api.client.util.Data.isNull(rawCells.get(1)));
+      assertEquals(Arrays.asList("10", "20"), rawCells.get(2));
+      assertEquals(
+          Collections.singletonMap(
+              "f", Arrays.asList("nested", com.google.api.client.util.Data.nullOf(Object.class))),
+          rawCells.get(3));
+      assertEquals(
+          Collections.singletonList(
+              Collections.singletonMap("f", Collections.singletonList("elem1"))),
+          rawCells.get(4));
+
+      setMockResponse(
+          "{\"kind\":\"bigquery#queryResponse\",\"jobComplete\":true,\"cacheHit\":false,"
+              + "\"totalRows\":\"1\",\"totalBytesProcessed\":\"4096\",\"pageToken\":\"q-token\","
+              + "\"errors\":null,"
+              + rowJson
+              + "}");
+      com.google.api.services.bigquery.model.QueryResponse queryResponse =
+          rpc.queryRpcSkipExceptionTranslation(PROJECT_ID, new QueryRequest());
+      assertTrue(queryResponse.getJobComplete());
+      assertEquals(Boolean.FALSE, queryResponse.getCacheHit());
+      assertEquals(java.math.BigInteger.ONE, queryResponse.getTotalRows());
+      assertEquals(Long.valueOf(4096L), queryResponse.getTotalBytesProcessed());
+      assertEquals("q-token", queryResponse.getPageToken());
+      assertTrue(com.google.api.client.util.Data.isNull(queryResponse.getErrors()));
+      assertEquals(rawCells, queryResponse.getRows().get(0).getF());
+
+      setMockResponse(
+          "{\"kind\":\"bigquery#getQueryResultsResponse\",\"jobComplete\":true,"
+              + "\"totalRows\":\"1\",\"totalBytesProcessed\":\"2048\","
+              + rowJson
+              + "}");
+      com.google.api.services.bigquery.model.GetQueryResultsResponse resultsResponse =
+          rpc.getQueryResultsSkipExceptionTranslation(
+              PROJECT_ID, JOB_ID, LOCATION, new HashMap<>());
+      assertTrue(resultsResponse.getJobComplete());
+      assertEquals(java.math.BigInteger.ONE, resultsResponse.getTotalRows());
+      assertEquals(Long.valueOf(2048L), resultsResponse.getTotalBytesProcessed());
+      assertEquals(rawCells, resultsResponse.getRows().get(0).getF());
+
+      // Verify 204 No Content returns null and empty 200 OK throws IllegalArgumentException
+      setMockResponse("");
+      mockResponse.setStatusCode(204);
+      assertNull(
+          rpc.listTableDataSkipExceptionTranslation(
+              PROJECT_ID, DATASET_ID, TABLE_ID, new HashMap<>()));
+
+      setMockResponse("");
+      mockResponse.setStatusCode(200);
+      org.junit.jupiter.api.Assertions.assertThrows(
+          IllegalArgumentException.class,
+          () ->
+              rpc.listTableDataSkipExceptionTranslation(
+                  PROJECT_ID, DATASET_ID, TABLE_ID, new HashMap<>()));
     }
   }
 }

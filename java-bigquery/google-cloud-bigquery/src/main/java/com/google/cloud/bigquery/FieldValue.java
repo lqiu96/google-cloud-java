@@ -378,13 +378,47 @@ public class FieldValue implements Serializable {
     return new FieldValue(attribute, value, useInt64Timestamps);
   }
 
+  // `google-http-client`'s canonical sentinel for JSON `null` values in `Object`-typed fields
+  // (such as `TableCell.v`). See `com.google.api.client.util.Data.nullOf(Object.class)`.
+  private static final Object NULL_CELL_SENTINEL = Data.nullOf(Object.class);
+
   static FieldValue fromPb(Object cellPb) {
     return fromPb(cellPb, null, false);
   }
 
+  /**
+   * Converts a raw or wrapped BigQuery REST v2 cell representation into a {@link FieldValue}.
+   *
+   * <p>Accepts both unwrapped cell values produced by {@code HttpBigQueryRpc}'s streaming row
+   * parser ({@code String}, {@code Data.nullOf(Object.class)}, {@code List} for {@code REPEATED},
+   * or {@code Map("f", List)} for {@code RECORD}) and wrapped {@link
+   * com.google.api.services.bigquery.model.TableCell} or {@code Map("v", ...)} objects (used by
+   * unit tests and custom {@code BigQueryRpc} implementations).
+   *
+   * <p>See the BigQuery REST v2 Discovery specification for {@code TableRow} and {@code TableCell}:
+   * <a href="https://bigquery.googleapis.com/$discovery/rest?version=v2">
+   * https://bigquery.googleapis.com/$discovery/rest?version=v2</a>
+   */
   @SuppressWarnings("unchecked")
   static FieldValue fromPb(Object cellPb, Field recordSchema, Boolean useInt64Timestamps) {
-    if (Data.isNull(cellPb)) {
+    // Fast-path for TableCell instances (constructed in unit tests or custom BigQueryRpc
+    // implementations). TableCell extends GenericJson -> GenericData, which implements
+    // Map<String, Object>. Unwrapping `getV()` upfront avoids falling into `cellPb instanceof Map`
+    // below, where `containsKey("f")` and `get("v")` trigger reflective ClassInfo/FieldInfo
+    // lookups on GenericData.
+    if (cellPb instanceof com.google.api.services.bigquery.model.TableCell) {
+      cellPb = ((com.google.api.services.bigquery.model.TableCell) cellPb).getV();
+    }
+    // Check `cellPb == null` and `cellPb == NULL_CELL_SENTINEL` before calling
+    // `Data.isNull(cellPb)`:
+    // 1. `Data.isNull(null)` returns `false` (it only matches non-null sentinel instances
+    //    registered in `Data.NULL_CACHE`), so unwrapped `null` references must be checked first.
+    // 2. `Data.nullOf(Object.class)` is the singleton sentinel used by google-http-client and
+    //    HttpBigQueryRpc for JSON `null` values in `Object`-typed fields (`TableCell.v`). Checking
+    //    reference equality (`==`) avoids `Data.isNull`'s `ConcurrentHashMap.get` lookup on every
+    //    null cell while still falling back to `Data.isNull` for typed null sentinels such as
+    //    `Data.nullOf(String.class)`.
+    if (cellPb == null || cellPb == NULL_CELL_SENTINEL || Data.isNull(cellPb)) {
       return FieldValue.of(Attribute.PRIMITIVE, null, useInt64Timestamps);
     }
     if (cellPb instanceof String) {
@@ -412,8 +446,8 @@ public class FieldValue implements Serializable {
             FieldValueList.fromPb(
                 (List<Object>) cellMapPb.get("f"), subFieldsSchema, useInt64Timestamps));
       }
-      // This should never be the case when we are processing a first level table field (i.e. a
-      // row's field, not a record sub-field)
+      // Fallback for callers or unit tests that pass a generic Map representation of a cell
+      // envelope (such as `ImmutableMap.of("v", ...)`).
       if (cellMapPb.containsKey("v")) {
         return FieldValue.fromPb(cellMapPb.get("v"), recordSchema, useInt64Timestamps);
       }
@@ -435,7 +469,8 @@ public class FieldValue implements Serializable {
     // Pattern is [sign]Y-M [sign]D [sign]H:M:S[.F]
     Pattern pattern =
         Pattern.compile(
-            "(?<sign1>[+-])?(?<year>\\d+)-(?<month>\\d+) (?<sign2>[-|+])?(?<day>\\d+) (?<sign3>[-|+])?(?<hours>\\d+):(?<minutes>\\d+):(?<seconds>\\d+)(\\.(?<fraction>\\d+))?");
+            "(?<sign1>[+-])?(?<year>\\d+)-(?<month>\\d+) (?<sign2>[-|+])?(?<day>\\d+)"
+                + " (?<sign3>[-|+])?(?<hours>\\d+):(?<minutes>\\d+):(?<seconds>\\d+)(\\.(?<fraction>\\d+))?");
     Matcher matcher = pattern.matcher(interval);
     if (!matcher.find()) {
       throw new IllegalArgumentException();
