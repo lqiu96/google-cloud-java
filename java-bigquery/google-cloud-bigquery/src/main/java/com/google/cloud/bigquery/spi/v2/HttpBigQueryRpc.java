@@ -72,7 +72,6 @@ import com.google.cloud.bigquery.telemetry.HttpTracingRequestInitializer;
 import com.google.cloud.http.HttpTransportOptions;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Span;
@@ -250,15 +249,19 @@ public class HttpBigQueryRpc implements BigQueryRpc {
             span.setAttribute("bq.rpc.page_token", datasetsListRequest.getPageToken());
           }
           DatasetList datasetsList = datasetsListRequest.execute();
-          Iterable<DatasetList.Datasets> datasets = datasetsList.getDatasets();
+          List<DatasetList.Datasets> datasets = datasetsList.getDatasets();
           if (span != null) {
             span.setAttribute("bq.rpc.next_page_token", datasetsList.getNextPageToken());
           }
-          return Tuple.of(
-              datasetsList.getNextPageToken(),
-              Iterables.transform(
-                  datasets != null ? datasets : ImmutableList.<DatasetList.Datasets>of(),
-                  LIST_TO_DATASET));
+          if (datasets == null || datasets.isEmpty()) {
+            return Tuple.of(datasetsList.getNextPageToken(), ImmutableList.of());
+          }
+          ImmutableList.Builder<Dataset> builder =
+              ImmutableList.builderWithExpectedSize(datasets.size());
+          for (DatasetList.Datasets datasetPb : datasets) {
+            builder.add(LIST_TO_DATASET.apply(datasetPb));
+          }
+          return Tuple.of(datasetsList.getNextPageToken(), builder.build());
         });
   }
 
@@ -843,27 +846,27 @@ public class HttpBigQueryRpc implements BigQueryRpc {
             span.setAttribute("bq.rpc.next_page_token", tableResponse.getNextPageToken());
           }
 
-          Iterable<TableList.Tables> tables = tableResponse.getTables();
-          return Tuple.of(
-              tableResponse.getNextPageToken(),
-              Iterables.transform(
-                  tables != null ? tables : ImmutableList.<TableList.Tables>of(),
-                  new Function<TableList.Tables, Table>() {
-                    @Override
-                    public Table apply(TableList.Tables tablePb) {
-                      return new Table()
-                          .setFriendlyName(tablePb.getFriendlyName())
-                          .setId(tablePb.getId())
-                          .setKind(tablePb.getKind())
-                          .setTableReference(tablePb.getTableReference())
-                          .setType(tablePb.getType())
-                          .setCreationTime(tablePb.getCreationTime())
-                          .setTimePartitioning(tablePb.getTimePartitioning())
-                          .setRangePartitioning(tablePb.getRangePartitioning())
-                          .setClustering(tablePb.getClustering())
-                          .setLabels(tablePb.getLabels());
-                    }
-                  }));
+          List<TableList.Tables> tables = tableResponse.getTables();
+          if (tables == null || tables.isEmpty()) {
+            return Tuple.of(tableResponse.getNextPageToken(), ImmutableList.of());
+          }
+          ImmutableList.Builder<Table> builder =
+              ImmutableList.builderWithExpectedSize(tables.size());
+          for (TableList.Tables tablePb : tables) {
+            builder.add(
+                new Table()
+                    .setFriendlyName(tablePb.getFriendlyName())
+                    .setId(tablePb.getId())
+                    .setKind(tablePb.getKind())
+                    .setTableReference(tablePb.getTableReference())
+                    .setType(tablePb.getType())
+                    .setCreationTime(tablePb.getCreationTime())
+                    .setTimePartitioning(tablePb.getTimePartitioning())
+                    .setRangePartitioning(tablePb.getRangePartitioning())
+                    .setClustering(tablePb.getClustering())
+                    .setLabels(tablePb.getLabels()));
+          }
+          return Tuple.of(tableResponse.getNextPageToken(), builder.build());
         });
   }
 
@@ -1691,32 +1694,30 @@ public class HttpBigQueryRpc implements BigQueryRpc {
             span.setAttribute("bq.rpc.next_page_token", jobsList.getNextPageToken());
           }
 
-          Iterable<JobList.Jobs> jobs = jobsList.getJobs();
-          return Tuple.of(
-              jobsList.getNextPageToken(),
-              Iterables.transform(
-                  jobs != null ? jobs : ImmutableList.<JobList.Jobs>of(),
-                  new Function<JobList.Jobs, Job>() {
-                    @Override
-                    public Job apply(JobList.Jobs jobPb) {
-                      JobStatus statusPb =
-                          jobPb.getStatus() != null ? jobPb.getStatus() : new JobStatus();
-                      if (statusPb.getState() == null) {
-                        statusPb.setState(jobPb.getState());
-                      }
-                      if (statusPb.getErrorResult() == null) {
-                        statusPb.setErrorResult(jobPb.getErrorResult());
-                      }
-                      return new Job()
-                          .setConfiguration(jobPb.getConfiguration())
-                          .setId(jobPb.getId())
-                          .setJobReference(jobPb.getJobReference())
-                          .setKind(jobPb.getKind())
-                          .setStatistics(jobPb.getStatistics())
-                          .setStatus(statusPb)
-                          .setUserEmail(jobPb.getUserEmail());
-                    }
-                  }));
+          List<JobList.Jobs> jobs = jobsList.getJobs();
+          if (jobs == null || jobs.isEmpty()) {
+            return Tuple.of(jobsList.getNextPageToken(), ImmutableList.of());
+          }
+          ImmutableList.Builder<Job> builder = ImmutableList.builderWithExpectedSize(jobs.size());
+          for (JobList.Jobs jobPb : jobs) {
+            JobStatus statusPb = jobPb.getStatus() != null ? jobPb.getStatus() : new JobStatus();
+            if (statusPb.getState() == null) {
+              statusPb.setState(jobPb.getState());
+            }
+            if (statusPb.getErrorResult() == null) {
+              statusPb.setErrorResult(jobPb.getErrorResult());
+            }
+            builder.add(
+                new Job()
+                    .setConfiguration(jobPb.getConfiguration())
+                    .setId(jobPb.getId())
+                    .setJobReference(jobPb.getJobReference())
+                    .setKind(jobPb.getKind())
+                    .setStatistics(jobPb.getStatistics())
+                    .setStatus(statusPb)
+                    .setUserEmail(jobPb.getUserEmail()));
+          }
+          return Tuple.of(jobsList.getNextPageToken(), builder.build());
         });
   }
 
