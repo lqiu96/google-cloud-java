@@ -573,9 +573,7 @@ public final class Field implements Serializable {
       fieldBuilder.setDefaultValueExpression(fieldSchemaPb.getDefaultValueExpression());
     }
     FieldList subFields =
-        fieldSchemaPb.getFields() != null
-            ? FieldList.of(Lists.transform(fieldSchemaPb.getFields(), FROM_PB_FUNCTION))
-            : null;
+        fieldSchemaPb.getFields() != null ? FieldList.fromPb(fieldSchemaPb.getFields()) : null;
     fieldBuilder.setType(LegacySQLTypeName.valueOf(fieldSchemaPb.getType()), subFields);
     if (fieldSchemaPb.getCollation() != null) {
       fieldBuilder.setCollation(fieldSchemaPb.getCollation());

@@ -52,7 +52,9 @@ public final class FieldList extends AbstractList<Field> implements Serializable
     this.fields = ImmutableList.copyOf(fields);
     Map<String, Integer> caseInsensitiveMap = new CaseInsensitiveMap();
     int index = 0;
-    for (Field field : fields) {
+    // Iterate the materialized ImmutableList rather than the input Iterable so lazy views
+    // are not evaluated a second time.
+    for (Field field : this.fields) {
       caseInsensitiveMap.put(field.getName(), index);
       index++;
     }
@@ -115,6 +117,9 @@ public final class FieldList extends AbstractList<Field> implements Serializable
    * @param fields the schema fields
    */
   public static FieldList of(Iterable<Field> fields) {
+    if (fields instanceof FieldList) {
+      return (FieldList) fields;
+    }
     return new FieldList(fields);
   }
 
@@ -123,6 +128,10 @@ public final class FieldList extends AbstractList<Field> implements Serializable
   }
 
   static FieldList fromPb(List<TableFieldSchema> fields) {
-    return FieldList.of(Lists.transform(fields, Field.FROM_PB_FUNCTION));
+    ImmutableList.Builder<Field> builder = ImmutableList.builderWithExpectedSize(fields.size());
+    for (TableFieldSchema fieldPb : fields) {
+      builder.add(Field.fromPb(fieldPb));
+    }
+    return new FieldList(builder.build());
   }
 }
