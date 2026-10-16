@@ -17,7 +17,6 @@
 package com.google.cloud.bigquery;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static java.time.temporal.ChronoUnit.MICROS;
 
 import com.google.api.client.util.Data;
@@ -201,10 +200,13 @@ public class FieldValue implements Serializable {
   @SuppressWarnings("unchecked")
   public boolean getBooleanValue() {
     String stringValue = getStringValue();
-    checkState(
-        stringValue.equalsIgnoreCase("true") || stringValue.equalsIgnoreCase("false"),
-        "Field value is not of boolean type");
-    return Boolean.parseBoolean(stringValue);
+    if ("true".equalsIgnoreCase(stringValue)) {
+      return true;
+    }
+    if ("false".equalsIgnoreCase(stringValue)) {
+      return false;
+    }
+    throw new IllegalStateException("Field value is not of boolean type");
   }
 
   /**
@@ -354,6 +356,31 @@ public class FieldValue implements Serializable {
         && Objects.equals(useInt64Timestamps, other.useInt64Timestamps);
   }
 
+  // Reusable immutable singletons for primitive "true" and "false" cells (with and without int64
+  // timestamps). Because FieldValue is deeply immutable and stores the canonical String value for
+  // Attribute.PRIMITIVE, sharing these singletons avoids allocating a new 24-byte FieldValue
+  // wrapper for every boolean cell across large result sets.
+  private static final FieldValue TRUE_PRIMITIVE =
+      new FieldValue(Attribute.PRIMITIVE, "true", false);
+  private static final FieldValue FALSE_PRIMITIVE =
+      new FieldValue(Attribute.PRIMITIVE, "false", false);
+  private static final FieldValue TRUE_PRIMITIVE_INT64_TIMESTAMPS =
+      new FieldValue(Attribute.PRIMITIVE, "true", true);
+  private static final FieldValue FALSE_PRIMITIVE_INT64_TIMESTAMPS =
+      new FieldValue(Attribute.PRIMITIVE, "false", true);
+
+  private Object readResolve() {
+    if (attribute == Attribute.PRIMITIVE && useInt64Timestamps != null) {
+      if ("true".equals(value)) {
+        return useInt64Timestamps ? TRUE_PRIMITIVE_INT64_TIMESTAMPS : TRUE_PRIMITIVE;
+      }
+      if ("false".equals(value)) {
+        return useInt64Timestamps ? FALSE_PRIMITIVE_INT64_TIMESTAMPS : FALSE_PRIMITIVE;
+      }
+    }
+    return this;
+  }
+
   /**
    * Creates an instance of {@code FieldValue}, useful for testing.
    *
@@ -375,6 +402,14 @@ public class FieldValue implements Serializable {
 
   @BetaApi
   public static FieldValue of(Attribute attribute, Object value, Boolean useInt64Timestamps) {
+    if (attribute == Attribute.PRIMITIVE && useInt64Timestamps != null) {
+      if ("true".equals(value)) {
+        return useInt64Timestamps ? TRUE_PRIMITIVE_INT64_TIMESTAMPS : TRUE_PRIMITIVE;
+      }
+      if ("false".equals(value)) {
+        return useInt64Timestamps ? FALSE_PRIMITIVE_INT64_TIMESTAMPS : FALSE_PRIMITIVE;
+      }
+    }
     return new FieldValue(attribute, value, useInt64Timestamps);
   }
 
