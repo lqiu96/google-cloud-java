@@ -19,10 +19,11 @@ package com.google.cloud.bigquery;
 import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.io.Serializable;
 import java.util.AbstractList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -36,28 +37,29 @@ public final class FieldList extends AbstractList<Field> implements Serializable
   private final List<Field> fields;
   private final Map<String, Integer> nameIndex;
 
-  private static class CaseInsensitiveMap extends HashMap<String, Integer> {
-    @Override
-    public Integer put(String key, Integer value) {
-      return super.put(key.toLowerCase(), value);
-    }
-
-    @Override
-    public Integer get(Object key) {
-      return super.get(key.toString().toLowerCase());
-    }
-  }
-
   private FieldList(Iterable<Field> fields) {
     this.fields = ImmutableList.copyOf(fields);
-    Map<String, Integer> caseInsensitiveMap = new CaseInsensitiveMap();
-    int index = 0;
-    for (Field field : fields) {
-      caseInsensitiveMap.put(field.getName(), index);
-      index++;
+    int size = this.fields.size();
+    // Pre-size for both lowercase and exact-case keys so exact-case and lowercase lookups
+    // in getIndex(String) hit on the first probe without allocating a lowercased String.
+    Map<String, Integer> indexMap = Maps.newHashMapWithExpectedSize(size * 2);
+    boolean hasCaseCollision = false;
+    for (int i = 0; i < size; i++) {
+      String name = this.fields.get(i).getName();
+      String lowerName = name.toLowerCase(Locale.ROOT);
+      if (indexMap.put(lowerName, i) != null) {
+        hasCaseCollision = true;
+      }
+      indexMap.put(name, i);
+    }
+    if (hasCaseCollision) {
+      for (int i = 0; i < size; i++) {
+        String name = this.fields.get(i).getName();
+        indexMap.put(name, indexMap.get(name.toLowerCase(Locale.ROOT)));
+      }
     }
 
-    this.nameIndex = caseInsensitiveMap;
+    this.nameIndex = indexMap;
   }
 
   /**
@@ -87,7 +89,10 @@ public final class FieldList extends AbstractList<Field> implements Serializable
   public int getIndex(String name) {
     Integer index = nameIndex.get(name);
     if (index == null) {
-      throw new IllegalArgumentException("Field with name '" + name + "' was not found");
+      index = nameIndex.get(name.toLowerCase(Locale.ROOT));
+      if (index == null) {
+        throw new IllegalArgumentException("Field with name '" + name + "' was not found");
+      }
     }
     return index;
   }
