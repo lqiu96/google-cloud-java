@@ -22,7 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.TransportOptions;
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -98,5 +100,76 @@ public class BigQueryOptionsTest {
     BigQueryOptions options = BigQueryOptions.newBuilder().setProjectId("project-id").build();
 
     assertFalse(options.getUseJwtAccessWithScope());
+  }
+
+  @Test
+  void testGetDefaultRetrySettings() {
+    RetrySettings retrySettings = BigQueryOptions.getDefaultRetrySettings();
+    assertEquals(6, retrySettings.getMaxAttempts());
+    assertEquals(Duration.ofMillis(1000L), retrySettings.getInitialRetryDelayDuration());
+    assertEquals(Duration.ofMillis(32_000L), retrySettings.getMaxRetryDelayDuration());
+    assertEquals(2.0, retrySettings.getRetryDelayMultiplier());
+    assertEquals(Duration.ofMinutes(5), retrySettings.getTotalTimeoutDuration());
+    assertEquals(Duration.ofMillis(60_000L), retrySettings.getInitialRpcTimeoutDuration());
+    assertEquals(1.0, retrySettings.getRpcTimeoutMultiplier());
+    assertEquals(Duration.ofMillis(60_000L), retrySettings.getMaxRpcTimeoutDuration());
+  }
+
+  @Test
+  void testDefaultInstance_usesBigQueryDefaultRetrySettings() {
+    BigQueryOptions options = BigQueryOptions.newBuilder().setProjectId("project-id").build();
+    assertEquals(BigQueryOptions.getDefaultRetrySettings(), options.getRetrySettings());
+  }
+
+  @Test
+  void testBuilderSetRetrySettingsNull_fallsBackToDefault() {
+    BigQueryOptions options =
+        BigQueryOptions.newBuilder().setProjectId("project-id").setRetrySettings(null).build();
+    assertEquals(BigQueryOptions.getDefaultRetrySettings(), options.getRetrySettings());
+  }
+
+  @Test
+  void testBuilderSetRetrySettingsCustom_preservesCustomSettings() {
+    RetrySettings customRetrySettings =
+        RetrySettings.newBuilder()
+            .setMaxAttempts(10)
+            .setTotalTimeoutDuration(Duration.ofMinutes(10))
+            .build();
+    BigQueryOptions options =
+        BigQueryOptions.newBuilder()
+            .setProjectId("project-id")
+            .setRetrySettings(customRetrySettings)
+            .build();
+    assertEquals(customRetrySettings, options.getRetrySettings());
+  }
+
+  @Test
+  void testToBuilder_preservesRetrySettingsAndTransportOptions() {
+    RetrySettings customRetrySettings =
+        RetrySettings.newBuilder()
+            .setMaxAttempts(8)
+            .setTotalTimeoutDuration(Duration.ofMinutes(8))
+            .build();
+    com.google.cloud.http.HttpTransportOptions customTransport =
+        com.google.cloud.http.HttpTransportOptions.newBuilder()
+            .setConnectTimeout(45_000)
+            .setReadTimeout(120_000)
+            .build();
+
+    BigQueryOptions options =
+        BigQueryOptions.newBuilder()
+            .setProjectId("project-id")
+            .setRetrySettings(customRetrySettings)
+            .setTransportOptions(customTransport)
+            .build();
+
+    BigQueryOptions reconstructed = options.toBuilder().build();
+    assertEquals(customRetrySettings, reconstructed.getRetrySettings());
+    assertEquals(customTransport, reconstructed.getTransportOptions());
+
+    BigQueryOptions defaultOptions =
+        BigQueryOptions.newBuilder().setProjectId("project-id").build();
+    BigQueryOptions reconstructedDefault = defaultOptions.toBuilder().build();
+    assertEquals(BigQueryOptions.getDefaultRetrySettings(), reconstructedDefault.getRetrySettings());
   }
 }
