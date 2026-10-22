@@ -18,6 +18,7 @@ package com.google.cloud.bigquery;
 
 import com.google.api.core.ObsoleteApi;
 import com.google.api.gax.retrying.ResultRetryAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.ServiceDefaults;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.ServiceRpc;
@@ -29,11 +30,20 @@ import com.google.cloud.http.HttpTransportOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import io.opentelemetry.api.trace.Tracer;
+import java.time.Duration;
 import java.util.Set;
 
 public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
 
   private static final String API_SHORT_NAME = "BigQuery";
+  /**
+   * The default read timeout for HTTP requests to the BigQuery REST API (60 seconds).
+   *
+   * <p>This value was introduced to prevent hung socket connections when intermediate proxies or
+   * network boundaries drop silent TCP sessions without TCP RST or FIN packets (b/286444754). It is
+   * set to 60 seconds to ensure prompt socket termination while remaining well within server-side
+   * job and query processing limits.
+   */
   private static final int DEFAULT_READ_API_TIME_OUT = 60000;
   private static final String BIGQUERY_SCOPE = "https://www.googleapis.com/auth/bigquery";
   private static final Set<String> SCOPES = ImmutableSet.of(BIGQUERY_SCOPE);
@@ -79,10 +89,17 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
 
     private Builder() {
       setUseJwtAccessWithScope(false);
+      setRetrySettings(getDefaultRetrySettings());
     }
 
     private Builder(BigQueryOptions options) {
       super(options);
+    }
+
+    @Override
+    public Builder setRetrySettings(RetrySettings retrySettings) {
+      return super.setRetrySettings(
+          retrySettings != null ? retrySettings : getDefaultRetrySettings());
     }
 
     @Override
@@ -329,6 +346,31 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     }
     BigQueryOptions other = (BigQueryOptions) obj;
     return baseEquals(other);
+  }
+
+  @Override
+  protected RetrySettings defaultRetrySettings() {
+    return getDefaultRetrySettings();
+  }
+
+  /**
+   * Returns the default {@link RetrySettings} for BigQuery.
+   *
+   * <p>Configures a 5-minute total timeout duration, up to 6 retry attempts, exponential backoff
+   * from 1 second to 32 seconds, and initial/max RPC timeout matching {@link
+   * #DEFAULT_READ_API_TIME_OUT} (60 seconds).
+   */
+  public static RetrySettings getDefaultRetrySettings() {
+    return RetrySettings.newBuilder()
+        .setMaxAttempts(6)
+        .setInitialRetryDelayDuration(Duration.ofMillis(1000L))
+        .setMaxRetryDelayDuration(Duration.ofMillis(32_000L))
+        .setRetryDelayMultiplier(2.0)
+        .setTotalTimeoutDuration(Duration.ofMinutes(5))
+        .setInitialRpcTimeoutDuration(Duration.ofMillis(DEFAULT_READ_API_TIME_OUT))
+        .setRpcTimeoutMultiplier(1.0)
+        .setMaxRpcTimeoutDuration(Duration.ofMillis(DEFAULT_READ_API_TIME_OUT))
+        .build();
   }
 
   public static BigQueryOptions getDefaultInstance() {
