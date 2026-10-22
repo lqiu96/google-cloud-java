@@ -2377,7 +2377,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
             }
           },
           getOptions().getRetrySettings(),
-          BigQueryRetryHelper.maybeWrapForHttpRetry(getOptions().getResultRetryAlgorithm()),
+          getOptions().getResultRetryAlgorithm(),
           getOptions().getClock(),
           EMPTY_RETRY_CONFIG,
           getOptions().isOpenTelemetryTracingEnabled(),

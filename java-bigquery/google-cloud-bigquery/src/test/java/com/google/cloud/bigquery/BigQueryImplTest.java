@@ -4525,4 +4525,40 @@ public class BigQueryImplTest {
     verify(bigqueryRpcMock, times(2))
         .createSkipExceptionTranslation(jobCapture.capture(), eq(EMPTY_RPC_OPTIONS));
   }
+
+  @Test
+  void testCustomResultRetryAlgorithmIsRespected() throws IOException {
+    // When a user provides a custom ResultRetryAlgorithm, BigQueryRetryAlgorithm must respect
+    // its decisions and not override them with DEFAULT_BIGQUERY_EXCEPTION_HANDLER fallbacks.
+    ResultRetryAlgorithm<Object> noRetryAlgorithm =
+        new ResultRetryAlgorithm<Object>() {
+          @Override
+          public TimedAttemptSettings createNextAttempt(
+              Throwable prevThrowable, Object prevResponse, TimedAttemptSettings prevSettings) {
+            return null;
+          }
+
+          @Override
+          public boolean shouldRetry(Throwable prevThrowable, Object prevResponse) {
+            return false;
+          }
+        };
+
+    when(bigqueryRpcMock.queryRpcSkipExceptionTranslation(eq(PROJECT), requestPbCapture.capture()))
+        .thenThrow(
+            new BigQueryException(
+                500, "Backend error", new BigQueryError("backendError", null, "Backend error")));
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .setResultRetryAlgorithm(noRetryAlgorithm)
+            .build()
+            .getService();
+
+    assertThrows(
+        BigQueryException.class, () -> bigquery.query(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY));
+    verify(bigqueryRpcMock, times(1))
+        .queryRpcSkipExceptionTranslation(eq(PROJECT), requestPbCapture.capture());
+  }
 }
