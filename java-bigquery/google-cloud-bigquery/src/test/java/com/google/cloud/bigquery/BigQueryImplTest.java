@@ -90,9 +90,11 @@ import com.google.common.io.BaseEncoding;
 import com.google.protobuf.ByteString;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.channels.Channels;
 import java.util.Collections;
@@ -1922,8 +1924,14 @@ public class BigQueryImplTest {
         .thenThrow(new BigQueryException(503, "Service Unavailable"))
         .thenThrow(
             new BigQueryException(
-                400, RATE_LIMIT_ERROR_MSG)) // retrial on based on RATE_LIMIT_EXCEEDED_MSG
-        .thenThrow(new BigQueryException(200, RATE_LIMIT_ERROR_MSG))
+                400,
+                RATE_LIMIT_ERROR_MSG,
+                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
+        .thenThrow(
+            new BigQueryException(
+                200,
+                RATE_LIMIT_ERROR_MSG,
+                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
         .thenReturn(newJobPb());
 
     bigquery = options.getService();
@@ -1954,8 +1962,14 @@ public class BigQueryImplTest {
             jobCapture.capture(), eq(bigQueryRpcOptions)))
         .thenThrow(
             new BigQueryException(
-                400, RATE_LIMIT_ERROR_MSG)) // retrial on based on RATE_LIMIT_EXCEEDED_MSG
-        .thenThrow(new BigQueryException(200, RATE_LIMIT_ERROR_MSG))
+                400,
+                RATE_LIMIT_ERROR_MSG,
+                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
+        .thenThrow(
+            new BigQueryException(
+                200,
+                RATE_LIMIT_ERROR_MSG,
+                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
         .thenReturn(newJobPb());
 
     bigquery = options.getService();
@@ -3749,8 +3763,9 @@ public class BigQueryImplTest {
         .thenThrow(
             new BigQueryException(
                 400,
-                BigQueryErrorMessages
-                    .RATE_LIMIT_EXCEEDED_MSG)) // retrial on based on RATE_LIMIT_EXCEEDED_MSG
+                BigQueryErrorMessages.RATE_LIMIT_EXCEEDED_MSG,
+                new BigQueryError(
+                    "rateLimitExceeded", null, BigQueryErrorMessages.RATE_LIMIT_EXCEEDED_MSG)))
         .thenReturn(responsePb);
 
     bigquery =
@@ -3989,7 +4004,9 @@ public class BigQueryImplTest {
         .thenThrow(new BigQueryException(504, "Gateway Timeout"))
         .thenThrow(
             new BigQueryException(
-                400, RATE_LIMIT_ERROR_MSG)) // retrial on based on RATE_LIMIT_EXCEEDED_MSG
+                400,
+                RATE_LIMIT_ERROR_MSG,
+                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
         .thenReturn(responsePb);
 
     bigquery =
@@ -4416,5 +4433,96 @@ public class BigQueryImplTest {
 
     verify(mockReadClientUs, times(1)).close();
     verify(mockReadClientEu, times(1)).close();
+  }
+
+  @Test
+  void testCreateJobSocketTimeoutRetry() throws IOException {
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(new SocketTimeoutException("Read timed out"))
+        .thenReturn(newJobPb());
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .build()
+            .getService();
+
+    ((BigQueryImpl) bigquery).create(JobInfo.of(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY));
+    verify(bigqueryRpcMock, times(2))
+        .createSkipExceptionTranslation(jobCapture.capture(), eq(EMPTY_RPC_OPTIONS));
+    assertFalse(Thread.currentThread().isInterrupted());
+  }
+
+  @Test
+  void testCreateJobEOFExceptionRetry() throws IOException {
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(new EOFException("Unexpected end of ZLIB input stream"))
+        .thenReturn(newJobPb());
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .build()
+            .getService();
+
+    ((BigQueryImpl) bigquery).create(JobInfo.of(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY));
+    verify(bigqueryRpcMock, times(2))
+        .createSkipExceptionTranslation(jobCapture.capture(), eq(EMPTY_RPC_OPTIONS));
+  }
+
+  @Test
+  void testQueryStructuredBackendErrorRetry() throws IOException, InterruptedException {
+    com.google.api.services.bigquery.model.QueryResponse responsePb =
+        new com.google.api.services.bigquery.model.QueryResponse()
+            .setJobComplete(true)
+            .setTotalRows(BigInteger.valueOf(1L))
+            .setSchema(TABLE_SCHEMA.toPb());
+
+    when(bigqueryRpcMock.queryRpcSkipExceptionTranslation(eq(PROJECT), requestPbCapture.capture()))
+        .thenThrow(
+            new BigQueryException(
+                500, "Backend error", new BigQueryError("backendError", null, "Backend error")))
+        .thenReturn(responsePb);
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .build()
+            .getService();
+
+    TableResult response = bigquery.query(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY);
+    assertEquals(TABLE_SCHEMA, response.getSchema());
+    assertEquals(1, response.getTotalRows());
+    verify(bigqueryRpcMock, times(2))
+        .queryRpcSkipExceptionTranslation(eq(PROJECT), requestPbCapture.capture());
+  }
+
+  @Test
+  void testJobStatusErrorProtoReasonRetry() throws IOException {
+    com.google.api.services.bigquery.model.Job rateLimitedJob =
+        new com.google.api.services.bigquery.model.Job()
+            .setStatus(
+                new com.google.api.services.bigquery.model.JobStatus()
+                    .setErrorResult(
+                        new ErrorProto()
+                            .setReason("rateLimitExceeded")
+                            .setMessage("Exceeded rate limit")));
+
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenReturn(rateLimitedJob)
+        .thenReturn(newJobPb());
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .build()
+            .getService();
+
+    ((BigQueryImpl) bigquery).create(JobInfo.of(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY));
+    verify(bigqueryRpcMock, times(2))
+        .createSkipExceptionTranslation(jobCapture.capture(), eq(EMPTY_RPC_OPTIONS));
   }
 }

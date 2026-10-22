@@ -80,10 +80,8 @@ public class Job extends JobInfo {
 
   private final BigQueryOptions options;
   private transient BigQuery bigquery;
-  private static final BigQueryRetryConfig DEFAULT_RETRY_CONFIG =
-      BigQueryRetryConfig.newBuilder()
-          .retryOnMessage(BigQueryErrorMessages.RATE_LIMIT_EXCEEDED_MSG)
-          .build(); // retry config with Error Message for RateLimitExceeded Error
+  private static final BigQueryRetryConfig EMPTY_RETRY_CONFIG =
+      BigQueryRetryConfig.newBuilder().build();
 
   /** A builder for {@code Job} objects. */
   public static final class Builder extends JobInfo.Builder {
@@ -240,7 +238,7 @@ public class Job extends JobInfo {
 
   /** See {@link #waitFor(BigQueryRetryConfig, RetryOption...)} */
   public Job waitFor(RetryOption... waitOptions) throws InterruptedException {
-    return waitForInternal(DEFAULT_RETRY_CONFIG, waitOptions);
+    return waitForInternal(EMPTY_RETRY_CONFIG, waitOptions);
   }
 
   /**
@@ -402,7 +400,7 @@ public class Job extends JobInfo {
       QueryResponse response =
           waitForQueryResults(
               DEFAULT_JOB_WAIT_SETTINGS,
-              DEFAULT_RETRY_CONFIG,
+              EMPTY_RETRY_CONFIG,
               waitOptions.toArray(new QueryResultsOption[0]));
 
       // Get the job resource to determine if it has errored.
@@ -512,7 +510,9 @@ public class Job extends JobInfo {
                 Throwable prevThrowable,
                 QueryResponse
                     prevResponse) { // Used by BigQueryRetryAlgorithm.shouldRetryBasedOnResult
-              return prevResponse != null && !prevResponse.getCompleted();
+              return (prevThrowable instanceof BigQueryException
+                      && ((BigQueryException) prevThrowable).isRetryable())
+                  || (prevResponse != null && !prevResponse.getCompleted());
             }
           },
           options.getClock(),

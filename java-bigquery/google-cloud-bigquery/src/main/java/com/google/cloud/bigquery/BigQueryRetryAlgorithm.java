@@ -27,6 +27,8 @@ import com.google.api.gax.retrying.TimedRetryAlgorithm;
 import com.google.api.gax.retrying.TimedRetryAlgorithmWithContext;
 import com.google.api.services.bigquery.model.ErrorProto;
 import com.google.api.services.bigquery.model.Job;
+import com.google.cloud.BaseServiceException;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Iterator;
 import java.util.UUID;
@@ -149,9 +151,31 @@ public class BigQueryRetryAlgorithm<ResponseT> extends RetryAlgorithm<ResponseT>
   boolean shouldRetryBasedOnResult(
       RetryingContext context, Throwable previousThrowable, ResponseT previousResponse) {
     if (resultAlgorithmWithContext != null && context != null) {
-      return resultAlgorithmWithContext.shouldRetry(context, previousThrowable, previousResponse);
+      if (resultAlgorithmWithContext.shouldRetry(context, previousThrowable, previousResponse)) {
+        return true;
+      }
+    } else if (getResultAlgorithm().shouldRetry(previousThrowable, previousResponse)) {
+      return true;
     }
-    return getResultAlgorithm().shouldRetry(previousThrowable, previousResponse);
+    // Automatically retry structured BigQuery error reasons and HTTP error codes translated from
+    // IOExceptions or embedded in HTTP 200 Job responses when using the default exception handler.
+    if (resultAlgorithm == BigQueryBaseService.DEFAULT_BIGQUERY_EXCEPTION_HANDLER) {
+      if (previousThrowable instanceof IOException) {
+        if (new BigQueryException((IOException) previousThrowable).isRetryable()) {
+          return true;
+        }
+      }
+      if (previousResponse instanceof Job) {
+        Job job = (Job) previousResponse;
+        ErrorProto error = job.getStatus() != null ? job.getStatus().getErrorResult() : null;
+        if (error != null
+            && BaseServiceException.isRetryable(
+                null, error.getReason(), true, BigQueryException.RETRYABLE_ERRORS)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /*Duplicating this method as it can not be inherited from the RetryAlgorithm due to the private access modifier*/

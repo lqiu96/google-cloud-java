@@ -18,6 +18,11 @@ package com.google.cloud.bigquery;
 import com.google.cloud.BaseService;
 import com.google.cloud.ExceptionHandler;
 import com.google.cloud.ServiceOptions;
+import java.io.EOFException;
+import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 abstract class BigQueryBaseService<OptionsT extends ServiceOptions<?, OptionsT>>
     extends BaseService {
@@ -26,12 +31,21 @@ abstract class BigQueryBaseService<OptionsT extends ServiceOptions<?, OptionsT>>
     super(options);
   }
 
+  // DEFAULT_BIGQUERY_EXCEPTION_HANDLER retries low-level transport exceptions that occur
+  // before or during HTTP framing.
+  // SocketTimeoutException covers HTTP read and connect timeouts where the BigQuery backend
+  // or intermediary proxy failed to return response bytes within the configured socket timeout.
+  // EOFException covers truncated HTTP response bodies or stream terminations (such as chunked
+  // transfer encoding failures or dropped TCP connections mid-payload), matching behavior in
+  // other BigQuery client libraries (Go's io.ErrUnexpectedEOF and Python's ChunkedEncodingError).
   public static final ExceptionHandler DEFAULT_BIGQUERY_EXCEPTION_HANDLER =
       ExceptionHandler.newBuilder()
           .abortOn(RuntimeException.class)
-          .retryOn(java.net.ConnectException.class) // retry on Connection Exception
-          .retryOn(java.net.UnknownHostException.class) // retry on UnknownHostException
-          .retryOn(java.net.SocketException.class) // retry on SocketException
+          .retryOn(ConnectException.class)
+          .retryOn(UnknownHostException.class)
+          .retryOn(SocketException.class)
+          .retryOn(SocketTimeoutException.class)
+          .retryOn(EOFException.class)
           .addInterceptors(EXCEPTION_HANDLER_INTERCEPTOR)
           .build();
 }

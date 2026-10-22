@@ -20,7 +20,9 @@ import com.google.cloud.BaseServiceException;
 import com.google.cloud.RetryHelper.RetryHelperException;
 import com.google.cloud.http.BaseHttpServiceException;
 import com.google.common.collect.ImmutableSet;
+import java.io.EOFException;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -35,10 +37,28 @@ import java.util.concurrent.ExecutionException;
  */
 public final class BigQueryException extends BaseHttpServiceException {
 
-  // see: https://cloud.google.com/bigquery/troubleshooting-errors
-  private static final Set<Error> RETRYABLE_ERRORS =
+  // BigQuery structured error reason codes and HTTP status codes defined in the BigQuery
+  // troubleshooting error catalog: https://cloud.google.com/bigquery/docs/error-messages
+  // These errors represent transient rate limits, backend errors, or transport timeouts that can
+  // be safely retried.
+  static final Set<Error> RETRYABLE_ERRORS =
       ImmutableSet.of(
-          new Error(500, null), new Error(502, null), new Error(503, null), new Error(504, null));
+          // HTTP status codes
+          new Error(429, null, true),
+          new Error(500, null, true),
+          new Error(502, null, true),
+          new Error(503, null, true),
+          new Error(504, null, true),
+          // Structured BigQuery error reasons
+          new Error(null, "rateLimitExceeded", true),
+          new Error(null, "userRateLimitExceeded", true),
+          new Error(null, "jobRateLimitExceeded", true),
+          new Error(null, "backendError", true),
+          new Error(null, "internalError", true),
+          new Error(null, "badGateway", true),
+          new Error(null, "tableUnavailable", true),
+          new Error(null, "jobBackendError", true),
+          new Error(null, "jobInternalError", true));
   private static final long serialVersionUID = -5006625989225438209L;
 
   private final List<BigQueryError> errors;
@@ -92,6 +112,13 @@ public final class BigQueryException extends BaseHttpServiceException {
    */
   public List<BigQueryError> getErrors() {
     return errors;
+  }
+
+  @Override
+  public boolean isRetryable() {
+    return super.isRetryable()
+        || getCause() instanceof SocketTimeoutException
+        || getCause() instanceof EOFException;
   }
 
   @Override

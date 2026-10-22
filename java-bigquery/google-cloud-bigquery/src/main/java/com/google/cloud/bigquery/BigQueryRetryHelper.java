@@ -17,6 +17,8 @@ package com.google.cloud.bigquery;
 
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.core.ApiClock;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
 import com.google.api.gax.retrying.DirectRetryingExecutor;
 import com.google.api.gax.retrying.ExponentialRetryAlgorithm;
 import com.google.api.gax.retrying.ResultRetryAlgorithm;
@@ -33,6 +35,9 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.ContextKey;
 import io.opentelemetry.context.Scope;
 import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.SocketTimeoutException;
+import java.nio.channels.ClosedByInterruptException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -103,7 +108,7 @@ public class BigQueryRetryHelper extends RetryHelper {
             bigQueryRetryConfig); // using BigQueryRetryAlgorithm in place of
     // com.google.api.gax.retrying.RetryAlgorithm, as
     // BigQueryRetryAlgorithm retries considering bigQueryRetryConfig
-    RetryingExecutor<V> executor = new DirectRetryingExecutor<>(retryAlgorithm);
+    RetryingExecutor<V> executor = new BigQueryDirectRetryingExecutor<>(retryAlgorithm);
 
     // Log retry info
     if (LOG.isLoggable(Level.FINEST)) {
@@ -119,6 +124,42 @@ public class BigQueryRetryHelper extends RetryHelper {
     RetryingFuture<V> retryingFuture = executor.createFuture(callable);
     executor.submit(retryingFuture);
     return retryingFuture.get();
+  }
+
+  // Custom DirectRetryingExecutor that guards against premature thread self-interruption on
+  // SocketTimeoutException.
+  // In the JDK, SocketTimeoutException extends InterruptedIOException. When DirectRetryingExecutor
+  // catches InterruptedIOException, it calls Thread.currentThread().interrupt().
+  // If the thread interrupt status is set before BasicRetryingFuture.setAttemptFuture() inspects
+  // the attempt result, attemptFuture.get() throws InterruptedException instead of reporting the
+  // SocketTimeoutException, preventing retry algorithms from retrying the timeout.
+  // Catching SocketTimeoutException first ensures the exception is passed directly to the
+  // retrying future without prematurely flagging the thread as interrupted.
+  private static final class BigQueryDirectRetryingExecutor<ResponseT>
+      extends DirectRetryingExecutor<ResponseT> {
+
+    BigQueryDirectRetryingExecutor(RetryAlgorithm<ResponseT> retryAlgorithm) {
+      super(retryAlgorithm);
+    }
+
+    @Override
+    public ApiFuture<ResponseT> submit(RetryingFuture<ResponseT> retryingFuture) {
+      while (!retryingFuture.isDone()) {
+        try {
+          sleep(retryingFuture.getAttemptSettings().getRandomizedRetryDelayDuration());
+          ResponseT response = retryingFuture.getCallable().call();
+          retryingFuture.setAttemptFuture(ApiFutures.immediateFuture(response));
+        } catch (SocketTimeoutException e) {
+          retryingFuture.setAttemptFuture(ApiFutures.<ResponseT>immediateFailedFuture(e));
+        } catch (InterruptedException | InterruptedIOException | ClosedByInterruptException e) {
+          Thread.currentThread().interrupt();
+          retryingFuture.setAttemptFuture(ApiFutures.<ResponseT>immediateFailedFuture(e));
+        } catch (Exception e) {
+          retryingFuture.setAttemptFuture(ApiFutures.<ResponseT>immediateFailedFuture(e));
+        }
+      }
+      return retryingFuture;
+    }
   }
 
   /**
