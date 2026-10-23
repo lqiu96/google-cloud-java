@@ -16,11 +16,14 @@
 
 package com.google.cloud.bigquery;
 
+import com.google.api.client.http.HttpResponseException;
 import com.google.cloud.BaseServiceException;
 import com.google.cloud.RetryHelper.RetryHelperException;
 import com.google.cloud.http.BaseHttpServiceException;
 import com.google.common.collect.ImmutableSet;
+import java.io.EOFException;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -35,10 +38,40 @@ import java.util.concurrent.ExecutionException;
  */
 public final class BigQueryException extends BaseHttpServiceException {
 
-  // see: https://cloud.google.com/bigquery/troubleshooting-errors
-  private static final Set<Error> RETRYABLE_ERRORS =
+  // BigQuery structured error reason codes and HTTP status codes defined in the BigQuery
+  // troubleshooting error catalog: https://cloud.google.com/bigquery/docs/error-messages
+  //
+  // HTTP status codes 429, 500, 502, 503, and 504 correspond to transient rate limits, backend
+  // unavailability, or gateway errors across Google APIs.
+  //
+  // The six structured error reasons represent transient conditions on individual RPC requests:
+  // - "rateLimitExceeded": Project-level or API rate limits (HTTP 403).
+  // - "userRateLimitExceeded": Per-user quota limits (HTTP 403).
+  // - "jobRateLimitExceeded": Job creation quota limits (HTTP 400 or HTTP 200 ErrorProto on
+  //   jobs.insert / jobs.query).
+  // - "backendError": Transient server-side failures (HTTP 500/503).
+  // - "internalError": Transient internal BigQuery errors (HTTP 500).
+  // - "badGateway": Transient proxy/gateway errors (HTTP 502).
+  //
+  // Job-level execution errors such as "jobBackendError" and "jobInternalError" (HTTP 400 on
+  // jobs.query / jobs.getQueryResults) are intentionally excluded from per-RPC retries. They
+  // indicate that an asynchronous job terminated in a failed state on the backend, where retrying
+  // the status check on the same JobId would repeatedly return the same terminal failure.
+  static final Set<Error> RETRYABLE_ERRORS =
       ImmutableSet.of(
-          new Error(500, null), new Error(502, null), new Error(503, null), new Error(504, null));
+          // HTTP status codes
+          new Error(429, null, true),
+          new Error(500, null, true),
+          new Error(502, null, true),
+          new Error(503, null, true),
+          new Error(504, null, true),
+          // Structured BigQuery error reasons
+          new Error(null, "rateLimitExceeded", true),
+          new Error(null, "userRateLimitExceeded", true),
+          new Error(null, "jobRateLimitExceeded", true),
+          new Error(null, "backendError", true),
+          new Error(null, "internalError", true),
+          new Error(null, "badGateway", true));
   private static final long serialVersionUID = -5006625989225438209L;
 
   private final List<BigQueryError> errors;
@@ -92,6 +125,36 @@ public final class BigQueryException extends BaseHttpServiceException {
    */
   public List<BigQueryError> getErrors() {
     return errors;
+  }
+
+  /**
+   * Returns {@code true} if this exception is retryable, {@code false} otherwise.
+   *
+   * <p>An exception is considered retryable if its HTTP status code or structured BigQuery error
+   * reason matches {@link #RETRYABLE_ERRORS}, if its underlying {@link IOException} is recognized
+   * as retryable by {@link BaseServiceException}, or if its cause is a {@link
+   * SocketTimeoutException} or {@link EOFException}.
+   *
+   * @return {@code true} if the operation can be retried, {@code false} otherwise
+   */
+  @Override
+  public boolean isRetryable() {
+    // Check getCause() directly for SocketTimeoutException and EOFException in addition to the
+    // superclass checks. When an IOException is translated through translateAndThrow with UNKNOWN_CODE
+    // (0), super.isRetryable() might not match HTTP status codes, so inspecting the cause ensures
+    // socket read/connect timeouts and mid-stream EOF drops are consistently retryable.
+    // If the cause is an HttpResponseException, also check its HTTP status code against RETRYABLE_ERRORS
+    // in case the error was constructed with code 0.
+    if (super.isRetryable()
+        || getCause() instanceof SocketTimeoutException
+        || getCause() instanceof EOFException) {
+      return true;
+    }
+    if (getCode() == UNKNOWN_CODE && getCause() instanceof HttpResponseException) {
+      return BaseServiceException.isRetryable(
+          ((HttpResponseException) getCause()).getStatusCode(), getReason(), true, RETRYABLE_ERRORS);
+    }
+    return false;
   }
 
   @Override

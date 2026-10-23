@@ -15,8 +15,9 @@
  */
 package com.google.cloud.bigquery;
 
-import com.google.api.client.http.HttpResponseException;
 import com.google.api.core.ApiClock;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
 import com.google.api.gax.retrying.DirectRetryingExecutor;
 import com.google.api.gax.retrying.ExponentialRetryAlgorithm;
 import com.google.api.gax.retrying.ResultRetryAlgorithm;
@@ -24,7 +25,6 @@ import com.google.api.gax.retrying.RetryAlgorithm;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.retrying.RetryingExecutor;
 import com.google.api.gax.retrying.RetryingFuture;
-import com.google.api.gax.retrying.TimedAttemptSettings;
 import com.google.api.gax.retrying.TimedRetryAlgorithm;
 import com.google.cloud.RetryHelper;
 import io.opentelemetry.api.trace.Span;
@@ -33,6 +33,9 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.ContextKey;
 import io.opentelemetry.context.Scope;
 import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.SocketTimeoutException;
+import java.nio.channels.ClosedByInterruptException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -103,7 +106,7 @@ public class BigQueryRetryHelper extends RetryHelper {
             bigQueryRetryConfig); // using BigQueryRetryAlgorithm in place of
     // com.google.api.gax.retrying.RetryAlgorithm, as
     // BigQueryRetryAlgorithm retries considering bigQueryRetryConfig
-    RetryingExecutor<V> executor = new DirectRetryingExecutor<>(retryAlgorithm);
+    RetryingExecutor<V> executor = new BigQueryDirectRetryingExecutor<>(retryAlgorithm);
 
     // Log retry info
     if (LOG.isLoggable(Level.FINEST)) {
@@ -121,48 +124,40 @@ public class BigQueryRetryHelper extends RetryHelper {
     return retryingFuture.get();
   }
 
-  /**
-   * Conditionally wraps the provided retry algorithm with a wrapper that retries on transient HTTP
-   * errors.
-   *
-   * <p>Wrapping only occurs if the provided algorithm is the default {@link
-   * BigQueryBaseService#DEFAULT_BIGQUERY_EXCEPTION_HANDLER}. Custom user-defined retry algorithms
-   * are returned unmodified to preserve custom retry policies.
-   */
-  @SuppressWarnings("unchecked")
-  static <V> ResultRetryAlgorithm<V> maybeWrapForHttpRetry(ResultRetryAlgorithm<?> algorithm) {
-    if (algorithm == BigQueryBaseService.DEFAULT_BIGQUERY_EXCEPTION_HANDLER) {
-      return wrapDefaultAlgorithm((ResultRetryAlgorithm<V>) algorithm);
+  // Custom DirectRetryingExecutor that guards against premature thread self-interruption on
+  // SocketTimeoutException.
+  // In the JDK, SocketTimeoutException extends InterruptedIOException. When DirectRetryingExecutor
+  // catches InterruptedIOException, it calls Thread.currentThread().interrupt().
+  // If the thread interrupt status is set before BasicRetryingFuture.setAttemptFuture() inspects
+  // the attempt result, attemptFuture.get() throws InterruptedException instead of reporting the
+  // SocketTimeoutException, preventing retry algorithms from retrying the timeout.
+  // Catching SocketTimeoutException first ensures the exception is passed directly to the
+  // retrying future without prematurely flagging the thread as interrupted.
+  private static final class BigQueryDirectRetryingExecutor<ResponseT>
+      extends DirectRetryingExecutor<ResponseT> {
+
+    BigQueryDirectRetryingExecutor(RetryAlgorithm<ResponseT> retryAlgorithm) {
+      super(retryAlgorithm);
     }
-    return (ResultRetryAlgorithm<V>) algorithm;
-  }
 
-  /**
-   * Wraps the default retry algorithm to additionally retry on transient HTTP status codes 500,
-   * 502, 503, and 504. Other retry decisions and timing logic are delegated back to the default
-   * algorithm.
-   */
-  private static <V> ResultRetryAlgorithm<V> wrapDefaultAlgorithm(
-      ResultRetryAlgorithm<V> defaultAlgorithm) {
-    return new ResultRetryAlgorithm<V>() {
-      @Override
-      public TimedAttemptSettings createNextAttempt(
-          Throwable previousThrowable, V previousResponse, TimedAttemptSettings previousSettings) {
-        return defaultAlgorithm.createNextAttempt(
-            previousThrowable, previousResponse, previousSettings);
-      }
-
-      @Override
-      public boolean shouldRetry(Throwable previousThrowable, V previousResponse) {
-        if (previousThrowable instanceof HttpResponseException) {
-          int statusCode = ((HttpResponseException) previousThrowable).getStatusCode();
-          if (statusCode == 500 || statusCode == 502 || statusCode == 503 || statusCode == 504) {
-            return true;
-          }
+    @Override
+    public ApiFuture<ResponseT> submit(RetryingFuture<ResponseT> retryingFuture) {
+      while (!retryingFuture.isDone()) {
+        try {
+          sleep(retryingFuture.getAttemptSettings().getRandomizedRetryDelayDuration());
+          ResponseT response = retryingFuture.getCallable().call();
+          retryingFuture.setAttemptFuture(ApiFutures.immediateFuture(response));
+        } catch (SocketTimeoutException e) {
+          retryingFuture.setAttemptFuture(ApiFutures.<ResponseT>immediateFailedFuture(e));
+        } catch (InterruptedException | InterruptedIOException | ClosedByInterruptException e) {
+          Thread.currentThread().interrupt();
+          retryingFuture.setAttemptFuture(ApiFutures.<ResponseT>immediateFailedFuture(e));
+        } catch (Exception e) {
+          retryingFuture.setAttemptFuture(ApiFutures.<ResponseT>immediateFailedFuture(e));
         }
-        return defaultAlgorithm.shouldRetry(previousThrowable, previousResponse);
       }
-    };
+      return retryingFuture;
+    }
   }
 
   public static class BigQueryRetryHelperException extends RuntimeException {

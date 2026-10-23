@@ -80,6 +80,7 @@ public class Job extends JobInfo {
 
   private final BigQueryOptions options;
   private transient BigQuery bigquery;
+
   private static final BigQueryRetryConfig DEFAULT_RETRY_CONFIG =
       BigQueryRetryConfig.newBuilder()
           .retryOnMessage(BigQueryErrorMessages.RATE_LIMIT_EXCEEDED_MSG)
@@ -512,7 +513,11 @@ public class Job extends JobInfo {
                 Throwable prevThrowable,
                 QueryResponse
                     prevResponse) { // Used by BigQueryRetryAlgorithm.shouldRetryBasedOnResult
-              return prevResponse != null && !prevResponse.getCompleted();
+              // Retry on retryable BigQueryExceptions (such as transient socket timeouts or backend errors)
+              // so a temporary network glitch or 503 during a poll attempt does not abort the outer job wait loop.
+              return (prevThrowable instanceof BigQueryException
+                      && ((BigQueryException) prevThrowable).isRetryable())
+                  || (prevResponse != null && !prevResponse.getCompleted());
             }
           },
           options.getClock(),

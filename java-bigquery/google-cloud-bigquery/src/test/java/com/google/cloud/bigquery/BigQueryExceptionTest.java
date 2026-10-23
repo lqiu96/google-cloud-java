@@ -36,6 +36,7 @@ import com.google.cloud.ExceptionHandler;
 import com.google.cloud.RetryHelper.RetryHelperException;
 import com.google.cloud.bigquery.spi.v2.BigQueryRpc;
 import com.google.cloud.bigquery.spi.v2.HttpBigQueryRpc;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
@@ -248,5 +249,63 @@ public class BigQueryExceptionTest {
     } finally {
       verify(bigQueryRpcAbortMock, times(1)).createSkipExceptionTranslation(datasetPb, optionsMap);
     }
+  }
+
+  @Test
+  void testStructuredBigQueryErrorReasonsRetryable() {
+    String[] retryableReasons = {
+      "rateLimitExceeded",
+      "userRateLimitExceeded",
+      "jobRateLimitExceeded",
+      "backendError",
+      "internalError",
+      "badGateway"
+    };
+
+    for (String reason : retryableReasons) {
+      BigQueryError error = new BigQueryError(reason, null, "Transient error: " + reason);
+      BigQueryException exception = new BigQueryException(400, error.getMessage(), error);
+      assertTrue(exception.isRetryable(), "Expected reason " + reason + " to be retryable");
+    }
+
+    String[] nonRetryableReasons = {
+      "tableUnavailable",
+      "jobBackendError",
+      "jobInternalError",
+      "invalid",
+      "notFound",
+      "duplicate",
+      "accessDenied"
+    };
+    for (String reason : nonRetryableReasons) {
+      BigQueryError error = new BigQueryError(reason, null, "Permanent error: " + reason);
+      BigQueryException exception = new BigQueryException(400, error.getMessage(), error);
+      assertFalse(exception.isRetryable(), "Expected reason " + reason + " not to be retryable");
+    }
+  }
+
+  @Test
+  void testHttpStatusCodesRetryable() {
+    int[] retryableCodes = {429, 500, 502, 503, 504};
+    for (int code : retryableCodes) {
+      BigQueryException exception = new BigQueryException(code, "HTTP " + code);
+      assertTrue(exception.isRetryable(), "Expected HTTP code " + code + " to be retryable");
+    }
+
+    int[] nonRetryableCodes = {400, 401, 403, 404, 409};
+    for (int code : nonRetryableCodes) {
+      BigQueryException exception = new BigQueryException(code, "HTTP " + code);
+      assertFalse(exception.isRetryable(), "Expected HTTP code " + code + " not to be retryable");
+    }
+  }
+
+  @Test
+  void testEOFExceptionRetryable() {
+    EOFException cause = new EOFException("Unexpected end of ZLIB input stream");
+    BigQueryException exception = new BigQueryException(cause);
+    assertEquals(BigQueryException.UNKNOWN_CODE, exception.getCode());
+    assertEquals("Unexpected end of ZLIB input stream", exception.getMessage());
+    assertTrue(exception.isRetryable());
+    assertSame(cause, exception.getCause());
   }
 }

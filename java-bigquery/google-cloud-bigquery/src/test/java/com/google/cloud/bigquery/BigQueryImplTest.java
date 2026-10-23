@@ -90,9 +90,11 @@ import com.google.common.io.BaseEncoding;
 import com.google.protobuf.ByteString;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.channels.Channels;
 import java.util.Collections;
@@ -4416,5 +4418,132 @@ public class BigQueryImplTest {
 
     verify(mockReadClientUs, times(1)).close();
     verify(mockReadClientEu, times(1)).close();
+  }
+
+  @Test
+  void testCreateJobSocketTimeoutRetry() throws IOException {
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(new SocketTimeoutException("Read timed out"))
+        .thenReturn(newJobPb());
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .build()
+            .getService();
+
+    ((BigQueryImpl) bigquery).create(JobInfo.of(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY));
+    verify(bigqueryRpcMock, times(2))
+        .createSkipExceptionTranslation(jobCapture.capture(), eq(EMPTY_RPC_OPTIONS));
+    assertFalse(Thread.currentThread().isInterrupted());
+  }
+
+  @Test
+  void testCreateJobEOFExceptionRetry() throws IOException {
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(new EOFException("Unexpected end of ZLIB input stream"))
+        .thenReturn(newJobPb());
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .build()
+            .getService();
+
+    ((BigQueryImpl) bigquery).create(JobInfo.of(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY));
+    verify(bigqueryRpcMock, times(2))
+        .createSkipExceptionTranslation(jobCapture.capture(), eq(EMPTY_RPC_OPTIONS));
+  }
+
+  @Test
+  void testQueryStructuredBackendErrorRetry() throws IOException, InterruptedException {
+    com.google.api.services.bigquery.model.QueryResponse responsePb =
+        new com.google.api.services.bigquery.model.QueryResponse()
+            .setJobComplete(true)
+            .setTotalRows(BigInteger.valueOf(1L))
+            .setSchema(TABLE_SCHEMA.toPb());
+
+    when(bigqueryRpcMock.queryRpcSkipExceptionTranslation(eq(PROJECT), requestPbCapture.capture()))
+        .thenThrow(
+            new BigQueryException(
+                500, "Backend error", new BigQueryError("backendError", null, "Backend error")))
+        .thenReturn(responsePb);
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .build()
+            .getService();
+
+    TableResult response = bigquery.query(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY);
+    assertEquals(TABLE_SCHEMA, response.getSchema());
+    assertEquals(1, response.getTotalRows());
+    verify(bigqueryRpcMock, times(2))
+        .queryRpcSkipExceptionTranslation(eq(PROJECT), requestPbCapture.capture());
+  }
+
+  @Test
+  void testJobStatusErrorProtoReasonRetry() throws IOException {
+    com.google.api.services.bigquery.model.Job rateLimitedJob =
+        new com.google.api.services.bigquery.model.Job()
+            .setStatus(
+                new com.google.api.services.bigquery.model.JobStatus()
+                    .setErrorResult(
+                        new ErrorProto()
+                            .setReason("rateLimitExceeded")
+                            .setMessage("Exceeded rate limit")));
+
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenReturn(rateLimitedJob)
+        .thenReturn(newJobPb());
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .build()
+            .getService();
+
+    ((BigQueryImpl) bigquery).create(JobInfo.of(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY));
+    verify(bigqueryRpcMock, times(2))
+        .createSkipExceptionTranslation(jobCapture.capture(), eq(EMPTY_RPC_OPTIONS));
+  }
+
+  @Test
+  void testCustomResultRetryAlgorithmIsRespected() throws IOException {
+    // When a user provides a custom ResultRetryAlgorithm, BigQueryRetryAlgorithm must respect
+    // its decisions and not override them with DEFAULT_BIGQUERY_EXCEPTION_HANDLER fallbacks.
+    ResultRetryAlgorithm<Object> noRetryAlgorithm =
+        new ResultRetryAlgorithm<Object>() {
+          @Override
+          public TimedAttemptSettings createNextAttempt(
+              Throwable prevThrowable, Object prevResponse, TimedAttemptSettings prevSettings) {
+            return null;
+          }
+
+          @Override
+          public boolean shouldRetry(Throwable prevThrowable, Object prevResponse) {
+            return false;
+          }
+        };
+
+    when(bigqueryRpcMock.queryRpcSkipExceptionTranslation(eq(PROJECT), requestPbCapture.capture()))
+        .thenThrow(
+            new BigQueryException(
+                500, "Backend error", new BigQueryError("backendError", null, "Backend error")));
+
+    bigquery =
+        options.toBuilder()
+            .setRetrySettings(ServiceOptions.getDefaultRetrySettings())
+            .setResultRetryAlgorithm(noRetryAlgorithm)
+            .build()
+            .getService();
+
+    assertThrows(
+        BigQueryException.class, () -> bigquery.query(QUERY_JOB_CONFIGURATION_FOR_DMLQUERY));
+    verify(bigqueryRpcMock, times(1))
+        .queryRpcSkipExceptionTranslation(eq(PROJECT), requestPbCapture.capture());
   }
 }

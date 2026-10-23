@@ -547,6 +547,55 @@ class JobTest {
   }
 
   @Test
+  void testWaitForStructuredErrorShouldRetry() throws InterruptedException {
+    QueryStatistics jobStatistics =
+        QueryStatistics.newBuilder()
+            .setCreationTimestamp(1L)
+            .setEndTime(3L)
+            .setStartTime(2L)
+            .build();
+    JobInfo jobInfo =
+        JobInfo.newBuilder(DRL_QUERY_CONFIGURATION)
+            .setJobId(JOB_ID)
+            .setStatistics(jobStatistics)
+            .setJobId(JOB_ID)
+            .setEtag(ETAG)
+            .setGeneratedId(GENERATED_ID)
+            .setSelfLink(SELF_LINK)
+            .setUserEmail(EMAIL)
+            .setStatus(JOB_STATUS)
+            .build();
+
+    when(bigquery.getOptions()).thenReturn(mockOptions);
+    when(mockOptions.getClock()).thenReturn(CurrentMillisClock.getDefaultClock());
+    Job completedJob =
+        expectedJob.toBuilder().setStatus(new JobStatus(JobStatus.State.RUNNING)).build();
+    QueryResponse completedQuery =
+        QueryResponse.newBuilder()
+            .setCompleted(true)
+            .setTotalRows(1)
+            .setSchema(Schema.of(Field.of("_f0", LegacySQLTypeName.INTEGER)))
+            .setErrors(ImmutableList.<BigQueryError>of())
+            .build();
+
+    when(bigquery.getJob(JOB_INFO.getJobId())).thenReturn(completedJob);
+    // Structured error reason "rateLimitExceeded" with arbitrary error message that does not match regex.
+    BigQueryError bigQueryError =
+        new BigQueryError("rateLimitExceeded", "US", "Arbitrary non-regex rate limit message");
+
+    ImmutableList<BigQueryError> bigQueryErrorList = ImmutableList.of(bigQueryError);
+    BigQueryException bigQueryException = new BigQueryException(bigQueryErrorList);
+    when(bigquery.getQueryResults(jobInfo.getJobId(), Job.DEFAULT_QUERY_WAIT_OPTIONS))
+        .thenThrow(bigQueryException)
+        .thenReturn(completedQuery);
+    job = this.job.toBuilder().setConfiguration(DRL_QUERY_CONFIGURATION).build();
+    assertThat(job.waitFor(TEST_RETRY_OPTIONS)).isSameInstanceAs(completedJob);
+    // Verify that getQueryResults is attempted twice based on the structured error reason.
+    verify(bigquery, times(2)).getQueryResults(jobInfo.getJobId(), Job.DEFAULT_QUERY_WAIT_OPTIONS);
+    verify(bigquery).getJob(JOB_INFO.getJobId());
+  }
+
+  @Test
   void testReload() {
     JobInfo updatedInfo = JOB_INFO.toBuilder().setEtag("etag").build();
     Job expectedJob = new Job(bigquery, new JobInfo.BuilderImpl(updatedInfo));
