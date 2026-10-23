@@ -648,6 +648,13 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
   private static final BigQueryRetryConfig EMPTY_RETRY_CONFIG =
       BigQueryRetryConfig.newBuilder().build();
 
+  private static final BigQueryRetryConfig DEFAULT_RETRY_CONFIG =
+      BigQueryRetryConfig.newBuilder()
+          .retryOnMessage(BigQueryErrorMessages.RATE_LIMIT_EXCEEDED_MSG)
+          .retryOnMessage(BigQueryErrorMessages.JOB_RATE_LIMIT_EXCEEDED_MSG)
+          .retryOnRegEx(BigQueryErrorMessages.RetryRegExPatterns.RATE_LIMIT_EXCEEDED_REGEX)
+          .build(); // retry config with Error Messages and RegEx for RateLimitExceeded Error
+
   BigQueryImpl(BigQueryOptions options) {
     super(options);
     bigQueryRpc = options.getBigQueryRpcV2();
@@ -887,7 +894,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
   @BetaApi
   public Connection createConnection(@NonNull ConnectionSettings connectionSettings)
       throws BigQueryException {
-    return new ConnectionImpl(connectionSettings, getOptions(), bigQueryRpc, EMPTY_RETRY_CONFIG);
+    return new ConnectionImpl(connectionSettings, getOptions(), bigQueryRpc, DEFAULT_RETRY_CONFIG);
   }
 
   @Override
@@ -895,7 +902,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
   public Connection createConnection() throws BigQueryException {
     ConnectionSettings defaultConnectionSettings = ConnectionSettings.newBuilder().build();
     return new ConnectionImpl(
-        defaultConnectionSettings, getOptions(), bigQueryRpc, EMPTY_RETRY_CONFIG);
+        defaultConnectionSettings, getOptions(), bigQueryRpc, DEFAULT_RETRY_CONFIG);
   }
 
   @InternalApi("visible for testing")
@@ -958,7 +965,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
                   getOptions().getClock(),
                   getBigQueryRetryConfig(optionsMap) != null
                       ? getBigQueryRetryConfig(optionsMap)
-                      : EMPTY_RETRY_CONFIG,
+                      : DEFAULT_RETRY_CONFIG,
                   getOptions().isOpenTelemetryTracingEnabled(),
                   getOptions().getOpenTelemetryTracer()));
         } catch (BigQueryRetryHelperException e) {
@@ -2428,7 +2435,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               getOptions().getRetrySettings(),
               getOptions().getResultRetryAlgorithm(),
               getOptions().getClock(),
-              EMPTY_RETRY_CONFIG,
+              DEFAULT_RETRY_CONFIG,
               getOptions().isOpenTelemetryTracingEnabled(),
               getOptions().getOpenTelemetryTracer());
     } catch (BigQueryRetryHelper.BigQueryRetryHelperException e) {
@@ -2572,7 +2579,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               getOptions().getRetrySettings(),
               getOptions().getResultRetryAlgorithm(),
               getOptions().getClock(),
-              EMPTY_RETRY_CONFIG,
+              DEFAULT_RETRY_CONFIG,
               getOptions().isOpenTelemetryTracingEnabled(),
               getOptions().getOpenTelemetryTracer());
     } catch (BigQueryRetryHelper.BigQueryRetryHelperException e) {
@@ -2847,7 +2854,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
                   getOptions().getRetrySettings(),
                   getOptions().getResultRetryAlgorithm(),
                   getOptions().getClock(),
-                  EMPTY_RETRY_CONFIG,
+                  DEFAULT_RETRY_CONFIG,
                   getOptions().isOpenTelemetryTracingEnabled(),
                   getOptions().getOpenTelemetryTracer());
         } catch (BigQueryRetryHelper.BigQueryRetryHelperException e) {
@@ -3311,7 +3318,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               serviceOptions.getRetrySettings(),
               serviceOptions.getResultRetryAlgorithm(),
               serviceOptions.getClock(),
-              EMPTY_RETRY_CONFIG,
+              DEFAULT_RETRY_CONFIG,
               serviceOptions.isOpenTelemetryTracingEnabled(),
               serviceOptions.getOpenTelemetryTracer());
 

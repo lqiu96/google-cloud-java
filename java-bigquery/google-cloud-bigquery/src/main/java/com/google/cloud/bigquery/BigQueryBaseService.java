@@ -31,13 +31,28 @@ abstract class BigQueryBaseService<OptionsT extends ServiceOptions<?, OptionsT>>
     super(options);
   }
 
-  // DEFAULT_BIGQUERY_EXCEPTION_HANDLER retries low-level transport exceptions that occur
-  // before or during HTTP framing.
-  // SocketTimeoutException covers HTTP read and connect timeouts where the BigQuery backend
-  // or intermediary proxy failed to return response bytes within the configured socket timeout.
-  // EOFException covers truncated HTTP response bodies or stream terminations (such as chunked
-  // transfer encoding failures or dropped TCP connections mid-payload), matching behavior in
-  // other BigQuery client libraries (Go's io.ErrUnexpectedEOF and Python's ChunkedEncodingError).
+  /**
+   * The default exception handler for BigQuery operations.
+   *
+   * <p>Retries low-level transport exceptions that occur before or during HTTP framing:
+   * <ul>
+   *   <li>{@link ConnectException} and {@link UnknownHostException}: TCP handshake or DNS resolution failures.
+   *   <li>{@link SocketException}: OS-level TCP connection resets or broken pipes.
+   *   <li>{@link SocketTimeoutException}: Connect or read timeouts where the BigQuery backend or
+   *       intermediate proxy did not return response bytes within the configured socket timeout.
+   *   <li>{@link EOFException}: Premature connection closures or HTTP/2 stream resets mid-response.
+   * </ul>
+   */
+  // HttpBigQueryRpc SkipExceptionTranslation methods throw raw IOExceptions directly to
+  // DEFAULT_BIGQUERY_EXCEPTION_HANDLER during retries rather than wrapping them into
+  // BigQueryException upfront.
+  //
+  // SocketException only catches TCP connection resets and broken pipes. SocketTimeoutException
+  // (which extends InterruptedIOException, not SocketException) must be explicitly listed so
+  // connectTimeout (20s) and readTimeout (60s) expirations trigger retries.
+  //
+  // EOFException covers truncated HTTP response bodies where a proxy or backend closes the TCP
+  // stream mid-payload.
   public static final ExceptionHandler DEFAULT_BIGQUERY_EXCEPTION_HANDLER =
       ExceptionHandler.newBuilder()
           .abortOn(RuntimeException.class)

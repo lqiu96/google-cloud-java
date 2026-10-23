@@ -259,10 +259,7 @@ public class BigQueryExceptionTest {
       "jobRateLimitExceeded",
       "backendError",
       "internalError",
-      "badGateway",
-      "tableUnavailable",
-      "jobBackendError",
-      "jobInternalError"
+      "badGateway"
     };
 
     for (String reason : retryableReasons) {
@@ -271,7 +268,15 @@ public class BigQueryExceptionTest {
       assertTrue(exception.isRetryable(), "Expected reason " + reason + " to be retryable");
     }
 
-    String[] nonRetryableReasons = {"invalid", "notFound", "duplicate", "accessDenied"};
+    String[] nonRetryableReasons = {
+      "tableUnavailable",
+      "jobBackendError",
+      "jobInternalError",
+      "invalid",
+      "notFound",
+      "duplicate",
+      "accessDenied"
+    };
     for (String reason : nonRetryableReasons) {
       BigQueryError error = new BigQueryError(reason, null, "Permanent error: " + reason);
       BigQueryException exception = new BigQueryException(400, error.getMessage(), error);

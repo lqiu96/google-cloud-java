@@ -157,8 +157,21 @@ public class BigQueryRetryAlgorithm<ResponseT> extends RetryAlgorithm<ResponseT>
     } else if (getResultAlgorithm().shouldRetry(previousThrowable, previousResponse)) {
       return true;
     }
-    // Automatically retry structured BigQuery error reasons and HTTP error codes translated from
-    // IOExceptions or embedded in HTTP 200 Job responses when using the default exception handler.
+    // Gating on DEFAULT_BIGQUERY_EXCEPTION_HANDLER preserves custom ResultRetryAlgorithm policies.
+    // If a caller configures a custom ResultRetryAlgorithm via
+    // BigQueryOptions.Builder.setResultRetryAlgorithm(), the custom algorithm retains complete control
+    // and is never overridden by default fallback rules.
+    //
+    // For default callers, BigQuery RPC methods that bypass exception translation throw raw
+    // GoogleJsonResponseExceptions or HttpResponseExceptions (which extend IOException rather than
+    // BaseServiceException). Translating the IOException into BigQueryException extracts the HTTP status
+    // code and GoogleJsonError reason field via BaseHttpServiceException, allowing HTTP 429/500/502/503/504
+    // and structured reasons (rateLimitExceeded, backendError, etc.) to be evaluated uniformly without
+    // regex parsing.
+    //
+    // In addition, jobs.insert can return an HTTP 200 OK with an error status in Job.getStatus().getErrorResult().
+    // Checking error.getReason() against BigQueryException.RETRYABLE_ERRORS ensures job creation rate limits
+    // and backend errors are retried natively.
     if (resultAlgorithm == BigQueryBaseService.DEFAULT_BIGQUERY_EXCEPTION_HANDLER) {
       if (previousThrowable instanceof IOException) {
         if (new BigQueryException((IOException) previousThrowable).isRetryable()) {

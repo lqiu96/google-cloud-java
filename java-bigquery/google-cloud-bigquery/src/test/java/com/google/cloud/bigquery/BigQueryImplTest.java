@@ -1924,14 +1924,8 @@ public class BigQueryImplTest {
         .thenThrow(new BigQueryException(503, "Service Unavailable"))
         .thenThrow(
             new BigQueryException(
-                400,
-                RATE_LIMIT_ERROR_MSG,
-                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
-        .thenThrow(
-            new BigQueryException(
-                200,
-                RATE_LIMIT_ERROR_MSG,
-                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
+                400, RATE_LIMIT_ERROR_MSG)) // retrial on based on RATE_LIMIT_EXCEEDED_MSG
+        .thenThrow(new BigQueryException(200, RATE_LIMIT_ERROR_MSG))
         .thenReturn(newJobPb());
 
     bigquery = options.getService();
@@ -1962,14 +1956,8 @@ public class BigQueryImplTest {
             jobCapture.capture(), eq(bigQueryRpcOptions)))
         .thenThrow(
             new BigQueryException(
-                400,
-                RATE_LIMIT_ERROR_MSG,
-                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
-        .thenThrow(
-            new BigQueryException(
-                200,
-                RATE_LIMIT_ERROR_MSG,
-                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
+                400, RATE_LIMIT_ERROR_MSG)) // retrial on based on RATE_LIMIT_EXCEEDED_MSG
+        .thenThrow(new BigQueryException(200, RATE_LIMIT_ERROR_MSG))
         .thenReturn(newJobPb());
 
     bigquery = options.getService();
@@ -3763,9 +3751,8 @@ public class BigQueryImplTest {
         .thenThrow(
             new BigQueryException(
                 400,
-                BigQueryErrorMessages.RATE_LIMIT_EXCEEDED_MSG,
-                new BigQueryError(
-                    "rateLimitExceeded", null, BigQueryErrorMessages.RATE_LIMIT_EXCEEDED_MSG)))
+                BigQueryErrorMessages
+                    .RATE_LIMIT_EXCEEDED_MSG)) // retrial on based on RATE_LIMIT_EXCEEDED_MSG
         .thenReturn(responsePb);
 
     bigquery =
@@ -4004,9 +3991,7 @@ public class BigQueryImplTest {
         .thenThrow(new BigQueryException(504, "Gateway Timeout"))
         .thenThrow(
             new BigQueryException(
-                400,
-                RATE_LIMIT_ERROR_MSG,
-                new BigQueryError("rateLimitExceeded", null, RATE_LIMIT_ERROR_MSG)))
+                400, RATE_LIMIT_ERROR_MSG)) // retrial on based on RATE_LIMIT_EXCEEDED_MSG
         .thenReturn(responsePb);
 
     bigquery =
