@@ -26,6 +26,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
@@ -211,19 +213,48 @@ public abstract class TableResult implements Page<FieldValueList>, Serializable 
 
   @Override
   public Iterable<FieldValueList> getValues() {
-    return addSchema(getPageNoSchema().getValues());
+    Iterable<FieldValueList> values = getPageNoSchema().getValues();
+    Schema schema = getSchema();
+    if (schema == null) {
+      return values;
+    }
+    FieldList fields = schema.getFields();
+    // When the underlying page values are already materialized with the same FieldList (as in
+    // BigQueryImpl.transformTableData and ArrowDeserializer), return the underlying Collection
+    // directly to avoid lazy Iterables.transform wrapping and preserve Collection fast-paths.
+    if (values instanceof Collection) {
+      Collection<FieldValueList> collection = (Collection<FieldValueList>) values;
+      if (collection.isEmpty()) {
+        return values;
+      }
+      FieldValueList first =
+          (values instanceof List)
+              ? ((List<FieldValueList>) values).get(0)
+              : collection.iterator().next();
+      if (first != null
+          && (first.getSchema() == fields || Objects.equals(first.getSchema(), fields))) {
+        return values;
+      }
+    }
+    return addSchema(values, fields);
   }
 
   private Iterable<FieldValueList> addSchema(Iterable<FieldValueList> iter) {
-    if (getSchema() == null) {
+    Schema schema = getSchema();
+    if (schema == null) {
       return iter;
     }
+    return addSchema(iter, schema.getFields());
+  }
+
+  private static Iterable<FieldValueList> addSchema(
+      Iterable<FieldValueList> iter, final FieldList fields) {
     return Iterables.transform(
         iter,
         new Function<FieldValueList, FieldValueList>() {
           @Override
           public FieldValueList apply(FieldValueList list) {
-            return list.withSchema(getSchema().getFields());
+            return list.withSchema(fields);
           }
         });
   }

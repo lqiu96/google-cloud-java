@@ -260,4 +260,23 @@ class TableResultTest {
     assertThat(result1.toString()).contains("cacheHit=true");
     assertThat(result1.toString()).contains("sessionId=" + SESSION_ID_1);
   }
+
+  @Test
+  void testGetValuesPreservesCollectionAndRowIdentityWhenSchemaAlreadyAttached() {
+    FieldValueList row0 = newFieldValueList("0").withSchema(SCHEMA.getFields());
+    FieldValueList row1 = newFieldValueList("1").withSchema(SCHEMA.getFields());
+    ImmutableList<FieldValueList> pageRows = ImmutableList.of(row0, row1);
+    Page<FieldValueList> pageWithSchema = new PageImpl<>(null, null, pageRows);
+
+    TableResult result =
+        TableResult.newBuilder()
+            .setSchema(SCHEMA)
+            .setTotalRows(2L)
+            .setPageNoSchema(pageWithSchema)
+            .setRowsInPage(2L)
+            .build();
+
+    assertThat(result.getValues()).isSameInstanceAs(pageRows);
+    assertThat(result.iterateAll().iterator().next()).isSameInstanceAs(row0);
+  }
 }

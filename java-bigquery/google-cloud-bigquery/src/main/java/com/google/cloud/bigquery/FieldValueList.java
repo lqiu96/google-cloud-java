@@ -23,6 +23,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Google BigQuery Table Field Values class, which represents a row in returned query result (table
@@ -77,6 +78,10 @@ public class FieldValueList extends AbstractList<FieldValue> implements Serializ
     return schema != null;
   }
 
+  FieldList getSchema() {
+    return schema;
+  }
+
   /** Returns the total number of field values in the row. */
   @Override
   public int size() {
@@ -108,6 +113,12 @@ public class FieldValueList extends AbstractList<FieldValue> implements Serializ
   }
 
   FieldValueList withSchema(FieldList schema) {
+    // Rows produced by BigQueryImpl.transformTableData and ArrowDeserializer already carry the
+    // table or query FieldList. Returning this instance directly when the schema matches avoids
+    // allocating a duplicate FieldValueList wrapper and copying the row list on every traversal.
+    if (this.schema == schema || Objects.equals(this.schema, schema)) {
+      return this;
+    }
     return new FieldValueList(this.row, schema);
   }
 
