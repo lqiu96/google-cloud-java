@@ -50,7 +50,9 @@ public class FieldValue implements Serializable {
   private static final long serialVersionUID = 469098630191710062L;
 
   private final Attribute attribute;
-  private final Object value;
+  private Object value;
+  private final Object rawValue;
+  private final boolean isTimestampMicros;
   private final Boolean useInt64Timestamps;
 
   /** The field value's attribute, giving information on the field's content type. */
@@ -80,9 +82,59 @@ public class FieldValue implements Serializable {
   }
 
   private FieldValue(Attribute attribute, Object value, Boolean useInt64Timestamps) {
+    this(attribute, value, null, false, useInt64Timestamps);
+  }
+
+  private FieldValue(
+      Attribute attribute,
+      Object value,
+      Object rawValue,
+      boolean isTimestampMicros,
+      Boolean useInt64Timestamps) {
     this.attribute = checkNotNull(attribute);
     this.value = value;
+    this.rawValue = rawValue;
+    this.isTimestampMicros = isTimestampMicros;
     this.useInt64Timestamps = useInt64Timestamps;
+  }
+
+  static FieldValue ofLong(long value) {
+    return new FieldValue(Attribute.PRIMITIVE, null, Long.valueOf(value), false, false);
+  }
+
+  static FieldValue ofDouble(double value) {
+    return new FieldValue(Attribute.PRIMITIVE, null, Double.valueOf(value), false, false);
+  }
+
+  static FieldValue ofTimestampMicros(long micros) {
+    return new FieldValue(Attribute.PRIMITIVE, null, Long.valueOf(micros), true, false);
+  }
+
+  static FieldValue ofNumeric(BigDecimal value) {
+    return new FieldValue(Attribute.PRIMITIVE, null, checkNotNull(value), false, false);
+  }
+
+  static FieldValue ofBytes(byte[] value) {
+    return new FieldValue(Attribute.PRIMITIVE, null, checkNotNull(value), false, false);
+  }
+
+  private String formatRawValue() {
+    if (rawValue instanceof Long) {
+      long longVal = (Long) rawValue;
+      return isTimestampMicros
+          ? ArrowDeserializer.formatTimestampMicros(longVal)
+          : Long.toString(longVal);
+    }
+    if (rawValue instanceof Double) {
+      return Double.toString((Double) rawValue);
+    }
+    if (rawValue instanceof BigDecimal) {
+      return ((BigDecimal) rawValue).toPlainString();
+    }
+    if (rawValue instanceof byte[]) {
+      return BaseEncoding.base64().encode((byte[]) rawValue);
+    }
+    return String.valueOf(rawValue);
   }
 
   /**
@@ -103,7 +155,7 @@ public class FieldValue implements Serializable {
 
   /** Returns {@code true} if this field's value is {@code null}, {@code false} otherwise. */
   public boolean isNull() {
-    return value == null;
+    return value == null && rawValue == null;
   }
 
   /**
@@ -111,7 +163,12 @@ public class FieldValue implements Serializable {
    * method returns {@code null}.
    */
   public Object getValue() {
-    return value;
+    Object localValue = value;
+    if (localValue == null && rawValue != null) {
+      localValue = formatRawValue();
+      value = localValue;
+    }
+    return localValue;
   }
 
   public Boolean getUseInt64Timestamps() {
@@ -130,8 +187,9 @@ public class FieldValue implements Serializable {
    */
   @SuppressWarnings("unchecked")
   public String getStringValue() {
-    checkNotNull(value);
-    return (String) value;
+    Object val = getValue();
+    checkNotNull(val);
+    return (String) val;
   }
 
   /**
@@ -157,6 +215,9 @@ public class FieldValue implements Serializable {
    * @throws IllegalStateException if the field value is not encoded in base64
    */
   public byte[] getBytesValue() {
+    if (rawValue instanceof byte[]) {
+      return ((byte[]) rawValue).clone();
+    }
     try {
       return BaseEncoding.base64().decode(getStringValue());
     } catch (IllegalArgumentException ex) {
@@ -174,6 +235,9 @@ public class FieldValue implements Serializable {
    */
   @SuppressWarnings("unchecked")
   public long getLongValue() {
+    if (rawValue instanceof Long && !isTimestampMicros) {
+      return (Long) rawValue;
+    }
     return Long.parseLong(getStringValue());
   }
 
@@ -187,6 +251,12 @@ public class FieldValue implements Serializable {
    */
   @SuppressWarnings("unchecked")
   public double getDoubleValue() {
+    if (rawValue instanceof Double) {
+      return (Double) rawValue;
+    }
+    if (rawValue instanceof Long && !isTimestampMicros) {
+      return ((Long) rawValue).doubleValue();
+    }
     return Double.parseDouble(getStringValue());
   }
 
@@ -218,6 +288,9 @@ public class FieldValue implements Serializable {
    */
   @SuppressWarnings("unchecked")
   public long getTimestampValue() {
+    if (rawValue instanceof Long && isTimestampMicros) {
+      return (Long) rawValue;
+    }
     if (useInt64Timestamps) {
       return new BigInteger(getStringValue()).longValue();
     }
@@ -242,7 +315,7 @@ public class FieldValue implements Serializable {
    */
   @SuppressWarnings("unchecked")
   public Instant getTimestampInstant() {
-    checkNotNull(value);
+    checkNotNull(rawValue != null ? rawValue : value);
     return Instant.EPOCH.plus(getTimestampValue(), MICROS);
   }
 
@@ -257,6 +330,9 @@ public class FieldValue implements Serializable {
    */
   @SuppressWarnings("unchecked")
   public BigDecimal getNumericValue() {
+    if (rawValue instanceof BigDecimal) {
+      return (BigDecimal) rawValue;
+    }
     return new BigDecimal(getStringValue());
   }
 
@@ -330,14 +406,14 @@ public class FieldValue implements Serializable {
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("attribute", attribute)
-        .add("value", value)
+        .add("value", getValue())
         .add("useInt64Timestamps", useInt64Timestamps)
         .toString();
   }
 
   @Override
   public final int hashCode() {
-    return Objects.hash(attribute, value, useInt64Timestamps);
+    return Objects.hash(attribute, getValue(), useInt64Timestamps);
   }
 
   @Override
@@ -350,7 +426,7 @@ public class FieldValue implements Serializable {
     }
     FieldValue other = (FieldValue) obj;
     return attribute == other.attribute
-        && Objects.equals(value, other.value)
+        && Objects.equals(getValue(), other.getValue())
         && Objects.equals(useInt64Timestamps, other.useInt64Timestamps);
   }
 
