@@ -316,4 +316,57 @@ class BigQueryResultImplTest {
     assertThat(resultSet.wasNull()).isFalse();
     assertThat(resultSet.next()).isFalse();
   }
+
+  @Test
+  void testResultSetNumericPrecisionWasNullAndFractionalTime()
+      throws InterruptedException, SQLException {
+    BigDecimal highPrecisionDecimal =
+        new BigDecimal("12345678901234567890123456789.123456789");
+    BlockingQueue<AbstractList<FieldValue>> fvlBuffer = new LinkedBlockingDeque<>(BUFFER_SIZE);
+    FieldValueList fvlRow =
+        FieldValueList.of(
+            ImmutableList.of(
+                FieldValue.of(Attribute.PRIMITIVE, null),
+                FieldValue.of(Attribute.PRIMITIVE, "42"),
+                FieldValue.of(Attribute.PRIMITIVE, highPrecisionDecimal.toPlainString()),
+                FieldValue.of(Attribute.PRIMITIVE, null),
+                FieldValue.of(Attribute.PRIMITIVE, null),
+                FieldValue.of(Attribute.PRIMITIVE, null),
+                FieldValue.of(Attribute.PRIMITIVE, "20:21:22.123456"),
+                FieldValue.of(Attribute.PRIMITIVE, null),
+                FieldValue.of(Attribute.REPEATED, null),
+                FieldValue.of(Attribute.REPEATED, null)),
+            FIELD_LIST_SCHEMA);
+    fvlBuffer.put(fvlRow);
+    fvlBuffer.put(new EndOfFieldValueList());
+
+    BigQueryResultImpl<AbstractList<FieldValue>> fvlResult =
+        new BigQueryResultImpl<>(SCHEMA, 1, fvlBuffer, null);
+    ResultSet fvlRs = fvlResult.getResultSet();
+    assertThat(fvlRs.next()).isTrue();
+    // Read a null column first so wasNull becomes true, then verify getInt(int) resets wasNull
+    assertThat(fvlRs.getString(3)).isNull();
+    assertThat(fvlRs.wasNull()).isTrue();
+    assertThat(fvlRs.getInt(1)).isEqualTo(42);
+    assertThat(fvlRs.wasNull()).isFalse();
+    assertThat(fvlRs.getBigDecimal("double")).isEqualTo(highPrecisionDecimal);
+    assertThat(fvlRs.getBigDecimal(2)).isEqualTo(highPrecisionDecimal);
+    assertThat(fvlRs.getTime("time"))
+        .isEqualTo(Time.valueOf(LocalTime.of(20, 21, 22, 123456)));
+    assertThat(fvlRs.next()).isFalse();
+
+    BlockingQueue<BigQueryResultImpl.Row> rowBuffer = new LinkedBlockingDeque<>(BUFFER_SIZE);
+    Map<String, Object> rowValues = new HashMap<>();
+    rowValues.put("double", highPrecisionDecimal);
+    rowBuffer.put(new BigQueryResultImpl.Row(rowValues));
+    rowBuffer.put(new BigQueryResultImpl.Row(null, true));
+
+    BigQueryResultImpl<BigQueryResultImpl.Row> rowResult =
+        new BigQueryResultImpl<>(SCHEMA, 1, rowBuffer, null);
+    ResultSet rowRs = rowResult.getResultSet();
+    assertThat(rowRs.next()).isTrue();
+    assertThat(rowRs.getBigDecimal("double")).isEqualTo(highPrecisionDecimal);
+    assertThat(rowRs.getBigDecimal(2)).isEqualTo(highPrecisionDecimal);
+    assertThat(rowRs.next()).isFalse();
+  }
 }
