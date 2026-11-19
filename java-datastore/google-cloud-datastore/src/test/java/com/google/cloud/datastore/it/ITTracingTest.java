@@ -44,12 +44,16 @@ import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.datastore.Transaction;
 import com.google.cloud.datastore.telemetry.TelemetryConstants;
 import com.google.cloud.datastore.testing.RemoteDatastoreHelper;
+import com.google.cloud.grpc.GrpcTransportOptions;
 import com.google.common.base.Preconditions;
 import com.google.testing.junit.testparameterinjector.TestParameter;
 import com.google.testing.junit.testparameterinjector.TestParameterInjector;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.OpenTelemetrySdkBuilder;
 import io.opentelemetry.sdk.common.CompletableResultCode;
@@ -842,7 +846,7 @@ public class ITTracingTest {
         Query.newEntityQueryBuilder().setKind(KEY1.getKind()).setFilter(filter).build();
     Datastore.TransactionCallable<Boolean> callable =
         transaction -> {
-          QueryResults<Entity> queryResults = datastore.run(query);
+          QueryResults<Entity> queryResults = transaction.run(query);
           assertTrue(queryResults.hasNext());
           assertEquals(entity1, queryResults.next());
           assertFalse(queryResults.hasNext());
@@ -858,7 +862,134 @@ public class ITTracingTest {
     // Since the runInTransaction method runs the TransactionCallable opaquely in a transaction
     // there is no way for the API user to know the transaction ID, so we will not validate it here.
     assertSpanHierarchy(SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_BEGIN_TRANSACTION);
-    assertSpanHierarchy(SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_RUN_QUERY);
+    assertSpanHierarchy(SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_TRANSACTION_RUN_QUERY);
     assertSpanHierarchy(SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_TRANSACTION_COMMIT);
+  }
+
+  @Test
+  public void callerRootSpanPropagationLookupTest() throws Exception {
+    String rootSpanName = "caller-root-lookup";
+    Tracer tracer = openTelemetrySdk.getTracer("caller-app");
+    Span rootSpan = tracer.spanBuilder(rootSpanName).startSpan();
+    try (Scope ignored = rootSpan.makeCurrent()) {
+      Entity entity = datastore.get(KEY1);
+      assertNull(entity);
+    } finally {
+      rootSpan.end();
+    }
+
+    List<SpanData> spans = prepareSpans();
+    assertEquals(2, spans.size());
+
+    SpanData callerSpan = getSpanByName(rootSpanName);
+    SpanData lookupSpan = getSpanByName(SPAN_NAME_LOOKUP);
+    assertNotNull(callerSpan);
+    assertNotNull(lookupSpan);
+    assertEquals(rootSpan.getSpanContext().getTraceId(), lookupSpan.getTraceId());
+    assertEquals(rootSpan.getSpanContext().getSpanId(), lookupSpan.getParentSpanId());
+    assertHasExpectedAttributes(lookupSpan);
+  }
+
+  @Test
+  public void callerRootSpanPropagationTransactionTest() throws Exception {
+    String rootSpanName = "caller-root-transaction";
+    Tracer tracer = openTelemetrySdk.getTracer("caller-app");
+    Span rootSpan = tracer.spanBuilder(rootSpanName).startSpan();
+    try (Scope ignored = rootSpan.makeCurrent()) {
+      Entity entity = datastore.runInTransaction(transaction -> transaction.get(KEY1));
+      assertNull(entity);
+    } finally {
+      rootSpan.end();
+    }
+
+    List<SpanData> spans = prepareSpans();
+    assertEquals(5, spans.size());
+
+    SpanData callerSpan = getSpanByName(rootSpanName);
+    SpanData transactionRunSpan = getSpanByName(SPAN_NAME_TRANSACTION_RUN);
+    assertNotNull(callerSpan);
+    assertNotNull(transactionRunSpan);
+    assertEquals(rootSpan.getSpanContext().getTraceId(), transactionRunSpan.getTraceId());
+    assertEquals(rootSpan.getSpanContext().getSpanId(), transactionRunSpan.getParentSpanId());
+
+    assertSpanHierarchy(SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_BEGIN_TRANSACTION);
+    assertSpanHierarchy(SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_TRANSACTION_LOOKUP);
+    assertSpanHierarchy(SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_TRANSACTION_COMMIT);
+  }
+
+  @Test
+  public void grpcLookupTraceWithCallerRootSpanTest() throws Exception {
+    RemoteDatastoreHelper grpcHelper =
+        RemoteDatastoreHelper.create(
+            datastoreNamedDatabase(), GrpcTransportOptions.newBuilder().build(), openTelemetrySdk);
+    DatastoreOptions grpcOptions = grpcHelper.getOptions();
+    Datastore grpcDatastore = grpcOptions.getService();
+    Key grpcKey =
+        Key.newBuilder(grpcOptions.getProjectId(), "kind1", "key1", grpcOptions.getDatabaseId())
+            .setNamespace(grpcOptions.getNamespace())
+            .build();
+
+    String rootSpanName = "caller-root-grpc-lookup";
+    Tracer tracer = openTelemetrySdk.getTracer("caller-app");
+    Span rootSpan = tracer.spanBuilder(rootSpanName).startSpan();
+    try (Scope ignored = rootSpan.makeCurrent()) {
+      Entity entity = grpcDatastore.get(grpcKey);
+      assertNull(entity);
+    } finally {
+      rootSpan.end();
+      grpcDatastore.close();
+    }
+
+    List<SpanData> spans = prepareSpans();
+    assertEquals(3, spans.size());
+
+    SpanData callerSpan = getSpanByName(rootSpanName);
+    SpanData lookupSpan = getSpanByName(SPAN_NAME_LOOKUP);
+    assertNotNull(callerSpan);
+    assertNotNull(lookupSpan);
+    assertEquals(rootSpan.getSpanContext().getTraceId(), lookupSpan.getTraceId());
+    assertEquals(rootSpan.getSpanContext().getSpanId(), lookupSpan.getParentSpanId());
+    assertSpanHierarchy(SPAN_NAME_LOOKUP, grpcSpanName("Lookup"));
+  }
+
+  @Test
+  public void grpcTransactionTraceWithCallerRootSpanTest() throws Exception {
+    RemoteDatastoreHelper grpcHelper =
+        RemoteDatastoreHelper.create(
+            datastoreNamedDatabase(), GrpcTransportOptions.newBuilder().build(), openTelemetrySdk);
+    DatastoreOptions grpcOptions = grpcHelper.getOptions();
+    Datastore grpcDatastore = grpcOptions.getService();
+    Key grpcKey =
+        Key.newBuilder(grpcOptions.getProjectId(), "kind1", "key1", grpcOptions.getDatabaseId())
+            .setNamespace(grpcOptions.getNamespace())
+            .build();
+
+    String rootSpanName = "caller-root-grpc-transaction";
+    Tracer tracer = openTelemetrySdk.getTracer("caller-app");
+    Span rootSpan = tracer.spanBuilder(rootSpanName).startSpan();
+    try (Scope ignored = rootSpan.makeCurrent()) {
+      Entity entity = grpcDatastore.runInTransaction(transaction -> transaction.get(grpcKey));
+      assertNull(entity);
+    } finally {
+      rootSpan.end();
+      grpcDatastore.close();
+    }
+
+    List<SpanData> spans = prepareSpans();
+    assertEquals(8, spans.size());
+
+    SpanData callerSpan = getSpanByName(rootSpanName);
+    SpanData transactionRunSpan = getSpanByName(SPAN_NAME_TRANSACTION_RUN);
+    assertNotNull(callerSpan);
+    assertNotNull(transactionRunSpan);
+    assertEquals(rootSpan.getSpanContext().getTraceId(), transactionRunSpan.getTraceId());
+    assertEquals(rootSpan.getSpanContext().getSpanId(), transactionRunSpan.getParentSpanId());
+
+    assertSpanHierarchy(
+        SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_BEGIN_TRANSACTION, grpcSpanName("BeginTransaction"));
+    assertSpanHierarchy(
+        SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_TRANSACTION_LOOKUP, grpcSpanName("Lookup"));
+    assertSpanHierarchy(
+        SPAN_NAME_TRANSACTION_RUN, SPAN_NAME_TRANSACTION_COMMIT, grpcSpanName("Commit"));
   }
 }

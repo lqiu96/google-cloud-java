@@ -240,27 +240,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.cloud.opentelemetry</groupId>
-      <artifactId>exporter-trace</artifactId>
-      <version>0.15.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-trace</artifactId>
-      <scope>test</scope>
-      <version>2.103.0</version><!-- {x-version-update:google-cloud-trace:current} -->
-    </dependency>
-    <dependency>
-      <groupId>com.google.api.grpc</groupId>
-      <artifactId>proto-google-cloud-trace-v1</artifactId>
-      <scope>test</scope>
-      <version>2.103.0</version><!-- {x-version-update:proto-google-cloud-trace-v1:current} -->
     </dependency>
   </dependencies>
 
