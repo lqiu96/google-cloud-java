@@ -95,7 +95,7 @@ public final class BigQueryError implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(reason, location, message);
+    return Objects.hash(reason, location, message, debugInfo);
   }
 
   @Override
@@ -109,8 +109,17 @@ public final class BigQueryError implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this
-        || obj instanceof BigQueryError && Objects.equals(toPb(), ((BigQueryError) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof BigQueryError)) {
+      return false;
+    }
+    BigQueryError other = (BigQueryError) obj;
+    return Objects.equals(reason, other.reason)
+        && Objects.equals(location, other.location)
+        && Objects.equals(message, other.message)
+        && Objects.equals(debugInfo, other.debugInfo);
   }
 
   ErrorProto toPb() {

@@ -79,7 +79,16 @@ public final class ModelId implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this || obj instanceof ModelId && Objects.equals(toPb(), ((ModelId) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof ModelId)) {
+      return false;
+    }
+    ModelId other = (ModelId) obj;
+    return Objects.equals(project, other.project)
+        && Objects.equals(dataset, other.dataset)
+        && Objects.equals(model, other.model);
   }
 
   @Override

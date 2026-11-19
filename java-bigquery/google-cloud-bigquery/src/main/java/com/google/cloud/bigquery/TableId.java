@@ -88,7 +88,16 @@ public final class TableId implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this || obj instanceof TableId && Objects.equals(toPb(), ((TableId) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof TableId)) {
+      return false;
+    }
+    TableId other = (TableId) obj;
+    return Objects.equals(project, other.project)
+        && Objects.equals(dataset, other.dataset)
+        && Objects.equals(table, other.table);
   }
 
   @Override

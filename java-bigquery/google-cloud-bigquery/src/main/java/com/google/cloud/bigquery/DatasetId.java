@@ -56,8 +56,14 @@ public final class DatasetId implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this
-        || obj instanceof DatasetId && Objects.equals(toPb(), ((DatasetId) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof DatasetId)) {
+      return false;
+    }
+    DatasetId other = (DatasetId) obj;
+    return Objects.equals(project, other.project) && Objects.equals(dataset, other.dataset);
   }
 
   @Override

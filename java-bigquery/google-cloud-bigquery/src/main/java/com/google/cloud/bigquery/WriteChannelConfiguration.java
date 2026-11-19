@@ -459,15 +459,39 @@ public final class WriteChannelConfiguration implements LoadConfiguration, Seria
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this
-        || obj instanceof WriteChannelConfiguration
-            && Objects.equals(toPb(), ((WriteChannelConfiguration) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof WriteChannelConfiguration)) {
+      return false;
+    }
+    WriteChannelConfiguration other = (WriteChannelConfiguration) obj;
+    return Objects.equals(destinationTable, other.destinationTable)
+        && Objects.equals(
+            destinationEncryptionConfiguration, other.destinationEncryptionConfiguration)
+        && Objects.equals(createDisposition, other.createDisposition)
+        && Objects.equals(writeDisposition, other.writeDisposition)
+        && Objects.equals(formatOptions, other.formatOptions)
+        && Objects.equals(nullMarker, other.nullMarker)
+        && Objects.equals(maxBadRecords, other.maxBadRecords)
+        && Objects.equals(schema, other.schema)
+        && Objects.equals(ignoreUnknownValues, other.ignoreUnknownValues)
+        && Objects.equals(schemaUpdateOptions, other.schemaUpdateOptions)
+        && Objects.equals(autodetect, other.autodetect)
+        && Objects.equals(timePartitioning, other.timePartitioning)
+        && Objects.equals(clustering, other.clustering)
+        && Objects.equals(useAvroLogicalTypes, other.useAvroLogicalTypes)
+        && Objects.equals(labels, other.labels)
+        && Objects.equals(decimalTargetTypes, other.decimalTargetTypes)
+        && Objects.equals(connectionProperties, other.connectionProperties)
+        && Objects.equals(createSession, other.createSession);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
         destinationTable,
+        destinationEncryptionConfiguration,
         createDisposition,
         writeDisposition,
         formatOptions,

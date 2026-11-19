@@ -71,7 +71,14 @@ public final class Schema implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this || obj instanceof Schema && Objects.equals(toPb(), ((Schema) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Schema)) {
+      return false;
+    }
+    Schema other = (Schema) obj;
+    return Objects.equals(fields, other.fields);
   }
 
   /** Creates a {@code Schema} object given a list of fields. */

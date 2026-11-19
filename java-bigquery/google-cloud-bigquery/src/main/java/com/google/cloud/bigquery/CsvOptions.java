@@ -270,8 +270,23 @@ public final class CsvOptions extends FormatOptions {
 
   @Override
   public boolean equals(Object obj) {
-    return obj == this
-        || obj instanceof CsvOptions && Objects.equals(toPb(), ((CsvOptions) obj).toPb());
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof CsvOptions)) {
+      return false;
+    }
+    CsvOptions other = (CsvOptions) obj;
+    return Objects.equals(getType(), other.getType())
+        && Objects.equals(allowJaggedRows, other.allowJaggedRows)
+        && Objects.equals(allowQuotedNewLines, other.allowQuotedNewLines)
+        && Objects.equals(encoding, other.encoding)
+        && Objects.equals(fieldDelimiter, other.fieldDelimiter)
+        && Objects.equals(nullMarker, other.nullMarker)
+        && Objects.equals(quote, other.quote)
+        && Objects.equals(skipLeadingRows, other.skipLeadingRows)
+        && Objects.equals(
+            preserveAsciiControlCharacters, other.preserveAsciiControlCharacters);
   }
 
   com.google.api.services.bigquery.model.CsvOptions toPb() {
