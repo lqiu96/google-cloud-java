@@ -25,7 +25,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.io.BaseEncoding;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Instant;
@@ -224,7 +223,8 @@ public class FieldValue implements Serializable {
   @SuppressWarnings("unchecked")
   public long getTimestampValue() {
     if (useInt64Timestamps) {
-      return new BigInteger(getStringValue()).longValue();
+      // INT64 timestamps are signed 64-bit microseconds since epoch; parse without BigInteger.
+      return Long.parseLong(getStringValue());
     }
     // timestamps are encoded in the format 1408452095.22 where the integer part is seconds since
     // epoch (e.g. 1408452095.22 == 2014-08-19 07:41:35.220 -05:00)

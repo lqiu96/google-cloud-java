@@ -1713,7 +1713,35 @@ public class HttpBigQueryRpcTest {
       rpc.getQueryResultsSkipExceptionTranslation(PROJECT_ID, JOB_ID, LOCATION, new HashMap<>());
 
       verifyRequest("GET", "/projects/" + PROJECT_ID + "/queries/" + JOB_ID);
+      assertThat(lastRequestUrl).doesNotContain("formatOptions");
       verifyNoSpans();
+    }
+
+    @Test
+    public void testGetQueryResultsWithDataFormatOptions() throws Exception {
+      setMockResponse("{\"kind\":\"bigquery#getQueryResultsResponse\"}");
+
+      BigQueryOptions customOptions =
+          BigQueryOptions.newBuilder()
+              .setProjectId(PROJECT_ID)
+              .setCredentials(NoCredentials.getInstance())
+              .setTransportOptions(
+                  BigQueryOptions.getDefaultHttpTransportOptions().toBuilder()
+                      .setHttpTransportFactory(() -> mockTransport)
+                      .build())
+              .setDataFormatOptions(
+                  DataFormatOptions.newBuilder()
+                      .useInt64Timestamp(true)
+                      .timestampFormatOptions(TimestampFormatOptions.ISO8601_STRING)
+                      .build())
+              .build();
+      HttpBigQueryRpc customRpc = new HttpBigQueryRpc(customOptions);
+
+      customRpc.getQueryResultsSkipExceptionTranslation(
+          PROJECT_ID, JOB_ID, LOCATION, new HashMap<>());
+
+      assertThat(lastRequestUrl).contains("formatOptions.useInt64Timestamp=true");
+      assertThat(lastRequestUrl).contains("formatOptions.timestampOutputFormat=ISO8601_STRING");
     }
 
     @Test
