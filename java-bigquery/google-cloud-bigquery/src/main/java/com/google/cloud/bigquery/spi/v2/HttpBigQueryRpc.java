@@ -1831,6 +1831,8 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public GetQueryResultsResponse getQueryResultsSkipExceptionTranslation(
       String projectId, String jobId, String location, Map<Option, ?> options) throws IOException {
     validateRPC();
+    DataFormatOptions formatOptions = this.options.getDataFormatOptions();
+    TimestampFormatOptions timestampFormat = formatOptions.timestampFormatOptions();
     Bigquery.Jobs.GetQueryResults queryRequest =
         bigquery
             .jobs()
@@ -1843,7 +1845,12 @@ public class HttpBigQueryRpc implements BigQueryRpc {
                 Option.START_INDEX.getLong(options) != null
                     ? BigInteger.valueOf(Option.START_INDEX.getLong(options))
                     : null)
-            .setTimeoutMs(Option.TIMEOUT.getLong(options));
+            .setTimeoutMs(Option.TIMEOUT.getLong(options))
+            .setFormatOptionsUseInt64Timestamp(formatOptions.useInt64Timestamp() ? true : null)
+            .setFormatOptionsTimestampOutputFormat(
+                timestampFormat != TimestampFormatOptions.TIMESTAMP_OUTPUT_FORMAT_UNSPECIFIED
+                    ? timestampFormat.toString()
+                    : null);
 
     queryRequest
         .getRequestHeaders()
