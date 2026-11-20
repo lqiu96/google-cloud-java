@@ -18,6 +18,7 @@ package com.google.cloud.bigquery;
 
 import com.google.api.core.ObsoleteApi;
 import com.google.api.gax.retrying.ResultRetryAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.ServiceDefaults;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.ServiceRpc;
@@ -29,11 +30,22 @@ import com.google.cloud.http.HttpTransportOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import io.opentelemetry.api.trace.Tracer;
+import java.time.Duration;
 import java.util.Set;
 
 public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
 
   private static final String API_SHORT_NAME = "BigQuery";
+  /**
+   * The default read timeout for HTTP requests to the BigQuery REST API (60 seconds).
+   *
+   * <p>In PR #2764 (b/286444754), this value was increased from 20 seconds to 60 seconds following
+   * an outage where slow catalog metadata lookups caused jobs.insert latency to reach 30 to 52 seconds.
+   * With a 20-second read timeout, the client timed out prematurely and retried jobs.insert with the
+   * same JobId, failing with HTTP 409 Already Exists because the original job had succeeded on the
+   * backend. 60 seconds provides sufficient headroom for metadata operations while preventing hung
+   * socket connections when intermediate proxies drop TCP sessions silently.
+   */
   private static final int DEFAULT_READ_API_TIME_OUT = 60000;
   private static final String BIGQUERY_SCOPE = "https://www.googleapis.com/auth/bigquery";
   private static final Set<String> SCOPES = ImmutableSet.of(BIGQUERY_SCOPE);
@@ -79,10 +91,29 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
 
     private Builder() {
       setUseJwtAccessWithScope(false);
+      // Explicitly initialize with BigQuery default retry settings. ServiceOptions.Builder
+      // initializes retrySettings with null, which would otherwise defer to ServiceOptions'
+      // legacy 50-second total timeout defaults if build() is called directly.
+      setRetrySettings(getDefaultRetrySettings());
     }
 
     private Builder(BigQueryOptions options) {
       super(options);
+    }
+
+    /**
+     * Sets the {@link RetrySettings} for this BigQuery client.
+     *
+     * <p>If {@code retrySettings} is {@code null}, this builder falls back to {@link
+     * #getDefaultRetrySettings()}.
+     *
+     * @param retrySettings the custom retry settings to apply, or {@code null} to reset to defaults
+     * @return the builder
+     */
+    @Override
+    public Builder setRetrySettings(RetrySettings retrySettings) {
+      return super.setRetrySettings(
+          retrySettings != null ? retrySettings : getDefaultRetrySettings());
     }
 
     @Override
@@ -329,6 +360,51 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     }
     BigQueryOptions other = (BigQueryOptions) obj;
     return baseEquals(other);
+  }
+
+  /**
+   * Returns the default retry settings used when building {@link BigQueryOptions} if none are
+   * explicitly set on {@link Builder#setRetrySettings(RetrySettings)}.
+   *
+   * <p>Overrides {@link ServiceOptions#defaultRetrySettings()} to return {@link
+   * #getDefaultRetrySettings()}, ensuring BigQuery instances receive BigQuery-specific timeout and
+   * retry policies rather than generic {@link ServiceOptions} defaults.
+   */
+  @Override
+  protected RetrySettings defaultRetrySettings() {
+    return getDefaultRetrySettings();
+  }
+
+  /**
+   * Returns the default {@link RetrySettings} for BigQuery.
+   *
+   * <p>Configures a 5-minute total timeout duration, up to 6 retry attempts, exponential backoff
+   * from 1 second to 32 seconds, and initial/max RPC timeout matching {@link
+   * #DEFAULT_READ_API_TIME_OUT} (60 seconds).
+   *
+   * <p>Historical context: The default {@link ServiceOptions} total timeout duration of 50 seconds
+   * was originally inherited from Google App Engine Standard request deadline limits. However,
+   * BigQuery's REST HTTP transport uses a 60-second read socket timeout ({@link
+   * #DEFAULT_READ_API_TIME_OUT}) to accommodate long-running metadata operations and prevent premature
+   * duplicate job submissions (b/286444754). Under a 50-second total timeout, a single read timeout on
+   * a slow call exhausted the entire retry budget before any retry attempt could begin. Furthermore,
+   * exponential backoff across 6 attempts (1s, 2s, 4s, 8s, 16s, 32s) totals 63 seconds of cumulative
+   * delay alone. A 5-minute (300-second) total timeout provides sufficient headroom for retrying
+   * transient socket and rate limit failures across the full retry schedule.
+   */
+  public static RetrySettings getDefaultRetrySettings() {
+    // 5-minute total timeout allows full 6-attempt exponential backoff (1s + 2s + 4s + 8s + 16s + 32s = 63s backoff)
+    // plus multiple 60-second RPC timeouts (DEFAULT_READ_API_TIME_OUT) without premature exhaustion.
+    return RetrySettings.newBuilder()
+        .setMaxAttempts(6)
+        .setInitialRetryDelayDuration(Duration.ofMillis(1000L))
+        .setMaxRetryDelayDuration(Duration.ofMillis(32_000L))
+        .setRetryDelayMultiplier(2.0)
+        .setTotalTimeoutDuration(Duration.ofMinutes(5))
+        .setInitialRpcTimeoutDuration(Duration.ofMillis(DEFAULT_READ_API_TIME_OUT))
+        .setRpcTimeoutMultiplier(1.0)
+        .setMaxRpcTimeoutDuration(Duration.ofMillis(DEFAULT_READ_API_TIME_OUT))
+        .build();
   }
 
   public static BigQueryOptions getDefaultInstance() {
