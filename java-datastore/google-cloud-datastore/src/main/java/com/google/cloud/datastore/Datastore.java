@@ -550,12 +550,19 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   Entity get(Key key, DatastoreExecutionOptions executionOptions);
 
   /**
-   * Returns an {@link Entity} for each given {@link Key} that exists in the Datastore. The order of
-   * the result is unspecified. Results are loaded lazily, so it is possible to get a {@code
-   * DatastoreException} from the returned {@code Iterator}'s {@link Iterator#hasNext hasNext} or
-   * {@link Iterator#next next} methods. {@link ReadOption}s can be specified if desired.
+   * Returns an iterator over the {@link Entity} objects that exist in Datastore for the given keys.
+   * {@link ReadOption}s can be specified if desired.
    *
-   * <p>Example of getting multiple entity objects.
+   * <p>Input keys are deduplicated, nonexistent keys are silently omitted, and result order is
+   * unspecified (it does not necessarily match the input order). Any keys deferred by Datastore are
+   * fetched lazily during {@link Iterator#hasNext hasNext} or {@link Iterator#next next}, which may
+   * throw {@link DatastoreException}. Cloud Datastore limits a single lookup request to at most
+   * 1,000 keys; split larger key sets into batches.
+   *
+   * <p>Use {@link #fetch(Iterable, ReadOption...)} instead if you need results in input order with
+   * {@code null} placeholders for missing keys.
+   *
+   * <p>Example of getting multiple entity objects:
    *
    * <pre>{@code
    * String firstKeyName = "my_first_key_name";
@@ -573,25 +580,38 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * }</pre>
    *
    * @throws DatastoreException upon failure
-   * @see #get(Key)
+   * @see #get(Key, ReadOption...)
+   * @see #fetch(Iterable, ReadOption...)
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/limits">Cloud Datastore
+   *     limits</a>
    */
   Iterator<Entity> get(Iterable<Key> keys, ReadOption... options);
 
   /**
-   * Returns an {@link Entity} for each given {@link Key} with specified {@link
-   * DatastoreExecutionOptions}.
+   * Returns an iterator over the {@link Entity} objects that exist in Datastore for the given keys
+   * with specified {@link DatastoreExecutionOptions}.
+   *
+   * <p>Input keys are deduplicated, nonexistent keys are omitted, result order is unspecified, and
+   * deferred keys are fetched lazily during iteration. Cloud Datastore limits a single lookup
+   * request to at most 1,000 keys.
    *
    * @throws DatastoreException upon failure
+   * @see #get(Iterable, ReadOption...)
    */
   @BetaApi
   Iterator<Entity> get(Iterable<Key> keys, DatastoreExecutionOptions executionOptions);
 
   /**
-   * Returns a list with a value for each given key (ordered by input). {@code null} values are
-   * returned for nonexistent keys. When possible prefer using {@link #get(Key...)} to avoid eagerly
-   * loading the results. {@link ReadOption}s can be specified if desired.
+   * Eagerly fetches entities for the given keys and returns a list aligned 1:1 with the input
+   * (preserving input order and duplicate keys). {@code null} placeholders are returned at the
+   * corresponding indices for nonexistent keys. {@link ReadOption}s can be specified if desired.
    *
-   * <p>Example of fetching a list of Entity objects.
+   * <p>All results, including any deferred lookup batches, are loaded into memory before returning.
+   * Prefer {@link #get(Iterable, ReadOption...)} when input ordering and missing-key placeholders
+   * are not needed. Cloud Datastore limits a single lookup request to at most 1,000 keys; split
+   * larger key sets into batches.
+   *
+   * <p>Example of fetching a list of Entity objects:
    *
    * <pre>{@code
    * String firstKeyName = "my_first_key_name";
@@ -601,15 +621,27 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * Key secondKey = keyFactory.newKey(secondKeyName);
    * List<Entity> entities = datastore.fetch(Lists.newArrayList(firstKey, secondKey));
    * for (Entity entity : entities) {
-   *   // do something with the entity
+   *   if (entity != null) {
+   *     // do something with the entity
+   *   }
    * }
    * }</pre>
+   *
+   * @throws DatastoreException upon failure
+   * @see #get(Iterable, ReadOption...)
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/limits">Cloud Datastore
+   *     limits</a>
    */
   List<Entity> fetch(Iterable<Key> keys, ReadOption... options);
 
   /**
-   * Returns a list with a value for each given key with specified {@link
-   * DatastoreExecutionOptions}.
+   * Eagerly fetches entities for the given keys with specified {@link DatastoreExecutionOptions},
+   * preserving input order and duplicates with {@code null} placeholders for nonexistent keys.
+   *
+   * <p>Cloud Datastore limits a single lookup request to at most 1,000 keys.
+   *
+   * @throws DatastoreException upon failure
+   * @see #fetch(Iterable, ReadOption...)
    */
   @BetaApi
   List<Entity> fetch(Iterable<Key> keys, DatastoreExecutionOptions executionOptions);
