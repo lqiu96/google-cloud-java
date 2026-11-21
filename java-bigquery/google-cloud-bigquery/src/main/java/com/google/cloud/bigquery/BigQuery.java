@@ -64,7 +64,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
     ACCESS("access"),
     CREATION_TIME("creationTime"),
     DATASET_REFERENCE("datasetReference"),
-    DEFAULT_TABLE_EXPIRATION_MS("defaultTableExpirationMsS"),
+    DEFAULT_TABLE_EXPIRATION_MS("defaultTableExpirationMs"),
     DESCRIPTION("description"),
     ETAG("etag"),
     FRIENDLY_NAME("friendlyName"),

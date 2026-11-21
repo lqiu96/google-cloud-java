@@ -56,4 +56,14 @@ public class OptionTest {
     assertNull(option.getValue());
     Assertions.assertThrows(NullPointerException.class, () -> new Option(null, VALUE) {});
   }
+
+  @Test
+  public void testDatasetFieldDefaultTableExpirationMsSelector() {
+    assertEquals(
+        "defaultTableExpirationMs",
+        BigQuery.DatasetField.DEFAULT_TABLE_EXPIRATION_MS.getSelector());
+    BigQuery.DatasetOption option =
+        BigQuery.DatasetOption.fields(BigQuery.DatasetField.DEFAULT_TABLE_EXPIRATION_MS);
+    assertEquals("datasetReference,defaultTableExpirationMs", option.getValue());
+  }
 }
