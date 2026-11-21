@@ -236,6 +236,65 @@ public class QueryJobConfigurationTest {
   }
 
   @Test
+  public void testToBuilderAddNamedParameter() {
+    QueryJobConfiguration base =
+        QueryJobConfiguration.newBuilder(QUERY)
+            .addNamedParameter("first", STRING_PARAMETER)
+            .build();
+    QueryJobConfiguration updated =
+        base.toBuilder().addNamedParameter("second", TIMESTAMP_PARAMETER).build();
+    assertEquals(ImmutableMap.of("first", STRING_PARAMETER), base.getNamedParameters());
+    assertEquals(
+        ImmutableMap.of("first", STRING_PARAMETER, "second", TIMESTAMP_PARAMETER),
+        updated.getNamedParameters());
+
+    QueryJobConfiguration fromEmpty =
+        QueryJobConfiguration.of(QUERY).toBuilder()
+            .addNamedParameter("only", STRING_PARAMETER)
+            .build();
+    assertEquals(ImmutableMap.of("only", STRING_PARAMETER), fromEmpty.getNamedParameters());
+  }
+
+  @Test
+  public void testToBuilderAddPositionalParameter() {
+    QueryJobConfiguration base =
+        QueryJobConfiguration.newBuilder(QUERY).addPositionalParameter(STRING_PARAMETER).build();
+    QueryJobConfiguration updated =
+        base.toBuilder().addPositionalParameter(TIMESTAMP_PARAMETER).build();
+    assertEquals(ImmutableList.of(STRING_PARAMETER), base.getPositionalParameters());
+    assertEquals(
+        ImmutableList.of(STRING_PARAMETER, TIMESTAMP_PARAMETER), updated.getPositionalParameters());
+
+    QueryJobConfiguration fromEmpty =
+        QueryJobConfiguration.of(QUERY).toBuilder()
+            .addPositionalParameter(STRING_PARAMETER)
+            .build();
+    assertEquals(ImmutableList.of(STRING_PARAMETER), fromEmpty.getPositionalParameters());
+  }
+
+  @Test
+  public void testToBuilderAddTableDefinition() {
+    QueryJobConfiguration updated =
+        QUERY_JOB_CONFIGURATION.toBuilder()
+            .addTableDefinition("otherTable", TABLE_CONFIGURATION)
+            .build();
+    assertEquals(1, QUERY_JOB_CONFIGURATION.getTableDefinitions().size());
+    assertEquals(2, updated.getTableDefinitions().size());
+    assertEquals(TABLE_CONFIGURATION, updated.getTableDefinitions().get("otherTable"));
+  }
+
+  @Test
+  public void testSetConnectionPropertiesNull() {
+    QueryJobConfiguration newConfig =
+        QueryJobConfiguration.newBuilder(QUERY).setConnectionProperties(null).build();
+    assertNull(newConfig.getConnectionProperties());
+
+    QueryJobConfiguration clearedConfig =
+        QUERY_JOB_CONFIGURATION.toBuilder().setConnectionProperties(null).build();
+    assertNull(clearedConfig.getConnectionProperties());
+  }
+
+  @Test
   public void testJobCreationMode() {
     compareQueryJobConfiguration(
         QUERY_JOB_CONFIGURATION_SET_JOB_CREATION_MODE,

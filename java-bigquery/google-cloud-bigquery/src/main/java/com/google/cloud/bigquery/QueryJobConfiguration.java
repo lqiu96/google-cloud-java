@@ -157,11 +157,14 @@ public final class QueryJobConfiguration extends JobConfiguration {
     private Builder(QueryJobConfiguration jobConfiguration) {
       this();
       this.query = jobConfiguration.query;
-      this.namedParameters = jobConfiguration.namedParameters;
-      this.positionalParameters = jobConfiguration.positionalParameters;
+      this.namedParameters = Maps.newLinkedHashMap(jobConfiguration.namedParameters);
+      this.positionalParameters = Lists.newArrayList(jobConfiguration.positionalParameters);
       this.parameterMode = jobConfiguration.parameterMode;
       this.destinationTable = jobConfiguration.destinationTable;
-      this.tableDefinitions = jobConfiguration.tableDefinitions;
+      this.tableDefinitions =
+          jobConfiguration.tableDefinitions != null
+              ? Maps.newHashMap(jobConfiguration.tableDefinitions)
+              : null;
       this.userDefinedFunctions = jobConfiguration.userDefinedFunctions;
       this.createDisposition = jobConfiguration.createDisposition;
       this.writeDisposition = jobConfiguration.writeDisposition;
@@ -693,7 +696,8 @@ public final class QueryJobConfiguration extends JobConfiguration {
      * @param connectionProperties connectionProperties or {@code null} for none
      */
     public Builder setConnectionProperties(List<ConnectionProperty> connectionProperties) {
-      this.connectionProperties = ImmutableList.copyOf(connectionProperties);
+      this.connectionProperties =
+          connectionProperties != null ? ImmutableList.copyOf(connectionProperties) : null;
       return this;
     }
 
