@@ -247,12 +247,16 @@ final class DatastoreImpl extends BaseService<DatastoreOptions> implements Datas
     void setPrevTransactionId(ByteString transactionId) {
       TransactionOptions.ReadWrite readWrite =
           TransactionOptions.ReadWrite.newBuilder().setPreviousTransaction(transactionId).build();
-      options = options.toBuilder().setReadWrite(readWrite).build();
+      options =
+          (options == null ? TransactionOptions.newBuilder() : options.toBuilder())
+              .setReadWrite(readWrite)
+              .build();
     }
 
     @Override
     public T call() throws DatastoreException {
       String attemptStatus = StatusCode.Code.UNKNOWN.toString();
+      transaction = null;
       try {
         transaction = datastore.newTransaction(options);
         T value = callable.run(transaction);
@@ -265,7 +269,7 @@ final class DatastoreImpl extends BaseService<DatastoreOptions> implements Datas
         // or from `transaction.commit()`. If there is an exception thrown from either call site,
         // then the transaction is still active. Check if it is still active (e.g. not commited)
         // and roll back the transaction.
-        if (transaction.isActive()) {
+        if (transaction != null && transaction.isActive()) {
           transaction.rollback();
         }
         throw DatastoreException.propagateUserException(ex);
@@ -274,12 +278,15 @@ final class DatastoreImpl extends BaseService<DatastoreOptions> implements Datas
         // If the transaction is active, then commit the rollback. If it was already successfully
         // rolled back, the transaction is inactive (prevents rolling back an already rolled back
         // transaction).
-        if (transaction.isActive()) {
-          transaction.rollback();
-        }
-        if (options != null
-            && options.getModeCase().equals(TransactionOptions.ModeCase.READ_WRITE)) {
-          setPrevTransactionId(transaction.getTransactionId());
+        if (transaction != null) {
+          if (transaction.isActive()) {
+            transaction.rollback();
+          }
+          if (options == null
+              || options.getModeCase().equals(TransactionOptions.ModeCase.READ_WRITE)
+              || options.getModeCase().equals(TransactionOptions.ModeCase.MODE_NOT_SET)) {
+            setPrevTransactionId(transaction.getTransactionId());
+          }
         }
       }
     }
@@ -300,7 +307,11 @@ final class DatastoreImpl extends BaseService<DatastoreOptions> implements Datas
 
   @Override
   public <T> T runInTransaction(final TransactionCallable<T> callable) {
-    return runInTransaction(callable, /* transactionOptions= */ null);
+    return runInTransaction(
+        callable,
+        TransactionOptions.newBuilder()
+            .setReadWrite(TransactionOptions.ReadWrite.getDefaultInstance())
+            .build());
   }
 
   @Override
