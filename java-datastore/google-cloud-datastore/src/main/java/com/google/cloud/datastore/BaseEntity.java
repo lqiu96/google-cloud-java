@@ -68,6 +68,14 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
    * <p>Passing {@code null} to any {@code set} method throws {@link NullPointerException} (either
    * immediately or during {@link #build()}). Use {@link #setNull(String)} to store a null property
    * ({@link NullValue}).
+   *
+   * <p>Properties are indexed by default, and Datastore limits indexed string (UTF-8) and blob
+   * values to 1,500 bytes. To store larger strings or blobs (or avoid indexing a property), build a
+   * {@link StringValue} or {@link BlobValue} with {@code setExcludeFromIndexes(true)} and pass it
+   * to {@link #set(String, Value)}.
+   *
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/indexes">Datastore
+   *     Indexes</a>
    */
   public abstract static class Builder<K extends IncompleteKey, B extends Builder<K, B>> {
 
@@ -152,7 +160,9 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
     }
 
     /**
-     * Sets a property of type {@link StringValue}.
+     * Sets an indexed property of type {@link StringValue}. For strings exceeding Datastore's
+     * 1,500-byte UTF-8 indexed limit, build a {@link StringValue} with {@code
+     * setExcludeFromIndexes(true)} and pass it to {@link #set(String, Value)}.
      *
      * @param name name of the property
      * @param value value associated with the property
@@ -416,7 +426,9 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
     }
 
     /**
-     * Sets a property of type {@link BlobValue}.
+     * Sets an indexed property of type {@link BlobValue}. For blobs exceeding Datastore's
+     * 1,500-byte indexed limit, build a {@link BlobValue} with {@code setExcludeFromIndexes(true)}
+     * and pass it to {@link #set(String, Value)}.
      *
      * @param name name of the property
      * @param value value associated with the property
