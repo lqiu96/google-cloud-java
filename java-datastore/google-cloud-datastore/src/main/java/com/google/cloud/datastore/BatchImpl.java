@@ -16,6 +16,8 @@
 
 package com.google.cloud.datastore;
 
+import static com.google.cloud.datastore.RequestOptionsHelper.createRequestOptions;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -61,6 +63,9 @@ class BatchImpl extends BaseDatastoreBatchWriter implements Batch {
     requestPb.addAllMutations(mutationsPb);
     requestPb.setProjectId(datastore.getOptions().getProjectId());
     requestPb.setDatabaseId(datastore.getOptions().getDatabaseId());
+    requestPb.setRequestOptions(
+        createRequestOptions(
+            datastore.getOptions(), DatastoreExecutionOptions.getDefaultInstance()));
     com.google.datastore.v1.CommitResponse responsePb = datastore.commit(requestPb.build());
     deactivate();
     return new ResponseImpl(responsePb, toAddAutoId().size());
