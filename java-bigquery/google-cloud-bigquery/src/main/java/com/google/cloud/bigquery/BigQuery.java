@@ -1364,11 +1364,10 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * tabledata.insertAll}).
    *
    * <p>This client does not automatically generate insert IDs for rows. To prevent duplicate rows,
-   * automatic client retries run only when every row in the request specifies a non-null insert ID
-   * (via {@link InsertAllRequest.RowToInsert#of(String, Map)} or {@link
-   * InsertAllRequest.Builder#addRow(String, Map)}). If any row omits an insert ID, automatic
-   * retries are disabled for the entire request and transient RPC errors are thrown directly to the
-   * caller. BigQuery uses insert IDs for best-effort deduplication (see <a
+   * supply a non-empty insert ID on every row (via {@link InsertAllRequest.RowToInsert#of(String,
+   * Map)} or {@link InsertAllRequest.Builder#addRow(String, Map)}): automatic client retries are
+   * disabled for the entire request if any row omits an insert ID, and BigQuery requires a
+   * non-empty insert ID for best-effort deduplication (see <a
    * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataconsistency">Best effort
    * de-duplication</a> and <a
    * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-failure">Failure
