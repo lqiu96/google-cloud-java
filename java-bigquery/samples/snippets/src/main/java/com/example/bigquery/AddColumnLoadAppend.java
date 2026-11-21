@@ -86,18 +86,14 @@ public class AddColumnLoadAppend {
       JobId jobId = JobId.of(UUID.randomUUID().toString());
       Job loadJob = bigquery.create(JobInfo.newBuilder(loadJobConfig).setJobId(jobId).build());
 
-      // Load data from a GCS parquet file into the table
-      // Blocks until this load table job completes its execution, either failing or succeeding.
+      // Blocks until this load table job completes its execution.
+      // Throws BigQueryException if the job fails.
       Job job = loadJob.waitFor();
-
-      // Check for errors
-      if (job.isDone() && job.getStatus().getError() == null) {
-        System.out.println("Column successfully added during load append job");
-      } else {
-        System.out.println(
-            "BigQuery was unable to load into the table due to an error:"
-                + job.getStatus().getError());
+      if (job == null) {
+        System.out.println("Job not executed since it no longer exists.");
+        return;
       }
+      System.out.println("Column successfully added during load append job");
     } catch (BigQueryException | InterruptedException e) {
       System.out.println("Column not added during load append \n" + e.toString());
     }

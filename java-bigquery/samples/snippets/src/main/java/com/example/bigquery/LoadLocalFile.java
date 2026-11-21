@@ -68,14 +68,10 @@ public class LoadLocalFile {
 
       // Get the Job created by the TableDataWriteChannel and wait for it to complete.
       Job job = bigquery.getJob(jobId);
+      // Blocks until this job completes its execution. Throws BigQueryException if the job fails.
       Job completedJob = job.waitFor();
       if (completedJob == null) {
         System.out.println("Job not executed since it no longer exists.");
-        return;
-      } else if (completedJob.getStatus().getError() != null) {
-        System.out.println(
-            "BigQuery was unable to load local file to the table due to an error: \n"
-                + job.getStatus().getError());
         return;
       }
 

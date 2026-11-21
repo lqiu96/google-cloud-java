@@ -65,7 +65,7 @@ public class ExtractTableToJson {
 
       Job job = table.extract(dataFormat, destinationUri);
 
-      // Blocks until this job completes its execution, either failing or succeeding.
+      // Blocks until this job completes its execution. Throws BigQueryException if the job fails.
       Job completedJob =
           job.waitFor(
               RetryOption.initialRetryDelay(Duration.ofSeconds(1)),
@@ -73,15 +73,11 @@ public class ExtractTableToJson {
       if (completedJob == null) {
         System.out.println("Job not executed since it no longer exists.");
         return;
-      } else if (completedJob.getStatus().getError() != null) {
-        System.out.println(
-            "BigQuery was unable to extract due to an error: \n" + job.getStatus().getError());
-        return;
       }
       System.out.println(
           "Table export successful. Check in GCS bucket for the " + dataFormat + " file.");
     } catch (BigQueryException | InterruptedException e) {
-      System.out.println("Table extraction job was interrupted. \n" + e.toString());
+      System.out.println("BigQuery was unable to extract due to an error: \n" + e.toString());
     }
   }
 }
