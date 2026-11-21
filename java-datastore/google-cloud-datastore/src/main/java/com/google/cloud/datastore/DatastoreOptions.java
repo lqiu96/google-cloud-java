@@ -292,12 +292,35 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
       return new DatastoreOptions(this);
     }
 
-    /** Sets the default namespace to be used by the datastore service. */
+    /**
+     * Sets the default namespace used by queries and {@link Datastore#newKeyFactory()}. Must not be
+     * {@code null}; omit or pass {@code ""} for the default namespace.
+     *
+     * <p>Keys created via {@link Datastore#newKeyFactory()} inherit this namespace automatically.
+     * Keys constructed manually (for example via {@link Key#newBuilder(String, String, String)} or
+     * {@link KeyFactory#KeyFactory(String)}) default to {@code ""} and must explicitly set the
+     * matching namespace when targeting a non-default namespace.
+     *
+     * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/multitenancy">Datastore
+     *     Multitenancy</a>
+     */
     public Builder setNamespace(String namespace) {
       this.namespace = validateNamespace(namespace);
       return this;
     }
 
+    /**
+     * Sets the database ID used by this client. Omit or pass {@code ""} for the default database
+     * (do not pass {@code "(default)"}).
+     *
+     * <p>Keys created via {@link Datastore#newKeyFactory()} inherit this database ID automatically.
+     * Keys constructed manually (for example via {@link Key#newBuilder(String, String, String)} or
+     * {@link KeyFactory#KeyFactory(String)}) default to {@code ""} and must explicitly specify the
+     * matching database ID when targeting a named database.
+     *
+     * @see <a href="https://docs.cloud.google.com/datastore/docs/manage-databases">Manage Datastore
+     *     Databases</a>
+     */
     public Builder setDatabaseId(String databaseId) {
       this.databaseId = databaseId;
       return this;
@@ -440,6 +463,9 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     return namespace;
   }
 
+  /**
+   * Returns the database ID used by this datastore service, or {@code ""} for the default database.
+   */
   public String getDatabaseId() {
     return this.databaseId;
   }
