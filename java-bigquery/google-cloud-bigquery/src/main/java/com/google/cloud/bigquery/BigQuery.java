@@ -1585,13 +1585,29 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   boolean cancel(JobId jobId);
 
   /**
-   * Runs the query associated with the request, using an internally-generated random JobId.
+   * Runs the query associated with the request and returns its {@link TableResult}.
+   *
+   * <p>When {@code configuration} uses only options supported by the BigQuery {@code jobs.query}
+   * API, this method uses the single-RPC fast query path; if {@link
+   * QueryJobConfiguration.JobCreationMode#JOB_CREATION_OPTIONAL} is configured (on {@code
+   * configuration} or via {@link
+   * BigQueryOptions#setDefaultJobCreationMode(QueryJobConfiguration.JobCreationMode)}), BigQuery
+   * may execute the query statelessly without creating a job (in which case {@link
+   * TableResult#getJobId()} returns {@code null}). Configurations using job-only options (such as a
+   * destination table, partitioning or clustering, external table definitions, or {@link
+   * QueryJobConfiguration.Priority#BATCH}) automatically fall back to creating a query job via
+   * {@link #create(JobInfo, JobOption...)}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/running-queries#optional-job-creation">
+   * Optional job creation</a>.
    *
    * <p>If the location of the job is not "US" or "EU", {@link #query(QueryJobConfiguration, JobId,
    * JobOption...)} must be used instead.
    *
-   * <p>This method cannot be used in conjuction with {@link QueryJobConfiguration#dryRun()}
-   * queries. Since dry-run queries are not actually executed, there's no way to retrieve results.
+   * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
+   * queries and throws {@link UnsupportedOperationException} if {@code dryRun} is {@code true}. To
+   * validate a query and obtain processing statistics, call {@link #create(JobInfo, JobOption...)}
+   * instead (see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry
+   * runs</a>).
    *
    * <p>Example of running a query.
    *
@@ -1613,18 +1629,28 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
    * @throws JobException if the job completes unsuccessfully
+   * @throws UnsupportedOperationException if {@link QueryJobConfiguration#dryRun()} is {@code true}
    */
   TableResult query(QueryJobConfiguration configuration, JobOption... options)
       throws InterruptedException, JobException;
 
   /**
-   * Runs the query associated with the request, using the given JobId.
+   * Runs the query associated with the request, using the given {@link JobId}, and returns its
+   * {@link TableResult}.
+   *
+   * <p>Supplying a {@code jobId} with a non-null job name ({@link JobId#getJob()}) forces the
+   * job-creating path ({@link #create(JobInfo, JobOption...)}) rather than the fast {@code
+   * jobs.query} path. Passing a {@code jobId} that sets only a location or project (leaving {@link
+   * JobId#getJob()} unset) still allows the fast query path when {@code configuration} supports it.
    *
    * <p>If the location of the job is not "US" or "EU", the {@code jobId} must specify the job
    * location.
    *
    * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
-   * queries. Since dry-run queries are not actually executed, there's no way to retrieve results.
+   * queries and throws {@link UnsupportedOperationException} if {@code dryRun} is {@code true}. To
+   * validate a query and obtain processing statistics, call {@link #create(JobInfo, JobOption...)}
+   * instead (see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry
+   * runs</a>).
    *
    * <p>See {@link #query(QueryJobConfiguration, JobOption...)} for examples on populating a {@link
    * QueryJobConfiguration}.
@@ -1633,6 +1659,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
    * @throws JobException if the job completes unsuccessfully
+   * @throws UnsupportedOperationException if {@link QueryJobConfiguration#dryRun()} is {@code true}
    */
   TableResult query(QueryJobConfiguration configuration, JobId jobId, JobOption... options)
       throws InterruptedException, JobException;
@@ -1706,22 +1733,39 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   }
 
   /**
-   * Starts the query associated with the request, using the given JobId. It returns either
-   * TableResult for quick queries or Job object for long-running queries.
+   * Starts the query associated with the request, using the given {@link JobId}, and returns either
+   * a {@link TableResult} or a {@link Job}.
+   *
+   * <p>When {@link QueryResultsFormat#ARROW} is configured, this method always waits for the query
+   * to finish and returns a {@link TableResult}. Otherwise, when the query uses the fast {@code
+   * jobs.query} path and completes within {@code timeoutMs} with a result schema, this method
+   * returns a {@link TableResult}; if the query does not finish within {@code timeoutMs}, returns
+   * no schema, or falls back to {@link #create(JobInfo, JobOption...)} because {@code jobId}
+   * specifies a job name or {@code configuration} uses options unsupported by {@code jobs.query},
+   * this method returns a {@link Job}. Callers must check the return type with {@code instanceof}
+   * (for example, calling {@link Job#getQueryResults(QueryResultsOption...)} when a {@link Job} is
+   * returned). {@code timeoutMs} configures the server wait timeout on the fast query path (using
+   * the server default when {@code null}) and is not applied on the fallback job-creation path.
    *
    * <p>If the location of the job is not "US" or "EU", the {@code jobId} must specify the job
    * location.
    *
    * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
-   * queries. Since dry-run queries are not actually executed, there's no way to retrieve results.
+   * queries and throws {@link UnsupportedOperationException} if {@code dryRun} is {@code true}. To
+   * validate a query and obtain processing statistics, call {@link #create(JobInfo, JobOption...)}
+   * instead (see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry
+   * runs</a>).
    *
    * <p>See {@link #query(QueryJobConfiguration, JobOption...)} for examples on populating a {@link
    * QueryJobConfiguration}.
    *
+   * @return a {@link TableResult} if {@link QueryResultsFormat#ARROW} is configured or the fast
+   *     query path completed with results, or a {@link Job} otherwise
    * @throws BigQueryException upon failure
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
    * @throws JobException if the job completes unsuccessfully
+   * @throws UnsupportedOperationException if {@link QueryJobConfiguration#dryRun()} is {@code true}
    */
   Object queryWithTimeout(
       QueryJobConfiguration configuration, JobId jobId, Long timeoutMs, JobOption... options)
