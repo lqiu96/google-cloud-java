@@ -31,13 +31,24 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Google Cloud BigQuery insert all request. This class can be used to stream data into BigQuery one
- * record at a time without needing to run a load job. This approach enables querying data without
- * the delay of running a load job. There are several important trade-offs to consider before
- * choosing an approach.
+ * Google Cloud BigQuery insert all request using the Storage Write API (REST) ({@code
+ * tabledata.insertAll}). This class streams rows into BigQuery without running a load job, making
+ * them immediately available for GoogleSQL queries.
  *
- * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest">Streaming Data into
- *     BigQuery</a>
+ * <p>Streamed rows reside temporarily in the streaming buffer, where recently inserted rows may
+ * temporarily have {@code NULL} for {@code _PARTITIONTIME} on ingestion-time partitioned tables and
+ * may not be immediately available for table copy or {@link BigQuery#listTableData} operations (see
+ * <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataavailability">Stream data
+ * availability</a>).
+ *
+ * <p>For new streaming workloads that need lower cost, higher throughput, or exactly-once delivery
+ * semantics, use the BigQuery Storage Write API (gRPC) in {@code
+ * com.google.cloud:google-cloud-bigquerystorage} (see <a
+ * href="https://docs.cloud.google.com/bigquery/docs/write-api-grpc">Introduction to the BigQuery
+ * Storage Write API (gRPC)</a>).
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest">Use the Storage Write
+ *     API (REST)</a>
  */
 public final class InsertAllRequest implements Serializable {
 
@@ -50,8 +61,14 @@ public final class InsertAllRequest implements Serializable {
   private final String templateSuffix;
 
   /**
-   * A Google Big Query row to be inserted into a table. Each {@code RowToInsert} has an associated
-   * id used by BigQuery to detect duplicate insertion requests on a best-effort basis.
+   * A Google BigQuery row to be inserted into a table. Each {@code RowToInsert} may specify an
+   * associated insert ID used by BigQuery to detect duplicate insertion requests on a best-effort
+   * basis.
+   *
+   * <p>This client does not automatically generate insert IDs for rows. Automatic client retries in
+   * {@link BigQuery#insertAll(InsertAllRequest)} are enabled only when every row in the request has
+   * a non-null insert ID. If any row omits an insert ID, automatic retries are disabled for the
+   * entire request to prevent duplicate rows.
    *
    * <p>To ensure proper serialization of numeric data, it is recommended to supply values using a
    * string-typed representation. Additionally, data for fields of {@link LegacySQLTypeName#BYTES}
@@ -72,8 +89,10 @@ public final class InsertAllRequest implements Serializable {
    * RowToInsert row = RowToInsert.of("rowId", rowContent);
    * }</pre>
    *
-   * @see <a href ="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataconsistency">
-   *     Data Consistency</a>
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataconsistency">Best
+   *     effort de-duplication</a>
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-failure">
+   *     Failure HTTP response codes</a>
    */
   public static class RowToInsert implements Serializable {
 
@@ -216,7 +235,12 @@ public final class InsertAllRequest implements Serializable {
     }
 
     /**
-     * Adds a row to be inserted without an associated id.
+     * Adds a row to be inserted without an associated insert ID.
+     *
+     * <p>This client does not automatically generate insert IDs. Omitting an insert ID on any row
+     * disables automatic client retries for the entire {@link BigQuery#insertAll(InsertAllRequest)}
+     * request to prevent duplicate rows. Use {@link #addRow(String, Map)} to supply insert IDs when
+     * automatic retries or best-effort deduplication are needed.
      *
      * <p>To ensure proper serialization of numeric data, it is recommended to supply values using a
      * string-typed representation. Additionally, data for fields of type {@link
