@@ -248,4 +248,86 @@ public class AggregationQueryRequestProtoPreparerTest {
 
     assertThat(request.getRequestOptions().getRequestTagsList()).containsExactly("aggregation-tag");
   }
+
+  @Test
+  public void shouldFallBackToNestedStructuredQueryNamespaceWhenAggregationNamespaceAbsent() {
+    EntityQuery nestedWithNamespace =
+        Query.newEntityQueryBuilder().setNamespace("nested-ns").setKind(KIND).build();
+    AggregationQuery aggregationQuery =
+        Query.newAggregationQueryBuilder()
+            .addAggregation(count().as("total"))
+            .over(nestedWithNamespace)
+            .build();
+
+    RunAggregationQueryRequest request =
+        protoPreparer.prepare(
+            QueryConfig.createWithDatastoreExecutionOptions(
+                aggregationQuery, DatastoreExecutionOptions.getDefaultInstance()));
+
+    assertThat(request.getPartitionId().getNamespaceId()).isEqualTo("nested-ns");
+  }
+
+  @Test
+  public void shouldFallBackToNestedGqlQueryNamespaceWhenAggregationNamespaceAbsent() {
+    GqlQuery<?> nestedGqlWithNamespace =
+        Query.newGqlQueryBuilder("AGGREGATE COUNT(*) OVER (SELECT * FROM Task)")
+            .setNamespace("nested-gql-ns")
+            .build();
+    AggregationQuery aggregationQuery =
+        Query.newAggregationQueryBuilder().over(nestedGqlWithNamespace).build();
+
+    RunAggregationQueryRequest request =
+        protoPreparer.prepare(
+            QueryConfig.createWithDatastoreExecutionOptions(
+                aggregationQuery, DatastoreExecutionOptions.getDefaultInstance()));
+
+    assertThat(request.getPartitionId().getNamespaceId()).isEqualTo("nested-gql-ns");
+  }
+
+  @Test
+  public void shouldPreferExplicitAggregationQueryNamespaceOverNestedQueryNamespace() {
+    EntityQuery nestedWithNamespace =
+        Query.newEntityQueryBuilder().setNamespace("nested-ns").setKind(KIND).build();
+    AggregationQuery explicitNamespaceQuery =
+        Query.newAggregationQueryBuilder()
+            .setNamespace("agg-ns")
+            .addAggregation(count().as("total"))
+            .over(nestedWithNamespace)
+            .build();
+    AggregationQuery explicitDefaultNamespaceQuery =
+        Query.newAggregationQueryBuilder()
+            .setNamespace("")
+            .addAggregation(count().as("total"))
+            .over(nestedWithNamespace)
+            .build();
+
+    RunAggregationQueryRequest explicitRequest =
+        protoPreparer.prepare(
+            QueryConfig.createWithDatastoreExecutionOptions(
+                explicitNamespaceQuery, DatastoreExecutionOptions.getDefaultInstance()));
+    RunAggregationQueryRequest defaultNsRequest =
+        protoPreparer.prepare(
+            QueryConfig.createWithDatastoreExecutionOptions(
+                explicitDefaultNamespaceQuery, DatastoreExecutionOptions.getDefaultInstance()));
+
+    assertThat(explicitRequest.getPartitionId().getNamespaceId()).isEqualTo("agg-ns");
+    assertThat(defaultNsRequest.getPartitionId().getNamespaceId()).isEqualTo("");
+  }
+
+  @Test
+  public void shouldFallBackToDatastoreOptionsNamespaceWhenNeitherQuerySetsNamespace() {
+    EntityQuery nestedWithoutNamespace = Query.newEntityQueryBuilder().setKind(KIND).build();
+    AggregationQuery aggregationQuery =
+        Query.newAggregationQueryBuilder()
+            .addAggregation(count().as("total"))
+            .over(nestedWithoutNamespace)
+            .build();
+
+    RunAggregationQueryRequest request =
+        protoPreparer.prepare(
+            QueryConfig.createWithDatastoreExecutionOptions(
+                aggregationQuery, DatastoreExecutionOptions.getDefaultInstance()));
+
+    assertThat(request.getPartitionId().getNamespaceId()).isEqualTo(NAMESPACE);
+  }
 }

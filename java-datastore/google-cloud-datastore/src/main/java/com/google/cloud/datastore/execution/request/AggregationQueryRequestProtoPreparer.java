@@ -27,7 +27,6 @@ import com.google.cloud.datastore.ReadOption.QueryConfig;
 import com.google.cloud.datastore.ReadOptionProtoPreparer;
 import com.google.cloud.datastore.StructuredQueryProtoPreparer;
 import com.google.cloud.datastore.aggregation.Aggregation;
-import com.google.common.base.MoreObjects;
 import com.google.datastore.v1.GqlQuery;
 import com.google.datastore.v1.PartitionId;
 import com.google.datastore.v1.Query;
@@ -102,9 +101,28 @@ public class AggregationQueryRequestProtoPreparer
         PartitionId.newBuilder()
             .setProjectId(datastoreOptions.getProjectId())
             .setDatabaseId(datastoreOptions.getDatabaseId());
-    String namespace =
-        MoreObjects.firstNonNull(aggregationQuery.getNamespace(), datastoreOptions.getNamespace());
-    builder.setNamespaceId(namespace);
+    String namespace = resolveNamespace(aggregationQuery);
+    if (namespace != null) {
+      builder.setNamespaceId(namespace);
+    }
     return builder.build();
+  }
+
+  private String resolveNamespace(AggregationQuery aggregationQuery) {
+    if (aggregationQuery.getNamespace() != null) {
+      return aggregationQuery.getNamespace();
+    }
+    String nestedNamespace = null;
+    if (aggregationQuery.getMode() == GQL) {
+      if (aggregationQuery.getNestedGqlQuery() != null) {
+        nestedNamespace = aggregationQuery.getNestedGqlQuery().getNamespace();
+      }
+    } else if (aggregationQuery.getNestedStructuredQuery() != null) {
+      nestedNamespace = aggregationQuery.getNestedStructuredQuery().getNamespace();
+    }
+    if (nestedNamespace != null) {
+      return nestedNamespace;
+    }
+    return datastoreOptions.getNamespace();
   }
 }
