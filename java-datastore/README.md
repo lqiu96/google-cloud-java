@@ -67,7 +67,7 @@ libraryDependencies += "com.google.cloud" % "google-cloud-datastore" % "3.10.0"
 
 ## Authentication
 
-See the [Authentication][authentication] section in the base directory's README.
+See [Authenticate with client libraries][authentication] for authentication options.
 
 ## Authorization
 
@@ -91,11 +91,11 @@ to add `google-cloud-datastore` as a dependency in your code.
 ## About Cloud Datastore
 
 
-[Cloud Datastore][product-docs] is a fully managed, schemaless database for
-storing non-relational data. Cloud Datastore automatically scales with
-your users and supports ACID transactions, high availability of reads and
-writes, strong consistency for reads and ancestor queries, and eventual
-consistency for all other queries.
+[Cloud Datastore][product-docs] (Firestore in Datastore mode) is a fully managed,
+schemaless database for storing non-relational data. Cloud Datastore automatically
+scales with your users and supports ACID transactions, high availability of reads
+and writes, and strong consistency by default for reads and queries (with optional
+eventual consistency or stale reads via `ReadOption`).
 
 See the [Cloud Datastore client library docs][javadocs] to learn how to
 use this Cloud Datastore Client Library.
@@ -117,7 +117,7 @@ import com.google.cloud.datastore.DatastoreOptions;
 Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 ```
 
-For other authentication options, see the [Authentication](https://github.com/googleapis/google-cloud-java#authentication) page.
+For other authentication options, see the [Authentication](https://docs.cloud.google.com/docs/authentication/client-libraries) page.
 
 #### Storing data
 Objects in Datastore are known as entities. Entities are grouped by "kind" and have keys for easy access. In this code snippet, we will create a new entity representing a person and store that data by the person's email.  First, add the following imports at the top of your file:
@@ -198,17 +198,13 @@ if (entity != null) {
 }
 ```
 
-The complete source code can be found at
-[UpdateEntity.java](https://github.com/googleapis/google-cloud-java/blob/2c1850d4f82f3fbd7b4a50582384c008085aa1a8/google-cloud-examples/src/main/java/com/google/cloud/examples/datastore/snippets/UpdateEntity.java).
+For a complete example of creating, updating, deleting, and querying entities, see
+[TaskList.java](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/google/datastore/snippets/TaskList.java).
 
 #### Complete source code
 
-In
-[AddEntitiesAndRunQuery.java](https://github.com/googleapis/google-cloud-java/blob/2c1850d4f82f3fbd7b4a50582384c008085aa1a8/google-cloud-examples/src/main/java/com/google/cloud/examples/datastore/snippets/AddEntitiesAndRunQuery.java)
-we put together all the code to store data and run queries into one program. The program assumes that you are
-running on Compute Engine or from your own desktop. To run the example on App Engine, simply move
-the code from the main method to your application's servlet class and change the print statements to
-display on your webpage.
+See [QuickstartSample.java](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/QuickstartSample.java)
+and the other runnable samples in the [`samples/`](https://github.com/googleapis/google-cloud-java/tree/main/java-datastore/samples) directory.
 
 gRPC Java Datastore Client User Guide
 -------
@@ -231,7 +227,7 @@ DatastoreOptions explicitGrpcOptions =
     DatastoreOptions.newBuilder()
         .setProjectId("my-project")
         .setDatabaseId("my-database")
-        .setTransportOptions(GrpcTransportOptions.newBuilder().build())
+        .setTransportOptions((TransportOptions) GrpcTransportOptions.newBuilder().build())
         .build();
 ```
 
@@ -260,11 +256,10 @@ boolean isGRPC = datastore.getOptions().getTransportOptions() instanceof GrpcTra
 boolean isHTTP = datastore.getOptions().getTransportOptions() instanceof HttpTransportOptions;
 ```
 
-#### New Features
-There are new gRPC specific features available to use in this update.
+#### gRPC Features
 
 ##### Connection Pool
-A connection pool, also known as a channel pool, is a cache of database connections that are shared and reused to improve connection latency and performance. With this update, now you will be able to configure the channel pool to improve application performance. This section guides you in determining the optimal connection pool size and configuring it within the Java datastore client.
+A connection pool, also known as a channel pool, is a cache of database connections that are shared and reused to improve connection latency and performance. You can configure the channel pool size on the gRPC transport to optimize application performance. This section guides you in determining the optimal connection pool size and configuring it within the Java Datastore client.
 To customize the number of channels your client uses, you can update the channel provider in the DatastoreOptions.
 ###### Determine the best connection pool size
 The default connection pool size is right for most applications, and in most cases there's no need to change it.
@@ -303,19 +298,21 @@ See [ChannelPoolSettings](https://docs.cloud.google.com/java/docs/reference/gax/
 Code Example
 ```java
 InstantiatingGrpcChannelProvider channelProvider =
-      DatastoreSettings.defaultGrpcTransportProviderBuilder()
-              .setChannelPoolSettings(
-                     ChannelPoolSettings.builder()
-                              .setInitialChannelCount(MIN_VAL)
-                              .setMaxChannelCount(MAX_VAL)
-                              .build())
-              .build();
+    DatastoreSettings.defaultGrpcTransportProviderBuilder()
+        .setChannelPoolSettings(
+            ChannelPoolSettings.builder()
+                .setMinChannelCount(10)
+                .setInitialChannelCount(10)
+                .setMaxChannelCount(50)
+                .build())
+        .build();
 
-DatastoreOptions options = DatastoreOptions.newBuilder()
-                          .setProjectId("my-project")
-                          .setChannelProvider(channelProvider)
-                          .setTransportOptions(GrpcTransportOptions.newBuilder().build())
-                          .build();
+DatastoreOptions options =
+    DatastoreOptions.newBuilder()
+        .setProjectId("my-project")
+        .setChannelProvider(channelProvider)
+        .setTransportOptions((TransportOptions) GrpcTransportOptions.newBuilder().build())
+        .build();
 ```
 Testing
 -------
@@ -354,9 +351,6 @@ Example Applications
 --------------------
 - [`Bookshelf`](https://github.com/GoogleCloudPlatform/getting-started-java/tree/main/bookshelf) - An App Engine app that manages a virtual bookshelf.
   - This app uses `google-cloud` to interface with Cloud Datastore and Cloud Storage. It also uses Cloud SQL, another Google Cloud Platform service.
-- [`Flexible Environment/Datastore example`](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/flexible/datastore) - A simple app that uses Cloud Datastore to list the last 10 IP addresses that visited your site.
-- [`SparkDemo`](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/flexible/sparkjava) - An example of using `google-cloud-datastore` from within the SparkJava and App Engine Flexible Environment frameworks.
-  - Read about how it works on the example's [README page](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/flexible/sparkjava#how-does-it-work).
 
 
 
@@ -451,7 +445,7 @@ the individual GitHub repository `github.com/GoogleAPIs/java-SERVICENAME`
 and on [google-cloud-java][g-c-j].
 
 ## Versioning
-This library follows [Semantic Versioning](http://semver.org/).
+This library follows [Semantic Versioning](https://semver.org/).
 
 
 
@@ -474,30 +468,30 @@ Apache 2.0 - See [LICENSE][license] for more information.
 Java is a registered trademark of Oracle and/or its affiliates.
 
 [product-docs]: https://docs.cloud.google.com/datastore/docs
-[javadocs]: https://docs.cloud.google.com/java/docs/reference/google-cloud-datastore/latest/history
+[javadocs]: https://docs.cloud.google.com/java/docs/reference/google-cloud-datastore/latest/overview
 [cloud-datastore-activation]: https://docs.cloud.google.com/datastore/docs/activate
 [datastore-client-lib-docs]: https://docs.cloud.google.com/datastore/docs/reference/libraries
 [stability-image]: https://img.shields.io/badge/stability-stable-green
 [maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-datastore.svg
 [maven-version-link]: https://central.sonatype.com/artifact/com.google.cloud/google-cloud-datastore/3.10.0
-[authentication]: https://github.com/googleapis/google-cloud-java#authentication
+[authentication]: https://docs.cloud.google.com/docs/authentication/client-libraries
 [auth-scopes]: https://developers.google.com/identity/protocols/oauth2/scopes
-[predefined-iam-roles]: https://cloud.google.com/iam/docs/understanding-roles#predefined_roles
-[iam-policy]: https://cloud.google.com/iam/docs/overview#cloud-iam-policy
-[developer-console]: https://console.developers.google.com/
-[create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
+[predefined-iam-roles]: https://docs.cloud.google.com/iam/docs/roles-overview#predefined
+[iam-policy]: https://docs.cloud.google.com/iam/docs/overview#cloud-iam-policy
+[developer-console]: https://console.cloud.google.com/
+[create-project]: https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-cli]: https://cloud.google.com/cli
 [troubleshooting]: https://docs.cloud.google.com/java/docs/troubleshooting
 [contributing]: https://github.com/googleapis/google-cloud-java/blob/main/CONTRIBUTING.md
 [code-of-conduct]: https://github.com/googleapis/google-cloud-java/blob/main/CODE_OF_CONDUCT.md#contributor-code-of-conduct
 [license]: https://github.com/googleapis/google-cloud-java/blob/main/LICENSE
-[enable-billing]: https://cloud.google.com/apis/docs/getting-started#enabling_billing
+[enable-billing]: https://docs.cloud.google.com/apis/docs/getting-started#enabling_billing
 [enable-api]: https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com
 [libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 
 [semver]: https://semver.org/
-[cloudlibs]: https://cloud.google.com/apis/docs/client-libraries-explained
-[apilibs]: https://cloud.google.com/apis/docs/client-libraries-explained#google_api_client_libraries
+[cloudlibs]: https://docs.cloud.google.com/apis/docs/client-libraries-explained
+[apilibs]: https://docs.cloud.google.com/apis/docs/client-libraries-explained#api-client-lib
 [oracle]: https://www.oracle.com/java/technologies/java-se-support-roadmap.html
 [g-c-j]: https://github.com/googleapis/google-cloud-java
