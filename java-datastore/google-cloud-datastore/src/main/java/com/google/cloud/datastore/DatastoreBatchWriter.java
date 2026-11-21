@@ -21,15 +21,20 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * An interface to represent a batch of write operations. All write operation for a batch writer
- * will be applied to the Datastore in one RPC call.
+ * An interface to represent a buffered writer that sends accumulated write operations to Datastore
+ * in a single commit RPC.
  *
- * <p><b> WARNING: This class maintains an internal state in terms of {@link
- * java.util.LinkedHashMap} and {@link java.util.LinkedHashSet} which gets updated on every method
- * call performing CRUD operations to record the mutations. Since {@link java.util.LinkedHashMap} is
- * not thread safe as per its <a
- * href="https://docs.oracle.com/javase/8/docs/api/java/util/LinkedHashMap.html">documentation</a>,
- * This class too should not be treated as a thread safe class. </b>
+ * <p>Atomicity depends on the concrete writer: {@link Transaction} commits atomically in {@link
+ * com.google.datastore.v1.CommitRequest.Mode#TRANSACTIONAL} mode, whereas {@link Batch} commits in
+ * {@link com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode (not atomic across
+ * entities, so partial writes may persist if another mutation fails).
+ *
+ * <p><b>Not thread-safe:</b> Implementations maintain mutable internal state ({@link
+ * java.util.LinkedHashMap} and {@link java.util.LinkedHashSet}) to record buffered mutations and
+ * must not be shared concurrently across threads.
+ *
+ * @see Batch
+ * @see Transaction
  */
 @NotThreadSafe
 @InternalExtensionOnly

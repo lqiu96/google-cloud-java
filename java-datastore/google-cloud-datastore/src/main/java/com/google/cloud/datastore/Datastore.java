@@ -228,9 +228,18 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   <T> T runInTransaction(TransactionCallable<T> callable, TransactionOptions options);
 
   /**
-   * Returns a new Batch for processing multiple write operations in one request.
+   * Returns a new {@link Batch} for sending multiple write operations in one RPC request.
    *
-   * <p>Example of starting a new batch.
+   * <p><b>Not atomic:</b> Unlike a Firestore {@code WriteBatch} or a Datastore {@link Transaction},
+   * {@link Batch#submit()} commits in {@link
+   * com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode. Mutations are not atomic
+   * across entities, so partial writes may persist even if another mutation in the same batch
+   * fails. Use {@link #runInTransaction(TransactionCallable)} or {@link #newTransaction()} when
+   * all-or-nothing atomicity is required.
+   *
+   * <p>The returned {@link Batch} is stateful and not thread-safe.
+   *
+   * <p>Example of starting a new batch:
    *
    * <pre>{@code
    * String keyName1 = "my_key_name_1";
@@ -244,6 +253,9 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * batch.add(entity2);
    * batch.submit();
    * }</pre>
+   *
+   * @see Batch
+   * @see #runInTransaction(TransactionCallable)
    */
   Batch newBatch();
 
