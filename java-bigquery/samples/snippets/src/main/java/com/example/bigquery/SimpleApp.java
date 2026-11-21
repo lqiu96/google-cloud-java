@@ -54,7 +54,7 @@ public class SimpleApp {
                       + "ORDER BY view_count DESC "
                       + "LIMIT 10")
               // Use standard SQL syntax for queries.
-              // See: https://cloud.google.com/bigquery/sql-reference/
+              // See: https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax
               .setUseLegacySql(false)
               .build();
 

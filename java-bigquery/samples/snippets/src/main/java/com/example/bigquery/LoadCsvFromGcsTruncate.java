@@ -55,7 +55,7 @@ public class LoadCsvFromGcsTruncate {
               .build();
 
       // For more information on Job see:
-      // https://googleapis.dev/java/google-cloud-clients/latest/index.html?com/google/cloud/bigquery/package-summary.html
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery
       // Load the table
       Job loadJob = bigquery.create(JobInfo.of(configuration));
 

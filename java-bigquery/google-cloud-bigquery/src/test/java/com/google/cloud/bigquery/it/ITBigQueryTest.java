@@ -7936,8 +7936,8 @@ class ITBigQueryTest {
 
   @Test
   void testLoadConfigurationFlexibleColumnName() throws InterruptedException {
-    // See https://cloud.google.com/bigquery/docs/reference/rest/v2/Job#columnnamecharactermap for
-    // mapping.
+    // See https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#columnnamecharactermap
+    // for mapping.
 
     // Test v1 mapping.
     String v1TableName = generateRandomName("flexible_column_name_data_testing_table_v1");

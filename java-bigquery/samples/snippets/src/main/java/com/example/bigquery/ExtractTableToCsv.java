@@ -36,9 +36,9 @@ public class ExtractTableToCsv {
     String bucketName = "my-bucket";
     String destinationUri = "gs://" + bucketName + "/path/to/file";
     // For more information on export formats available see:
-    // https://cloud.google.com/bigquery/docs/exporting-data#export_formats_and_compression_types
+    // https://docs.cloud.google.com/bigquery/docs/exporting-data#export_formats_and_compression_types
     // For more information on Job see:
-    // https://googleapis.dev/java/google-cloud-clients/latest/index.html?com/google/cloud/bigquery/package-summary.html
+    // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery
 
     String dataFormat = "CSV";
     extractTableToCsv(projectId, datasetName, tableName, destinationUri, dataFormat);

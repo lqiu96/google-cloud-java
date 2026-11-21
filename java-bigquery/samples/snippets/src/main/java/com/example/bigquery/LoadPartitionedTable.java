@@ -60,7 +60,7 @@ public class LoadPartitionedTable {
               Field.of("date", StandardSQLTypeName.DATE));
 
       // Configure time partitioning. For full list of options, see:
-      // https://cloud.google.com/bigquery/docs/reference/rest/v2/tables#TimePartitioning
+      // https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/tables#TimePartitioning
       TimePartitioning partitioning =
           TimePartitioning.newBuilder(TimePartitioning.Type.DAY)
               .setField("date")
