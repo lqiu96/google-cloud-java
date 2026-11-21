@@ -1780,7 +1780,11 @@ public class HttpBigQueryRpc implements BigQueryRpc {
     try {
       return deleteJobSkipExceptionTranslation(projectId, jobName, location);
     } catch (IOException ex) {
-      throw translate(ex);
+      BigQueryException serviceException = translate(ex);
+      if (serviceException.getCode() == HTTP_NOT_FOUND) {
+        return false;
+      }
+      throw serviceException;
     }
   }
 

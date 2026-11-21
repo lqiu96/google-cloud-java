@@ -18,6 +18,7 @@ package com.google.cloud.bigquery.spi.v2;
 import static com.google.cloud.bigquery.spi.v2.HttpBigQueryRpc.RESOURCE_PROJECT_PREFIX;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,6 +47,7 @@ import com.google.api.services.bigquery.model.Table;
 import com.google.api.services.bigquery.model.TableDataInsertAllRequest;
 import com.google.api.services.bigquery.model.TableReference;
 import com.google.cloud.NoCredentials;
+import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.DataFormatOptions;
 import com.google.cloud.bigquery.DataFormatOptions.TimestampFormatOptions;
@@ -1811,6 +1813,27 @@ public class HttpBigQueryRpcTest {
         assertEquals(404, e.getStatusCode());
       }
 
+      verifyNoSpans();
+    }
+
+    @Test
+    public void testDeleteJobNotFoundReturnsFalse() {
+      setMockResponse("{\"error\":{\"code\":404,\"message\":\"Not found: Job\"}}");
+      mockResponse.setStatusCode(404);
+
+      assertFalse(rpc.deleteJob(PROJECT_ID, JOB_ID, LOCATION));
+      verifyRequest("DELETE", "/projects/" + PROJECT_ID + "/jobs/" + JOB_ID + "/delete");
+      verifyNoSpans();
+    }
+
+    @Test
+    public void testDeleteJobServerErrorThrows() {
+      setMockResponse("{\"error\":{\"code\":500,\"message\":\"Backend error\"}}");
+      mockResponse.setStatusCode(500);
+
+      BigQueryException ex =
+          assertThrows(BigQueryException.class, () -> rpc.deleteJob(PROJECT_ID, JOB_ID, LOCATION));
+      assertEquals(500, ex.getCode());
       verifyNoSpans();
     }
   }

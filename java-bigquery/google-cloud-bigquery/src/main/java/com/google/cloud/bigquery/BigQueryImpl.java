@@ -1353,10 +1353,15 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
   @Override
   public boolean delete(JobId jobId) {
     final JobId completeJobId =
-        jobId.setProjectId(
-            Strings.isNullOrEmpty(jobId.getProject())
-                ? getOptions().getProjectId()
-                : jobId.getProject());
+        jobId
+            .setProjectId(
+                Strings.isNullOrEmpty(jobId.getProject())
+                    ? getOptions().getProjectId()
+                    : jobId.getProject())
+            .setLocation(
+                jobId.getLocation() == null && getOptions().getLocation() != null
+                    ? getOptions().getLocation()
+                    : jobId.getLocation());
     Span jobDelete = null;
     if (getOptions().isOpenTelemetryTracingEnabled()
         && getOptions().getOpenTelemetryTracer() != null) {
@@ -1383,6 +1388,9 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
           getOptions().isOpenTelemetryTracingEnabled(),
           getOptions().getOpenTelemetryTracer());
     } catch (BigQueryRetryHelperException e) {
+      if (isRetryErrorCodeHttpNotFound(e)) {
+        return false;
+      }
       throw BigQueryException.translateAndThrow(e);
     } finally {
       if (jobDelete != null) {

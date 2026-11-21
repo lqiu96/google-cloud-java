@@ -2509,6 +2509,56 @@ public class BigQueryImplTest {
   }
 
   @Test
+  void testDeleteJobNotFoundReturnsFalse() throws IOException {
+    JobId jobId = JobId.newBuilder().setJob(JOB).setProject(PROJECT).setLocation(LOCATION).build();
+    GoogleJsonError notFoundError = new GoogleJsonError();
+    notFoundError.setCode(404);
+    notFoundError.setMessage("Not found: Job");
+    HttpResponseException.Builder notFoundResponse =
+        new HttpResponseException.Builder(404, "Not Found", new HttpHeaders());
+    when(bigqueryRpcMock.deleteJobSkipExceptionTranslation(PROJECT, JOB, LOCATION))
+        .thenThrow(new GoogleJsonResponseException(notFoundResponse, notFoundError));
+    bigquery = options.getService();
+    assertFalse(bigquery.delete(jobId));
+    verify(bigqueryRpcMock).deleteJobSkipExceptionTranslation(PROJECT, JOB, LOCATION);
+  }
+
+  @Test
+  void testDeleteJobErrorThrows() throws IOException {
+    JobId jobId = JobId.newBuilder().setJob(JOB).setProject(PROJECT).setLocation(LOCATION).build();
+    when(bigqueryRpcMock.deleteJobSkipExceptionTranslation(PROJECT, JOB, LOCATION))
+        .thenThrow(new BigQueryException(403, "Forbidden"));
+    bigquery = options.getService();
+    BigQueryException ex = assertThrows(BigQueryException.class, () -> bigquery.delete(jobId));
+    assertEquals(403, ex.getCode());
+    verify(bigqueryRpcMock).deleteJobSkipExceptionTranslation(PROJECT, JOB, LOCATION);
+  }
+
+  @Test
+  void testDeleteJobUsesOptionsLocationFallback() throws IOException {
+    when(bigqueryRpcMock.deleteJobSkipExceptionTranslation(PROJECT, JOB, LOCATION))
+        .thenReturn(true);
+    BigQueryOptions optionsWithLocation =
+        createBigQueryOptionsForProjectWithLocation(PROJECT, rpcFactoryMock);
+    bigquery = optionsWithLocation.getService();
+    assertTrue(bigquery.delete(JobId.of(JOB)));
+    verify(bigqueryRpcMock).deleteJobSkipExceptionTranslation(PROJECT, JOB, LOCATION);
+  }
+
+  @Test
+  void testDeleteJobPrefersJobIdLocationOverOptionsLocation() throws IOException {
+    String explicitLocation = "EU";
+    JobId jobId = JobId.newBuilder().setJob(JOB).setLocation(explicitLocation).build();
+    when(bigqueryRpcMock.deleteJobSkipExceptionTranslation(PROJECT, JOB, explicitLocation))
+        .thenReturn(true);
+    BigQueryOptions optionsWithLocation =
+        createBigQueryOptionsForProjectWithLocation(PROJECT, rpcFactoryMock);
+    bigquery = optionsWithLocation.getService();
+    assertTrue(bigquery.delete(jobId));
+    verify(bigqueryRpcMock).deleteJobSkipExceptionTranslation(PROJECT, JOB, explicitLocation);
+  }
+
+  @Test
   void testGetJob() throws IOException {
     when(bigqueryRpcMock.getJobSkipExceptionTranslation(PROJECT, JOB, null, EMPTY_RPC_OPTIONS))
         .thenReturn(COMPLETE_COPY_JOB.toPb());
