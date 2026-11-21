@@ -320,6 +320,12 @@ public class Table extends TableInfo {
   /**
    * Insert rows into the table.
    *
+   * <p>Row-level insertion failures do not throw {@link BigQueryException}. Always check {@link
+   * InsertAllResponse#hasErrors()} and {@link InsertAllResponse#getInsertErrors()}. By default
+   * ({@code skipInvalidRows == false}), a single invalid row aborts the entire batch. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success">Success
+   * HTTP response codes</a>.
+   *
    * <p>Streaming inserts reside temporarily in the streaming buffer, which has different
    * availability characteristics than managed storage. Certain operations do not interact with the
    * streaming buffer, such as {@link #list(TableDataListOption...)} and {@link #copy(TableId,
@@ -341,11 +347,15 @@ public class Table extends TableInfo {
    * rows.add(RowToInsert.of(rowId1, row1));
    * rows.add(RowToInsert.of(rowId2, row2));
    * InsertAllResponse response = table.insert(rows);
-   * // do something with response
+   * // Row-level insert failures return HTTP 200 without throwing, so always check hasErrors()
+   * if (response.hasErrors()) {
+   *   // inspect response.getInsertErrors()
+   * }
    * }</pre>
    *
    * @param rows rows to be inserted
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon a request-level or transport failure (row-level insertion errors
+   *     are returned on {@link InsertAllResponse} instead)
    */
   public InsertAllResponse insert(Iterable<InsertAllRequest.RowToInsert> rows)
       throws BigQueryException {
@@ -354,6 +364,11 @@ public class Table extends TableInfo {
 
   /**
    * Insert rows into the table.
+   *
+   * <p>Row-level insertion failures do not throw {@link BigQueryException}. Always check {@link
+   * InsertAllResponse#hasErrors()} and {@link InsertAllResponse#getInsertErrors()}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success">Success
+   * HTTP response codes</a>.
    *
    * <p>Streaming inserts reside temporarily in the streaming buffer, which has different
    * availability characteristics than managed storage. Certain operations do not interact with the
@@ -376,16 +391,20 @@ public class Table extends TableInfo {
    * rows.add(RowToInsert.of(rowId1, row1));
    * rows.add(RowToInsert.of(rowId2, row2));
    * InsertAllResponse response = table.insert(rows, true, true);
-   * // do something with response
+   * // Row-level insert failures return HTTP 200 without throwing, so always check hasErrors()
+   * if (response.hasErrors()) {
+   *   // inspect response.getInsertErrors()
+   * }
    * }</pre>
    *
    * @param rows rows to be inserted
-   * @param skipInvalidRows whether to insert all valid rows, even if invalid rows exist. If not set
-   *     the entire insert operation will fail if rows to be inserted contain an invalid row
+   * @param skipInvalidRows whether to insert all valid rows, even if invalid rows exist. When
+   *     {@code false}, a single invalid row aborts the entire insert request
    * @param ignoreUnknownValues whether to accept rows that contain values that do not match the
-   *     schema. The unknown values are ignored. If not set, rows with unknown values are considered
-   *     to be invalid
-   * @throws BigQueryException upon failure
+   *     schema. When {@code true}, unknown values are ignored. When {@code false}, rows with
+   *     unknown values are treated as invalid
+   * @throws BigQueryException upon a request-level or transport failure (row-level insertion errors
+   *     are returned on {@link InsertAllResponse} instead)
    */
   public InsertAllResponse insert(
       Iterable<InsertAllRequest.RowToInsert> rows,
