@@ -307,10 +307,13 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Adds a positional query parameter to the list of query parameters. See {@link
-     * #setPositionalParameters(Iterable)} for more details on the input requirements.
+     * Adds a positional query parameter to bind to the next {@code ?} placeholder in the SQL query.
+     * Requires GoogleSQL ({@link #setUseLegacySql(Boolean)} set to {@code false}, the default).
      *
-     * <p>A positional parameter cannot be added after named parameters have been added.
+     * <p>Positional parameters cannot be mixed with named parameters in the same query. See {@link
+     * #setPositionalParameters(Iterable)}.
+     *
+     * @throws IllegalStateException if named parameters have already been added
      */
     public Builder addPositionalParameter(QueryParameterValue value) {
       checkNotNull(value);
@@ -333,16 +336,17 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Sets the query parameters to a list of positional query parameters to use in the query.
+     * Sets the positional query parameters to use in the query, bound in order to {@code ?}
+     * placeholders in the SQL text.
      *
-     * <p>The set of query parameters must either be all positional or all named parameters.
-     * Positional parameters are denoted in the query with a question mark (?).
+     * <p>Query parameters must be either all positional or all named (cannot be mixed), and require
+     * GoogleSQL ({@code useLegacySql} set to {@code false}, the default). Pass {@code null} or an
+     * empty iterable to clear positional parameters before setting named parameters.
      *
-     * <p>Additionally, useLegacySql must be set to false; query parameters cannot be used with
-     * legacy SQL.
-     *
-     * <p>The values parameter can be set to null to clear out the positional parameters so that
-     * named parameters can be used instead.
+     * @throws IllegalStateException if {@code values} is non-empty and named parameters are already
+     *     set
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/parameterized-queries">Running
+     *     parameterized queries</a>
      */
     public Builder setPositionalParameters(Iterable<QueryParameterValue> values) {
       if (values == null || Iterables.isEmpty(values)) {
@@ -358,10 +362,16 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Adds a named query parameter to the set of query parameters. See {@link
-     * #setNamedParameters(Map)} for more details on the input requirements.
+     * Adds a named query parameter to the query. Omit the leading {@code @} prefix in {@code name}
+     * (for example, pass {@code "myParam"} to bind {@code @myParam} in the SQL text). Requires
+     * GoogleSQL ({@link #setUseLegacySql(Boolean)} set to {@code false}, the default).
      *
-     * <p>A named parameter cannot be added after positional parameters have been added.
+     * <p>Named parameters cannot be mixed with positional parameters in the same query. See {@link
+     * #setNamedParameters(Map)}.
+     *
+     * @param name parameter name without the leading {@code @} prefix
+     * @param value typed parameter value
+     * @throws IllegalStateException if positional parameters have already been added
      */
     public Builder addNamedParameter(String name, QueryParameterValue value) {
       checkNotNull(value);
@@ -374,16 +384,17 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Sets the query parameters to a set of named query parameters to use in the query.
+     * Sets the named query parameters to use in the query. Map keys must omit the leading {@code @}
+     * prefix used in SQL (for example, key {@code "myParam"} binds {@code @myParam} in the query).
      *
-     * <p>The set of query parameters must either be all positional or all named parameters. Named
-     * parameters are denoted using an @ prefix, e.g. @myParam for a parameter named "myParam".
+     * <p>Query parameters must be either all named or all positional (cannot be mixed), and require
+     * GoogleSQL ({@code useLegacySql} set to {@code false}, the default). Pass {@code null} or an
+     * empty map to clear named parameters before setting positional parameters.
      *
-     * <p>Additionally, useLegacySql must be set to false; query parameters cannot be used with
-     * legacy SQL.
-     *
-     * <p>The values parameter can be set to null to clear out the named parameters so that
-     * positional parameters can be used instead.
+     * @throws IllegalStateException if {@code values} is non-empty and positional parameters are
+     *     already set
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/parameterized-queries">Running
+     *     parameterized queries</a>
      */
     public Builder setNamedParameters(Map<String, QueryParameterValue> values) {
       if (values == null || values.isEmpty()) {
