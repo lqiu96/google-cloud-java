@@ -41,11 +41,14 @@ import java.util.concurrent.Callable;
  * null} after closing if no bytes were written to the channel. Check for {@code null} before
  * calling {@link Job#waitFor(com.google.cloud.RetryOption...)}.
  *
- * <p>For destination datasets outside {@code "US"} or {@code "EU"}, create the channel with {@link
- * BigQuery#writer(JobId, WriteChannelConfiguration)} and specify the location on {@link JobId}.
+ * <p>When the {@link JobId} location is omitted (including via {@link
+ * BigQuery#writer(WriteChannelConfiguration)}), BigQuery infers the job location from the
+ * destination dataset and populates it on the {@link Job} returned by {@link #getJob()}. If you
+ * supply a custom {@link JobId} to look up the job later via {@link BigQuery#getJob(JobId,
+ * BigQuery.JobOption...)} for a dataset outside {@code "US"} or {@code "EU"}, set the matching
+ * location on {@link JobId}.
  *
- * @see <a href="https://docs.cloud.google.com/bigquery/docs/loading-data-local">Loading data from
- *     local files</a>
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/batch-loading-data">Batch load data</a>
  * @see <a href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
  *     locations</a>
  */

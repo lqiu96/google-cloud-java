@@ -1746,13 +1746,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Job#waitFor(RetryOption...)}.
    *
    * <p>This overload creates an auto-generated {@link JobId} without a location (it does not apply
-   * {@link BigQueryOptions#getLocation()}). If the destination dataset is not in {@code "US"} or
-   * {@code "EU"}, use {@link #writer(JobId, WriteChannelConfiguration)} with the job location set
-   * on {@link JobId}. See <a
+   * {@link BigQueryOptions#getLocation()}). When location is omitted on {@link JobId}, BigQuery
+   * infers the job location from the destination dataset and populates it on the {@link Job}
+   * returned by {@link TableDataWriteChannel#getJob()}. To supply a custom {@link JobId} (for
+   * example, to look up the job later via {@link #getJob(JobId, JobOption...)}), use {@link
+   * #writer(JobId, WriteChannelConfiguration)} and set the matching location on {@link JobId} for
+   * datasets outside {@code "US"} and {@code "EU"}. See <a
    * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
-   * locations</a> and <a
-   * href="https://docs.cloud.google.com/bigquery/docs/loading-data-local">Loading data from local
-   * files</a>.
+   * locations</a> and <a href="https://docs.cloud.google.com/bigquery/docs/batch-loading-data">
+   * Batch load data</a>.
    *
    * <p>Example of creating a channel with which to write to a table.
    *
@@ -1811,9 +1813,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
 
   /**
    * Returns a channel to upload data into a BigQuery table using a load job. Data format and other
-   * options can be configured using the {@link WriteChannelConfiguration} parameter. If the
-   * destination dataset is not in {@code "US"} or {@code "EU"}, {@code jobId} must specify the
-   * location of the job.
+   * options can be configured using the {@link WriteChannelConfiguration} parameter. When location
+   * is omitted on {@code jobId}, BigQuery infers the job location from the destination dataset and
+   * populates it on {@link TableDataWriteChannel#getJob()}. If you look up the job later using your
+   * own {@code jobId} (via {@link #getJob(JobId, JobOption...)}) for a dataset outside {@code "US"}
+   * or {@code "EU"}, set the matching location on {@code jobId} so the lookup succeeds.
    *
    * <p>The returned {@link TableDataWriteChannel} is not thread-safe. The upload is finalized only
    * when {@link TableDataWriteChannel#close()} completes, and {@link
@@ -1821,9 +1825,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * were written. Check that {@code getJob()} is non-null before calling {@link
    * Job#waitFor(RetryOption...)}. See <a
    * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
-   * locations</a> and <a
-   * href="https://docs.cloud.google.com/bigquery/docs/loading-data-local">Loading data from local
-   * files</a>.
+   * locations</a> and <a href="https://docs.cloud.google.com/bigquery/docs/batch-loading-data">
+   * Batch load data</a>.
    *
    * <p>Example of creating a channel with which to write to a table.
    *
