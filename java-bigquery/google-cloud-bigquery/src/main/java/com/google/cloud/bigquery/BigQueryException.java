@@ -38,6 +38,9 @@ import java.util.concurrent.ExecutionException;
  * {@code 0}, whereas query execution errors surfaced through {@code jobs.getQueryResults} (such as
  * via {@link BigQuery#query(QueryJobConfiguration, BigQuery.JobOption...)} or query {@link
  * Job#waitFor(com.google.cloud.RetryOption...)}) carry the HTTP status code returned by that RPC.
+ * Synthesized not-found exceptions thrown by {@code get*} methods when {@link
+ * BigQueryOptions#getThrowNotFound()} is enabled carry {@link #getCode()} equal to {@code 404} with
+ * {@code null} {@link #getReason()} and {@link #getError()}.
  *
  * <p>{@link #isRetryable()} returns {@code true} only for HTTP 500, 502, 503, 504, and specific
  * transient socket or SSL {@link IOException} failures (such as {@link
