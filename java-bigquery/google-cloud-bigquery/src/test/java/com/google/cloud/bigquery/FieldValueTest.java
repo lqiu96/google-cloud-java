@@ -246,4 +246,107 @@ public class FieldValueTest {
         IllegalStateException.class,
         () -> FieldValue.of(FieldValue.Attribute.PRIMITIVE, "not-a-bool").getBooleanValue());
   }
+
+  @Test
+  public void testFromPbRepeatedRecordPropagatesSchema() {
+    Field nestedChild =
+        Field.newBuilder(
+                "children", LegacySQLTypeName.RECORD, Field.of("label", LegacySQLTypeName.STRING))
+            .setMode(Field.Mode.REPEATED)
+            .build();
+    Field repeatedRecordSchema =
+        Field.newBuilder(
+                "items",
+                LegacySQLTypeName.RECORD,
+                Field.of("name", LegacySQLTypeName.STRING),
+                Field.of("count", LegacySQLTypeName.INTEGER),
+                nestedChild)
+            .setMode(Field.Mode.REPEATED)
+            .build();
+
+    Map<String, Object> childElem =
+        ImmutableMap.<String, Object>of(
+            "v",
+            ImmutableMap.<String, Object>of(
+                "f", ImmutableList.<Object>of(ImmutableMap.of("v", "leaf"))));
+    Map<String, Object> elem1 =
+        ImmutableMap.<String, Object>of(
+            "v",
+            ImmutableMap.<String, Object>of(
+                "f",
+                ImmutableList.<Object>of(
+                    ImmutableMap.of("v", "alpha"),
+                    ImmutableMap.of("v", "10"),
+                    ImmutableMap.<String, Object>of("v", ImmutableList.<Object>of(childElem)))));
+    Map<String, Object> elem2 =
+        ImmutableMap.<String, Object>of(
+            "v",
+            ImmutableMap.<String, Object>of(
+                "f",
+                ImmutableList.<Object>of(
+                    ImmutableMap.of("v", "beta"),
+                    ImmutableMap.of("v", "20"),
+                    ImmutableMap.<String, Object>of("v", ImmutableList.of()))));
+    Map<String, Object> repeatedRecordCell =
+        ImmutableMap.<String, Object>of("v", ImmutableList.<Object>of(elem1, elem2));
+
+    FieldValue value = FieldValue.fromPb(repeatedRecordCell, repeatedRecordSchema, false);
+    assertEquals(FieldValue.Attribute.REPEATED, value.getAttribute());
+    assertEquals(2, value.getRepeatedValue().size());
+
+    FieldValueList firstRecord = value.getRepeatedValue().get(0).getRecordValue();
+    assertTrue(firstRecord.hasSchema());
+    assertEquals("alpha", firstRecord.get("name").getStringValue());
+    assertEquals(10L, firstRecord.get("count").getLongValue());
+    assertEquals(
+        "leaf",
+        firstRecord
+            .get("children")
+            .getRepeatedValue()
+            .get(0)
+            .getRecordValue()
+            .get("label")
+            .getStringValue());
+
+    FieldValueList secondRecord = value.getRepeatedValue().get(1).getRecordValue();
+    assertTrue(secondRecord.hasSchema());
+    assertEquals("beta", secondRecord.get("name").getStringValue());
+    assertEquals(20L, secondRecord.get("count").getLongValue());
+    assertTrue(secondRecord.get("children").getRepeatedValue().isEmpty());
+  }
+
+  @Test
+  public void testFromPbRepeatedRangePropagatesElementType() {
+    FieldElementType dateType = FieldElementType.newBuilder().setType("DATE").build();
+    Field repeatedRangeSchema =
+        Field.newBuilder("ranges", LegacySQLTypeName.RANGE)
+            .setMode(Field.Mode.REPEATED)
+            .setRangeElementType(dateType)
+            .build();
+
+    Map<String, Object> repeatedRangeCell =
+        ImmutableMap.<String, Object>of(
+            "v",
+            ImmutableList.<Object>of(
+                ImmutableMap.of("v", "[2020-01-01, 2020-06-01)"),
+                ImmutableMap.of("v", "[UNBOUNDED, 2020-12-31)")));
+
+    FieldValue value = FieldValue.fromPb(repeatedRangeCell, repeatedRangeSchema, false);
+    assertEquals(FieldValue.Attribute.REPEATED, value.getAttribute());
+    assertEquals(2, value.getRepeatedValue().size());
+
+    FieldValue firstElem = value.getRepeatedValue().get(0);
+    assertEquals(FieldValue.Attribute.RANGE, firstElem.getAttribute());
+    Range firstRange = firstElem.getRangeValue();
+    assertEquals(dateType, firstRange.getType());
+    assertEquals("2020-01-01", firstRange.getStart().getStringValue());
+    assertEquals("2020-06-01", firstRange.getEnd().getStringValue());
+
+    FieldValue secondElem = value.getRepeatedValue().get(1);
+    assertEquals(FieldValue.Attribute.RANGE, secondElem.getAttribute());
+    Range secondRange = secondElem.getRangeValue();
+    assertEquals(dateType, secondRange.getType());
+    assertTrue(secondRange.getStart().isNull());
+    assertEquals("2020-12-31", secondRange.getEnd().getStringValue());
+  }
 }

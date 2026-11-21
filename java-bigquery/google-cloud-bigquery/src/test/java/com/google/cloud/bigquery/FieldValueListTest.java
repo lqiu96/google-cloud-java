@@ -225,4 +225,44 @@ class FieldValueListTest {
         assertThrows(IllegalArgumentException.class, () -> fieldValues.get("nonexistent"));
     assertNotNull(exception);
   }
+
+  @Test
+  void testFromPbRepeatedRecordAndRangeByName() {
+    FieldElementType datetimeType = FieldElementType.newBuilder().setType("DATETIME").build();
+    FieldList rowSchema =
+        FieldList.of(
+            Field.newBuilder(
+                    "records",
+                    LegacySQLTypeName.RECORD,
+                    Field.of("first", LegacySQLTypeName.FLOAT),
+                    Field.of("second", LegacySQLTypeName.TIMESTAMP))
+                .setMode(Field.Mode.REPEATED)
+                .build(),
+            Field.newBuilder("ranges", LegacySQLTypeName.RANGE)
+                .setMode(Field.Mode.REPEATED)
+                .setRangeElementType(datetimeType)
+                .build());
+
+    Map<String, Object> repeatedRecordCell =
+        ImmutableMap.<String, Object>of(
+            "v", ImmutableList.<Object>of(ImmutableMap.<String, Object>of("v", recordPb)));
+    Map<String, Object> repeatedRangeCell =
+        ImmutableMap.<String, Object>of(
+            "v",
+            ImmutableList.<Object>of(
+                ImmutableMap.of("v", "[2020-01-01 00:00:00, 2020-01-02 00:00:00)")));
+
+    FieldValueList row =
+        FieldValueList.fromPb(ImmutableList.of(repeatedRecordCell, repeatedRangeCell), rowSchema);
+
+    FieldValueList structElem = row.get("records").getRepeatedValue().get(0).getRecordValue();
+    assertEquals(1.5, structElem.get("first").getDoubleValue(), 0.0);
+    assertEquals(42000000L, structElem.get("second").getTimestampValue());
+
+    FieldValue rangeElem = row.get("ranges").getRepeatedValue().get(0);
+    assertEquals(Attribute.RANGE, rangeElem.getAttribute());
+    assertEquals(datetimeType, rangeElem.getRangeValue().getType());
+    assertEquals("2020-01-01 00:00:00", rangeElem.getRangeValue().getStart().getStringValue());
+    assertEquals("2020-01-02 00:00:00", rangeElem.getRangeValue().getEnd().getStringValue());
+  }
 }

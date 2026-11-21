@@ -31,6 +31,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -434,7 +435,7 @@ public class FieldValue implements Serializable {
     }
     if (cellPb instanceof String) {
       if ((recordSchema != null)
-          && (recordSchema.getType() == LegacySQLTypeName.RANGE)
+          && LegacySQLTypeName.RANGE.equals(recordSchema.getType())
           && (recordSchema.getRangeElementType() != null)) {
         return FieldValue.of(
             Attribute.RANGE,
@@ -444,9 +445,12 @@ public class FieldValue implements Serializable {
       return FieldValue.of(Attribute.PRIMITIVE, cellPb, useInt64Timestamps);
     }
     if (cellPb instanceof List) {
-      return FieldValue.of(
-          Attribute.REPEATED,
-          FieldValueList.fromPb((List<Object>) cellPb, null, useInt64Timestamps));
+      List<Object> repeatedPb = (List<Object>) cellPb;
+      List<FieldValue> repeatedValues = new ArrayList<>(repeatedPb.size());
+      for (Object elementPb : repeatedPb) {
+        repeatedValues.add(FieldValue.fromPb(elementPb, recordSchema, useInt64Timestamps));
+      }
+      return FieldValue.of(Attribute.REPEATED, FieldValueList.of(repeatedValues, (FieldList) null));
     }
     if (cellPb instanceof Map) {
       Map<String, Object> cellMapPb = (Map<String, Object>) cellPb;
