@@ -49,6 +49,19 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Configuration options for creating a {@link Datastore} client.
+ *
+ * <p>By default, {@link #getDefaultInstance()} uses Application Default Credentials, infers the
+ * project ID from the environment (checking {@link #PROJECT_ID_ENV_VAR} first), and connects over
+ * gRPC ({@link GrpcTransportOptions}). Build one {@code DatastoreOptions} instance and reuse the
+ * resulting {@link Datastore} client across requests, calling {@link Datastore#close()} on
+ * application shutdown.
+ *
+ * @see Datastore
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/reference/libraries">Cloud Datastore
+ *     client libraries</a>
+ */
 public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions> {
 
   private static final long serialVersionUID = -1018382430058137336L;

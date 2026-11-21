@@ -24,7 +24,24 @@ import com.google.datastore.v1.TransactionOptions;
 import java.util.Iterator;
 import java.util.List;
 
-/** An interface for Google Cloud Datastore. */
+/**
+ * An interface for Google Cloud Datastore.
+ *
+ * <p>Provides synchronous operations to look up entities ({@link #get}, {@link #fetch}), write
+ * entities ({@link #add}, {@link #put}, {@link #update}, {@link #delete}), run queries and
+ * aggregations ({@link #run}, {@link #runAggregation}), execute atomic transactions ({@link
+ * #runInTransaction}, {@link #newTransaction}), submit non-atomic write batches ({@link
+ * #newBatch}), and allocate or reserve keys ({@link #allocateId}, {@link #reserveIds}).
+ *
+ * <p>Typically, create one {@code Datastore} instance per application via {@link
+ * DatastoreOptions#getService()} and reuse it across threads. Call {@link #close()} on application
+ * shutdown to close underlying gRPC channels and release background resources. Operations on {@code
+ * Datastore} are thread-safe, except for stateful helpers returned by this client such as {@link
+ * KeyFactory}, {@link Transaction}, and {@link Batch}.
+ *
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/overview">Google Cloud
+ *     Datastore</a>
+ */
 @InternalExtensionOnly
 public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWriter, AutoCloseable {
 
