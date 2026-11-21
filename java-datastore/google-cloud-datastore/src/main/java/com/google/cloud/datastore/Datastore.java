@@ -46,34 +46,60 @@ import java.util.List;
 public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWriter, AutoCloseable {
 
   /**
-   * Returns a new Datastore transaction.
+   * Begins and returns a new explicit Datastore transaction configured with {@code options}.
    *
-   * @param options a transaction option indicating the mode of the transaction (read-only or
-   *     read-write)
+   * <p>Unlike {@link #runInTransaction(TransactionCallable, TransactionOptions)}, explicit
+   * transactions do not automatically retry on contention ({@code ABORTED}), and {@link
+   * Transaction} is not {@link AutoCloseable}. Always execute transactional reads and writes on the
+   * returned {@link Transaction} (not on this {@code Datastore} instance), and ensure uncommitted
+   * transactions are rolled back in a {@code finally} block checking {@link Transaction#isActive()}
+   * before calling {@link Transaction#rollback()}.
+   *
+   * @param options transaction options indicating read-only or read-write mode (and optional {@code
+   *     previousTransaction} ID when manually retrying a read-write transaction)
    * @throws DatastoreException upon failure
+   * @see Transaction
+   * @see #runInTransaction(TransactionCallable, TransactionOptions)
    */
   Transaction newTransaction(TransactionOptions options);
 
   /**
-   * Returns a new Datastore transaction.
+   * Begins and returns a new explicit Datastore transaction.
+   *
+   * <p>Unlike {@link #runInTransaction(TransactionCallable)}, explicit transactions do not
+   * automatically retry on contention ({@code ABORTED}), and {@link Transaction} is not {@link
+   * AutoCloseable}. Always wrap usage in a {@code try}/{@code finally} block that rolls back if
+   * {@link Transaction#isActive()} is still {@code true}, and invoke transactional reads and writes
+   * on the returned {@link Transaction} rather than on this {@code Datastore} instance.
    *
    * @throws DatastoreException upon failure
+   * @see Transaction
+   * @see #runInTransaction(TransactionCallable)
    */
   Transaction newTransaction();
 
   /**
-   * Returns a new Datastore transaction with specified {@link DatastoreExecutionOptions}.
+   * Begins and returns a new explicit Datastore transaction with specified {@link
+   * DatastoreExecutionOptions}.
+   *
+   * <p>Explicit transactions do not automatically retry on contention ({@code ABORTED}) and are not
+   * {@link AutoCloseable}; roll back in a {@code finally} block if {@link Transaction#isActive()}.
    *
    * @throws DatastoreException upon failure
+   * @see #newTransaction()
    */
   @BetaApi
   Transaction newTransaction(DatastoreExecutionOptions executionOptions);
 
   /**
-   * Returns a new Datastore transaction with specified {@link TransactionOptions} and {@link
-   * DatastoreExecutionOptions}.
+   * Begins and returns a new explicit Datastore transaction with specified {@link
+   * TransactionOptions} and {@link DatastoreExecutionOptions}.
+   *
+   * <p>Explicit transactions do not automatically retry on contention ({@code ABORTED}) and are not
+   * {@link AutoCloseable}; roll back in a {@code finally} block if {@link Transaction#isActive()}.
    *
    * @throws DatastoreException upon failure
+   * @see #newTransaction(TransactionOptions)
    */
   @BetaApi
   Transaction newTransaction(

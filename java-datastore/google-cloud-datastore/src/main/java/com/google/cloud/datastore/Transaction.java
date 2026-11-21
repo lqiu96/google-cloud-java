@@ -25,19 +25,39 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * A Google cloud datastore transaction. Similar to {@link Batch} any write operation that is
- * applied on a transaction will only be sent to the Datastore upon {@link #commit}. A call to
- * {@link #rollback} will invalidate the transaction and discard the changes. Any read operation
- * that is done by a transaction will be part of it and therefore a {@code commit} is guaranteed to
- * fail if an entity was modified outside the transaction after it was read. Write operation on this
- * transaction will not be reflected by read operation (as the changes are only sent to the
- * Datastore upon {@code commit}. A usage example:
+ * A Google Cloud Datastore transaction. Similar to {@link Batch}, write operations applied to a
+ * transaction are buffered locally and sent to Datastore only upon {@link #commit}. A call to
+ * {@link #rollback} invalidates the transaction and discards buffered changes.
+ *
+ * <p>Important lifecycle and behavioral rules:
+ *
+ * <ul>
+ *   <li><b>No automatic retries:</b> Unlike {@link Datastore#runInTransaction}, explicit
+ *       transactions created via {@link Datastore#newTransaction} do not automatically retry on
+ *       contention ({@code ABORTED}). Callers must catch contention failures and retry manually
+ *       (optionally passing {@link #getTransactionId()} as {@code previousTransaction} in {@link
+ *       com.google.datastore.v1.TransactionOptions.ReadWrite}).
+ *   <li><b>Not {@link AutoCloseable}:</b> {@code Transaction} cannot be used in a {@code
+ *       try}-with-resources statement. Always guard usage with a {@code finally} block that checks
+ *       {@link #isActive()} and calls {@link #rollback()} so uncommitted transactions do not hold
+ *       locks until timeout.
+ *   <li><b>Buffered writes are not visible to reads:</b> Reads performed on this transaction
+ *       participate in the transaction's conflict detection (a {@link #commit} fails if an entity
+ *       read in the transaction is concurrently modified outside it), but reads see the Datastore
+ *       snapshot prior to uncommitted writes buffered in this transaction. All transactional reads
+ *       and writes must be called on this {@code Transaction}, not on {@link Datastore}.
+ *   <li><b>Not thread-safe:</b> This class maintains mutable internal state ({@link
+ *       java.util.LinkedHashMap} and {@link java.util.LinkedHashSet}) to buffer mutations and must
+ *       not be shared concurrently across threads.
+ * </ul>
+ *
+ * <p>A usage example:
  *
  * <pre>{@code
  * Transaction transaction = datastore.newTransaction();
  * try {
  *   Entity entity = transaction.get(key);
- *   if (!entity.contains("last_name") || entity.isNull("last_name")) {
+ *   if (entity != null && (!entity.contains("last_name") || entity.isNull("last_name"))) {
  *     String[] name = entity.getString("name").split(" ");
  *     entity = Entity.newBuilder(entity)
  *         .remove("name")
@@ -54,14 +74,9 @@ import javax.annotation.concurrent.NotThreadSafe;
  * }
  * }</pre>
  *
+ * @see Datastore#runInTransaction(Datastore.TransactionCallable)
  * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/transactions">Google Cloud
  *     Datastore transactions</a>
- *     <p><b> WARNING: This class maintains an internal state in terms of {@link
- *     java.util.LinkedHashMap} and {@link java.util.LinkedHashSet} which gets updated on every
- *     method call performing CRUD operations to record the mutations. Since {@link
- *     java.util.LinkedHashMap} is not thread safe as per its <a
- *     href="https://docs.oracle.com/javase/8/docs/api/java/util/LinkedHashMap.html">documentation</a>,
- *     This class too should not be treated as a thread safe class. </b>
  */
 @NotThreadSafe
 @InternalExtensionOnly
@@ -397,9 +412,13 @@ public interface Transaction extends DatastoreBatchWriter, DatastoreReaderWriter
   Response commit(DatastoreExecutionOptions executionOptions);
 
   /**
-   * Commit the transaction.
+   * Atomically commits all buffered mutations in this transaction.
    *
-   * <p>Example of committing a transaction.
+   * <p>This call is not automatically retried on contention ({@code ABORTED}); if {@code commit()}
+   * throws a {@link DatastoreException}, check {@link #isActive()} and call {@link #rollback()} in
+   * a {@code finally} block before retrying with a new transaction.
+   *
+   * <p>Example of committing a transaction:
    *
    * <pre>{@code
    * // create an entity
@@ -412,26 +431,38 @@ public interface Transaction extends DatastoreBatchWriter, DatastoreReaderWriter
    *   transaction.put(entity);
    *   transaction.commit();
    * } catch (DatastoreException ex) {
-   *   // handle exception
+   *   // handle exception (for example, retry on ABORTED with a new transaction)
+   * } finally {
+   *   if (transaction.isActive()) {
+   *     transaction.rollback();
+   *   }
    * }
    * }</pre>
    *
-   * @throws DatastoreException if could not commit the transaction or if no longer active
+   * @throws DatastoreException if the transaction could not be committed (for example, on
+   *     contention) or if it is no longer active
    */
   Response commit();
 
   /**
    * Rollback the transaction with specified {@link DatastoreExecutionOptions}.
    *
-   * @throws DatastoreException if transaction was already committed
+   * <p>Calling rollback on an already rolled-back transaction is a no-op; calling it after a
+   * successful {@link #commit} throws a {@link DatastoreException}.
+   *
+   * @throws DatastoreException if the transaction was already committed
    */
   @BetaApi
   void rollback(DatastoreExecutionOptions executionOptions);
 
   /**
-   * Rollback the transaction.
+   * Rolls back the transaction and discards any buffered mutations.
    *
-   * <p>Example of rolling back a transaction.
+   * <p>Calling rollback on an already rolled-back transaction is a no-op; calling it after a
+   * successful {@link #commit} throws a {@link DatastoreException}. Check {@link #isActive()} in a
+   * {@code finally} block before calling {@code rollback()}.
+   *
+   * <p>Example of rolling back a transaction:
    *
    * <pre>{@code
    * // create an entity
@@ -445,7 +476,7 @@ public interface Transaction extends DatastoreBatchWriter, DatastoreReaderWriter
    * // calling transaction.commit() now would fail
    * }</pre>
    *
-   * @throws DatastoreException if transaction was already committed
+   * @throws DatastoreException if the transaction was already committed
    */
   void rollback();
 
