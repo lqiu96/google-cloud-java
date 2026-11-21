@@ -152,6 +152,23 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     return openTelemetryOptions;
   }
 
+  /**
+   * Builder for {@link DatastoreOptions}.
+   *
+   * <p>Configure retry bounds (maximum attempts, backoff delays, and RPC/total timeouts) via {@link
+   * #setRetrySettings(com.google.api.gax.retrying.RetrySettings)}. Under the default gRPC
+   * transport, read-only and idempotent RPCs ({@code lookup}, {@code runQuery}, {@code
+   * runAggregationQuery}, and {@code reserveIds}) automatically retry transient {@code UNAVAILABLE}
+   * and {@code DEADLINE_EXCEEDED} errors using those settings, whereas write and
+   * transaction-lifecycle RPCs ({@code commit}, {@code beginTransaction}, {@code rollback}, and
+   * {@code allocateIds}) have no retryable status codes configured by default and are not
+   * automatically retried at the RPC layer. Separately, {@link
+   * Datastore#runInTransaction(Datastore.TransactionCallable)} uses these retry settings to retry
+   * transaction callbacks on {@code ABORTED} contention errors.
+   *
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/errors">Google Cloud
+   *     Datastore error codes</a>
+   */
   public static class Builder extends ServiceOptions.Builder<Datastore, DatastoreOptions, Builder> {
 
     private String namespace;
