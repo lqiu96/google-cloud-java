@@ -1167,7 +1167,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   boolean delete(JobId jobId);
 
   /**
-   * Updates dataset information.
+   * Updates dataset information using HTTP {@code PATCH} (partial update; omitted fields are
+   * preserved on the server).
+   *
+   * <p>{@link DatasetOption#fields(DatasetField...)} controls only which fields are returned in the
+   * response and does not act as a write field mask (use {@link
+   * DatasetOption#updateMode(DatasetUpdateMode)} to scope metadata versus ACL writes). To clear
+   * individual labels, map those keys to {@code null} via {@link
+   * DatasetInfo.Builder#setLabels(java.util.Map)}, or pass {@code null} to remove all labels; an
+   * empty map leaves existing labels unchanged.
    *
    * <p>Example of updating a dataset by changing its description.
    *
@@ -1184,7 +1192,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Dataset update(DatasetInfo datasetInfo, DatasetOption... options);
 
   /**
-   * Updates table information.
+   * Updates table metadata and schema using HTTP {@code PATCH} (partial update; omitted fields are
+   * preserved on the server, and row contents are not modified).
+   *
+   * <p>{@link TableOption#fields(TableField...)} controls only which fields are returned in the
+   * response and does not act as a write field mask. To clear individual labels, map those keys to
+   * {@code null} via {@link TableInfo.Builder#setLabels(java.util.Map)}, or pass {@code null} to
+   * remove all labels; an empty map leaves existing labels unchanged.
    *
    * <p>Example of updating a table by changing its description.
    *
@@ -1215,7 +1229,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Table update(TableInfo tableInfo, TableOption... options);
 
   /**
-   * Updates model information.
+   * Updates model information using HTTP {@code PATCH} (partial update; omitted fields are
+   * preserved on the server).
+   *
+   * <p>{@link ModelOption#fields(ModelField...)} controls only which fields are returned in the
+   * response and does not act as a write field mask. To clear individual labels, map those keys to
+   * {@code null} via {@link ModelInfo.Builder#setLabels(java.util.Map)}, or pass {@code null} to
+   * remove all labels; an empty map leaves existing labels unchanged.
    *
    * <p>Example of updating a model by changing its description.
    *
@@ -1246,7 +1266,14 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Model update(ModelInfo modelInfo, ModelOption... options);
 
   /**
-   * Updates routine information.
+   * Updates routine information using HTTP {@code PUT} (full resource replacement).
+   *
+   * <p>Unlike {@link #update(DatasetInfo, DatasetOption...)}, {@link #update(TableInfo,
+   * TableOption...)}, and {@link #update(ModelInfo, ModelOption...)} (which use HTTP {@code
+   * PATCH}), this method replaces the entire routine resource. Populate all required and desired
+   * fields on {@code routineInfo} (typically starting from {@link Routine#toBuilder()}), because
+   * omitted mutable fields are cleared or rejected. {@link RoutineOption#fields(RoutineField...)}
+   * controls only the response projection and does not act as a write field mask.
    *
    * @throws BigQueryException upon failure
    */

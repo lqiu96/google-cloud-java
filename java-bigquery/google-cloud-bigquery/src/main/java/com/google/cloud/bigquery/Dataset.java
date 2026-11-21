@@ -128,6 +128,13 @@ public class Dataset extends DatasetInfo {
       return this;
     }
 
+    /**
+     * Sets the labels applied to this dataset.
+     *
+     * <p>When used with {@link Dataset#update(DatasetOption...)}, map individual keys to {@code
+     * null} to remove those keys, or pass {@code null} to remove all labels; passing an empty map
+     * leaves existing labels unchanged.
+     */
     @Override
     public Builder setLabels(Map<String, String> labels) {
       infoBuilder.setLabels(labels);
@@ -239,8 +246,15 @@ public class Dataset extends DatasetInfo {
    * Updates the dataset's information with this dataset's information. Dataset's user-defined id
    * cannot be changed.
    *
-   * <p>Because {@code Dataset} instances are immutable, this method does not mutate this instance
-   * in place; capture the returned {@code Dataset} to observe the updated server state.
+   * <p>Uses HTTP {@code PATCH} (partial update). Because {@code Dataset} instances are immutable,
+   * this method does not mutate this instance in place; capture the returned {@code Dataset} to
+   * observe the updated server state.
+   *
+   * <p>{@link DatasetOption#fields(BigQuery.DatasetField...)} controls only the response projection
+   * and does not act as a write field mask (use {@link
+   * DatasetOption#updateMode(BigQuery.DatasetUpdateMode)} to scope metadata versus ACL writes). To
+   * clear individual labels, map their keys to {@code null} via {@link Builder#setLabels(Map)} (or
+   * pass {@code null} to remove all labels; an empty map leaves existing labels unchanged).
    *
    * <p>Example of updating a dataset.
    *
