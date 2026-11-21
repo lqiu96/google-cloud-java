@@ -56,7 +56,9 @@ public class LoadLocalFile {
       WriteChannelConfiguration writeChannelConfiguration =
           WriteChannelConfiguration.newBuilder(tableId).setFormatOptions(formatOptions).build();
 
-      // The location and JobName must be specified; other fields can be auto-detected.
+      // Specify a JobId with the location matching the destination dataset (required outside US/EU
+      // when looking up the job later with getJob()). See:
+      // https://docs.cloud.google.com/bigquery/docs/locations#specify_locations
       String jobName = "jobId_" + UUID.randomUUID().toString();
       JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
@@ -66,8 +68,15 @@ public class LoadLocalFile {
         Files.copy(csvPath, stream);
       }
 
-      // Get the Job created by the TableDataWriteChannel and wait for it to complete.
+      // Upload finalizes and creates the load job only when TableDataWriteChannel.close()
+      // completes. If no bytes were written (e.g. an empty file), no load job is created and
+      // getJob() returns null. See:
+      // https://docs.cloud.google.com/bigquery/docs/batch-loading-data
       Job job = bigquery.getJob(jobId);
+      if (job == null) {
+        System.out.println("Job was not created (for example, the input file was empty).");
+        return;
+      }
       Job completedJob = job.waitFor();
       if (completedJob == null) {
         System.out.println("Job not executed since it no longer exists.");
@@ -79,8 +88,8 @@ public class LoadLocalFile {
         return;
       }
 
-      // Get output status
-      LoadStatistics stats = job.getStatistics();
+      // Get output status from the completed job snapshot.
+      LoadStatistics stats = completedJob.getStatistics();
       System.out.printf("Successfully loaded %d rows. \n", stats.getOutputRows());
     } catch (BigQueryException e) {
       System.out.println("Local file not loaded. \n" + e.toString());

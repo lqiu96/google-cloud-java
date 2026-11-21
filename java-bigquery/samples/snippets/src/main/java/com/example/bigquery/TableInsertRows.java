@@ -28,7 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Sample to inserting rows into a table without running a load job.
+// Sample to insert rows into a table without running a load job using the Storage Write API
+// (REST) (tabledata.insertAll). For new streaming workloads that need lower cost, higher
+// throughput, or exactly-once delivery, consider the Storage Write API (gRPC):
+// https://docs.cloud.google.com/bigquery/docs/write-api-grpc
 public class TableInsertRows {
 
   public static void main(String[] args) {
@@ -59,15 +62,21 @@ public class TableInsertRows {
           bigquery.insertAll(
               InsertAllRequest.newBuilder(tableId)
                   // More rows can be added in the same RPC by invoking .addRow() on the builder.
-                  // You can omit the unique row ids to disable de-duplication.
+                  // Providing a unique insert ID per row enables best-effort deduplication and
+                  // automatic client retries. See:
+                  // https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataconsistency
                   .addRow(rowId, rowContent)
                   .build());
 
+      // Row-level insert failures return HTTP 200 without throwing BigQueryException, so always
+      // check hasErrors(). By default (skipInvalidRows=false), any invalid row aborts the entire
+      // batch. See: https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success
       if (response.hasErrors()) {
         // If any of the insertions failed, this lets you inspect the errors
         for (Map.Entry<Long, List<BigQueryError>> entry : response.getInsertErrors().entrySet()) {
           System.out.println("Response error: \n" + entry.getValue());
         }
+        return;
       }
       System.out.println("Rows successfully inserted into table");
     } catch (BigQueryException e) {
