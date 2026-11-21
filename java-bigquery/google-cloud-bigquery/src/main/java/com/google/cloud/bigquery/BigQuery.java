@@ -1522,8 +1522,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   TableResult listTableData(TableId tableId, Schema schema, TableDataListOption... options);
 
   /**
-   * Returns the requested job or {@code null} if not found. If the location of the job is not "US"
-   * or "EU", {@link #getJob(JobId, JobOption...)} must be used instead.
+   * Returns the requested job or {@code null} if not found. If the location of the job is not
+   * {@code "US"} or {@code "EU"} (and no matching default location is set via {@link
+   * BigQueryOptions.Builder#setLocation(String)}), use {@link #getJob(JobId, JobOption...)} with a
+   * {@link JobId} that specifies the job's location; otherwise BigQuery reports the job as not
+   * found and this method returns {@code null}.
    *
    * <p>Unlike {@link Job#reload(JobOption...)} and {@link Job#waitFor(RetryOption...)}, this method
    * returns the {@link Job} even when {@link JobStatus#getError()} is non-null, allowing callers to
@@ -1544,8 +1547,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Job getJob(String jobId, JobOption... options);
 
   /**
-   * Returns the requested job or {@code null} if not found. If the location of the job is not "US"
-   * or "EU", the {@code jobId} must specify the job location.
+   * Returns the requested job or {@code null} if not found. If the location of the job is not
+   * {@code "US"} or {@code "EU"}, {@code jobId} must specify the job's location via {@link
+   * JobId.Builder#setLocation(String)} (unless a matching default is set on {@link
+   * BigQueryOptions}); otherwise BigQuery reports the job as not found and this method returns
+   * {@code null}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
    *
    * <p>Unlike {@link Job#reload(JobOption...)} and {@link Job#waitFor(RetryOption...)}, this method
    * returns the {@link Job} even when {@link JobStatus#getError()} is non-null, allowing callers to
@@ -1586,7 +1594,10 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Sends a job cancel request. This call will return immediately. The job status can then be
    * checked by using {@link #getJob}.
    *
-   * <p>If the location of the job is not "US" or "EU", {@link #cancel(JobId)} must be used instead.
+   * <p>If the location of the job is not {@code "US"} or {@code "EU"} (and no matching default
+   * location is set via {@link BigQueryOptions.Builder#setLocation(String)}), use {@link
+   * #cancel(JobId)} with a {@link JobId} that specifies the job's location; otherwise BigQuery
+   * reports the job as not found and this method returns {@code false}.
    *
    * <p>Example of cancelling a job.
    *
@@ -1610,8 +1621,12 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Sends a job cancel request. This call will return immediately. The job status can then be
    * checked using {@link #getJob}.
    *
-   * <p>If the location of the job is not "US" or "EU", the {@code jobId} must specify the job
-   * location.
+   * <p>If the location of the job is not {@code "US"} or {@code "EU"}, {@code jobId} must specify
+   * the job's location via {@link JobId.Builder#setLocation(String)} (unless a matching default is
+   * set on {@link BigQueryOptions}); otherwise BigQuery reports the job as not found and this
+   * method returns {@code false}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
    *
    * <p>Example of cancelling a job.
    *
@@ -1648,8 +1663,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * href="https://docs.cloud.google.com/bigquery/docs/running-queries#optional-job-creation">
    * Optional job creation</a>.
    *
-   * <p>If the location of the job is not "US" or "EU", {@link #query(QueryJobConfiguration, JobId,
-   * JobOption...)} must be used instead.
+   * <p>When no default location is configured on {@link BigQueryOptions}, BigQuery infers the
+   * processing location from referenced datasets when possible. To run a query explicitly in a
+   * specific region (for example, outside {@code "US"} or {@code "EU"}, or when no dataset is
+   * referenced), use {@link #query(QueryJobConfiguration, JobId, JobOption...)} with a {@link
+   * JobId} specifying {@link JobId.Builder#setLocation(String)}. If {@link
+   * BigQueryOptions#getLocation()} is set, it applies across queries on this client and can fail
+   * when querying tables in another region. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
    *
    * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
    * queries and throws {@link UnsupportedOperationException} if {@code dryRun} is {@code true}. To
@@ -1698,8 +1720,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * jobs.query} path. Passing a {@code jobId} that sets only a location or project (leaving {@link
    * JobId#getJob()} unset) still allows the fast query path when {@code configuration} supports it.
    *
-   * <p>If the location of the job is not "US" or "EU", the {@code jobId} must specify the job
-   * location.
+   * <p>When {@code jobId} specifies a location via {@link JobId.Builder#setLocation(String)}, the
+   * query runs in that location (taking precedence over {@link BigQueryOptions#getLocation()}) and
+   * must match the region of any referenced tables. For jobs outside {@code "US"} or {@code "EU"},
+   * specifying the location on {@code jobId} ensures subsequent lookups (such as {@link
+   * #getJob(JobId, JobOption...)}) succeed. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
    *
    * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
    * queries and throws {@link UnsupportedOperationException} if {@code dryRun} is {@code true}. To
@@ -1817,8 +1844,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * query path (using the server default when {@code null}) and is not applied on the fallback
    * job-creation path.
    *
-   * <p>If the location of the job is not "US" or "EU", the {@code jobId} must specify the job
-   * location.
+   * <p>When {@code jobId} specifies a location via {@link JobId.Builder#setLocation(String)}, the
+   * query runs in that location (taking precedence over {@link BigQueryOptions#getLocation()}) and
+   * must match the region of any referenced tables. For jobs outside {@code "US"} or {@code "EU"},
+   * specifying the location on {@code jobId} ensures subsequent lookups (such as {@link
+   * #getJob(JobId, JobOption...)}) succeed. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
    *
    * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
    * queries and throws {@link UnsupportedOperationException} if {@code dryRun} is {@code true}. To
