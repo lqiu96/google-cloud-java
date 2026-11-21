@@ -32,9 +32,12 @@ import java.util.Objects;
 /**
  * A Google BigQuery Table.
  *
- * <p>Objects of this class are immutable. Operations that modify the table like {@link #update}
- * return a new object. To get a {@code Table} object with the most recent information use {@link
- * #reload}. {@code Table} adds a layer of service-related functionality over {@link TableInfo}.
+ * <p>Objects of this class are immutable metadata snapshots. Calling {@link
+ * #reload(TableOption...)} or {@link #update(TableOption...)} does not modify this instance in
+ * place; always capture the returned {@code Table} object to observe the latest server state.
+ * {@link #update(TableOption...)} modifies table metadata and schema rather than row contents (use
+ * SQL DML, load jobs, or streaming inserts to modify rows). {@code Table} adds a layer of
+ * service-related functionality over {@link TableInfo}.
  */
 public class Table extends TableInfo {
 
@@ -256,7 +259,11 @@ public class Table extends TableInfo {
   }
 
   /**
-   * Fetches current table's latest information. Returns {@code null} if the table does not exist.
+   * Fetches current table's latest information. Returns {@code null} if the table does not exist
+   * (HTTP 404), unless {@link BigQueryOptions#setThrowNotFound(boolean)} is enabled.
+   *
+   * <p>Because {@code Table} instances are immutable, this method does not update this object in
+   * place; capture the returned {@code Table} to read the refreshed metadata.
    *
    * <p>Example of fetching the table's latest information, specifying particular table fields to
    * get.
@@ -272,15 +279,21 @@ public class Table extends TableInfo {
    *
    * @param options table options
    * @return a {@code Table} object with latest information or {@code null} if not found
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   public Table reload(TableOption... options) {
     return bigquery.getTable(getTableId(), options);
   }
 
   /**
-   * Updates the table's information with this table's information. Dataset's and table's
-   * user-defined ids cannot be changed. A new {@code Table} object is returned.
+   * Updates the table's metadata and schema with this table's information. Dataset's and table's
+   * user-defined ids cannot be changed.
+   *
+   * <p>This method modifies table metadata and schema (such as description, expiration, labels, or
+   * schema columns) rather than row contents. Because {@code Table} instances are immutable, this
+   * method does not mutate this instance in place; capture the returned {@code Table} to observe
+   * the updated server state.
    *
    * <p>Example of updating the table's information.
    *

@@ -944,6 +944,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Returns the requested dataset or {@code null} if not found.
    *
+   * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
+   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Dataset} is an
+   * immutable snapshot; capture the return value of {@link Dataset#reload(DatasetOption...)} or
+   * {@link Dataset#update(DatasetOption...)} to observe changes.
+   *
    * <p>Example of getting a dataset.
    *
    * <pre>{@code
@@ -951,12 +956,20 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Dataset dataset = bigquery.getDataset(datasetName);
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Dataset}, or {@code null} if not found (unless {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true})
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Dataset getDataset(String datasetId, DatasetOption... options);
 
   /**
    * Returns the requested dataset or {@code null} if not found.
+   *
+   * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
+   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Dataset} is an
+   * immutable snapshot; capture the return value of {@link Dataset#reload(DatasetOption...)} or
+   * {@link Dataset#update(DatasetOption...)} to observe changes.
    *
    * <p>Example of getting a dataset.
    *
@@ -967,7 +980,10 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Dataset dataset = bigquery.getDataset(datasetId);
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Dataset}, or {@code null} if not found (unless {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true})
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Dataset getDataset(DatasetId datasetId, DatasetOption... options);
 
@@ -1239,6 +1255,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Returns the requested table or {@code null} if not found.
    *
+   * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
+   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Table} is an
+   * immutable metadata snapshot; capture the return value of {@link Table#reload(TableOption...)}
+   * or {@link Table#update(TableOption...)} to observe changes.
+   *
    * <p>Example of getting a table.
    *
    * <pre>{@code
@@ -1247,12 +1268,20 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Table table = bigquery.getTable(datasetName, tableName);
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Table}, or {@code null} if not found (unless {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true})
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Table getTable(String datasetId, String tableId, TableOption... options);
 
   /**
    * Returns the requested table or {@code null} if not found.
+   *
+   * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
+   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Table} is an
+   * immutable metadata snapshot; capture the return value of {@link Table#reload(TableOption...)}
+   * or {@link Table#update(TableOption...)} to observe changes.
    *
    * <p>Example of getting a table.
    *
@@ -1264,7 +1293,10 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Table table = bigquery.getTable(tableId);
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Table}, or {@code null} if not found (unless {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true})
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Table getTable(TableId tableId, TableOption... options);
 
@@ -1566,7 +1598,12 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * }
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Job} (an immutable snapshot; capture {@link
+   *     Job#reload(JobOption...)} or {@link Job#waitFor(RetryOption...)} return values to observe
+   *     updates), or {@code null} on HTTP 404 unless {@link
+   *     BigQueryOptions#setThrowNotFound(boolean)} is enabled
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Job getJob(String jobId, JobOption... options);
 
@@ -1594,7 +1631,12 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * }
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Job} (an immutable snapshot; capture {@link
+   *     Job#reload(JobOption...)} or {@link Job#waitFor(RetryOption...)} return values to observe
+   *     updates), or {@code null} on HTTP 404 unless {@link
+   *     BigQueryOptions#setThrowNotFound(boolean)} is enabled
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Job getJob(JobId jobId, JobOption... options);
 
