@@ -901,9 +901,19 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Job create(JobInfo jobInfo, JobOption... options);
 
   /**
-   * Creates a new BigQuery query connection used for executing queries (not the same as BigQuery
-   * connection properties). It uses the BigQuery Storage Read API for high throughput queries by
-   * default.
+   * Creates a new {@code @BetaApi} BigQuery query connection used for executing queries (not a
+   * standard {@code java.sql.Connection} and not the same as BigQuery connection properties). It
+   * uses the BigQuery Storage Read API for high throughput queries by default.
+   *
+   * <p>The returned {@link Connection} is single-use, stateful, not thread-safe, and does not
+   * implement {@link AutoCloseable}. Call {@link Connection#close()} when done to release local
+   * buffers, background threads, and any local Storage Read API client; {@code close()} does not
+   * send a server-side {@code jobs.cancel} RPC (use {@link #cancel(JobId)} to cancel a running
+   * job). The returned {@link java.sql.ResultSet} is forward-only, read-only, and provides only
+   * partial JDBC compliance (unsupported JDBC operations throw {@link
+   * java.sql.SQLFeatureNotSupportedException} or {@link RuntimeException}). For production
+   * high-throughput reads, prefer the BigQuery Storage Read API ({@code
+   * google-cloud-bigquerystorage} / {@code BigQueryReadClient}) directly.
    *
    * <p>Example of creating a query connection.
    *
@@ -917,18 +927,31 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Connection connection = bigquery.createConnection(connectionSettings);
    * }</pre>
    *
+   * @param connectionSettings settings for the query connection
    * @throws BigQueryException upon failure
-   * @param connectionSettings
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/reference/storage">BigQuery Storage
+   *     Read API</a>
    */
   @BetaApi
   Connection createConnection(@NonNull ConnectionSettings connectionSettings);
 
   /**
-   * Creates a new BigQuery query connection used for executing queries (not the same as BigQuery
+   * Creates a new {@code @BetaApi} BigQuery query connection with default {@link
+   * ConnectionSettings} (not a standard {@code java.sql.Connection} and not the same as BigQuery
    * connection properties). It uses the BigQuery Storage Read API for high throughput queries by
    * default. This overloaded method creates a Connection with default ConnectionSettings for query
    * execution where default values are set for numBufferedRows (20000), useReadApi (true),
    * useLegacySql (false).
+   *
+   * <p>The returned {@link Connection} is single-use, stateful, not thread-safe, and does not
+   * implement {@link AutoCloseable}. Call {@link Connection#close()} when done to release local
+   * buffers, background threads, and any local Storage Read API client; {@code close()} does not
+   * send a server-side {@code jobs.cancel} RPC (use {@link #cancel(JobId)} to cancel a running
+   * job). The returned {@link java.sql.ResultSet} is forward-only, read-only, and provides only
+   * partial JDBC compliance (unsupported JDBC operations throw {@link
+   * java.sql.SQLFeatureNotSupportedException} or {@link RuntimeException}). For production
+   * high-throughput reads, prefer the BigQuery Storage Read API ({@code
+   * google-cloud-bigquerystorage} / {@code BigQueryReadClient}) directly.
    *
    * <p>Example of creating a query connection.
    *
@@ -937,6 +960,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * }</pre>
    *
    * @throws BigQueryException upon failure
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/reference/storage">BigQuery Storage
+   *     Read API</a>
    */
   @BetaApi
   Connection createConnection();

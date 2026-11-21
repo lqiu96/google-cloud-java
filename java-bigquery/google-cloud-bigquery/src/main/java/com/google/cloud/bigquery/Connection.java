@@ -22,12 +22,42 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A Connection is a session between a Java application and BigQuery. SQL statements are executed
- * and results are returned within the context of a connection.
+ * A {@code @BetaApi} query-execution connection between a Java application and BigQuery (not a
+ * standard {@code java.sql.Connection}).
+ *
+ * <p>Each {@code Connection} is stateful, single-use, and not thread-safe: its internal background
+ * executor shuts down once query streaming completes or {@link #close()} is called, and it does not
+ * implement {@link AutoCloseable}. Create a new instance per query via {@link
+ * BigQuery#createConnection()} or {@link BigQuery#createConnection(ConnectionSettings)} and call
+ * {@link #close()} when finished to release local buffers, background threads, and any local
+ * Storage Read API client. {@link #close()} does not send a server-side {@code jobs.cancel} RPC;
+ * use {@link BigQuery#cancel(JobId)} to cancel a running query job on the server.
+ *
+ * <p>The {@link java.sql.ResultSet} exposed by {@link BigQueryResult#getResultSet()} is
+ * forward-only, read-only, non-thread-safe, and provides only partial JDBC compliance
+ * (unimplemented operations such as {@code getMetaData}, {@code findColumn}, {@code getByte}/{@code
+ * getShort}/{@code getFloat}, and scrollable, stream, or updatable APIs throw {@link
+ * java.sql.SQLFeatureNotSupportedException} or {@link RuntimeException}). For production
+ * high-throughput reads, prefer the BigQuery Storage Read API ({@code google-cloud-bigquerystorage}
+ * / {@code BigQueryReadClient}) directly, or use {@link BigQuery#query(QueryJobConfiguration,
+ * BigQuery.JobOption...)} for general SQL queries.
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/reference/storage">BigQuery Storage
+ *     Read API</a>
  */
 public interface Connection {
 
-  /** Sends a query cancel request. This call will return immediately */
+  /**
+   * Releases local resources held by this connection by signaling end-of-stream on local row
+   * buffers, shutting down background fetch threads, and closing any underlying local Storage Read
+   * API client (awaiting termination).
+   *
+   * <p>This method does not send a server-side {@code jobs.cancel} RPC to cancel a running BigQuery
+   * query job; use {@link BigQuery#cancel(JobId)} to cancel a job on the server.
+   *
+   * @return {@code true} if the local background executor and read client terminated cleanly
+   * @throws BigQuerySQLException upon failure
+   */
   @BetaApi
   boolean close() throws BigQuerySQLException;
 
