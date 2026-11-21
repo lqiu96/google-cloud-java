@@ -20,6 +20,7 @@ import static com.google.cloud.BaseService.EXCEPTION_HANDLER;
 import com.google.api.core.InternalApi;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.StatusCode;
+import com.google.cloud.ExceptionHandler;
 import com.google.cloud.RetryHelper;
 import com.google.cloud.RetryHelper.RetryHelperException;
 import com.google.cloud.datastore.spi.v1.DatastoreRpc;
@@ -57,6 +58,9 @@ import javax.annotation.Nonnull;
  */
 @InternalApi
 public class RetryAndTraceDatastoreRpcDecorator implements DatastoreRpc {
+
+  private static final ExceptionHandler TRANSACTION_OPERATION_EXCEPTION_HANDLER =
+      TransactionOperationExceptionHandler.build();
 
   private final DatastoreRpc datastoreRpc;
   private final TraceUtil otelTraceUtil;
@@ -188,7 +192,8 @@ public class RetryAndTraceDatastoreRpcDecorator implements DatastoreRpc {
     return invokeRpc(
         () -> datastoreRpc.runAggregationQuery(request),
         spanName,
-        TelemetryConstants.METHOD_RUN_AGGREGATION_QUERY);
+        TelemetryConstants.METHOD_RUN_AGGREGATION_QUERY,
+        isTransactional ? TRANSACTION_OPERATION_EXCEPTION_HANDLER : EXCEPTION_HANDLER);
   }
 
   @Override
@@ -202,10 +207,15 @@ public class RetryAndTraceDatastoreRpcDecorator implements DatastoreRpc {
   }
 
   public <O> O invokeRpc(Callable<O> block, String startSpan) {
-    return invokeRpc(block, startSpan, null);
+    return invokeRpc(block, startSpan, null, EXCEPTION_HANDLER);
   }
 
   <O> O invokeRpc(Callable<O> block, String startSpan, String methodName) {
+    return invokeRpc(block, startSpan, methodName, EXCEPTION_HANDLER);
+  }
+
+  <O> O invokeRpc(
+      Callable<O> block, String startSpan, String methodName, ExceptionHandler exceptionHandler) {
     TraceUtil.Span span = otelTraceUtil.startSpan(startSpan);
     Stopwatch stopwatch = Stopwatch.createStarted();
     String operationStatus = StatusCode.Code.UNKNOWN.toString();
@@ -215,7 +225,7 @@ public class RetryAndTraceDatastoreRpcDecorator implements DatastoreRpc {
               block, metricsRecorder, methodName, datastoreOptions.getDatabaseId());
       O result =
           RetryHelper.runWithRetries(
-              callable, this.retrySettings, EXCEPTION_HANDLER, this.datastoreOptions.getClock());
+              callable, this.retrySettings, exceptionHandler, this.datastoreOptions.getClock());
       operationStatus = StatusCode.Code.OK.toString();
       return result;
     } catch (RetryHelperException e) {
