@@ -169,30 +169,57 @@ class DatasetTest {
   void testReload() {
     DatasetInfo updatedInfo = DATASET_INFO.toBuilder().setDescription("Description").build();
     Dataset expectedDataset = new Dataset(bigquery, new DatasetInfo.BuilderImpl(updatedInfo));
-    when(bigquery.getDataset(DATASET_INFO.getDatasetId().getDataset())).thenReturn(expectedDataset);
+    when(bigquery.getDataset(DATASET_INFO.getDatasetId())).thenReturn(expectedDataset);
     Dataset updatedDataset = dataset.reload();
     compareDataset(expectedDataset, updatedDataset);
-    verify(bigquery).getDataset(DATASET_INFO.getDatasetId().getDataset());
+    verify(bigquery).getDataset(DATASET_INFO.getDatasetId());
   }
 
   @Test
   void testReloadNull() {
-    when(bigquery.getDataset(DATASET_INFO.getDatasetId().getDataset())).thenReturn(null);
+    when(bigquery.getDataset(DATASET_INFO.getDatasetId())).thenReturn(null);
     assertNull(dataset.reload());
-    verify(bigquery).getDataset(DATASET_INFO.getDatasetId().getDataset());
+    verify(bigquery).getDataset(DATASET_INFO.getDatasetId());
   }
 
   @Test
   void testReloadWithOptions() {
     DatasetInfo updatedInfo = DATASET_INFO.toBuilder().setDescription("Description").build();
     Dataset expectedDataset = new Dataset(bigquery, new DatasetInfo.BuilderImpl(updatedInfo));
-    when(bigquery.getDataset(
-            DATASET_INFO.getDatasetId().getDataset(), BigQuery.DatasetOption.fields()))
+    when(bigquery.getDataset(DATASET_INFO.getDatasetId(), BigQuery.DatasetOption.fields()))
         .thenReturn(expectedDataset);
     Dataset updatedDataset = dataset.reload(BigQuery.DatasetOption.fields());
     compareDataset(expectedDataset, updatedDataset);
-    verify(bigquery)
-        .getDataset(DATASET_INFO.getDatasetId().getDataset(), BigQuery.DatasetOption.fields());
+    verify(bigquery).getDataset(DATASET_INFO.getDatasetId(), BigQuery.DatasetOption.fields());
+  }
+
+  @Test
+  void testReloadWithProjectId() {
+    DatasetId crossProjectDatasetId = DatasetId.of(NEW_PROJECT_ID, "dataset");
+    DatasetInfo crossProjectInfo = DatasetInfo.newBuilder(crossProjectDatasetId).build();
+    Dataset crossProjectDataset =
+        new Dataset(bigquery, new DatasetInfo.BuilderImpl(crossProjectInfo));
+    DatasetInfo updatedInfo = crossProjectInfo.toBuilder().setDescription("Description").build();
+    Dataset expectedUpdated = new Dataset(bigquery, new DatasetInfo.BuilderImpl(updatedInfo));
+    when(bigquery.getDataset(crossProjectDatasetId)).thenReturn(expectedUpdated);
+    Dataset updatedDataset = crossProjectDataset.reload();
+    compareDataset(expectedUpdated, updatedDataset);
+    verify(bigquery).getDataset(crossProjectDatasetId);
+  }
+
+  @Test
+  void testReloadWithProjectIdAndOptions() {
+    DatasetId crossProjectDatasetId = DatasetId.of(NEW_PROJECT_ID, "dataset");
+    DatasetInfo crossProjectInfo = DatasetInfo.newBuilder(crossProjectDatasetId).build();
+    Dataset crossProjectDataset =
+        new Dataset(bigquery, new DatasetInfo.BuilderImpl(crossProjectInfo));
+    DatasetInfo updatedInfo = crossProjectInfo.toBuilder().setDescription("Description").build();
+    Dataset expectedUpdated = new Dataset(bigquery, new DatasetInfo.BuilderImpl(updatedInfo));
+    when(bigquery.getDataset(crossProjectDatasetId, BigQuery.DatasetOption.fields()))
+        .thenReturn(expectedUpdated);
+    Dataset updatedDataset = crossProjectDataset.reload(BigQuery.DatasetOption.fields());
+    compareDataset(expectedUpdated, updatedDataset);
+    verify(bigquery).getDataset(crossProjectDatasetId, BigQuery.DatasetOption.fields());
   }
 
   @Test
@@ -320,6 +347,42 @@ class DatasetTest {
             TABLE_INFO1.getTableId().getTable(), TABLE_DEFINITION, BigQuery.TableOption.fields());
     assertEquals(expectedTable, table);
     verify(bigquery).create(TABLE_INFO1, BigQuery.TableOption.fields());
+  }
+
+  @Test
+  void testCreateTableWithProjectId() {
+    DatasetId crossProjectDatasetId = DatasetId.of(NEW_PROJECT_ID, "dataset");
+    Dataset crossProjectDataset =
+        new Dataset(
+            bigquery,
+            new DatasetInfo.BuilderImpl(DatasetInfo.newBuilder(crossProjectDatasetId).build()));
+    TableInfo expectedTableInfo =
+        TableInfo.of(TableId.of(NEW_PROJECT_ID, "dataset", "table1"), TABLE_DEFINITION);
+    Table expectedTable = new Table(bigquery, new TableInfo.BuilderImpl(expectedTableInfo));
+    when(bigquery.create(expectedTableInfo)).thenReturn(expectedTable);
+    Table table = crossProjectDataset.create("table1", TABLE_DEFINITION);
+    assertEquals(expectedTable, table);
+    assertEquals(NEW_PROJECT_ID, table.getTableId().getProject());
+    verify(bigquery).create(expectedTableInfo);
+  }
+
+  @Test
+  void testCreateTableWithProjectIdAndOptions() {
+    DatasetId crossProjectDatasetId = DatasetId.of(NEW_PROJECT_ID, "dataset");
+    Dataset crossProjectDataset =
+        new Dataset(
+            bigquery,
+            new DatasetInfo.BuilderImpl(DatasetInfo.newBuilder(crossProjectDatasetId).build()));
+    TableInfo expectedTableInfo =
+        TableInfo.of(TableId.of(NEW_PROJECT_ID, "dataset", "table1"), TABLE_DEFINITION);
+    Table expectedTable = new Table(bigquery, new TableInfo.BuilderImpl(expectedTableInfo));
+    when(bigquery.create(expectedTableInfo, BigQuery.TableOption.fields()))
+        .thenReturn(expectedTable);
+    Table table =
+        crossProjectDataset.create("table1", TABLE_DEFINITION, BigQuery.TableOption.fields());
+    assertEquals(expectedTable, table);
+    assertEquals(NEW_PROJECT_ID, table.getTableId().getProject());
+    verify(bigquery).create(expectedTableInfo, BigQuery.TableOption.fields());
   }
 
   @Test

@@ -239,7 +239,7 @@ public class Dataset extends DatasetInfo {
    *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   public Dataset reload(DatasetOption... options) {
-    return bigquery.getDataset(getDatasetId().getDataset(), options);
+    return bigquery.getDataset(getDatasetId(), options);
   }
 
   /**
@@ -360,8 +360,11 @@ public class Dataset extends DatasetInfo {
    * @throws BigQueryException upon failure
    */
   public Table create(String tableId, TableDefinition definition, TableOption... options) {
-    TableInfo tableInfo =
-        TableInfo.of(TableId.of(getDatasetId().getDataset(), tableId), definition);
+    TableId tabId =
+        Strings.isNullOrEmpty(getDatasetId().getProject())
+            ? TableId.of(getDatasetId().getDataset(), tableId)
+            : TableId.of(getDatasetId().getProject(), getDatasetId().getDataset(), tableId);
+    TableInfo tableInfo = TableInfo.of(tabId, definition);
     return bigquery.create(tableInfo, options);
   }
 
