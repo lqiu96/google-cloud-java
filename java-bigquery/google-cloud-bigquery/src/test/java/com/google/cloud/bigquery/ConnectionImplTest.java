@@ -24,7 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,6 +70,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.apache.arrow.vector.ipc.WriteChannel;
 import org.apache.arrow.vector.ipc.message.MessageSerializer;
 import org.apache.arrow.vector.types.pojo.ArrowType;
@@ -919,5 +922,55 @@ class ConnectionImplTest {
         () -> connection.processArrowStreamAsync(readSession, buffer, reader, QUERY_SCHEMA));
     assertTrue(reader.isClosed());
     assertEquals(0L, reader.allocator.getAllocatedMemory());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testProcessArrowStreamCleansUpWhenReaderCloseThrows() throws Exception {
+    BigQueryReadClient readClientMock = mock(BigQueryReadClient.class);
+    ServerStreamingCallable<ReadRowsRequest, ReadRowsResponse> callableMock =
+        mock(ServerStreamingCallable.class);
+    ServerStream<ReadRowsResponse> streamMock = mock(ServerStream.class);
+    when(streamMock.iterator()).thenReturn(Collections.emptyIterator());
+    when(callableMock.call(any(ReadRowsRequest.class))).thenReturn(streamMock);
+    when(readClientMock.readRowsCallable()).thenReturn(callableMock);
+    connection.setBqReadClient(readClientMock);
+
+    ConnectionImpl.ArrowRowReader readerMock = mock(ConnectionImpl.ArrowRowReader.class);
+    doThrow(new IllegalStateException("Memory was leaked")).when(readerMock).close();
+
+    ReadSession readSession =
+        ReadSession.newBuilder()
+            .addStreams(ReadStream.newBuilder().setName("stream-1").build())
+            .build();
+    BlockingQueue<BigQueryResultImpl.Row> buffer = new LinkedBlockingDeque<>(10);
+
+    connection.processArrowStreamAsync(readSession, buffer, readerMock, QUERY_SCHEMA);
+    BigQueryResultImpl.Row eos = buffer.poll(5, TimeUnit.SECONDS);
+    assertNotNull(eos);
+    assertTrue(eos.isLast());
+    assertFalse(connection.arrowRowReaders.contains(readerMock));
+    verify(readClientMock, timeout(5000)).shutdownNow();
+    assertTrue(connection.queryTaskExecutor.awaitTermination(5, TimeUnit.SECONDS));
+    assertTrue(connection.queryTaskExecutor.isShutdown());
+  }
+
+  @Test
+  void testProcessArrowStreamRejectsAndRemovesReaderWhenCloseThrows() throws Exception {
+    ConnectionImpl.ArrowRowReader readerMock = mock(ConnectionImpl.ArrowRowReader.class);
+    doThrow(new IllegalStateException("Memory was leaked")).when(readerMock).close();
+    assertTrue(connection.close());
+
+    ReadSession readSession =
+        ReadSession.newBuilder()
+            .addStreams(ReadStream.newBuilder().setName("stream-1").build())
+            .build();
+    BlockingQueue<BigQueryResultImpl.Row> buffer = new LinkedBlockingDeque<>(10);
+
+    assertThrows(
+        RejectedExecutionException.class,
+        () -> connection.processArrowStreamAsync(readSession, buffer, readerMock, QUERY_SCHEMA));
+    verify(readerMock).close();
+    assertFalse(connection.arrowRowReaders.contains(readerMock));
   }
 }

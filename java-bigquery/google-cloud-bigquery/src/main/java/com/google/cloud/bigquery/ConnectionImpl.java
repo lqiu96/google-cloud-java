@@ -92,8 +92,11 @@ class ConnectionImpl implements Connection {
   private final BigQueryRetryConfig retryConfig;
   private final int bufferSize; // buffer size in Producer Thread
   private final int MAX_PROCESS_QUERY_THREADS_CNT = 5;
-  private final ExecutorService queryTaskExecutor =
+
+  @VisibleForTesting
+  final ExecutorService queryTaskExecutor =
       Executors.newFixedThreadPool(MAX_PROCESS_QUERY_THREADS_CNT);
+
   private final Logger logger = Logger.getLogger(this.getClass().getName());
   private BigQueryReadClient bqReadClient;
   private static final long EXECUTOR_TIMEOUT_SEC = 10;
@@ -102,8 +105,10 @@ class ConnectionImpl implements Connection {
       bufferFvl; // initialized lazily iff we end up using the tabledata.list end point
   private BlockingQueue<BigQueryResultImpl.Row>
       bufferRow; // initialized lazily iff we end up using Read API
-  private final List<ArrowRowReader> arrowRowReaders =
-      Collections.synchronizedList(new ArrayList<>());
+
+  @VisibleForTesting
+  final List<ArrowRowReader> arrowRowReaders = Collections.synchronizedList(new ArrayList<>());
+
   private static final BigQueryRetryConfig EMPTY_RETRY_CONFIG =
       BigQueryRetryConfig.newBuilder().build();
 
@@ -1105,8 +1110,13 @@ class ConnectionImpl implements Connection {
               throw BigQueryException.translateAndThrow(e);
             }
           } finally { // logic needed for graceful shutdown
-            reader.close();
-            arrowRowReaders.remove(reader);
+            try {
+              reader.close();
+            } catch (RuntimeException e) {
+              logger.log(Level.WARNING, "Error while closing ArrowRowReader", e);
+            } finally {
+              arrowRowReaders.remove(reader);
+            }
             // marking end of stream
             try {
               buffer.put(
@@ -1128,8 +1138,13 @@ class ConnectionImpl implements Connection {
     try {
       queryTaskExecutor.execute(arrowStreamProcessor);
     } catch (RuntimeException e) {
-      reader.close();
-      arrowRowReaders.remove(reader);
+      try {
+        reader.close();
+      } catch (RuntimeException closeException) {
+        logger.log(Level.WARNING, "Error while closing ArrowRowReader", closeException);
+      } finally {
+        arrowRowReaders.remove(reader);
+      }
       throw e;
     }
   }
