@@ -55,7 +55,8 @@ public class RelaxTableQuery {
       QueryJobConfiguration queryConfig =
           QueryJobConfiguration.newBuilder(query)
               // Use standard SQL syntax for queries.
-              // See: https://cloud.google.com/bigquery/sql-reference/
+              // See:
+              // https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax
               .setUseLegacySql(false)
               .setSchemaUpdateOptions(ImmutableList.of(SchemaUpdateOption.ALLOW_FIELD_RELAXATION))
               .setWriteDisposition(WriteDisposition.WRITE_APPEND)
