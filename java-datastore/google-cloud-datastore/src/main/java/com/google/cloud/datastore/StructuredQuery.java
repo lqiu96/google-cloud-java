@@ -230,10 +230,12 @@ public abstract class StructuredQuery<V> extends Query<V> implements RecordQuery
       return new CompositeFilter(operator, filters.build());
     }
 
+    /** Combines the provided filters with logical AND. */
     public static CompositeFilter and(Filter first, Filter... other) {
       return new CompositeFilter(Operator.AND, first, other);
     }
 
+    /** Combines the provided filters with logical OR. */
     public static CompositeFilter or(Filter first, Filter... other) {
       return new CompositeFilter(Operator.OR, first, other);
     }
@@ -722,6 +724,14 @@ public abstract class StructuredQuery<V> extends Query<V> implements RecordQuery
     /** Sets the limit for the query. */
     Builder<V> setLimit(Integer limit);
 
+    /**
+     * Sets the filter for the query, replacing any previously set filter rather than combining
+     * filters with logical AND.
+     *
+     * <p>To combine multiple filter conditions, pass a {@link CompositeFilter} constructed with
+     * {@link CompositeFilter#and(Filter, Filter...)} or {@link CompositeFilter#or(Filter,
+     * Filter...)}.
+     */
     Builder<V> setFilter(Filter filter);
 
     /** Clears any previously specified order by settings. */
