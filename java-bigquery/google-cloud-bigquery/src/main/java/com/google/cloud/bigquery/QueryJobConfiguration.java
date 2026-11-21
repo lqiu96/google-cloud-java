@@ -550,9 +550,21 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Sets whether the job has to be dry run or not. If set, the job is not executed. A valid query
-     * will return a mostly empty response with some processing statistics, while an invalid query
-     * will return the same error it would if it wasn't a dry run.
+     * Sets whether the job is a dry run. When {@code true}, the query is validated without
+     * executing or billing, and processing statistics (such as estimated bytes processed) are
+     * returned on {@link Job#getStatistics()} (cast to {@link JobStatistics.QueryStatistics}).
+     *
+     * <p>Dry-run queries must be submitted via {@link BigQuery#create(JobInfo,
+     * BigQuery.JobOption...)} rather than {@link BigQuery#query(QueryJobConfiguration,
+     * BigQuery.JobOption...)} or {@link BigQuery#queryWithTimeout(QueryJobConfiguration, JobId,
+     * Long, BigQuery.JobOption...)}, which throw {@link UnsupportedOperationException}. Because no
+     * server job is created, calling polling or result methods (such as {@link
+     * Job#waitFor(com.google.cloud.RetryOption...)}, {@link Job#reload(BigQuery.JobOption...)}, or
+     * {@link Job#getQueryResults(BigQuery.QueryResultsOption...)}) on the returned {@link Job} also
+     * throws {@link UnsupportedOperationException}.
+     *
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry
+     *     runs</a>
      */
     public Builder setDryRun(Boolean dryRun) {
       this.dryRun = dryRun;
@@ -560,16 +572,16 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Sets whether to use BigQuery's legacy SQL dialect for this query. By default this property is
-     * set to {@code false}. If set to {@code false}, the query will use BigQuery's <a
-     * href="https://docs.cloud.google.com/bigquery/docs/introduction-sql">Standard SQL</a>. When
-     * set to {@code false}, the values of {@link #setAllowLargeResults(Boolean)} and {@link
-     * #setFlattenResults(Boolean)} are ignored; query will be run as if {@link
-     * #setAllowLargeResults(Boolean)} is {@code true} and {@link #setFlattenResults(Boolean)} is
-     * {@code false}.
+     * Sets whether to use BigQuery's legacy SQL dialect for this query. Defaults to {@code false},
+     * which uses BigQuery's <a
+     * href="https://docs.cloud.google.com/bigquery/docs/introduction-sql">GoogleSQL (Standard
+     * SQL)</a> dialect. When {@code false}, {@link #setAllowLargeResults(Boolean)} and {@link
+     * #setFlattenResults(Boolean)} are ignored (queries run as if large results are allowed and
+     * results are unflattened), and query parameters are supported.
      *
-     * <p>If set to {@code null} or {@code true}, legacy SQL dialect is used. This property is
-     * experimental and might be subject to change.
+     * <p>Passing {@code null} omits {@code useLegacySql} from the API request, causing the BigQuery
+     * REST API to default to legacy SQL ({@code true}). Pass {@code false} (or leave the builder
+     * default unchanged) to use GoogleSQL.
      */
     public Builder setUseLegacySql(Boolean useLegacySql) {
       this.useLegacySql = useLegacySql;
@@ -689,8 +701,17 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Provides different options on job creation. If not specified the job creation mode is assumed
-     * to be {@link JobCreationMode#JOB_CREATION_REQUIRED}.
+     * Sets the job creation mode for queries executed via the fast {@code jobs.query} path. If not
+     * specified, {@link BigQuery#query(QueryJobConfiguration, BigQuery.JobOption...)} inherits
+     * {@link BigQueryOptions#getDefaultJobCreationMode()} (which defaults to {@link
+     * JobCreationMode#JOB_CREATION_MODE_UNSPECIFIED}, treated by the server as {@link
+     * JobCreationMode#JOB_CREATION_REQUIRED}). When set to {@link
+     * JobCreationMode#JOB_CREATION_OPTIONAL}, BigQuery may run the query statelessly without
+     * creating a job, so {@link TableResult#getJobId()} can be {@code null}.
+     *
+     * @see <a
+     *     href="https://docs.cloud.google.com/bigquery/docs/running-queries#optional-job-creation">
+     *     Optional job creation</a>
      */
     public Builder setJobCreationMode(JobCreationMode jobCreationMode) {
       this.jobCreationMode = jobCreationMode;
@@ -926,22 +947,23 @@ public final class QueryJobConfiguration extends JobConfiguration {
   }
 
   /**
-   * Returns whether the job has to be dry run or not. If set, the job is not executed. A valid
-   * query will return a mostly empty response with some processing statistics, while an invalid
-   * query will return the same error it would if it wasn't a dry run.
+   * Returns whether the job is a dry run. When {@code true}, the query must be submitted via {@link
+   * BigQuery#create(JobInfo, BigQuery.JobOption...)} (not {@link
+   * BigQuery#query(QueryJobConfiguration, BigQuery.JobOption...)}) and statistics are returned
+   * directly on {@link Job#getStatistics()}.
+   *
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry runs</a>
    */
   public Boolean dryRun() {
     return dryRun;
   }
 
   /**
-   * Returns whether to use BigQuery's legacy SQL dialect for this query. By default this property
-   * is set to {@code false}. If set to {@code false}, the query will use BigQuery's <a
-   * href="https://docs.cloud.google.com/bigquery/docs/introduction-sql">Standard SQL</a>. When set
-   * to {@code false}, the values of {@link #allowLargeResults()} and {@link #flattenResults()} are
-   * ignored; query will be run as if {@link #allowLargeResults()} is {@code true} and {@link
-   * #flattenResults()} is {@code false}. If set to {@code null} or {@code true}, legacy SQL dialect
-   * is used. This property is experimental and might be subject to change.
+   * Returns whether to use BigQuery's legacy SQL dialect for this query. Defaults to {@code false}
+   * (<a href="https://docs.cloud.google.com/bigquery/docs/introduction-sql">GoogleSQL / Standard
+   * SQL</a>). When {@code false}, {@link #allowLargeResults()} and {@link #flattenResults()} are
+   * ignored. When {@code null}, {@code useLegacySql} is omitted from the API request and the
+   * BigQuery REST API defaults to legacy SQL ({@code true}).
    */
   public Boolean useLegacySql() {
     return useLegacySql;
