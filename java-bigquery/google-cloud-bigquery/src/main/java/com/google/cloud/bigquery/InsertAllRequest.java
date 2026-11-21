@@ -244,8 +244,10 @@ public final class InsertAllRequest implements Serializable {
     }
 
     /**
-     * Sets whether to insert all valid rows of a request, even if invalid rows exist. If not set
-     * the entire insert request will fail if it contains an invalid row.
+     * Sets whether to insert all valid rows of a request, even if invalid rows exist. Defaults to
+     * {@code false}: if not set or set to {@code false}, a single invalid row aborts the entire
+     * insert request and reports {@code "stopped"} errors for the remaining rows in {@link
+     * InsertAllResponse#getInsertErrors()}.
      */
     public Builder setSkipInvalidRows(boolean skipInvalidRows) {
       this.skipInvalidRows = skipInvalidRows;
@@ -253,8 +255,9 @@ public final class InsertAllRequest implements Serializable {
     }
 
     /**
-     * Sets whether to accept rows that contain values that do not match the schema. The unknown
-     * values are ignored. If not set, rows with unknown values are considered to be invalid.
+     * Sets whether to accept rows that contain values that do not match the schema. When {@code
+     * true}, unknown values are ignored. Defaults to {@code false}: if not set or set to {@code
+     * false}, rows with unknown values are treated as invalid.
      */
     public Builder setIgnoreUnknownValues(boolean ignoreUnknownValues) {
       this.ignoreUnknownValues = ignoreUnknownValues;
@@ -310,16 +313,19 @@ public final class InsertAllRequest implements Serializable {
   }
 
   /**
-   * Returns whether to accept rows that contain values that do not match the schema. The unknown
-   * values are ignored. If not set, rows with unknown values are considered to be invalid.
+   * Returns whether to accept rows that contain values that do not match the schema. When {@code
+   * true}, unknown values are ignored. Defaults to {@code false} (when {@code null} or {@code
+   * false}, rows with unknown values are treated as invalid).
    */
   public Boolean ignoreUnknownValues() {
     return ignoreUnknownValues;
   }
 
   /**
-   * Returns whether to insert all valid rows of a request, even if invalid rows exist. If not set
-   * the entire insert request will fail if it contains an invalid row.
+   * Returns whether to insert all valid rows of a request, even if invalid rows exist. Defaults to
+   * {@code false} (when {@code null} or {@code false}, a single invalid row aborts the entire
+   * insert request and reports {@code "stopped"} errors for the remaining rows in {@link
+   * InsertAllResponse#getInsertErrors()}).
    */
   public Boolean skipInvalidRows() {
     return skipInvalidRows;
