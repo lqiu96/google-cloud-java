@@ -131,8 +131,8 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
      * {@code "EU"}, or {@code "asia-northeast1"}) used by job and query operations when {@link
      * JobId} does not specify a location (such as {@link BigQuery#query(QueryJobConfiguration,
      * BigQuery.JobOption...)}, {@link BigQuery#create(JobInfo, BigQuery.JobOption...)} with an
-     * auto-generated job ID, {@link BigQuery#getJob(JobId, BigQuery.JobOption...)}, and {@link
-     * BigQuery#cancel(JobId)}).
+     * auto-generated job ID, {@link BigQuery#getJob(JobId, BigQuery.JobOption...)}, {@link
+     * BigQuery#cancel(JobId)}, and {@link BigQuery#delete(JobId)}).
      *
      * <p>Use with caution: this default applies across requests made with this client, even when a
      * query references tables in another region, which can cause queries against datasets in a
@@ -152,6 +152,11 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     /**
      * Sets whether {@code get*} methods throw {@link BigQueryException} instead of returning {@code
      * null} when a resource is not found.
+     *
+     * <p>When enabled, not-found responses throw a synthesized {@link BigQueryException} with
+     * {@link BigQueryException#getCode()} equal to {@code 404} and {@code null} {@link
+     * BigQueryException#getReason()} and {@link BigQueryException#getError()}; check {@code
+     * getCode() == 404} rather than {@code getReason()}.
      */
     public Builder setThrowNotFound(boolean throwNotFound) {
       this.throwNotFound = throwNotFound;
@@ -171,7 +176,7 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
      * <p>If useInt64Timestamps value is set in here and via DataFormatOptions, the
      * DataFormatOptions configuration value is used.
      *
-     * <p>{@code DataFormatOptions.newBuilder().setUseInt64Timestamp(...).build()}
+     * <p>{@code DataFormatOptions.newBuilder().useInt64Timestamp(...).build()}
      */
     @ObsoleteApi("Use setDataFormatOptions(DataFormatOptions) instead")
     public Builder setUseInt64Timestamps(boolean useInt64Timestamps) {
@@ -230,9 +235,9 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
      * retried on eligible RPCs.
      *
      * <p>If not set, {@code BigQueryOptions} uses the default BigQuery retry handler, which retries
-     * transient network exceptions and retryable errors (see {@link
-     * BigQueryException#isRetryable()}). Supplying a custom algorithm replaces that default
-     * behavior.
+     * transient network exceptions, retryable errors (see {@link BigQueryException#isRetryable()}),
+     * and HTTP 429 responses on eligible HTTP RPCs. Supplying a custom algorithm replaces that
+     * default behavior.
      */
     public Builder setResultRetryAlgorithm(ResultRetryAlgorithm<?> resultRetryAlgorithm) {
       this.resultRetryAlgorithm = resultRetryAlgorithm;
@@ -323,6 +328,16 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     return false;
   }
 
+  /**
+   * Sets whether {@code get*} methods throw {@link BigQueryException} instead of returning {@code
+   * null} when a resource is not found. Prefer {@link Builder#setThrowNotFound(boolean)} when
+   * constructing {@code BigQueryOptions}.
+   *
+   * <p>When enabled, not-found responses throw a synthesized {@link BigQueryException} with {@link
+   * BigQueryException#getCode()} equal to {@code 404} and {@code null} {@link
+   * BigQueryException#getReason()} and {@link BigQueryException#getError()}; check {@code getCode()
+   * == 404} rather than {@code getReason()}.
+   */
   public void setThrowNotFound(boolean setThrowNotFound) {
     this.setThrowNotFound = setThrowNotFound;
   }
@@ -335,7 +350,7 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
    * <p>If useInt64Timestamps is set via DataFormatOptions, then the value in DataFormatOptions will
    * be used. Otherwise, this value will be passed to DataFormatOptions.
    *
-   * <p>Alternative: {@code DataFormatOptions.newBuilder().setUseInt64Timestamp(...).build()}
+   * <p>Alternative: {@code DataFormatOptions.newBuilder().useInt64Timestamp(...).build()}
    */
   @ObsoleteApi("Use Builder#setDataFormatOptions(DataFormatOptions) instead")
   public synchronized void setUseInt64Timestamps(boolean useInt64Timestamps) {
@@ -366,7 +381,7 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
    * DataFormatOptions#useInt64Timestamp()} to get `useInt64Timestamp` value used by the BigQuery
    * client.
    */
-  @ObsoleteApi("Use getDataFormatOptions().isUseInt64Timestamp() instead")
+  @ObsoleteApi("Use getDataFormatOptions().useInt64Timestamp() instead")
   public boolean getUseInt64Timestamps() {
     return dataFormatOptions.useInt64Timestamp();
   }

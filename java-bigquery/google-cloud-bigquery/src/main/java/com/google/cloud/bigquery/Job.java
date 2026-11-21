@@ -627,7 +627,10 @@ public class Job extends JobInfo {
    * null} if the job does not exist.
    *
    * <p>If the fetched job has a non-null {@link JobStatus#getError()}, this method throws {@link
-   * BigQueryException} rather than returning the failed {@code Job}. To inspect a failed job's
+   * BigQueryException} rather than returning the failed {@code Job}. When passing a custom field
+   * projection via {@link BigQuery.JobOption#fields(BigQuery.JobField...)}, include {@link
+   * BigQuery.JobField#STATUS} if you need to inspect job status or detect job errors (otherwise
+   * {@link #getStatus()} is {@code null} on the returned {@code Job}). To inspect a failed job's
    * {@link JobStatus} without throwing, call {@link BigQuery#getJob(JobId, BigQuery.JobOption...)}.
    *
    * <p>Example of reloading all fields until job status is DONE.

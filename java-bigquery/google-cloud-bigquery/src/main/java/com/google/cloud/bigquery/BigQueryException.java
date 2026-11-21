@@ -43,11 +43,12 @@ import java.util.concurrent.ExecutionException;
  * transient socket or SSL {@link IOException} failures (such as {@link
  * java.net.SocketTimeoutException} and {@link java.net.SocketException}). It returns {@code false}
  * for HTTP 4xx errors (including 403 rate limits and 429), {@link JobStatus} errors with code
- * {@code 0}, and other {@link IOException} types such as {@link java.io.EOFException}. When
- * deciding whether to retry, inspect the structured error reason alongside the HTTP status code and
- * consult the BigQuery error codes reference. Transient asynchronous job failures cannot be
- * recovered by polling the failed job again. Resubmit the work as a new job with a new {@link
- * JobId}.
+ * {@code 0}, and other {@link IOException} types such as {@link java.io.EOFException}. Note that
+ * the client's default retry handler still retries HTTP 429 responses on eligible HTTP RPCs in
+ * addition to {@link #isRetryable()} errors. When deciding whether to retry, inspect the structured
+ * error reason alongside the HTTP status code and consult the BigQuery error codes reference.
+ * Transient asynchronous job failures cannot be recovered by polling the failed job again. Resubmit
+ * the work as a new job with a new {@link JobId}.
  *
  * @see <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
  *     error codes</a>

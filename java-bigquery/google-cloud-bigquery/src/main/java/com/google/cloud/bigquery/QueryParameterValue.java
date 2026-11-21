@@ -338,10 +338,10 @@ public abstract class QueryParameterValue implements Serializable {
    * Creates a {@code QueryParameterValue} object with a type of TIMESTAMP.
    *
    * <p>Requires a space separator between date and time (ISO-8601 {@code 'T'}-separated strings
-   * such as {@link Instant#toString()} are rejected), with optional seconds, optional fractional
-   * seconds (up to 12 digits for picosecond precision), and an optional timezone offset (for
-   * example, {@code "2014-08-19 12:41:35Z"}, {@code "2014-08-19 12:41:35.220000+00:00"}, or {@code
-   * "2014-08-19 12:41:35.123456789123Z"}).
+   * such as {@link Instant#toString()} are rejected), with seconds ({@code HH:mm:ss}), optional
+   * fractional seconds (up to 12 digits for picosecond precision), and an optional timezone offset
+   * (for example, {@code "2014-08-19 12:41:35Z"}, {@code "2014-08-19 12:41:35.220000+00:00"}, or
+   * {@code "2014-08-19 12:41:35.123456789123Z"}).
    *
    * @throws IllegalArgumentException if {@code value} does not match the expected space-separated
    *     format or has more than 12 fractional-second digits

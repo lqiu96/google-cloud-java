@@ -219,7 +219,7 @@ public class Dataset extends DatasetInfo {
 
   /**
    * Fetches current dataset's latest information. Returns {@code null} if the dataset does not
-   * exist (HTTP 404), unless {@link BigQueryOptions#setThrowNotFound(boolean)} is enabled.
+   * exist (HTTP 404), unless {@link BigQueryOptions.Builder#setThrowNotFound(boolean)} is enabled.
    *
    * <p>Because {@code Dataset} instances are immutable, this method does not update this object in
    * place; capture the returned {@code Dataset} to read the refreshed metadata.

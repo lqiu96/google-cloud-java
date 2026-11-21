@@ -970,9 +970,12 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Returns the requested dataset or {@code null} if not found.
    *
    * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
-   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Dataset} is an
-   * immutable snapshot; capture the return value of {@link Dataset#reload(DatasetOption...)} or
-   * {@link Dataset#update(DatasetOption...)} to observe changes.
+   * BigQueryOptions.Builder#setThrowNotFound(boolean)} is enabled (in which case a synthesized
+   * {@link BigQueryException} with {@link BigQueryException#getCode()} equal to {@code 404} and
+   * {@code null} {@link BigQueryException#getReason()} and {@link BigQueryException#getError()} is
+   * thrown). The returned {@link Dataset} is an immutable snapshot; capture the return value of
+   * {@link Dataset#reload(DatasetOption...)} or {@link Dataset#update(DatasetOption...)} to observe
+   * changes.
    *
    * <p>Example of getting a dataset.
    *
@@ -992,9 +995,12 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Returns the requested dataset or {@code null} if not found.
    *
    * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
-   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Dataset} is an
-   * immutable snapshot; capture the return value of {@link Dataset#reload(DatasetOption...)} or
-   * {@link Dataset#update(DatasetOption...)} to observe changes.
+   * BigQueryOptions.Builder#setThrowNotFound(boolean)} is enabled (in which case a synthesized
+   * {@link BigQueryException} with {@link BigQueryException#getCode()} equal to {@code 404} and
+   * {@code null} {@link BigQueryException#getReason()} and {@link BigQueryException#getError()} is
+   * thrown). The returned {@link Dataset} is an immutable snapshot; capture the return value of
+   * {@link Dataset#reload(DatasetOption...)} or {@link Dataset#update(DatasetOption...)} to observe
+   * changes.
    *
    * <p>Example of getting a dataset.
    *
@@ -1198,6 +1204,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Deletes the requested job.
    *
+   * <p>If the location of the job is not {@code "US"} or {@code "EU"}, {@code jobId} must specify
+   * the job's location via {@link JobId.Builder#setLocation(String)} (unless a matching default is
+   * set on {@link BigQueryOptions}); otherwise BigQuery reports the job as not found and this
+   * method returns {@code false}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
+   *
    * @return {@code true} if job was deleted, {@code false} if it was not found
    * @throws BigQueryException upon failure
    */
@@ -1320,9 +1333,12 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Returns the requested table or {@code null} if not found.
    *
    * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
-   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Table} is an
-   * immutable metadata snapshot; capture the return value of {@link Table#reload(TableOption...)}
-   * or {@link Table#update(TableOption...)} to observe changes.
+   * BigQueryOptions.Builder#setThrowNotFound(boolean)} is enabled (in which case a synthesized
+   * {@link BigQueryException} with {@link BigQueryException#getCode()} equal to {@code 404} and
+   * {@code null} {@link BigQueryException#getReason()} and {@link BigQueryException#getError()} is
+   * thrown). The returned {@link Table} is an immutable metadata snapshot; capture the return value
+   * of {@link Table#reload(TableOption...)} or {@link Table#update(TableOption...)} to observe
+   * changes.
    *
    * <p>Example of getting a table.
    *
@@ -1343,9 +1359,12 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Returns the requested table or {@code null} if not found.
    *
    * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
-   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Table} is an
-   * immutable metadata snapshot; capture the return value of {@link Table#reload(TableOption...)}
-   * or {@link Table#update(TableOption...)} to observe changes.
+   * BigQueryOptions.Builder#setThrowNotFound(boolean)} is enabled (in which case a synthesized
+   * {@link BigQueryException} with {@link BigQueryException#getCode()} equal to {@code 404} and
+   * {@code null} {@link BigQueryException#getReason()} and {@link BigQueryException#getError()} is
+   * thrown). The returned {@link Table} is an immutable metadata snapshot; capture the return value
+   * of {@link Table#reload(TableOption...)} or {@link Table#update(TableOption...)} to observe
+   * changes.
    *
    * <p>Example of getting a table.
    *
@@ -1487,11 +1506,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * tabledata.insertAll</a>.
    *
    * <p>This client does not automatically generate insert IDs for rows. To prevent duplicate rows,
-   * automatic client retries run only when every row in the request specifies a non-null insert ID
+   * automatic client retries run only when every row in the request specifies a non-empty insert ID
    * (via {@link InsertAllRequest.RowToInsert#of(String, Map)} or {@link
-   * InsertAllRequest.Builder#addRow(String, Map)}). If any row omits an insert ID, automatic
-   * retries are disabled for the entire request and transient RPC errors are thrown directly to the
-   * caller. BigQuery uses insert IDs for best-effort deduplication (see <a
+   * InsertAllRequest.Builder#addRow(String, Map)}). If any row omits an insert ID or uses an empty
+   * string, automatic retries are disabled for the entire request and transient RPC errors are
+   * thrown directly to the caller. BigQuery uses insert IDs for best-effort deduplication (see <a
    * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataconsistency">Best effort
    * de-duplication</a> and <a
    * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-failure">Failure
@@ -1675,9 +1694,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * @return the requested {@link Job} (an immutable snapshot; capture {@link
    *     Job#reload(JobOption...)} or {@link Job#waitFor(RetryOption...)} return values to observe
    *     updates), or {@code null} on HTTP 404 unless {@link
-   *     BigQueryOptions#setThrowNotFound(boolean)} is enabled
+   *     BigQueryOptions.Builder#setThrowNotFound(boolean)} is enabled
    * @throws BigQueryException upon failure, or if not found and {@link
-   *     BigQueryOptions#getThrowNotFound()} is {@code true}
+   *     BigQueryOptions#getThrowNotFound()} is {@code true} (in which case a synthesized exception
+   *     with {@link BigQueryException#getCode()} equal to {@code 404} and {@code null} {@link
+   *     BigQueryException#getReason()} and {@link BigQueryException#getError()} is thrown)
    */
   Job getJob(String jobId, JobOption... options);
 
@@ -1708,9 +1729,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * @return the requested {@link Job} (an immutable snapshot; capture {@link
    *     Job#reload(JobOption...)} or {@link Job#waitFor(RetryOption...)} return values to observe
    *     updates), or {@code null} on HTTP 404 unless {@link
-   *     BigQueryOptions#setThrowNotFound(boolean)} is enabled
+   *     BigQueryOptions.Builder#setThrowNotFound(boolean)} is enabled
    * @throws BigQueryException upon failure, or if not found and {@link
-   *     BigQueryOptions#getThrowNotFound()} is {@code true}
+   *     BigQueryOptions#getThrowNotFound()} is {@code true} (in which case a synthesized exception
+   *     with {@link BigQueryException#getCode()} equal to {@code 404} and {@code null} {@link
+   *     BigQueryException#getReason()} and {@link BigQueryException#getError()} is thrown)
    */
   Job getJob(JobId jobId, JobOption... options);
 
@@ -1801,8 +1824,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * API, this method uses the single-RPC fast query path; if {@link
    * QueryJobConfiguration.JobCreationMode#JOB_CREATION_OPTIONAL} is configured (on {@code
    * configuration} or via {@link
-   * BigQueryOptions#setDefaultJobCreationMode(QueryJobConfiguration.JobCreationMode)}), BigQuery
-   * may execute the query statelessly without creating a job (in which case {@link
+   * BigQueryOptions.Builder#setDefaultJobCreationMode(QueryJobConfiguration.JobCreationMode)}),
+   * BigQuery may execute the query statelessly without creating a job (in which case {@link
    * TableResult#getJobId()} returns {@code null}). Configurations using job-only options (such as a
    * destination table, partitioning or clustering, external table definitions, or {@link
    * QueryJobConfiguration.Priority#BATCH}) automatically fall back to creating a query job via
@@ -1980,16 +2003,16 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Starts the query associated with the request, using the given {@link JobId}, and returns either
    * a {@link TableResult} or a {@link Job}.
    *
-   * <p>When the query uses the fast {@code jobs.query} path and completes within {@code timeoutMs}
-   * with a result schema (or when {@link QueryResultsFormat#ARROW} is configured), this method
-   * returns a {@link TableResult}. Otherwise (when the query does not finish within {@code
-   * timeoutMs}, returns no schema, or falls back to {@link #create(JobInfo, JobOption...)} because
-   * {@code jobId} specifies a job name or {@code configuration} uses options unsupported by {@code
-   * jobs.query}), this method returns a {@link Job}. Callers must check the return type with {@code
-   * instanceof} (for example, calling {@link Job#getQueryResults(QueryResultsOption...)} when a
-   * {@link Job} is returned). {@code timeoutMs} configures the server wait timeout on the fast
-   * query path (using the server default when {@code null}) and is not applied on the fallback
-   * job-creation path.
+   * <p>When {@link QueryResultsFormat#ARROW} is configured, this method always waits for the query
+   * to finish and returns a {@link TableResult}. Otherwise, when the query uses the fast {@code
+   * jobs.query} path and completes within {@code timeoutMs} with a result schema, this method
+   * returns a {@link TableResult}; if the query does not finish within {@code timeoutMs}, returns
+   * no schema, or falls back to {@link #create(JobInfo, JobOption...)} because {@code jobId}
+   * specifies a job name or {@code configuration} uses options unsupported by {@code jobs.query},
+   * this method returns a {@link Job}. Callers must check the return type with {@code instanceof}
+   * (for example, calling {@link Job#getQueryResults(QueryResultsOption...)} when a {@link Job} is
+   * returned). {@code timeoutMs} configures the server wait timeout on the fast query path (using
+   * the server default when {@code null}) and is not applied on the fallback job-creation path.
    *
    * <p>When {@code jobId} specifies a location via {@link JobId.Builder#setLocation(String)}, the
    * query runs in that location (taking precedence over {@link BigQueryOptions#getLocation()}) and
@@ -2014,8 +2037,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * <p>See {@link #query(QueryJobConfiguration, JobOption...)} for examples on populating a {@link
    * QueryJobConfiguration}.
    *
-   * @return a {@link TableResult} if the fast query path completed with results, or a {@link Job}
-   *     otherwise
+   * @return a {@link TableResult} if {@link QueryResultsFormat#ARROW} is configured or the fast
+   *     query path completed with results, or a {@link Job} otherwise
    * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
@@ -2091,7 +2114,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * TableId tableId = TableId.of(datasetName, tableName);
    * WriteChannelConfiguration writeChannelConfiguration = WriteChannelConfiguration.newBuilder(tableId)
    *     .setFormatOptions(FormatOptions.csv()).build();
-   * // The location must be specified; other fields can be auto-detected.
+   * // Specify the location explicitly (recommended outside US/EU); other fields are optional.
    * JobId jobId = JobId.newBuilder().setLocation(location).build();
    * TableDataWriteChannel writer = bigquery.writer(jobId, writeChannelConfiguration);
    * // Closing the OutputStream closes the underlying channel and finalizes the upload
@@ -2138,7 +2161,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * TableId tableId = TableId.of(datasetName, tableName);
    * WriteChannelConfiguration writeChannelConfiguration = WriteChannelConfiguration.newBuilder(tableId)
    *     .setFormatOptions(FormatOptions.csv()).build();
-   * // The location must be specified; other fields can be auto-detected.
+   * // Specify the location explicitly (recommended outside US/EU); other fields are optional.
    * JobId jobId = JobId.newBuilder().setLocation(location).build();
    * TableDataWriteChannel writer = bigquery.writer(jobId, writeChannelConfiguration);
    * // Close the channel to finalize the upload and create the load job

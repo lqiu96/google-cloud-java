@@ -84,12 +84,16 @@ public interface Connection {
    *         .setUseQueryCache(true)
    *         .build();
    * Connection connection = bigquery.createConnection(connectionSettings);
-   * String selectQuery =
-   *     "SELECT corpus FROM `bigquery-public-data.samples.shakespeare` GROUP BY corpus;";
-   * BigQueryResult bqResultSet = connection.executeSelect(selectQuery);
-   * ResultSet rs = bqResultSet.getResultSet();
-   * while (rs.next()) {
-   *   System.out.printf("%s,", rs.getString("corpus"));
+   * try {
+   *   String selectQuery =
+   *       "SELECT corpus FROM `bigquery-public-data.samples.shakespeare` GROUP BY corpus;";
+   *   BigQueryResult bqResultSet = connection.executeSelect(selectQuery);
+   *   ResultSet rs = bqResultSet.getResultSet();
+   *   while (rs.next()) {
+   *     System.out.printf("%s,", rs.getString("corpus"));
+   *   }
+   * } finally {
+   *   connection.close();
    * }
    * }</pre>
    *
@@ -132,20 +136,24 @@ public interface Connection {
    *         .setUseReadAPI(true)
    *         .build();
    * Connection connection = bigquery.createConnection(connectionSettings);
-   * String selectQuery =
-   *     "SELECT corpus FROM `bigquery-public-data.samples.shakespeare` GROUP BY corpus;";
-   * ListenableFuture<ExecuteSelectResponse> executeSelectFuture =
-   *     connection.executeSelectAsync(selectQuery);
-   * ExecuteSelectResponse executeSelectRes = executeSelectFuture.get();
+   * try {
+   *   String selectQuery =
+   *       "SELECT corpus FROM `bigquery-public-data.samples.shakespeare` GROUP BY corpus;";
+   *   ListenableFuture<ExecuteSelectResponse> executeSelectFuture =
+   *       connection.executeSelectAsync(selectQuery);
+   *   ExecuteSelectResponse executeSelectRes = executeSelectFuture.get();
    *
-   * if (!executeSelectRes.getIsSuccessful()) {
-   *   throw executeSelectRes.getBigQuerySQLException();
-   * }
+   *   if (!executeSelectRes.getIsSuccessful()) {
+   *     throw executeSelectRes.getBigQuerySQLException();
+   *   }
    *
-   * BigQueryResult bigQueryResult = executeSelectRes.getResultSet();
-   * ResultSet rs = bigQueryResult.getResultSet();
-   * while (rs.next()) {
-   *   System.out.println(rs.getString("corpus"));
+   *   BigQueryResult bigQueryResult = executeSelectRes.getResultSet();
+   *   ResultSet rs = bigQueryResult.getResultSet();
+   *   while (rs.next()) {
+   *     System.out.println(rs.getString("corpus"));
+   *   }
+   * } finally {
+   *   connection.close();
    * }
    * }</pre>
    *
@@ -169,32 +177,36 @@ public interface Connection {
    *         .setUseReadAPI(true)
    *         .build();
    * Connection connection = bigquery.createConnection(connectionSettings);
-   * String selectQuery =
-   *     "SELECT TimestampField, StringField, BooleanField FROM "
-   *         + MY_TABLE
-   *         + " WHERE StringField = @stringParam"
-   *         + " AND IntegerField IN UNNEST(@integerList)";
-   * QueryParameterValue stringParameter = QueryParameterValue.string("stringValue");
-   * QueryParameterValue intArrayParameter =
-   *     QueryParameterValue.array(new Integer[] {3, 4}, Integer.class);
-   * Parameter stringParam =
-   *     Parameter.newBuilder().setName("stringParam").setValue(stringParameter).build();
-   * Parameter intArrayParam =
-   *     Parameter.newBuilder().setName("integerList").setValue(intArrayParameter).build();
-   * List<Parameter> parameters = ImmutableList.of(stringParam, intArrayParam);
+   * try {
+   *   String selectQuery =
+   *       "SELECT TimestampField, StringField, BooleanField FROM "
+   *           + MY_TABLE
+   *           + " WHERE StringField = @stringParam"
+   *           + " AND IntegerField IN UNNEST(@integerList)";
+   *   QueryParameterValue stringParameter = QueryParameterValue.string("stringValue");
+   *   QueryParameterValue intArrayParameter =
+   *       QueryParameterValue.array(new Integer[] {3, 4}, Integer.class);
+   *   Parameter stringParam =
+   *       Parameter.newBuilder().setName("stringParam").setValue(stringParameter).build();
+   *   Parameter intArrayParam =
+   *       Parameter.newBuilder().setName("integerList").setValue(intArrayParameter).build();
+   *   List<Parameter> parameters = ImmutableList.of(stringParam, intArrayParam);
    *
-   * ListenableFuture<ExecuteSelectResponse> executeSelectFuture =
-   *     connection.executeSelectAsync(selectQuery, parameters);
-   * ExecuteSelectResponse executeSelectRes = executeSelectFuture.get();
+   *   ListenableFuture<ExecuteSelectResponse> executeSelectFuture =
+   *       connection.executeSelectAsync(selectQuery, parameters);
+   *   ExecuteSelectResponse executeSelectRes = executeSelectFuture.get();
    *
-   * if (!executeSelectRes.getIsSuccessful()) {
-   *   throw executeSelectRes.getBigQuerySQLException();
-   * }
+   *   if (!executeSelectRes.getIsSuccessful()) {
+   *     throw executeSelectRes.getBigQuerySQLException();
+   *   }
    *
-   * BigQueryResult bigQueryResult = executeSelectRes.getResultSet();
-   * ResultSet rs = bigQueryResult.getResultSet();
-   * while (rs.next()) {
-   *   System.out.println(rs.getString("StringField"));
+   *   BigQueryResult bigQueryResult = executeSelectRes.getResultSet();
+   *   ResultSet rs = bigQueryResult.getResultSet();
+   *   while (rs.next()) {
+   *     System.out.println(rs.getString("StringField"));
+   *   }
+   * } finally {
+   *   connection.close();
    * }
    * }</pre>
    *

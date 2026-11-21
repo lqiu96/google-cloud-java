@@ -267,7 +267,7 @@ public class Table extends TableInfo {
 
   /**
    * Fetches current table's latest information. Returns {@code null} if the table does not exist
-   * (HTTP 404), unless {@link BigQueryOptions#setThrowNotFound(boolean)} is enabled.
+   * (HTTP 404), unless {@link BigQueryOptions.Builder#setThrowNotFound(boolean)} is enabled.
    *
    * <p>Because {@code Table} instances are immutable, this method does not update this object in
    * place; capture the returned {@code Table} to read the refreshed metadata.

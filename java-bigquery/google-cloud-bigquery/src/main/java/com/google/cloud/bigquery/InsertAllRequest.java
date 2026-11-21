@@ -67,8 +67,8 @@ public final class InsertAllRequest implements Serializable {
    *
    * <p>This client does not automatically generate insert IDs for rows. Automatic client retries in
    * {@link BigQuery#insertAll(InsertAllRequest)} are enabled only when every row in the request has
-   * a non-null insert ID. If any row omits an insert ID, automatic retries are disabled for the
-   * entire request to prevent duplicate rows.
+   * a non-empty insert ID. If any row omits an insert ID or uses an empty string, automatic retries
+   * are disabled for the entire request to prevent duplicate rows.
    *
    * <p>To ensure proper serialization of numeric data, it is recommended to supply values using a
    * string-typed representation. Additionally, data for fields of {@link LegacySQLTypeName#BYTES}

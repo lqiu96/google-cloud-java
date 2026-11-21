@@ -81,11 +81,12 @@ public class BigQueryRetryConfig {
     }
 
     /**
-     * Adds regular expression patterns to retry on. Both the pattern and the error message are
-     * lowercased before performing a full-string regular expression match, so patterns must match
-     * the entire error message rather than only a substring (for example, {@code ".*rate limit.*"}
-     * rather than {@code "rate limit"}) and should avoid uppercase regex character escapes such as
-     * {@code \D} or {@code \S}.
+     * Adds regular expression patterns to retry on. Patterns are compiled with {@link
+     * java.util.regex.Pattern#CASE_INSENSITIVE} and {@link java.util.regex.Pattern#DOTALL} and
+     * matched against the full error message across newlines ({@code .} matches line terminators),
+     * so patterns must match the entire message rather than only a substring (for example, {@code
+     * ".*rate limit.*"} rather than {@code "rate limit"}). Uppercase regex character escapes such
+     * as {@code \D} and {@code \S} work normally.
      */
     public final Builder retryOnRegEx(String... regExPatterns) {
       for (String regExPattern : regExPatterns) {
