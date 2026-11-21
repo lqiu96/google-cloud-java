@@ -851,6 +851,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Creates a new job.
    *
+   * <p>Job execution is asynchronous, and a failed job's {@link JobId} is terminal. If a job fails
+   * with a transient error, resubmit the work as a new job with a new {@link JobId} rather than
+   * polling the failed job again or reusing its {@link JobId}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a> for guidance on retryable job errors.
+   *
    * <p>Example of loading a newline-delimited-json file with textual fields from GCS to a table.
    *
    * <pre>{@code
@@ -1601,6 +1608,12 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * <p>This method cannot be used in conjuction with {@link QueryJobConfiguration#dryRun()}
    * queries. Since dry-run queries are not actually executed, there's no way to retrieve results.
    *
+   * <p>Transient query job failures are not re-executed automatically on the same job. To retry a
+   * failed query, invoke this method again so a new job is submitted. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a>.
+   *
    * <p>Example of running a query.
    *
    * <pre>{@code
@@ -1617,10 +1630,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * }
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
    */
   TableResult query(QueryJobConfiguration configuration, JobOption... options)
       throws InterruptedException, JobException;
@@ -1634,13 +1648,20 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
    * queries. Since dry-run queries are not actually executed, there's no way to retrieve results.
    *
+   * <p>A failed {@code jobId} is terminal and cannot be reused to re-execute the query. Generate a
+   * new {@link JobId} when retrying a transient failure. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a>.
+   *
    * <p>See {@link #query(QueryJobConfiguration, JobOption...)} for examples on populating a {@link
    * QueryJobConfiguration}.
    *
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
    */
   TableResult query(QueryJobConfiguration configuration, JobId jobId, JobOption... options)
       throws InterruptedException, JobException;
@@ -1667,10 +1688,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * @param configuration the query configuration
    * @param options query options
    * @return an {@link ArrowQueryResult} streaming Arrow vectors
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
    */
   @BetaApi
   default ArrowQueryResult queryArrow(QueryJobConfiguration configuration, JobOption... options)
@@ -1697,14 +1719,21 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * --add-opens=java.base/java.nio=org.apache.arrow.memory.core,ALL-UNNAMED
    * }</pre>
    *
+   * <p>A failed {@code jobId} is terminal and cannot be reused to re-execute the query. Generate a
+   * new {@link JobId} when retrying a transient failure. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a>.
+   *
    * @param configuration the query configuration
    * @param jobId the job ID to use
    * @param options query options
    * @return an {@link ArrowQueryResult} streaming Arrow vectors
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
    */
   @BetaApi
   default ArrowQueryResult queryArrow(
@@ -1723,13 +1752,20 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
    * queries. Since dry-run queries are not actually executed, there's no way to retrieve results.
    *
+   * <p>A failed {@code jobId} is terminal and cannot be reused to re-execute the query. Generate a
+   * new {@link JobId} when retrying a transient failure. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a>.
+   *
    * <p>See {@link #query(QueryJobConfiguration, JobOption...)} for examples on populating a {@link
    * QueryJobConfiguration}.
    *
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
    */
   Object queryWithTimeout(
       QueryJobConfiguration configuration, JobId jobId, Long timeoutMs, JobOption... options)
