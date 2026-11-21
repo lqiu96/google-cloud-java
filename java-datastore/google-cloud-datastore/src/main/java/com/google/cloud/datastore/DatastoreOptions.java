@@ -300,8 +300,11 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     public DatastoreOptions build() {
       String previousHost = this.host;
       try {
-        if (this.host == null && getEmulatorHost() == null) {
-          if (this.transportOptions instanceof GrpcTransportOptions) {
+        if (this.host == null) {
+          String emulatorHost = getEmulatorHost();
+          if (emulatorHost != null) {
+            super.setHost(emulatorHost);
+          } else if (this.transportOptions instanceof GrpcTransportOptions) {
             super.setHost(DatastoreSettings.getDefaultEndpoint());
           } else if (this.transportOptions instanceof HttpTransportOptions) {
             super.setHost(DEFAULT_HOST);
@@ -448,6 +451,8 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     if (host != null) {
       return host;
     }
+    // Note: getTransportOptions() is null during ServiceOptions.<init>; Builder.build() resolves
+    // the transport-specific default host before invoking new DatastoreOptions(this).
     return getTransportOptions() instanceof HttpTransportOptions
         ? DEFAULT_HOST
         : DatastoreSettings.getDefaultEndpoint();

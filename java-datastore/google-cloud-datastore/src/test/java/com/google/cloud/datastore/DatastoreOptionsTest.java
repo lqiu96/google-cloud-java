@@ -454,6 +454,38 @@ public class DatastoreOptionsTest {
               .setHost(explicitHost)
               .build();
       assertThat(grpcOptions.getHost()).isEqualTo(explicitHost);
+
+      DatastoreOptions httpOptions =
+          DatastoreOptions.newBuilder()
+              .setTransportOptions(HttpTransportOptions.newBuilder().build())
+              .setProjectId(PROJECT_ID)
+              .setCredentials(NoCredentials.getInstance())
+              .setHost(explicitHost)
+              .build();
+      assertThat(httpOptions.getHost()).isEqualTo(explicitHost);
+    } finally {
+      restoreProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR, previous);
+    }
+  }
+
+  @Test
+  public void testHttpTransportBuilderReuseWithEmulatorHost() {
+    String previous = System.getProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR);
+    String emulatorHost = "localhost:8081";
+    try {
+      DatastoreOptions.Builder httpBuilder =
+          DatastoreOptions.newBuilder()
+              .setTransportOptions(HttpTransportOptions.newBuilder().build())
+              .setProjectId(PROJECT_ID)
+              .setCredentials(NoCredentials.getInstance());
+
+      System.setProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR, emulatorHost);
+      assertThat(httpBuilder.build().getHost()).isEqualTo(emulatorHost);
+
+      // Builder's unset host state must be restored so clearing the emulator property falls back
+      // to the HTTP default host rather than leaking the emulator host or gRPC endpoint.
+      System.clearProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR);
+      assertThat(httpBuilder.build().getHost()).isEqualTo(DatastoreFactory.DEFAULT_HOST);
     } finally {
       restoreProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR, previous);
     }
