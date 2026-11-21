@@ -30,6 +30,7 @@ import com.google.datastore.v1.RunQueryRequest;
 import com.google.datastore.v1.RunQueryResponse;
 import com.google.protobuf.ByteString;
 import java.util.NoSuchElementException;
+import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -206,6 +207,115 @@ public class QueryResultsImplTest {
     assertThrows(NoSuchElementException.class, results::next);
     assertThat(results.getCursorAfter()).isEqualTo(new Cursor(CURSOR_END));
     assertThrows(UnsupportedOperationException.class, results::remove);
+    EasyMock.verify(rpcMock);
+  }
+
+  @Test
+  public void hasNext_transientFailureRetryPreservesLimitWithoutDoubleSubtraction() {
+    RunQueryResponse batch1 =
+        RunQueryResponse.newBuilder()
+            .setBatch(
+                QueryResultBatch.newBuilder()
+                    .setEntityResultType(EntityResult.ResultType.FULL)
+                    .addEntityResults(entityResult(ENTITY_1, CURSOR_1))
+                    .setMoreResults(MoreResultsType.NOT_FINISHED)
+                    .setEndCursor(CURSOR_BATCH_1_END))
+            .build();
+    RunQueryResponse batch2 =
+        RunQueryResponse.newBuilder()
+            .setBatch(
+                QueryResultBatch.newBuilder()
+                    .setEntityResultType(EntityResult.ResultType.FULL)
+                    .addEntityResults(entityResult(ENTITY_2, CURSOR_2))
+                    .setMoreResults(MoreResultsType.MORE_RESULTS_AFTER_LIMIT)
+                    .setEndCursor(CURSOR_END))
+            .build();
+
+    Capture<RunQueryRequest> failedAttemptRequest = EasyMock.newCapture();
+    Capture<RunQueryRequest> retriedAttemptRequest = EasyMock.newCapture();
+
+    EasyMock.expect(rpcMock.runQuery(EasyMock.anyObject(RunQueryRequest.class))).andReturn(batch1);
+    EasyMock.expect(rpcMock.runQuery(EasyMock.capture(failedAttemptRequest)))
+        .andThrow(new DatastoreException(14, "unavailable", "UNAVAILABLE"));
+    EasyMock.expect(rpcMock.runQuery(EasyMock.capture(retriedAttemptRequest))).andReturn(batch2);
+    EasyMock.replay(rpcMock);
+
+    Query<Entity> query = Query.newEntityQueryBuilder().setKind(KIND).setLimit(2).build();
+    QueryResults<Entity> results = datastore.run(query);
+
+    assertThat(results.next()).isEqualTo(ENTITY_1);
+    assertThat(results.getCursorAfter()).isEqualTo(new Cursor(CURSOR_1));
+
+    DatastoreException transientError = assertThrows(DatastoreException.class, results::hasNext);
+    assertThat(transientError.getCode()).isEqualTo(14);
+    assertThat(results.getCursorAfter()).isEqualTo(new Cursor(CURSOR_1));
+
+    // Retrying hasNext() after a transient failure must resend the same remaining limit (1),
+    // not double-subtract to 0.
+    assertThat(results.hasNext()).isTrue();
+    assertThat(failedAttemptRequest.getValue().getQuery().getLimit().getValue()).isEqualTo(1);
+    assertThat(retriedAttemptRequest.getValue().getQuery().getLimit().getValue()).isEqualTo(1);
+    assertThat(retriedAttemptRequest.getValue().getQuery().getStartCursor())
+        .isEqualTo(CURSOR_BATCH_1_END);
+
+    assertThat(results.next()).isEqualTo(ENTITY_2);
+    assertThat(results.getCursorAfter()).isEqualTo(new Cursor(CURSOR_2));
+    assertThat(results.hasNext()).isFalse();
+    EasyMock.verify(rpcMock);
+  }
+
+  @Test
+  public void hasNext_transientFailureRetryPreservesOffsetWithoutDoubleSubtraction() {
+    RunQueryResponse batch1 =
+        RunQueryResponse.newBuilder()
+            .setBatch(
+                QueryResultBatch.newBuilder()
+                    .setEntityResultType(EntityResult.ResultType.FULL)
+                    .setSkippedResults(1)
+                    .setSkippedCursor(CURSOR_SKIP)
+                    .setMoreResults(MoreResultsType.NOT_FINISHED)
+                    .setEndCursor(CURSOR_BATCH_1_END))
+            .build();
+    RunQueryResponse batch2 =
+        RunQueryResponse.newBuilder()
+            .setBatch(
+                QueryResultBatch.newBuilder()
+                    .setEntityResultType(EntityResult.ResultType.FULL)
+                    .setSkippedResults(2)
+                    .setSkippedCursor(CURSOR_BATCH_1_END)
+                    .addEntityResults(entityResult(ENTITY_1, CURSOR_1))
+                    .setMoreResults(MoreResultsType.NO_MORE_RESULTS)
+                    .setEndCursor(CURSOR_END))
+            .build();
+
+    Capture<RunQueryRequest> failedAttemptRequest = EasyMock.newCapture();
+    Capture<RunQueryRequest> retriedAttemptRequest = EasyMock.newCapture();
+
+    EasyMock.expect(rpcMock.runQuery(EasyMock.anyObject(RunQueryRequest.class))).andReturn(batch1);
+    EasyMock.expect(rpcMock.runQuery(EasyMock.capture(failedAttemptRequest)))
+        .andThrow(new DatastoreException(14, "unavailable", "UNAVAILABLE"));
+    EasyMock.expect(rpcMock.runQuery(EasyMock.capture(retriedAttemptRequest))).andReturn(batch2);
+    EasyMock.replay(rpcMock);
+
+    Query<Entity> query =
+        Query.newEntityQueryBuilder().setKind(KIND).setOffset(3).setLimit(2).build();
+    QueryResults<Entity> results = datastore.run(query);
+
+    assertThat(results.getCursorAfter()).isEqualTo(new Cursor(CURSOR_SKIP));
+    DatastoreException transientError = assertThrows(DatastoreException.class, results::hasNext);
+    assertThat(transientError.getCode()).isEqualTo(14);
+
+    // Retrying hasNext() must resend the same remaining offset (2) and limit (2).
+    assertThat(results.hasNext()).isTrue();
+    assertThat(failedAttemptRequest.getValue().getQuery().getOffset()).isEqualTo(2);
+    assertThat(failedAttemptRequest.getValue().getQuery().getLimit().getValue()).isEqualTo(2);
+    assertThat(retriedAttemptRequest.getValue().getQuery().getOffset()).isEqualTo(2);
+    assertThat(retriedAttemptRequest.getValue().getQuery().getLimit().getValue()).isEqualTo(2);
+    assertThat(retriedAttemptRequest.getValue().getQuery().getStartCursor())
+        .isEqualTo(CURSOR_BATCH_1_END);
+
+    assertThat(results.next()).isEqualTo(ENTITY_1);
+    assertThat(results.hasNext()).isFalse();
     EasyMock.verify(rpcMock);
   }
 

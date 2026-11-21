@@ -71,7 +71,7 @@ class QueryResultsImpl<T> extends UnmodifiableIterator<T> implements QueryResult
       pbBuilder.setNamespaceId(datastore.getOptions().getNamespace());
     }
     partitionIdPb = pbBuilder.build();
-    sendRequest();
+    sendRequest(this.query);
     if (runQueryResponsePb.getBatch().getSkippedResults() > 0) {
       cursor = runQueryResponsePb.getBatch().getSkippedCursor();
     } else {
@@ -124,7 +124,7 @@ class QueryResultsImpl<T> extends UnmodifiableIterator<T> implements QueryResult
     }
   }
 
-  private void sendRequest() {
+  private void sendRequest(RecordQuery<T> queryToRun) {
     RunQueryRequest.Builder requestPb = RunQueryRequest.newBuilder();
     readOptionsPb.ifPresent(requestPb::setReadOptions);
     requestPb.setPartitionId(partitionIdPb);
@@ -134,8 +134,10 @@ class QueryResultsImpl<T> extends UnmodifiableIterator<T> implements QueryResult
       requestPb.setExplainOptions(explainOptions);
     }
     requestPb.setRequestOptions(createRequestOptions(datastore.getOptions(), requestOptions));
-    query.populatePb(requestPb);
-    runQueryResponsePb = datastore.runQuery(requestPb.build());
+    queryToRun.populatePb(requestPb);
+    RunQueryResponse responsePb = datastore.runQuery(requestPb.build());
+    this.query = queryToRun;
+    runQueryResponsePb = responsePb;
     mostRecentQueryPb = requestPb.getQuery();
     moreResults = runQueryResponsePb.getBatch().getMoreResults();
     lastBatch = moreResults != MoreResultsType.NOT_FINISHED;
@@ -162,8 +164,7 @@ class QueryResultsImpl<T> extends UnmodifiableIterator<T> implements QueryResult
   @Override
   public boolean hasNext() {
     while (!entityResultPbIter.hasNext() && !lastBatch) {
-      query = query.nextQuery(runQueryResponsePb);
-      sendRequest();
+      sendRequest(query.nextQuery(runQueryResponsePb));
     }
     if (!entityResultPbIter.hasNext()) {
       cursor = runQueryResponsePb.getBatch().getEndCursor();
