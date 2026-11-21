@@ -136,11 +136,9 @@ public final class DatastoreException extends BaseHttpServiceException {
       message = "Error: " + statusCodeName;
     }
 
-    String reason = "";
-    if (Strings.isNullOrEmpty(apiEx.getReason())) {
-      if (apiEx.getStatusCode() != null) {
-        reason = apiEx.getStatusCode().getCode().name();
-      }
+    String reason = apiEx.getReason();
+    if (Strings.isNullOrEmpty(reason)) {
+      reason = apiEx.getStatusCode() != null ? apiEx.getStatusCode().getCode().name() : "";
     }
     // It'd be better to use ExceptionData and BaseServiceException#<init>(ExceptionData) but,
     // BaseHttpServiceException does not pass that through so we're stuck using this for now.

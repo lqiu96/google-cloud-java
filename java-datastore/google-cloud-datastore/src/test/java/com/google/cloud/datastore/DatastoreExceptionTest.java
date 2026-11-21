@@ -27,10 +27,17 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.api.gax.grpc.GrpcStatusCode;
+import com.google.api.gax.rpc.ApiException;
+import com.google.api.gax.rpc.ErrorDetails;
 import com.google.cloud.BaseServiceException;
 import com.google.cloud.RetryHelper;
+import com.google.protobuf.Any;
+import com.google.rpc.ErrorInfo;
+import io.grpc.Status;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Collections;
 import org.junit.Test;
 
 public class DatastoreExceptionTest {
@@ -120,5 +127,49 @@ public class DatastoreExceptionTest {
       assertEquals("FAILED_PRECONDITION", ex.getReason());
       assertEquals("message a 1", ex.getMessage());
     }
+  }
+
+  @Test
+  public void testAsDatastoreExceptionPreservesNonEmptyApiExceptionReason() {
+    ErrorDetails errorDetails =
+        ErrorDetails.builder()
+            .setRawErrorMessages(
+                Collections.singletonList(
+                    Any.pack(ErrorInfo.newBuilder().setReason("CONSUMER_INVALID").build())))
+            .build();
+    ApiException apiException =
+        new ApiException(
+            "invalid consumer",
+            null,
+            GrpcStatusCode.of(Status.Code.PERMISSION_DENIED),
+            false,
+            errorDetails);
+
+    DatastoreException ex = DatastoreException.asDatastoreException(apiException);
+
+    assertEquals(7, ex.getCode());
+    assertEquals("CONSUMER_INVALID", ex.getReason());
+    assertSame(apiException, ex.getCause());
+  }
+
+  @Test
+  public void testAsDatastoreExceptionFallsBackToStatusCodeNameWhenReasonMissingOrEmpty() {
+    ApiException withoutReason =
+        new ApiException("unavailable", null, GrpcStatusCode.of(Status.Code.UNAVAILABLE), true);
+    DatastoreException exWithoutReason = DatastoreException.asDatastoreException(withoutReason);
+    assertEquals(14, exWithoutReason.getCode());
+    assertEquals("UNAVAILABLE", exWithoutReason.getReason());
+
+    ErrorDetails emptyReasonDetails =
+        ErrorDetails.builder()
+            .setRawErrorMessages(
+                Collections.singletonList(Any.pack(ErrorInfo.newBuilder().setReason("").build())))
+            .build();
+    ApiException withEmptyReason =
+        new ApiException(
+            "aborted", null, GrpcStatusCode.of(Status.Code.ABORTED), false, emptyReasonDetails);
+    DatastoreException exWithEmptyReason = DatastoreException.asDatastoreException(withEmptyReason);
+    assertEquals(10, exWithEmptyReason.getCode());
+    assertEquals("ABORTED", exWithEmptyReason.getReason());
   }
 }
