@@ -2224,8 +2224,13 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
               serviceOptions.isOpenTelemetryTracingEnabled(),
               serviceOptions.getOpenTelemetryTracer());
       String cursor = result.getPageToken();
-      Map<BigQueryRpc.Option, ?> pageOptionMap =
-          Strings.isNullOrEmpty(cursor) ? optionsMap : optionMap(TableDataListOption.startIndex(0));
+      Map<BigQueryRpc.Option, ?> pageOptionMap = optionsMap;
+      if (!Strings.isNullOrEmpty(cursor)
+          && optionsMap.containsKey(BigQueryRpc.Option.START_INDEX)) {
+        Map<BigQueryRpc.Option, Object> nextOptions = new HashMap<>(optionsMap);
+        nextOptions.remove(BigQueryRpc.Option.START_INDEX);
+        pageOptionMap = Collections.unmodifiableMap(nextOptions);
+      }
       return Tuple.of(
           new PageImpl<>(
               new TableDataPageFetcher(tableId, schema, serviceOptions, cursor, pageOptionMap),

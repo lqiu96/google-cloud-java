@@ -2040,11 +2040,11 @@ public class BigQueryImplTest {
         .listTableDataSkipExceptionTranslation(PROJECT, DATASET, TABLE, TABLE_DATA_LIST_OPTIONS);
     assertArrayEquals(TABLE_DATA.toArray(), Iterables.toArray(page.getValues(), List.class));
     Map<BigQueryRpc.Option, ?> SECOND_TABLE_DATA_LIST_OPTIONS =
-        ImmutableMap.of(BigQueryRpc.Option.PAGE_TOKEN, CURSOR, BigQueryRpc.Option.START_INDEX, 0L);
+        ImmutableMap.of(BigQueryRpc.Option.MAX_RESULTS, 42L, BigQueryRpc.Option.PAGE_TOKEN, CURSOR);
     doReturn(
             new TableDataList()
-                .setPageToken(null)
-                .setTotalRows(1L)
+                .setPageToken("cursor2")
+                .setTotalRows(4L)
                 .setRows(
                     ImmutableList.of(
                         new TableRow().setF(ImmutableList.of(new TableCell().setV("Value3"))),
@@ -2052,12 +2052,31 @@ public class BigQueryImplTest {
         .when(bigqueryRpcMock)
         .listTableDataSkipExceptionTranslation(
             PROJECT, DATASET, TABLE, SECOND_TABLE_DATA_LIST_OPTIONS);
+    Map<BigQueryRpc.Option, ?> THIRD_TABLE_DATA_LIST_OPTIONS =
+        ImmutableMap.of(
+            BigQueryRpc.Option.MAX_RESULTS, 42L, BigQueryRpc.Option.PAGE_TOKEN, "cursor2");
+    doReturn(
+            new TableDataList()
+                .setPageToken(null)
+                .setTotalRows(4L)
+                .setRows(
+                    ImmutableList.of(
+                        new TableRow().setF(ImmutableList.of(new TableCell().setV("Value5"))))))
+        .when(bigqueryRpcMock)
+        .listTableDataSkipExceptionTranslation(
+            PROJECT, DATASET, TABLE, THIRD_TABLE_DATA_LIST_OPTIONS);
+    assertTrue(page.hasNextPage());
+    page = page.getNextPage();
+    assertEquals("cursor2", page.getNextPageToken());
     assertTrue(page.hasNextPage());
     page = page.getNextPage();
     assertNull(page.getNextPageToken());
     verify(bigqueryRpcMock)
         .listTableDataSkipExceptionTranslation(
             PROJECT, DATASET, TABLE, SECOND_TABLE_DATA_LIST_OPTIONS);
+    verify(bigqueryRpcMock)
+        .listTableDataSkipExceptionTranslation(
+            PROJECT, DATASET, TABLE, THIRD_TABLE_DATA_LIST_OPTIONS);
   }
 
   // The "minimally initialized" Job that lets Job.fromPb run without throwing.
