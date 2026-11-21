@@ -94,6 +94,24 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
       return super.setTransportOptions(transportOptions);
     }
 
+    /**
+     * Sets the client-wide default geographic processing location (for example, {@code "US"},
+     * {@code "EU"}, or {@code "asia-northeast1"}) used by job and query operations when {@link
+     * JobId} does not specify a location (such as {@link BigQuery#query(QueryJobConfiguration,
+     * BigQuery.JobOption...)}, {@link BigQuery#create(JobInfo, BigQuery.JobOption...)} with an
+     * auto-generated job ID, {@link BigQuery#getJob(JobId, BigQuery.JobOption...)}, and {@link
+     * BigQuery#cancel(JobId)}).
+     *
+     * <p>Use with caution: this default applies across requests made with this client, even when a
+     * query references tables in another region, which can cause queries against datasets in a
+     * different location to fail with a not-found error. When working across multiple regions, omit
+     * this client-wide setting and specify the location per request via {@link
+     * JobId.Builder#setLocation(String)} (or let BigQuery infer the location from referenced
+     * datasets).
+     *
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">
+     *     Specify locations</a>
+     */
     public Builder setLocation(String location) {
       this.location = location;
       return this;
@@ -224,6 +242,11 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     return (HttpBigQueryRpc) getRpc();
   }
 
+  /**
+   * Returns the client-wide default geographic processing location used by job and query operations
+   * when no location is specified on {@link JobId}, or {@code null} if unset. See {@link
+   * Builder#setLocation(String)}.
+   */
   public String getLocation() {
     return location;
   }
