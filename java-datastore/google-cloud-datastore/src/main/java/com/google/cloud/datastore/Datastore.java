@@ -81,79 +81,123 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
 
   /**
    * A callback for running with a transactional {@link
-   * com.google.cloud.datastore.DatastoreReaderWriter}. The associated transaction will be committed
-   * after a successful return from the {@code run} method. Any propagated exception will cause the
-   * transaction to be rolled-back.
+   * com.google.cloud.datastore.DatastoreReaderWriter}. The associated transaction is committed
+   * after a successful return from {@link #run(DatastoreReaderWriter)}, and rolled back if an
+   * exception is thrown.
+   *
+   * <p>All reads and writes that must participate in the transaction must be executed on the {@link
+   * DatastoreReaderWriter} passed to {@link #run(DatastoreReaderWriter)}, not on the standalone
+   * {@link Datastore} instance. Because {@link Datastore#runInTransaction} automatically retries
+   * the callback on contention ({@code ABORTED}) or other retryable errors, implementations must be
+   * idempotent and avoid non-idempotent side effects before the transaction commits.
    *
    * @param <T> the type of the return value
+   * @see Datastore#runInTransaction(TransactionCallable)
+   * @see Datastore#runInTransaction(TransactionCallable, TransactionOptions)
    */
   interface TransactionCallable<T> {
     /**
-     * Callback's invoke method for the TransactionCallable.
+     * Executes transactional work using the provided {@link DatastoreReaderWriter}.
      *
-     * @param readerWriter DatastoreReaderWriter associated with the new transaction
-     * @return T The transaction result
-     * @throws Exception upon failure
+     * <p>Use {@code readerWriter} (not the standalone {@link Datastore} client) for all reads and
+     * writes that belong to this transaction. Writes buffered on {@code readerWriter} are not
+     * visible to subsequent reads in the same transaction; they are applied only on commit.
+     *
+     * @param readerWriter {@link DatastoreReaderWriter} associated with the active transaction
+     * @return the transaction result
+     * @throws Exception upon failure (triggers rollback and is propagated wrapped in a {@link
+     *     DatastoreException})
      */
     T run(DatastoreReaderWriter readerWriter) throws Exception;
   }
 
   /**
    * Invokes the callback's {@link Datastore.TransactionCallable#run} method with a {@link
-   * DatastoreReaderWriter} that is associated with a new transaction. The transaction will be
-   * committed upon successful invocation. Any thrown exception will cause the transaction to
-   * rollback and will be propagated as a {@link DatastoreException} with the original exception as
-   * its root cause.
+   * DatastoreReaderWriter} associated with a new transaction, commits upon normal return, and rolls
+   * back if an exception is thrown.
    *
-   * <p>Example of running in a transaction.
+   * <p>Important behavioral contracts:
+   *
+   * <ul>
+   *   <li><b>Use {@code readerWriter}, not {@code datastore}:</b> Execute all transactional reads
+   *       and writes on the callback's {@link DatastoreReaderWriter}. Calls made directly on the
+   *       {@link Datastore} client run outside the transaction and are not atomic with it.
+   *   <li><b>Automatic retries and idempotency:</b> The entire callback is automatically retried on
+   *       contention ({@code ABORTED}) and other retryable failures according to the client's retry
+   *       settings. Keep callbacks idempotent and avoid non-idempotent side effects until {@code
+   *       runInTransaction} returns.
+   *   <li><b>Explicit {@link TransactionOptions}:</b> To explicitly control read-write vs.
+   *       read-only mode or guarantee {@code previousTransaction} retry priority across library
+   *       versions, use {@link #runInTransaction(TransactionCallable, TransactionOptions)} with
+   *       explicit {@link TransactionOptions.ReadWrite} options.
+   *   <li><b>Wrapped exceptions:</b> Exceptions thrown from the callback or {@code commit()} are
+   *       wrapped in a {@link DatastoreException} (with code {@code 0} and {@code null} reason)
+   *       whose {@link Throwable#getCause()} holds the original exception or inner {@link
+   *       DatastoreException}. Unwrap {@code getCause()} to inspect the underlying failure.
+   * </ul>
+   *
+   * <p>Example of running in a transaction:
    *
    * <pre>{@code
    * String callableResult = "my_callable_result";
-   * TransactionCallable<String> callable = new TransactionCallable<String>() {
-   *   public String run(DatastoreReaderWriter readerWriter) {
-   *     // use readerWriter to run in transaction
-   *     return callableResult;
-   *   }
-   * };
+   * TransactionCallable<String> callable =
+   *     readerWriter -> {
+   *       // Use readerWriter (not datastore) for all transactional reads and writes.
+   *       return callableResult;
+   *     };
    * String result = datastore.runInTransaction(callable);
    * }</pre>
    *
-   * @param callable the callback to call with a newly created transactional readerWriter
-   * @throws DatastoreException upon failure
+   * @param callable the callback to invoke with a newly created transactional {@code readerWriter}
+   * @throws DatastoreException upon failure (unwrap {@link Throwable#getCause()} for the original
+   *     callback or commit exception)
+   * @see #runInTransaction(TransactionCallable, TransactionOptions)
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/transactions">Google Cloud
+   *     Datastore transactions</a>
    */
   <T> T runInTransaction(TransactionCallable<T> callable);
 
   /**
    * Invokes the callback's {@link Datastore.TransactionCallable#run} method with a {@link
-   * DatastoreReaderWriter} that is associated with a new transaction. The transaction will be
-   * committed upon successful invocation. Any thrown exception will cause the transaction to
-   * rollback and will be propagated as a {@link DatastoreException} with the original exception as
-   * its root cause. If {@link TransactionOptions} is set to read-write mode, previous transaction
-   * Id in the options will be automatically populated each time a transaction is retried.
+   * DatastoreReaderWriter} associated with a new transaction configured by {@code options}, commits
+   * upon normal return, and rolls back if an exception is thrown.
    *
-   * <p>Example of running in a transaction.
+   * <p>All reads and writes participating in the transaction must be executed on the callback's
+   * {@link DatastoreReaderWriter}, not on {@link Datastore}. The callback must be idempotent
+   * because it is automatically retried on contention ({@code ABORTED}) and other retryable
+   * failures according to the client's retry settings. When {@code options} specifies read-write
+   * mode ({@link TransactionOptions.ReadWrite}), the previous transaction ID is automatically
+   * populated on retries so Datastore prioritizes the retried transaction under contention.
+   *
+   * <p>Exceptions thrown from the callback or {@code commit()} are rolled back and propagated
+   * wrapped in a {@link DatastoreException} (with code {@code 0} and {@code null} reason); unwrap
+   * {@link Throwable#getCause()} to inspect the original user exception or inner {@link
+   * DatastoreException}.
+   *
+   * <p>Example of running in a read-write transaction with explicit options:
    *
    * <pre>{@code
    * String callableResult = "my_callable_result";
-   * TransactionCallable<String> callable = new TransactionCallable<String>() {
-   *   public String run(DatastoreReaderWriter readerWriter) {
-   *     // use readerWriter to run in transaction
-   *     return callableResult;
-   *   }
-   * };
+   * TransactionCallable<String> callable =
+   *     readerWriter -> {
+   *       // Use readerWriter (not datastore) for all transactional reads and writes.
+   *       return callableResult;
+   *     };
    *
    * TransactionOptions options = TransactionOptions.newBuilder()
-   *     .setReadWrite(TransactionOptions.ReadWrite
-   *         .getDefaultInstance())
+   *     .setReadWrite(TransactionOptions.ReadWrite.getDefaultInstance())
    *     .build();
    *
    * String result = datastore.runInTransaction(callable, options);
    * }</pre>
    *
-   * @param callable the callback to call with a newly created transactional readerWriter
-   * @param options the Transaction options indicating whether the transaction mode is Read-only or
-   *     Read-Write
-   * @throws DatastoreException upon failure
+   * @param callable the callback to invoke with a newly created transactional {@code readerWriter}
+   * @param options the transaction options indicating read-only or read-write mode
+   * @throws DatastoreException upon failure (unwrap {@link Throwable#getCause()} for the original
+   *     callback or commit exception)
+   * @see #runInTransaction(TransactionCallable)
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/transactions">Google Cloud
+   *     Datastore transactions</a>
    */
   <T> T runInTransaction(TransactionCallable<T> callable, TransactionOptions options);
 
