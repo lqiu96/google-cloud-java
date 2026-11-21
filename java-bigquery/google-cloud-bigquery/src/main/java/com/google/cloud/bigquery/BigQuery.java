@@ -988,9 +988,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Dataset getDataset(DatasetId datasetId, DatasetOption... options);
 
   /**
-   * Lists the project's datasets. This method returns partial information on each dataset: ({@link
-   * Dataset#getDatasetId()}, {@link Dataset#getFriendlyName()} and {@link
-   * Dataset#getGeneratedId()}). To get complete information use {@link #getDataset}.
+   * Lists the project's datasets.
+   *
+   * <p>This method returns partial metadata on each {@link Dataset} ({@link
+   * Dataset#getDatasetId()}, {@link Dataset#getFriendlyName()}, {@link Dataset#getGeneratedId()},
+   * {@link Dataset#getLocation()}, and {@link Dataset#getLabels()}); fields such as {@link
+   * Dataset#getDescription()} and {@link Dataset#getAcl()} are not populated. To fetch complete
+   * metadata, call {@link #getDataset(DatasetId, DatasetOption...)} or {@link
+   * Dataset#reload(DatasetOption...)}. Hidden datasets are omitted unless {@link
+   * DatasetListOption#all()} is passed.
    *
    * <p>Example of listing datasets, specifying the page size.
    *
@@ -1016,9 +1022,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Page<Project> listProjects(ProjectListOption... options);
 
   /**
-   * Lists the datasets in the provided project. This method returns partial information on each
-   * dataset: ({@link Dataset#getDatasetId()}, {@link Dataset#getFriendlyName()} and {@link
-   * Dataset#getGeneratedId()}). To get complete information use either {@link #getDataset}.
+   * Lists the datasets in the provided project.
+   *
+   * <p>This method returns partial metadata on each {@link Dataset} ({@link
+   * Dataset#getDatasetId()}, {@link Dataset#getFriendlyName()}, {@link Dataset#getGeneratedId()},
+   * {@link Dataset#getLocation()}, and {@link Dataset#getLabels()}); fields such as {@link
+   * Dataset#getDescription()} and {@link Dataset#getAcl()} are not populated. To fetch complete
+   * metadata, call {@link #getDataset(DatasetId, DatasetOption...)} or {@link
+   * Dataset#reload(DatasetOption...)}. Hidden datasets are omitted unless {@link
+   * DatasetListOption#all()} is passed.
    *
    * <p>Example of listing datasets in a project, specifying the page size.
    *
@@ -1372,10 +1384,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Page<Routine> listRoutines(DatasetId datasetId, RoutineListOption... options);
 
   /**
-   * Lists the tables in the dataset. This method returns partial information on each table: ({@link
-   * Table#getTableId()}, {@link Table#getFriendlyName()}, {@link Table#getGeneratedId()} and type,
-   * which is part of {@link Table#getDefinition()}). To get complete information use either {@link
-   * #getTable}.
+   * Lists the tables in the dataset.
+   *
+   * <p>This method returns partial metadata on each {@link Table} ({@link Table#getTableId()},
+   * {@link Table#getFriendlyName()}, {@link Table#getGeneratedId()}, {@link
+   * Table#getCreationTime()}, {@link Table#getLabels()}, and basic {@link Table#getDefinition()}
+   * attributes such as type, partitioning, and clustering); fields such as schema ({@link
+   * TableDefinition#getSchema()}), {@link Table#getDescription()}, {@link Table#getNumRows()}, and
+   * {@link Table#getNumBytes()} are not populated. To fetch complete metadata, call {@link
+   * #getTable(TableId, TableOption...)} or {@link Table#reload(TableOption...)}.
    *
    * <p>Example of listing the tables in a dataset, specifying the page size.
    *
@@ -1392,10 +1409,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Page<Table> listTables(String datasetId, TableListOption... options);
 
   /**
-   * Lists the tables in the dataset. This method returns partial information on each table: ({@link
-   * Table#getTableId()}, {@link Table#getFriendlyName()}, {@link Table#getGeneratedId()} and type,
-   * which is part of {@link Table#getDefinition()}). To get complete information use either {@link
-   * #getTable}.
+   * Lists the tables in the dataset.
+   *
+   * <p>This method returns partial metadata on each {@link Table} ({@link Table#getTableId()},
+   * {@link Table#getFriendlyName()}, {@link Table#getGeneratedId()}, {@link
+   * Table#getCreationTime()}, {@link Table#getLabels()}, and basic {@link Table#getDefinition()}
+   * attributes such as type, partitioning, and clustering); fields such as schema ({@link
+   * TableDefinition#getSchema()}), {@link Table#getDescription()}, {@link Table#getNumRows()}, and
+   * {@link Table#getNumBytes()} are not populated. To fetch complete metadata, call {@link
+   * #getTable(TableId, TableOption...)} or {@link Table#reload(TableOption...)}.
    *
    * <p>Example of listing the tables in a dataset.
    *
@@ -1668,7 +1690,14 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Job getJob(JobId jobId, JobOption... options);
 
   /**
-   * Lists the jobs.
+   * Lists the jobs in the configured project.
+   *
+   * <p>By default, only jobs submitted by the calling user are returned; pass {@link
+   * JobListOption#allUsers()} to list jobs for all users in the project. The client requests full
+   * job projection ({@code projection=full}) by default unless narrowed with {@link
+   * JobListOption#fields(JobField...)}, which limits the returned fields (always retaining job
+   * reference, configuration, state, and error result; {@link JobField#SELF_LINK} and {@link
+   * JobField#ETAG} cannot be selected when listing jobs).
    *
    * <p>Example of listing jobs, specifying the page size.
    *
