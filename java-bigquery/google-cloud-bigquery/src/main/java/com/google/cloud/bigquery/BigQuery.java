@@ -1439,6 +1439,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Lists the table's rows.
    *
+   * <p>Because the underlying {@code tabledata.list} API does not return table schema metadata, the
+   * returned {@link TableResult} has {@code getSchema() == null} (supporting positional {@link
+   * FieldValueList#get(int)} lookup only) and {@code getJobId() == null}. Pass a {@link Schema} to
+   * {@link #listTableData(String, String, Schema, TableDataListOption...)} when by-name lookup via
+   * {@link FieldValueList#get(String)} is needed. Use {@link TableResult#iterateAll()} to read all
+   * pages or {@link TableResult#getValues()} for the current page only.
+   *
    * <p>Example of listing table rows, specifying the page size.
    *
    * <pre>{@code
@@ -1460,6 +1467,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Lists the table's rows.
    *
+   * <p>Because the underlying {@code tabledata.list} API does not return table schema metadata, the
+   * returned {@link TableResult} has {@code getSchema() == null} (supporting positional {@link
+   * FieldValueList#get(int)} lookup only) and {@code getJobId() == null}. Pass a {@link Schema} to
+   * {@link #listTableData(TableId, Schema, TableDataListOption...)} when by-name lookup via {@link
+   * FieldValueList#get(String)} is needed. Use {@link TableResult#iterateAll()} to read all pages
+   * or {@link TableResult#getValues()} for the current page only.
+   *
    * <p>Example of listing table rows, specifying the page size.
    *
    * <pre>{@code
@@ -1480,8 +1494,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   TableResult listTableData(TableId tableId, TableDataListOption... options);
 
   /**
-   * Lists the table's rows. If the {@code schema} is not {@code null}, it is available to the
-   * {@link FieldValueList} iterated over.
+   * Lists the table's rows. If {@code schema} is not {@code null}, it is attached to each returned
+   * {@link FieldValueList}, enabling by-name lookup via {@link FieldValueList#get(String)}.
+   *
+   * <p>{@link TableResult#getJobId()} is {@code null} for table-data reads. Use {@link
+   * TableResult#iterateAll()} to read all pages automatically, or pair {@link
+   * TableResult#getValues()} with {@link TableResult#hasNextPage()} and {@link
+   * TableResult#getNextPage()} for manual pagination.
    *
    * <p>Example of listing table rows with schema.
    *
@@ -1502,8 +1521,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
       String datasetId, String tableId, Schema schema, TableDataListOption... options);
 
   /**
-   * Lists the table's rows. If the {@code schema} is not {@code null}, it is available to the
-   * {@link FieldValueList} iterated over.
+   * Lists the table's rows. If {@code schema} is not {@code null}, it is attached to each returned
+   * {@link FieldValueList}, enabling by-name lookup via {@link FieldValueList#get(String)}.
+   *
+   * <p>{@link TableResult#getJobId()} is {@code null} for table-data reads. Use {@link
+   * TableResult#iterateAll()} to read all pages automatically, or pair {@link
+   * TableResult#getValues()} with {@link TableResult#hasNextPage()} and {@link
+   * TableResult#getNextPage()} for manual pagination.
    *
    * <p>Example of listing table rows with schema.
    *
