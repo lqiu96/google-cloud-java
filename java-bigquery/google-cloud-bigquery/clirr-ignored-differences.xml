@@ -227,4 +227,10 @@
     <className>com/google/cloud/bigquery/DatasetInfo*</className>
     <method>*setResourceTags(*)</method>
   </difference>
-  </differences>
+  <difference>
+    <differenceType>7009</differenceType>
+    <className>com/google/cloud/bigquery/Routine</className>
+    <method>void readObject(java.io.ObjectInputStream)</method>
+    <justification>Java serialization only invokes private void readObject(ObjectInputStream); public visibility prevented restoring bigquery on deserialization</justification>
+  </difference>
+</differences>

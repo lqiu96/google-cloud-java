@@ -17,6 +17,7 @@ package com.google.cloud.bigquery;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,7 +26,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.NoCredentials;
 import com.google.common.collect.ImmutableList;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,6 +229,40 @@ public class RoutineTest {
     when(bigquery.delete(ROUTINE_INFO.getRoutineId())).thenReturn(false);
     assertFalse(routine.delete());
     verify(bigquery).delete(ROUTINE_INFO.getRoutineId());
+  }
+
+  @Test
+  public void testDeserializationRestoresBigQuery() throws Exception {
+    BigQueryOptions realOptions =
+        BigQueryOptions.newBuilder()
+            .setProjectId("test-project")
+            .setCredentials(NoCredentials.getInstance())
+            .build();
+    BigQuery realBigQuery = realOptions.getService();
+    RoutineInfo serializableInfo =
+        RoutineInfo.newBuilder(ROUTINE_ID)
+            .setEtag(ETAG)
+            .setRoutineType(ROUTINE_TYPE)
+            .setCreationTime(CREATION_TIME)
+            .setLastModifiedTime(LAST_MODIFIED_TIME)
+            .setLanguage(LANGUAGE)
+            .setBody(BODY)
+            .build();
+    Routine original = new Routine(realBigQuery, new RoutineInfo.BuilderImpl(serializableInfo));
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+      oos.writeObject(original);
+    }
+    Routine deserialized;
+    try (ObjectInputStream ois =
+        new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+      deserialized = (Routine) ois.readObject();
+    }
+
+    assertEquals(original, deserialized);
+    assertNotNull(deserialized.getBigQuery());
+    assertEquals(realOptions, deserialized.getBigQuery().getOptions());
   }
 
   private void compareRoutine(Routine expected, Routine value) {
