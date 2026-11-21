@@ -73,8 +73,19 @@ import org.threeten.extra.PeriodDuration;
  * calling {@link #of(Object, StandardSQLTypeName)} with the value and a particular
  * StandardSQLTypeName enum value.
  *
- * <p>Use {@link #array(Object[], StandardSQLTypeName)} for array parameters and {@link
+ * <p>Temporal factories enforce specific units and formats: {@link #timestamp(Long)} expects epoch
+ * microseconds (not milliseconds), {@link #timestamp(String)} requires a space-separated date and
+ * time (rejecting ISO-8601 {@code 'T'} separators such as {@link Instant#toString()}) with optional
+ * fractional seconds (up to 12 digits) and timezone offset, and {@link #time(String)} and {@link
+ * #dateTime(String)} strictly require 6 fractional-second digits (and a space separator for {@code
+ * dateTime}).
+ *
+ * <p>Use {@link #array(Object[], StandardSQLTypeName)} or {@link #array(Object[], Class)} with
+ * typed Java object arrays (not {@link List} or primitive arrays) for array parameters, and {@link
  * #struct(Map)} for struct parameters.
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/parameterized-queries">Running
+ *     parameterized queries</a>
  */
 @AutoValue
 public abstract class QueryParameterValue implements Serializable {
@@ -312,11 +323,12 @@ public abstract class QueryParameterValue implements Serializable {
   /**
    * Creates a {@code QueryParameterValue} object with a type of TIMESTAMP.
    *
-   * <p>This method only supports microsecond precision for timestamp. To use higher precision,
-   * prefer {@link #timestamp(String)} with an ISO8601 String
+   * <p>{@code value} must be in <b>microseconds</b> since the Unix epoch (not milliseconds;
+   * multiply epoch milliseconds by {@code 1_000L}). This overload supports microsecond precision;
+   * for higher precision (up to picoseconds), use {@link #timestamp(String)}.
    *
-   * @param value Microseconds since epoch, e.g. 1733945416000000 corresponds to 2024-12-11
-   *     19:30:16.929Z
+   * @param value microseconds since the Unix epoch (for example, {@code 1408452095220000L}
+   *     corresponds to {@code "2014-08-19 12:41:35.220000+00:00"})
    */
   public static QueryParameterValue timestamp(Long value) {
     return of(value, StandardSQLTypeName.TIMESTAMP);
@@ -325,36 +337,51 @@ public abstract class QueryParameterValue implements Serializable {
   /**
    * Creates a {@code QueryParameterValue} object with a type of TIMESTAMP.
    *
-   * <p>This method supports up to picosecond precision (12 digits) for timestamp. Input should
-   * conform to ISO8601 format.
+   * <p>Requires a space separator between date and time (ISO-8601 {@code 'T'}-separated strings
+   * such as {@link Instant#toString()} are rejected), with optional seconds, optional fractional
+   * seconds (up to 12 digits for picosecond precision), and an optional timezone offset (for
+   * example, {@code "2014-08-19 12:41:35Z"}, {@code "2014-08-19 12:41:35.220000+00:00"}, or {@code
+   * "2014-08-19 12:41:35.123456789123Z"}).
    *
-   * <p>Should be in the format "yyyy-MM-dd HH:mm:ss.SSSSSS{SSSSSSS}Z", e.g. "2014-08-19
-   * 12:41:35.123456Z" for microsecond precision and "2014-08-19 12:41:35.123456789123Z" for
-   * picosecond precision
+   * @throws IllegalArgumentException if {@code value} does not match the expected space-separated
+   *     format or has more than 12 fractional-second digits
    */
   public static QueryParameterValue timestamp(String value) {
     return of(value, StandardSQLTypeName.TIMESTAMP);
   }
 
   /**
-   * Creates a {@code QueryParameterValue} object with a type of DATE. Must be in the format
-   * "yyyy-MM-dd", e.g. "2014-08-19".
+   * Creates a {@code QueryParameterValue} object with a type of DATE. Must be in the format {@code
+   * "yyyy-MM-dd"} (for example, {@code "2014-08-19"}).
+   *
+   * @throws IllegalArgumentException if {@code value} does not match {@code "yyyy-MM-dd"}
    */
   public static QueryParameterValue date(String value) {
     return of(value, StandardSQLTypeName.DATE);
   }
 
   /**
-   * Creates a {@code QueryParameterValue} object with a type of TIME. Must be in the format
-   * "HH:mm:ss.SSSSSS", e.g. "12:41:35.220000".
+   * Creates a {@code QueryParameterValue} object with a type of TIME. Must strictly match {@code
+   * "HH:mm:ss.SSSSSS"} with 6 fractional-second digits (for example, {@code "12:41:35.220000"}).
+   * Strings omitting fractional seconds (such as {@code "12:41:35"} or {@link
+   * java.time.LocalTime#toString()} with zero fractional seconds) throw {@link
+   * IllegalArgumentException}.
+   *
+   * @throws IllegalArgumentException if {@code value} does not match {@code "HH:mm:ss.SSSSSS"}
    */
   public static QueryParameterValue time(String value) {
     return of(value, StandardSQLTypeName.TIME);
   }
 
   /**
-   * Creates a {@code QueryParameterValue} object with a type of DATETIME. Must be in the format
-   * "yyyy-MM-dd HH:mm:ss.SSSSSS", e.g. "2014-08-19 12:41:35.220000".
+   * Creates a {@code QueryParameterValue} object with a type of DATETIME. Must strictly match
+   * {@code "yyyy-MM-dd HH:mm:ss.SSSSSS"} with a space separator and 6 fractional-second digits (for
+   * example, {@code "2014-08-19 12:41:35.220000"}). Strings using a {@code 'T'} separator or
+   * omitting 6 fractional-second digits (such as {@link java.time.LocalDateTime#toString()}) throw
+   * {@link IllegalArgumentException}.
+   *
+   * @throws IllegalArgumentException if {@code value} does not match {@code "yyyy-MM-dd
+   *     HH:mm:ss.SSSSSS"}
    */
   public static QueryParameterValue dateTime(String value) {
     return of(value, StandardSQLTypeName.DATETIME);
@@ -389,13 +416,26 @@ public abstract class QueryParameterValue implements Serializable {
   /**
    * Creates a {@code QueryParameterValue} object with a type of ARRAY, and an array element type
    * based on the given class.
+   *
+   * <p>Requires a typed Java object array ({@code T[]}), not a {@link List} or primitive array
+   * (pass boxed arrays such as {@code Long[]} or {@code Integer[]}, or convert lists with {@code
+   * list.toArray(new String[0])}). Supports only the classes accepted by {@link #of(Object,
+   * Class)}; for other element types (such as {@link StandardSQLTypeName#TIMESTAMP}, {@link
+   * StandardSQLTypeName#DATETIME}, {@link StandardSQLTypeName#BYTES}, or {@link
+   * StandardSQLTypeName#STRUCT}), use {@link #array(Object[], StandardSQLTypeName)}.
    */
   public static <T> QueryParameterValue array(T[] array, Class<T> clazz) {
     return array(array, classToType(clazz));
   }
 
   /**
-   * Creates a {@code QueryParameterValue} object with a type of ARRAY the given array element type.
+   * Creates a {@code QueryParameterValue} object with a type of ARRAY and the given array element
+   * type.
+   *
+   * <p>Requires a typed Java object array ({@code T[]}), not a {@link List} or primitive array
+   * (pass boxed arrays such as {@code Long[]} or {@code String[]}). When {@code type} is {@link
+   * StandardSQLTypeName#STRUCT}, elements must be {@code QueryParameterValue} instances created via
+   * {@link #struct(Map)}.
    */
   public static <T> QueryParameterValue array(T[] array, StandardSQLTypeName type) {
     List<QueryParameterValue> listValues = new ArrayList<>();
@@ -414,8 +454,9 @@ public abstract class QueryParameterValue implements Serializable {
   }
 
   /**
-   * Creates a map with {@code QueryParameterValue} object and a type of STRUCT the given struct
-   * element type.
+   * Creates a {@code QueryParameterValue} object of type {@link StandardSQLTypeName#STRUCT} with
+   * the given field names and typed field values. Nested structs and arrays of structs (via {@link
+   * #array(Object[], StandardSQLTypeName)} with {@link StandardSQLTypeName#STRUCT}) are supported.
    */
   public static QueryParameterValue struct(Map<String, QueryParameterValue> struct) {
     return QueryParameterValue.newBuilder()
