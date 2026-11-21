@@ -22,7 +22,7 @@ import com.google.api.core.BetaApi;
 import com.google.cloud.datastore.Query.ResultType;
 import com.google.cloud.datastore.models.ExplainMetrics;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.UnmodifiableIterator;
 import com.google.datastore.v1.EntityResult;
 import com.google.datastore.v1.ExplainOptions;
 import com.google.datastore.v1.PartitionId;
@@ -33,10 +33,11 @@ import com.google.datastore.v1.RunQueryRequest;
 import com.google.datastore.v1.RunQueryResponse;
 import com.google.protobuf.ByteString;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
-class QueryResultsImpl<T> extends AbstractIterator<T> implements QueryResults<T> {
+class QueryResultsImpl<T> extends UnmodifiableIterator<T> implements QueryResults<T> {
 
   private final DatastoreImpl datastore;
   private final Optional<ReadOptions> readOptionsPb;
@@ -159,14 +160,22 @@ class QueryResultsImpl<T> extends AbstractIterator<T> implements QueryResults<T>
   }
 
   @Override
-  protected T computeNext() {
+  public boolean hasNext() {
     while (!entityResultPbIter.hasNext() && !lastBatch) {
       query = query.nextQuery(runQueryResponsePb);
       sendRequest();
     }
     if (!entityResultPbIter.hasNext()) {
       cursor = runQueryResponsePb.getBatch().getEndCursor();
-      return endOfData();
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public T next() {
+    if (!hasNext()) {
+      throw new NoSuchElementException();
     }
     EntityResult entityResultPb = entityResultPbIter.next();
     cursor = entityResultPb.getCursor();
