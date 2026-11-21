@@ -260,46 +260,63 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   Batch newBatch();
 
   /**
-   * Allocate a unique id for the given key. The returned key will have the same information
-   * (projectId, kind, namespace and ancestors) as the given key and will have a newly assigned id.
+   * Allocates a unique ID for the given incomplete key. The returned {@link Key} has the same
+   * project ID, database ID, kind, namespace, and ancestors as {@code key}, plus a newly assigned
+   * numeric ID.
    *
-   * <p>Example of allocating an id.
+   * <p>Although {@link Key} extends {@link IncompleteKey}, the input must be an incomplete key (for
+   * example, from {@link KeyFactory#newKey()}); passing an already-complete {@link Key} throws
+   * {@link IllegalArgumentException}.
+   *
+   * <p>Example of allocating an ID:
    *
    * <pre>{@code
    * KeyFactory keyFactory = datastore.newKeyFactory().setKind("MyKind");
    * IncompleteKey incompleteKey = keyFactory.newKey();
    *
-   * // let cloud datastore automatically assign an id
+   * // Let Cloud Datastore automatically assign an ID.
    * Key key = datastore.allocateId(incompleteKey);
    * }</pre>
    *
+   * @throws IllegalArgumentException if {@code key} is already a complete {@link Key}
    * @throws DatastoreException upon failure
    */
   Key allocateId(IncompleteKey key);
 
   /**
-   * Returns a list of keys using the allocated ids ordered by the input.
+   * Allocates unique IDs for the given incomplete keys and returns the resulting complete {@link
+   * Key}s in input order.
    *
-   * <p>Example of allocating multiple ids in a single batch.
+   * <p>Every element must be an {@link IncompleteKey}; passing an already-complete {@link Key}
+   * throws {@link IllegalArgumentException}.
+   *
+   * <p>Example of allocating multiple IDs in a single batch:
    *
    * <pre>{@code
    * KeyFactory keyFactory = datastore.newKeyFactory().setKind("MyKind");
    * IncompleteKey incompleteKey1 = keyFactory.newKey();
    * IncompleteKey incompleteKey2 = keyFactory.newKey();
    *
-   * // let cloud datastore automatically assign the ids
+   * // Let Cloud Datastore automatically assign the IDs.
    * List<Key> keys = datastore.allocateId(incompleteKey1, incompleteKey2);
    * }</pre>
    *
+   * @throws IllegalArgumentException if any element in {@code keys} is already a complete {@link
+   *     Key}
    * @throws DatastoreException upon failure
    * @see #allocateId(IncompleteKey)
    */
   List<Key> allocateId(IncompleteKey... keys);
 
   /**
-   * Returns a list of keys using the allocated ids with specified {@link
-   * DatastoreExecutionOptions}.
+   * Allocates unique IDs for the given incomplete keys with specified {@link
+   * DatastoreExecutionOptions} and returns the resulting complete {@link Key}s in input order.
    *
+   * <p>Every element must be an {@link IncompleteKey}; passing an already-complete {@link Key}
+   * throws {@link IllegalArgumentException}.
+   *
+   * @throws IllegalArgumentException if any element in {@code keys} is already a complete {@link
+   *     Key}
    * @throws DatastoreException upon failure
    */
   @BetaApi
@@ -422,7 +439,13 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   /**
    * {@inheritDoc}
    *
-   * <p>Example of updating multiple entities.
+   * <p>This call commits in {@link com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL}
+   * mode and is not atomic across entities; partial updates may persist if another entity in the
+   * call does not exist ({@code NOT_FOUND}). Each update replaces the entire stored entity (not a
+   * field-level patch). Use {@link #runInTransaction(TransactionCallable)} or {@link
+   * #newTransaction()} for atomic updates.
+   *
+   * <p>Example of updating multiple entities:
    *
    * <pre>{@code
    * String keyName1 = "my_key_name_1";
@@ -440,14 +463,16 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * datastore.update(entity1, entity2);
    * }</pre>
    *
-   * @throws DatastoreException upon failure
+   * @throws DatastoreException upon failure or if any entity's key does not exist
    */
   @Override
   void update(Entity... entities);
 
   /**
-   * A Datastore update operation with specified {@link DatastoreExecutionOptions}. The operation
-   * will fail if an entity with the same key does not already exist.
+   * A non-transactional Datastore update operation with specified {@link
+   * DatastoreExecutionOptions}. Replaces each existing entity in full (not a field-level patch) and
+   * fails with {@code NOT_FOUND} if a key does not already exist. Not atomic across multiple
+   * entities.
    *
    * @throws DatastoreException upon failure
    */
@@ -457,7 +482,7 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   /**
    * {@inheritDoc}
    *
-   * <p>Example of putting a single entity.
+   * <p>Example of putting a single entity:
    *
    * <pre>{@code
    * String keyName = "my_key_name";
@@ -473,12 +498,21 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   @Override
   Entity put(FullEntity<?> entity);
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>Commits in {@link com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode and is
+   * not atomic across entities; use {@link #runInTransaction(TransactionCallable)} or {@link
+   * #newTransaction()} for atomic multi-entity writes.
+   */
   @Override
   List<Entity> put(FullEntity<?>... entities);
 
   /**
-   * A Datastore put operation with specified {@link DatastoreExecutionOptions}. This method will
-   * also allocate an id for any entity with an incomplete key.
+   * A non-transactional Datastore put (upsert) operation with specified {@link
+   * DatastoreExecutionOptions}. Replaces existing entities in full (not a field-level patch) and
+   * automatically allocates IDs for any entities with an {@link IncompleteKey}. Not atomic across
+   * multiple entities.
    *
    * @throws DatastoreException upon failure
    * @throws IllegalArgumentException if any of the given entities is missing a key
@@ -489,7 +523,11 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   /**
    * {@inheritDoc}
    *
-   * <p>Example of deleting multiple entities.
+   * <p>Commits in {@link com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode and is
+   * not atomic across keys; use {@link #runInTransaction(TransactionCallable)} or {@link
+   * #newTransaction()} for atomic deletes.
+   *
+   * <p>Example of deleting multiple entities:
    *
    * <pre>{@code
    * String keyName1 = "my_key_name1";
