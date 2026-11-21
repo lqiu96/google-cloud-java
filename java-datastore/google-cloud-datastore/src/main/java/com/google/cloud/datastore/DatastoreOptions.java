@@ -71,6 +71,16 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
   private static final Set<String> SCOPES = ImmutableSet.of(DATASTORE_SCOPE);
   private static final String DEFAULT_DATABASE_ID = "";
   public static final String PROJECT_ID_ENV_VAR = "DATASTORE_PROJECT_ID";
+
+  /**
+   * Environment variable and system property name ({@code DATASTORE_EMULATOR_HOST}) used to detect
+   * a Datastore emulator host when {@link Builder#setHost(String)} is not explicitly set. When
+   * connecting to an emulator, also configure {@link com.google.cloud.NoCredentials#getInstance()}
+   * to avoid Application Default Credentials lookup.
+   *
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/tools/datastore-emulator">Running
+   *     the Datastore emulator</a>
+   */
   public static final String LOCAL_HOST_ENV_VAR = "DATASTORE_EMULATOR_HOST";
 
   // Default to a slightly larger channel count to handle a larger initial QPS. The initial
@@ -172,10 +182,17 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     /**
      * Sets the transport options.
      *
+     * <p>By default, {@code DatastoreOptions} uses gRPC ({@link GrpcTransportOptions}) with a
+     * managed channel pool configurable via {@link #setChannelProvider(TransportChannelProvider)}.
+     * Pass {@link HttpTransportOptions} to opt into HTTP/JSON transport instead (in which case any
+     * configured channel provider is ignored).
+     *
      * @param transportOptions the transport options to set, must be {@link HttpTransportOptions} or
      *     {@link GrpcTransportOptions}
      * @return the builder
      * @throws IllegalArgumentException if the transport options are not supported
+     * @see <a href="https://docs.cloud.google.com/datastore/docs/java-client-grpc">Datastore Java
+     *     gRPC client guide</a>
      */
     @Override
     public Builder setTransportOptions(@Nonnull TransportOptions transportOptions) {
@@ -202,6 +219,28 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
       return setTransportOptions((TransportOptions) transportOptions);
     }
 
+    /**
+     * Sets the service host endpoint.
+     *
+     * <p>When connecting to a local or containerized Datastore emulator, explicitly set both the
+     * host and {@link com.google.cloud.NoCredentials#getInstance()} (along with a project ID) so
+     * the client uses plaintext connections and skips Application Default Credentials lookup:
+     *
+     * <pre>{@code
+     * DatastoreOptions options = DatastoreOptions.newBuilder()
+     *     .setProjectId("test-project")
+     *     .setHost("localhost:8081")
+     *     .setCredentials(NoCredentials.getInstance())
+     *     .build();
+     * }</pre>
+     *
+     * <p>If omitted, the {@link #LOCAL_HOST_ENV_VAR} ({@code DATASTORE_EMULATOR_HOST}) system
+     * property or environment variable is used when set; otherwise the transport-specific
+     * production endpoint is used.
+     *
+     * @see <a href="https://docs.cloud.google.com/datastore/docs/tools/datastore-emulator">Running
+     *     the Datastore emulator</a>
+     */
     @Override
     public Builder setHost(String host) {
       this.host = host;
@@ -228,10 +267,12 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     /**
      * Builds the {@link DatastoreOptions} instance.
      *
-     * <p>If the host is not explicitly set, it defaults to the transport-specific default host:
+     * <p>If the host is not explicitly set via {@link #setHost(String)}, the {@link
+     * #LOCAL_HOST_ENV_VAR} ({@code DATASTORE_EMULATOR_HOST}) system property or environment
+     * variable is checked first; otherwise, it defaults to the transport-specific production host:
      *
      * <ul>
-     *   <li>gRPC: {@code datastore.googleapis.com:443}
+     *   <li>gRPC (default): {@code datastore.googleapis.com:443}
      *   <li>HTTP: {@code https://datastore.googleapis.com}
      * </ul>
      *

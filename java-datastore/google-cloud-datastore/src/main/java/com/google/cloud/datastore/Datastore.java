@@ -682,13 +682,22 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
       AggregationQuery query, DatastoreExecutionOptions executionOptions);
 
   /**
-   * Closes the gRPC channels associated with this instance and frees up their resources. This
-   * method blocks until all channels are closed. Once this method is called, this Datastore client
-   * is no longer usable.
+   * Closes the underlying RPC channels (such as gRPC channels) and built-in telemetry resources
+   * associated with this instance, blocking until shutdown completes.
+   *
+   * <p>Call this method once during application shutdown rather than per request. Once closed, this
+   * {@code Datastore} client is no longer usable.
    */
   @Override
   void close() throws Exception;
 
-  /** Returns true if this background resource has been shut down. */
+  /**
+   * Returns {@code true} if the underlying gRPC transport resources for this client have been shut
+   * down via {@link #close()}.
+   *
+   * <p>This check is supported for the default gRPC transport ({@link
+   * com.google.cloud.grpc.GrpcTransportOptions}) and throws {@link UnsupportedOperationException}
+   * when configured with {@link com.google.cloud.http.HttpTransportOptions}.
+   */
   boolean isClosed();
 }
