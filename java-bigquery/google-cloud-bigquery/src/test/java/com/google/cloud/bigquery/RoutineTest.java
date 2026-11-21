@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,6 +262,50 @@ public class RoutineTest {
     }
 
     assertEquals(original, deserialized);
+    assertNotNull(deserialized.getBigQuery());
+    assertEquals(realOptions, deserialized.getBigQuery().getOptions());
+  }
+
+  @Test
+  public void testFromPbWithArgumentsDeserializationRestoresBigQuery() throws Exception {
+    BigQueryOptions realOptions =
+        BigQueryOptions.newBuilder()
+            .setProjectId("test-project")
+            .setCredentials(NoCredentials.getInstance())
+            .build();
+    BigQuery realBigQuery = realOptions.getService();
+    com.google.api.services.bigquery.model.Argument argPb =
+        new com.google.api.services.bigquery.model.Argument()
+            .setName("x")
+            .setArgumentKind("FIXED_TYPE")
+            .setMode("IN")
+            .setDataType(
+                new com.google.api.services.bigquery.model.StandardSqlDataType()
+                    .setTypeKind("INT64"));
+    com.google.api.services.bigquery.model.Routine routinePb =
+        new com.google.api.services.bigquery.model.Routine()
+            .setRoutineReference(ROUTINE_ID.toPb())
+            .setRoutineType(ROUTINE_TYPE)
+            .setLanguage(LANGUAGE)
+            .setArguments(Collections.singletonList(argPb))
+            .setReturnType(RETURN_TYPE.toPb())
+            .setDefinitionBody(BODY);
+    Routine original = Routine.fromPb(realBigQuery, routinePb);
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+      oos.writeObject(original);
+    }
+    Routine deserialized;
+    try (ObjectInputStream ois =
+        new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+      deserialized = (Routine) ois.readObject();
+    }
+
+    assertEquals(original, deserialized);
+    assertEquals(1, deserialized.getArguments().size());
+    assertEquals("x", deserialized.getArguments().get(0).getName());
+    assertEquals("INT64", deserialized.getArguments().get(0).getDataType().getTypeKind());
     assertNotNull(deserialized.getBigQuery());
     assertEquals(realOptions, deserialized.getBigQuery().getOptions());
   }

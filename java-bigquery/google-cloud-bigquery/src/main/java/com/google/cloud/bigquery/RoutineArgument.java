@@ -18,11 +18,14 @@ package com.google.cloud.bigquery;
 import com.google.api.services.bigquery.model.Argument;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
+import java.io.Serializable;
 import javax.annotation.Nullable;
 
 /** An argument for a BigQuery Routine. */
 @AutoValue
-public abstract class RoutineArgument {
+public abstract class RoutineArgument implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   static final Function<Argument, RoutineArgument> FROM_PB_FUNCTION =
       new Function<Argument, RoutineArgument>() {
