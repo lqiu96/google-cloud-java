@@ -40,8 +40,8 @@ import java.util.Objects;
  *
  * @see <a href="https://docs.cloud.google.com/bigquery/docs/control-access-to-resources-iam">
  *     Control access to resources with IAM</a>
- * @see <a href="https://cloud.google.com/bigquery/docs/managing_jobs_datasets_projects#datasets">
- *     Managing Jobs, Datasets, and Projects</a>
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/datasets-intro">Introduction to
+ *     datasets</a>
  */
 public class DatasetInfo implements Serializable {
 
