@@ -29,6 +29,7 @@ import com.google.cloud.http.HttpTransportOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import io.opentelemetry.api.trace.Tracer;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -52,13 +53,14 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
   private static final long serialVersionUID = -2437598817433266048L;
   private final String location;
   // set the option ThrowNotFound when you want to throw the exception when the value not found
-  private boolean setThrowNotFound;
-  private boolean useInt64Timestamps;
-  private DataFormatOptions dataFormatOptions;
-  private JobCreationMode defaultJobCreationMode = JobCreationMode.JOB_CREATION_MODE_UNSPECIFIED;
-  private boolean enableOpenTelemetryTracing;
-  private Tracer openTelemetryTracer;
-  private ResultRetryAlgorithm<?> resultRetryAlgorithm;
+  private volatile boolean setThrowNotFound;
+  private volatile boolean useInt64Timestamps;
+  private volatile DataFormatOptions dataFormatOptions;
+  private volatile JobCreationMode defaultJobCreationMode =
+      JobCreationMode.JOB_CREATION_MODE_UNSPECIFIED;
+  private final boolean enableOpenTelemetryTracing;
+  private final Tracer openTelemetryTracer;
+  private final ResultRetryAlgorithm<?> resultRetryAlgorithm;
 
   public static class DefaultBigQueryFactory implements BigQueryFactory {
 
@@ -83,8 +85,12 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
   public static class Builder extends ServiceOptions.Builder<BigQuery, BigQueryOptions, Builder> {
 
     private String location;
+    private boolean throwNotFound;
     private boolean useInt64Timestamps;
+    private boolean useInt64TimestampsExplicitlySet;
     private DataFormatOptions dataFormatOptions;
+    private boolean dataFormatOptionsExplicitlySet;
+    private JobCreationMode defaultJobCreationMode = JobCreationMode.JOB_CREATION_MODE_UNSPECIFIED;
     private boolean enableOpenTelemetryTracing;
     private Tracer openTelemetryTracer;
     private ResultRetryAlgorithm<?> resultRetryAlgorithm;
@@ -95,6 +101,14 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
 
     private Builder(BigQueryOptions options) {
       super(options);
+      this.location = options.location;
+      this.throwNotFound = options.setThrowNotFound;
+      this.useInt64Timestamps = options.useInt64Timestamps;
+      this.dataFormatOptions = options.dataFormatOptions;
+      this.defaultJobCreationMode = options.defaultJobCreationMode;
+      this.enableOpenTelemetryTracing = options.enableOpenTelemetryTracing;
+      this.openTelemetryTracer = options.openTelemetryTracer;
+      this.resultRetryAlgorithm = options.resultRetryAlgorithm;
     }
 
     /**
@@ -136,6 +150,21 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     }
 
     /**
+     * Sets whether {@code get*} methods throw {@link BigQueryException} instead of returning {@code
+     * null} when a resource is not found.
+     */
+    public Builder setThrowNotFound(boolean throwNotFound) {
+      this.throwNotFound = throwNotFound;
+      return this;
+    }
+
+    /** Sets the default {@link JobCreationMode} used when not specified on a query. */
+    public Builder setDefaultJobCreationMode(JobCreationMode defaultJobCreationMode) {
+      this.defaultJobCreationMode = defaultJobCreationMode;
+      return this;
+    }
+
+    /**
      * This setter is marked as Obsolete. Prefer {@link #setDataFormatOptions(DataFormatOptions)} to
      * set the int64timestamp configuration instead.
      *
@@ -147,6 +176,7 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     @ObsoleteApi("Use setDataFormatOptions(DataFormatOptions) instead")
     public Builder setUseInt64Timestamps(boolean useInt64Timestamps) {
       this.useInt64Timestamps = useInt64Timestamps;
+      this.useInt64TimestampsExplicitlySet = true;
       return this;
     }
 
@@ -158,6 +188,7 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     public Builder setDataFormatOptions(DataFormatOptions dataFormatOptions) {
       Preconditions.checkNotNull(dataFormatOptions, "DataFormatOptions cannot be null");
       this.dataFormatOptions = dataFormatOptions;
+      this.dataFormatOptionsExplicitlySet = true;
       return this;
     }
 
@@ -217,13 +248,15 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
   private BigQueryOptions(Builder builder) {
     super(BigQueryFactory.class, BigQueryRpcFactory.class, builder, new BigQueryDefaults());
     this.location = builder.location;
-    this.useInt64Timestamps = builder.useInt64Timestamps;
+    this.setThrowNotFound = builder.throwNotFound;
+    this.defaultJobCreationMode = builder.defaultJobCreationMode;
     this.enableOpenTelemetryTracing = builder.enableOpenTelemetryTracing;
     this.openTelemetryTracer = builder.openTelemetryTracer;
-    if (builder.resultRetryAlgorithm != null) {
+    if (builder.resultRetryAlgorithm != null
+        && builder.resultRetryAlgorithm != BigQueryBaseService.DEFAULT_BIGQUERY_EXCEPTION_HANDLER) {
       this.resultRetryAlgorithm = builder.resultRetryAlgorithm;
     } else {
-      this.resultRetryAlgorithm = BigQueryBaseService.DEFAULT_BIGQUERY_EXCEPTION_HANDLER;
+      this.resultRetryAlgorithm = null;
     }
 
     // If dataFormatOptions is not set, then create a new instance and set it with the
@@ -231,9 +264,15 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     if (builder.dataFormatOptions == null) {
       this.dataFormatOptions =
           DataFormatOptions.newBuilder().useInt64Timestamp(builder.useInt64Timestamps).build();
+    } else if (!builder.dataFormatOptionsExplicitlySet && builder.useInt64TimestampsExplicitlySet) {
+      this.dataFormatOptions =
+          builder.dataFormatOptions.toBuilder()
+              .useInt64Timestamp(builder.useInt64Timestamps)
+              .build();
     } else {
       this.dataFormatOptions = builder.dataFormatOptions;
     }
+    this.useInt64Timestamps = this.dataFormatOptions.useInt64Timestamp();
   }
 
   private static class BigQueryDefaults implements ServiceDefaults<BigQuery, BigQueryOptions> {
@@ -299,7 +338,7 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
    * <p>Alternative: {@code DataFormatOptions.newBuilder().setUseInt64Timestamp(...).build()}
    */
   @ObsoleteApi("Use Builder#setDataFormatOptions(DataFormatOptions) instead")
-  public void setUseInt64Timestamps(boolean useInt64Timestamps) {
+  public synchronized void setUseInt64Timestamps(boolean useInt64Timestamps) {
     this.useInt64Timestamps = useInt64Timestamps;
     // Because this setter exists outside the Builder, DataFormatOptions needs be rebuilt to
     // account for this setting.
@@ -359,7 +398,9 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
   }
 
   public ResultRetryAlgorithm<?> getResultRetryAlgorithm() {
-    return resultRetryAlgorithm;
+    return resultRetryAlgorithm != null
+        ? resultRetryAlgorithm
+        : BigQueryBaseService.DEFAULT_BIGQUERY_EXCEPTION_HANDLER;
   }
 
   @SuppressWarnings("unchecked")
@@ -370,16 +411,34 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
 
   @Override
   public int hashCode() {
-    return baseHashCode();
+    return Objects.hash(
+        baseHashCode(),
+        location,
+        setThrowNotFound,
+        dataFormatOptions,
+        defaultJobCreationMode,
+        enableOpenTelemetryTracing,
+        openTelemetryTracer,
+        resultRetryAlgorithm);
   }
 
   @Override
   public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
     if (!(obj instanceof BigQueryOptions)) {
       return false;
     }
     BigQueryOptions other = (BigQueryOptions) obj;
-    return baseEquals(other);
+    return baseEquals(other)
+        && Objects.equals(location, other.location)
+        && setThrowNotFound == other.setThrowNotFound
+        && Objects.equals(dataFormatOptions, other.dataFormatOptions)
+        && Objects.equals(defaultJobCreationMode, other.defaultJobCreationMode)
+        && enableOpenTelemetryTracing == other.enableOpenTelemetryTracing
+        && Objects.equals(openTelemetryTracer, other.openTelemetryTracer)
+        && Objects.equals(resultRetryAlgorithm, other.resultRetryAlgorithm);
   }
 
   public static BigQueryOptions getDefaultInstance() {
