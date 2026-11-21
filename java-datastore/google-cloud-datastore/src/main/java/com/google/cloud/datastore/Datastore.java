@@ -551,7 +551,13 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   void delete(List<Key> keys, DatastoreExecutionOptions executionOptions);
 
   /**
-   * Returns a new KeyFactory for this service
+   * Returns a new {@link KeyFactory} initialized with this client's project ID, database ID, and
+   * namespace.
+   *
+   * <p>{@link KeyFactory} is mutable, not thread-safe, and retains its configured kind and
+   * accumulated ancestors across {@code newKey} calls until {@link KeyFactory#reset()} is called.
+   * Prefer calling {@code newKeyFactory()} per operation rather than sharing an instance across
+   * threads or reusing it without resetting.
    *
    * <p>Example of creating a {@code KeyFactory}.
    *
