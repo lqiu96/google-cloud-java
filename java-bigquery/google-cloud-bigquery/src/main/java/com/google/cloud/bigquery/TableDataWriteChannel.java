@@ -28,9 +28,26 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 
 /**
- * {@link WriteChannel} implementation to stream data into a BigQuery table. Use {@link #getJob()}
- * to get the job used to insert streamed data. Please notice that {@link #getJob()} returns {@code
- * null} until the channel is closed.
+ * {@link com.google.cloud.WriteChannel} implementation that uploads data from a local file or
+ * stream into a BigQuery table using an asynchronous load job (rather than streaming inserts via
+ * {@link BigQuery#insertAll(InsertAllRequest)}).
+ *
+ * <p>Instances of this class are not thread-safe. The upload is finalized and the resulting load
+ * {@link Job} is created only when {@link #close()} completes successfully. Always close the
+ * channel (for example, in a {@code try}-with-resources or {@code finally} block) before calling
+ * {@link #getJob()}.
+ *
+ * <p>{@link #getJob()} returns {@code null} before the channel is closed and also returns {@code
+ * null} after closing if no bytes were written to the channel. Check for {@code null} before
+ * calling {@link Job#waitFor(com.google.cloud.RetryOption...)}.
+ *
+ * <p>For destination datasets outside {@code "US"} or {@code "EU"}, create the channel with {@link
+ * BigQuery#writer(JobId, WriteChannelConfiguration)} and specify the location on {@link JobId}.
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/loading-data-local">Loading data from
+ *     local files</a>
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+ *     locations</a>
  */
 public class TableDataWriteChannel
     extends BaseWriteChannel<BigQueryOptions, WriteChannelConfiguration> {
@@ -145,8 +162,9 @@ public class TableDataWriteChannel
   }
 
   /**
-   * Returns the {@code Job} created to insert the rows. The job is available only once the upload
-   * finished and the channel was closed, returns {@code null} otherwise.
+   * Returns the load {@link Job} created to ingest the uploaded data. Returns {@code null} until
+   * {@link #close()} completes successfully, and also returns {@code null} after closing if no
+   * bytes were written to the channel.
    */
   public Job getJob() {
     return job;

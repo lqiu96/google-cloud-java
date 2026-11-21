@@ -1736,9 +1736,23 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   QueryResponse getQueryResults(JobId jobId, QueryResultsOption... options);
 
   /**
-   * Returns a channel to write data to be inserted into a BigQuery table. Data format and other
-   * options can be configured using the {@link WriteChannelConfiguration} parameter. If the job is
-   * not in "US" or "EU", {@link #writer(JobId, WriteChannelConfiguration)} must be used instead.
+   * Returns a channel to upload data into a BigQuery table using a load job. Data format and other
+   * options can be configured using the {@link WriteChannelConfiguration} parameter.
+   *
+   * <p>The returned {@link TableDataWriteChannel} is not thread-safe. The upload is finalized only
+   * when {@link TableDataWriteChannel#close()} completes, and {@link
+   * TableDataWriteChannel#getJob()} returns {@code null} until the channel is closed or if no bytes
+   * were written. Check that {@code getJob()} is non-null before calling {@link
+   * Job#waitFor(RetryOption...)}.
+   *
+   * <p>This overload creates an auto-generated {@link JobId} without a location (it does not apply
+   * {@link BigQueryOptions#getLocation()}). If the destination dataset is not in {@code "US"} or
+   * {@code "EU"}, use {@link #writer(JobId, WriteChannelConfiguration)} with the job location set
+   * on {@link JobId}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a> and <a
+   * href="https://docs.cloud.google.com/bigquery/docs/loading-data-local">Loading data from local
+   * files</a>.
    *
    * <p>Example of creating a channel with which to write to a table.
    *
@@ -1750,20 +1764,22 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * WriteChannelConfiguration writeChannelConfiguration = WriteChannelConfiguration.newBuilder(tableId)
    *     .setFormatOptions(FormatOptions.csv()).build();
    * TableDataWriteChannel writer = bigquery.writer(writeChannelConfiguration);
-   * // Write data to writer
+   * // Close the channel to finalize the upload and create the load job
    * try {
    *   writer.write(ByteBuffer.wrap(csvData.getBytes(Charsets.UTF_8)));
    * } finally {
    *   writer.close();
    * }
-   * // Get load job
+   * // getJob() returns null before close() or when no bytes were written
    * Job job = writer.getJob();
-   * job = job.waitFor();
-   * LoadStatistics stats = job.getStatistics();
-   * return stats.getOutputRows();
+   * if (job != null) {
+   *   job = job.waitFor();
+   *   LoadStatistics stats = job.getStatistics();
+   *   return stats.getOutputRows();
+   * }
    * }</pre>
    *
-   * <p>Example of writing a local file to a table.
+   * <p>Example of writing a local file to a table in a specific location.
    *
    * <pre>{@code
    * String datasetName = "my_dataset_name";
@@ -1776,15 +1792,17 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * // The location must be specified; other fields can be auto-detected.
    * JobId jobId = JobId.newBuilder().setLocation(location).build();
    * TableDataWriteChannel writer = bigquery.writer(jobId, writeChannelConfiguration);
-   * // Write data to writer
+   * // Closing the OutputStream closes the underlying channel and finalizes the upload
    * try (OutputStream stream = Channels.newOutputStream(writer)) {
    *   Files.copy(csvPath, stream);
    * }
-   * // Get load job
+   * // getJob() returns null before close() or when the file was empty (0 bytes written)
    * Job job = writer.getJob();
-   * job = job.waitFor();
-   * LoadStatistics stats = job.getStatistics();
-   * return stats.getOutputRows();
+   * if (job != null) {
+   *   job = job.waitFor();
+   *   LoadStatistics stats = job.getStatistics();
+   *   return stats.getOutputRows();
+   * }
    * }</pre>
    *
    * @throws BigQueryException upon failure
@@ -1792,9 +1810,20 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   TableDataWriteChannel writer(WriteChannelConfiguration writeChannelConfiguration);
 
   /**
-   * Returns a channel to write data to be inserted into a BigQuery table. Data format and other
-   * options can be configured using the {@link WriteChannelConfiguration} parameter. If the job is
-   * not in "US" or "EU", the {@code jobId} must contain the location of the job.
+   * Returns a channel to upload data into a BigQuery table using a load job. Data format and other
+   * options can be configured using the {@link WriteChannelConfiguration} parameter. If the
+   * destination dataset is not in {@code "US"} or {@code "EU"}, {@code jobId} must specify the
+   * location of the job.
+   *
+   * <p>The returned {@link TableDataWriteChannel} is not thread-safe. The upload is finalized only
+   * when {@link TableDataWriteChannel#close()} completes, and {@link
+   * TableDataWriteChannel#getJob()} returns {@code null} until the channel is closed or if no bytes
+   * were written. Check that {@code getJob()} is non-null before calling {@link
+   * Job#waitFor(RetryOption...)}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a> and <a
+   * href="https://docs.cloud.google.com/bigquery/docs/loading-data-local">Loading data from local
+   * files</a>.
    *
    * <p>Example of creating a channel with which to write to a table.
    *
@@ -1809,18 +1838,22 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * // The location must be specified; other fields can be auto-detected.
    * JobId jobId = JobId.newBuilder().setLocation(location).build();
    * TableDataWriteChannel writer = bigquery.writer(jobId, writeChannelConfiguration);
-   * // Write data to writer
+   * // Close the channel to finalize the upload and create the load job
    * try {
    *   writer.write(ByteBuffer.wrap(csvData.getBytes(Charsets.UTF_8)));
    * } finally {
    *   writer.close();
    * }
-   * // Get load job
+   * // getJob() returns null before close() or when no bytes were written
    * Job job = writer.getJob();
-   * job = job.waitFor();
-   * LoadStatistics stats = job.getStatistics();
-   * return stats.getOutputRows();
+   * if (job != null) {
+   *   job = job.waitFor();
+   *   LoadStatistics stats = job.getStatistics();
+   *   return stats.getOutputRows();
+   * }
    * }</pre>
+   *
+   * @throws BigQueryException upon failure
    */
   TableDataWriteChannel writer(JobId jobId, WriteChannelConfiguration writeChannelConfiguration);
 
