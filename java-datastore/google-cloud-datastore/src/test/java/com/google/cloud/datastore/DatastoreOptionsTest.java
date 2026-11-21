@@ -413,4 +413,76 @@ public class DatastoreOptionsTest {
                 .isExportBuiltinMetricsToGoogleCloudMonitoring())
         .isFalse();
   }
+
+  @Test
+  public void testEmulatorHostHonoredWhenHostNotSet() {
+    String previous = System.getProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR);
+    String emulatorHost = "localhost:8081";
+    try {
+      System.setProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR, emulatorHost);
+
+      DatastoreOptions grpcOptions =
+          DatastoreOptions.newBuilder()
+              .setProjectId(PROJECT_ID)
+              .setCredentials(NoCredentials.getInstance())
+              .build();
+      assertThat(grpcOptions.getHost()).isEqualTo(emulatorHost);
+
+      DatastoreOptions httpOptions =
+          DatastoreOptions.newBuilder()
+              .setTransportOptions(HttpTransportOptions.newBuilder().build())
+              .setProjectId(PROJECT_ID)
+              .setCredentials(NoCredentials.getInstance())
+              .build();
+      assertThat(httpOptions.getHost()).isEqualTo(emulatorHost);
+    } finally {
+      restoreProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR, previous);
+    }
+  }
+
+  @Test
+  public void testExplicitHostOverridesEmulatorHost() {
+    String previous = System.getProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR);
+    String explicitHost = "http://localhost:" + PORT;
+    try {
+      System.setProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR, "localhost:8081");
+
+      DatastoreOptions grpcOptions =
+          DatastoreOptions.newBuilder()
+              .setProjectId(PROJECT_ID)
+              .setCredentials(NoCredentials.getInstance())
+              .setHost(explicitHost)
+              .build();
+      assertThat(grpcOptions.getHost()).isEqualTo(explicitHost);
+    } finally {
+      restoreProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR, previous);
+    }
+  }
+
+  @Test
+  public void testEmptyEmulatorHostFallsBackToTransportDefault() {
+    String previous = System.getProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR);
+    try {
+      System.setProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR, "");
+
+      DatastoreOptions.Builder builder =
+          DatastoreOptions.newBuilder()
+              .setProjectId(PROJECT_ID)
+              .setCredentials(NoCredentials.getInstance());
+      assertThat(builder.build().getHost()).isEqualTo(DatastoreSettings.getDefaultEndpoint());
+
+      builder.setTransportOptions(HttpTransportOptions.newBuilder().build());
+      assertThat(builder.build().getHost()).isEqualTo(DatastoreFactory.DEFAULT_HOST);
+    } finally {
+      restoreProperty(DatastoreOptions.LOCAL_HOST_ENV_VAR, previous);
+    }
+  }
+
+  private static void restoreProperty(String key, String previousValue) {
+    if (previousValue == null) {
+      System.clearProperty(key);
+    } else {
+      System.setProperty(key, previousValue);
+    }
+  }
 }

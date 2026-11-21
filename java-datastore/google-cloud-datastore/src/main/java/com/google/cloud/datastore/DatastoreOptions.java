@@ -38,6 +38,7 @@ import com.google.cloud.grpc.GrpcTransportOptions;
 import com.google.cloud.http.HttpTransportOptions;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.io.IOException;
@@ -297,16 +298,21 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
      */
     @Override
     public DatastoreOptions build() {
-      if (this.host == null) {
-        // Use whatever host value the user passes in, otherwise use the transport specific default
-        // host values
-        if (this.transportOptions instanceof GrpcTransportOptions) {
-          this.setHost(DatastoreSettings.getDefaultEndpoint());
-        } else if (this.transportOptions instanceof HttpTransportOptions) {
-          this.setHost(DEFAULT_HOST);
+      String previousHost = this.host;
+      try {
+        if (this.host == null && getEmulatorHost() == null) {
+          if (this.transportOptions instanceof GrpcTransportOptions) {
+            super.setHost(DatastoreSettings.getDefaultEndpoint());
+          } else if (this.transportOptions instanceof HttpTransportOptions) {
+            super.setHost(DEFAULT_HOST);
+          }
+        }
+        return new DatastoreOptions(this);
+      } finally {
+        if (previousHost == null) {
+          super.setHost(null);
         }
       }
-      return new DatastoreOptions(this);
     }
 
     /**
@@ -431,10 +437,20 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     return channelProvider;
   }
 
+  private static String getEmulatorHost() {
+    String host = System.getProperty(LOCAL_HOST_ENV_VAR, System.getenv(LOCAL_HOST_ENV_VAR));
+    return Strings.isNullOrEmpty(host) ? null : host;
+  }
+
   @Override
   protected String getDefaultHost() {
-    String host = System.getProperty(LOCAL_HOST_ENV_VAR, System.getenv(LOCAL_HOST_ENV_VAR));
-    return host != null ? host : DEFAULT_HOST;
+    String host = getEmulatorHost();
+    if (host != null) {
+      return host;
+    }
+    return getTransportOptions() instanceof HttpTransportOptions
+        ? DEFAULT_HOST
+        : DatastoreSettings.getDefaultEndpoint();
   }
 
   @Override
