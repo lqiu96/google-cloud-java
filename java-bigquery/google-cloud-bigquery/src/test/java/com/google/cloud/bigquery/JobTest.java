@@ -588,6 +588,22 @@ class JobTest {
   }
 
   @Test
+  void testReloadWithNullStatusDoesNotThrowNpe() {
+    JobInfo infoWithoutStatus =
+        JobInfo.newBuilder(COPY_CONFIGURATION)
+            .setJobId(JOB_ID)
+            .setStatistics(COPY_JOB_STATISTICS)
+            .build();
+    Job jobWithoutStatus = new Job(bigquery, new JobInfo.BuilderImpl(infoWithoutStatus));
+    BigQuery.JobOption option = BigQuery.JobOption.fields(BigQuery.JobField.STATISTICS);
+    when(bigquery.getJob(JOB_INFO.getJobId(), option)).thenReturn(jobWithoutStatus);
+    Job reloaded = job.reload(option);
+    assertNull(reloaded.getStatus());
+    compareJob(jobWithoutStatus, reloaded);
+    verify(bigquery).getJob(JOB_INFO.getJobId(), option);
+  }
+
+  @Test
   void testCancel() {
     when(bigquery.cancel(JOB_INFO.getJobId())).thenReturn(true);
     assertTrue(job.cancel());

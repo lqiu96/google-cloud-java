@@ -667,7 +667,7 @@ public class Job extends JobInfo {
 
     try (Scope reloadScope = reload != null ? reload.makeCurrent() : null) {
       Job job = bigquery.getJob(getJobId(), options);
-      if (job != null && job.getStatus().getError() != null) {
+      if (job != null && job.getStatus() != null && job.getStatus().getError() != null) {
         throw new BigQueryException(
             job.getStatus().getExecutionErrors() == null
                 ? ImmutableList.of(job.getStatus().getError())

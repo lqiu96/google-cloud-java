@@ -1786,6 +1786,59 @@ public class BigQueryImplTest {
   }
 
   @Test
+  void testInsertAllWithEmptyInsertIdDoesNotRetryHttp503And429() {
+    RetrySettings fastRetry =
+        RetrySettings.newBuilder()
+            .setMaxAttempts(3)
+            .setInitialRetryDelayDuration(Duration.ofMillis(1))
+            .setMaxRetryDelayDuration(Duration.ofMillis(5))
+            .setTotalTimeoutDuration(Duration.ofSeconds(5))
+            .setRetryDelayMultiplier(1.0)
+            .build();
+    for (int statusCode : new int[] {503, 429}) {
+      AtomicInteger attempts = new AtomicInteger();
+      HttpTransport transport =
+          new MockHttpTransport() {
+            @Override
+            public LowLevelHttpRequest buildRequest(String method, String url) {
+              return new MockLowLevelHttpRequest() {
+                @Override
+                public LowLevelHttpResponse execute() {
+                  attempts.incrementAndGet();
+                  return new MockLowLevelHttpResponse()
+                      .setStatusCode(statusCode)
+                      .setContentType(Json.MEDIA_TYPE)
+                      .setContent(
+                          "{\"error\":{\"code\":"
+                              + statusCode
+                              + ",\"message\":\"Transient error\"}}");
+                }
+              };
+            }
+          };
+      BigQuery client =
+          BigQueryOptions.newBuilder()
+              .setProjectId(PROJECT)
+              .setCredentials(NoCredentials.getInstance())
+              .setRetrySettings(fastRetry)
+              .setTransportOptions(
+                  BigQueryOptions.getDefaultHttpTransportOptions().toBuilder()
+                      .setHttpTransportFactory(() -> transport)
+                      .build())
+              .build()
+              .getService();
+
+      InsertAllRequest request =
+          InsertAllRequest.newBuilder(TABLE_ID)
+              .addRow(RowToInsert.of("", ImmutableMap.of("field", "value1")))
+              .build();
+      BigQueryException ex = assertThrows(BigQueryException.class, () -> client.insertAll(request));
+      assertEquals(statusCode, ex.getCode());
+      assertEquals(1, attempts.get());
+    }
+  }
+
+  @Test
   void testInsertAllWithCustomRetryAlgorithmShouldNotRetryHttp503() throws IOException {
     GoogleJsonError error = new GoogleJsonError();
     error.setMessage("Service Unavailable");

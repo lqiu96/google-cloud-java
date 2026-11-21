@@ -2086,7 +2086,7 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
                 new Function<RowToInsert, Rows>() {
                   @Override
                   public Rows apply(RowToInsert rowToInsert) {
-                    allInsertIdsSet[0] &= rowToInsert.getId() != null;
+                    allInsertIdsSet[0] &= !Strings.isNullOrEmpty(rowToInsert.getId());
                     return new Rows()
                         .setInsertId(rowToInsert.getId())
                         .setJson(rowToInsert.getContent());
