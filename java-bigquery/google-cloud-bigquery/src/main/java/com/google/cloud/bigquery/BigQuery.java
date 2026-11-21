@@ -1791,7 +1791,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * TableId tableId = TableId.of(datasetName, tableName);
    * WriteChannelConfiguration writeChannelConfiguration = WriteChannelConfiguration.newBuilder(tableId)
    *     .setFormatOptions(FormatOptions.csv()).build();
-   * // The location must be specified; other fields can be auto-detected.
+   * // Specify the location explicitly (recommended outside US/EU); other fields are optional.
    * JobId jobId = JobId.newBuilder().setLocation(location).build();
    * TableDataWriteChannel writer = bigquery.writer(jobId, writeChannelConfiguration);
    * // Closing the OutputStream closes the underlying channel and finalizes the upload
@@ -1838,7 +1838,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * TableId tableId = TableId.of(datasetName, tableName);
    * WriteChannelConfiguration writeChannelConfiguration = WriteChannelConfiguration.newBuilder(tableId)
    *     .setFormatOptions(FormatOptions.csv()).build();
-   * // The location must be specified; other fields can be auto-detected.
+   * // Specify the location explicitly (recommended outside US/EU); other fields are optional.
    * JobId jobId = JobId.newBuilder().setLocation(location).build();
    * TableDataWriteChannel writer = bigquery.writer(jobId, writeChannelConfiguration);
    * // Close the channel to finalize the upload and create the load job
