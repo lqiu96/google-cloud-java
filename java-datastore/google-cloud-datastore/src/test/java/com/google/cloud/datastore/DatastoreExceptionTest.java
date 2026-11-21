@@ -149,7 +149,79 @@ public class DatastoreExceptionTest {
 
     assertEquals(7, ex.getCode());
     assertEquals("CONSUMER_INVALID", ex.getReason());
+    assertFalse(ex.isRetryable());
+    assertEquals("PERMISSION_DENIED", DatastoreException.extractStatusCode(ex));
     assertSame(apiException, ex.getCause());
+  }
+
+  @Test
+  public void testAsDatastoreExceptionWithErrorInfoPreservesRetryableAndCanonicalStatusCode() {
+    ErrorDetails abortedDetails =
+        ErrorDetails.builder()
+            .setRawErrorMessages(
+                Collections.singletonList(
+                    Any.pack(ErrorInfo.newBuilder().setReason("LOCK_CONTENTION").build())))
+            .build();
+    ApiException abortedApiEx =
+        new ApiException(
+            "aborted", null, GrpcStatusCode.of(Status.Code.ABORTED), false, abortedDetails);
+    DatastoreException aborted = DatastoreException.asDatastoreException(abortedApiEx);
+    assertEquals(10, aborted.getCode());
+    assertEquals("LOCK_CONTENTION", aborted.getReason());
+    assertTrue(aborted.isRetryable());
+    assertEquals("ABORTED", DatastoreException.extractStatusCode(aborted));
+
+    ErrorDetails deadlineDetails =
+        ErrorDetails.builder()
+            .setRawErrorMessages(
+                Collections.singletonList(
+                    Any.pack(ErrorInfo.newBuilder().setReason("DEADLINE_CUSTOM").build())))
+            .build();
+    ApiException deadlineApiEx =
+        new ApiException(
+            "deadline exceeded",
+            null,
+            GrpcStatusCode.of(Status.Code.DEADLINE_EXCEEDED),
+            false,
+            deadlineDetails);
+    DatastoreException deadline = DatastoreException.asDatastoreException(deadlineApiEx);
+    assertEquals(4, deadline.getCode());
+    assertEquals("DEADLINE_CUSTOM", deadline.getReason());
+    assertTrue(deadline.isRetryable());
+    assertEquals("DEADLINE_EXCEEDED", DatastoreException.extractStatusCode(deadline));
+
+    ErrorDetails unavailableDetails =
+        ErrorDetails.builder()
+            .setRawErrorMessages(
+                Collections.singletonList(
+                    Any.pack(ErrorInfo.newBuilder().setReason("BACKEND_OVERLOADED").build())))
+            .build();
+    ApiException unavailableApiEx =
+        new ApiException(
+            "unavailable",
+            null,
+            GrpcStatusCode.of(Status.Code.UNAVAILABLE),
+            true,
+            unavailableDetails);
+    DatastoreException unavailable = DatastoreException.asDatastoreException(unavailableApiEx);
+    assertEquals(14, unavailable.getCode());
+    assertEquals("BACKEND_OVERLOADED", unavailable.getReason());
+    assertTrue(unavailable.isRetryable());
+    assertEquals("UNAVAILABLE", DatastoreException.extractStatusCode(unavailable));
+
+    // Also verify wrapped propagation (e.g. runInTransaction) and direct construction with custom
+    // reason without an ApiException cause.
+    DatastoreException wrapped =
+        new DatastoreException(DatastoreException.UNKNOWN_CODE, "wrapped", null, aborted);
+    assertEquals("ABORTED", DatastoreException.extractStatusCode(wrapped));
+    DatastoreException directUnavailable =
+        new DatastoreException(14, "unavailable", "BACKEND_OVERLOADED");
+    assertTrue(directUnavailable.isRetryable());
+    assertEquals("UNAVAILABLE", DatastoreException.extractStatusCode(directUnavailable));
+    DatastoreException clientPrecondition =
+        new DatastoreException(DatastoreException.UNKNOWN_CODE, "invalid", "FAILED_PRECONDITION");
+    assertFalse(clientPrecondition.isRetryable());
+    assertEquals("FAILED_PRECONDITION", DatastoreException.extractStatusCode(clientPrecondition));
   }
 
   @Test

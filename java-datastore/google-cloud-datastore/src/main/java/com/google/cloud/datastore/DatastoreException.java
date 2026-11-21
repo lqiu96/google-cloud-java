@@ -25,6 +25,7 @@ import com.google.cloud.RetryHelper.RetryHelperException;
 import com.google.cloud.http.BaseHttpServiceException;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import com.google.rpc.Code;
 import io.grpc.StatusException;
 import io.grpc.StatusRuntimeException;
 import java.io.IOException;
@@ -36,8 +37,9 @@ import java.util.Set;
  * <p>Although this class extends {@link BaseHttpServiceException}, {@link #getCode()} returns
  * canonical gRPC ({@link com.google.rpc.Code}) integer values for server errors (for example,
  * {@code 10} for {@code ABORTED}, {@code 14} for {@code UNAVAILABLE}, {@code 4} for {@code
- * DEADLINE_EXCEEDED}, and {@code 6} for {@code ALREADY_EXISTS}) rather than HTTP status codes, and
- * {@link #getReason()} carries the corresponding status name.
+ * DEADLINE_EXCEEDED}, and {@code 6} for {@code ALREADY_EXISTS}) rather than HTTP status codes.
+ * {@link #getReason()} carries the structured {@link com.google.rpc.ErrorInfo} reason when provided
+ * by the server, or otherwise the canonical status code name.
  *
  * <p>Client-side validation errors, low-level I/O failures, and exceptions propagated from {@link
  * Datastore#runInTransaction(Datastore.TransactionCallable)} callbacks carry {@link #getCode()}
@@ -54,9 +56,7 @@ public final class DatastoreException extends BaseHttpServiceException {
   // see https://docs.cloud.google.com/datastore/docs/concepts/errors#error_codes
   private static final Set<Error> RETRYABLE_ERRORS =
       ImmutableSet.of(
-          new Error(10, "ABORTED", false),
-          new Error(4, "DEADLINE_EXCEEDED", false),
-          new Error(14, "UNAVAILABLE", true));
+          new Error(10, null, false), new Error(4, null, false), new Error(14, null, true));
   private static final long serialVersionUID = 2663750991205874435L;
 
   public DatastoreException(int code, String message, String reason) {
@@ -138,7 +138,7 @@ public final class DatastoreException extends BaseHttpServiceException {
 
     String reason = apiEx.getReason();
     if (Strings.isNullOrEmpty(reason)) {
-      reason = apiEx.getStatusCode() != null ? apiEx.getStatusCode().getCode().name() : "";
+      reason = statusCodeName;
     }
     // It'd be better to use ExceptionData and BaseServiceException#<init>(ExceptionData) but,
     // BaseHttpServiceException does not pass that through so we're stuck using this for now.
@@ -174,26 +174,35 @@ public final class DatastoreException extends BaseHttpServiceException {
   }
 
   /**
-   * Extracts the status code name from the given throwable. Walks the exception cause chain looking
-   * for a {@link DatastoreException} that carries a reason string representing the status code
-   * (e.g. "ABORTED", "UNAVAILABLE"). The reason is set from {@link
-   * com.google.api.gax.rpc.StatusCode.Code} which is transport-neutral, supporting both gRPC and
-   * HttpJson. Falls back to "UNKNOWN" if the status cannot be determined.
-   *
-   * <p>Note: Some {@link DatastoreException} instances are constructed without a reason (e.g. via
-   * {@link DatastoreException#DatastoreException(int, String, Throwable)}). If all {@link
-   * DatastoreException} instances in the cause chain have a null or empty reason, this method
-   * returns "UNKNOWN" even if the underlying error carries a meaningful status.
+   * Extracts the canonical status code name from the given throwable. Walks the exception cause
+   * chain looking for a {@link DatastoreException} and resolves its canonical {@link
+   * com.google.api.gax.rpc.StatusCode.Code} name from an underlying {@link ApiException} cause or
+   * canonical gRPC status code (so structured {@code ErrorInfo} reason tokens are not emitted as
+   * status labels), falling back to {@link #getReason()} when non-empty, or {@code "UNKNOWN"} if
+   * the status cannot be determined.
    *
    * @param throwable the throwable to extract the status code from
-   * @return the status code name, or "UNKNOWN" if not determinable
+   * @return the canonical status code name, or {@code "UNKNOWN"} if not determinable
    */
   @InternalApi
   public static String extractStatusCode(Throwable throwable) {
     Throwable current = throwable;
     while (current != null) {
       if (current instanceof DatastoreException) {
-        String reason = ((DatastoreException) current).getReason();
+        DatastoreException dsEx = (DatastoreException) current;
+        if (dsEx.getCause() instanceof ApiException) {
+          StatusCode statusCode = ((ApiException) dsEx.getCause()).getStatusCode();
+          if (statusCode != null && statusCode.getCode() != null) {
+            return statusCode.getCode().name();
+          }
+        }
+        if (dsEx.getCode() > UNKNOWN_CODE) {
+          Code rpcCode = Code.forNumber(dsEx.getCode());
+          if (rpcCode != null) {
+            return rpcCode.name();
+          }
+        }
+        String reason = dsEx.getReason();
         if (!Strings.isNullOrEmpty(reason)) {
           return reason;
         }
