@@ -138,9 +138,9 @@ public class BigQueryRetryHelper extends RetryHelper {
   }
 
   /**
-   * Wraps the default retry algorithm to additionally retry on transient HTTP status codes 500,
-   * 502, 503, and 504. Other retry decisions and timing logic are delegated back to the default
-   * algorithm.
+   * Wraps the default retry algorithm to additionally retry on transient HTTP status codes 429,
+   * 500, 502, 503, and 504. Other retry decisions and timing logic are delegated back to the
+   * default algorithm.
    */
   private static <V> ResultRetryAlgorithm<V> wrapDefaultAlgorithm(
       ResultRetryAlgorithm<V> defaultAlgorithm) {
@@ -156,7 +156,11 @@ public class BigQueryRetryHelper extends RetryHelper {
       public boolean shouldRetry(Throwable previousThrowable, V previousResponse) {
         if (previousThrowable instanceof HttpResponseException) {
           int statusCode = ((HttpResponseException) previousThrowable).getStatusCode();
-          if (statusCode == 500 || statusCode == 502 || statusCode == 503 || statusCode == 504) {
+          if (statusCode == 429
+              || statusCode == 500
+              || statusCode == 502
+              || statusCode == 503
+              || statusCode == 504) {
             return true;
           }
         }
