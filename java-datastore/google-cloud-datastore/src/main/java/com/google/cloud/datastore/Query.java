@@ -175,6 +175,10 @@ public abstract class Query<V> implements Serializable {
   /**
    * Returns a new {@link GqlQuery} builder.
    *
+   * <p>By default, {@link GqlQuery#allowLiteral()} is {@code false}: bind parameter values via
+   * {@code setBinding}/{@code addBinding}, or call {@link GqlQuery.Builder#setAllowLiteral(boolean)
+   * setAllowLiteral(true)} if {@code gql} contains inline literals.
+   *
    * <p>Example of creating and running a GQL query.
    *
    * <pre>{@code
@@ -194,6 +198,10 @@ public abstract class Query<V> implements Serializable {
 
   /**
    * Returns a new {@link GqlQuery} builder.
+   *
+   * <p>By default, {@link GqlQuery#allowLiteral()} is {@code false}: bind parameter values via
+   * {@code setBinding}/{@code addBinding}, or call {@link GqlQuery.Builder#setAllowLiteral(boolean)
+   * setAllowLiteral(true)} if {@code gql} contains inline literals.
    *
    * <p>Example of creating and running a typed GQL query.
    *

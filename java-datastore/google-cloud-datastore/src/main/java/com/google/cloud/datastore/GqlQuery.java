@@ -68,6 +68,13 @@ import java.util.TreeMap;
  * }
  * }</pre>
  *
+ * <p>By default, {@link #allowLiteral()} is {@code false}: query strings containing inline literals
+ * (such as {@code WHERE status = 'active'}) are rejected unless you call {@link
+ * Builder#setAllowLiteral(boolean) setAllowLiteral(true)} or pass values as bound parameters
+ * ({@code @name} or {@code @1}). For {@code HAS ANCESTOR} filters (such as {@code WHERE __key__ HAS
+ * ANCESTOR @ancestor}), bind the ancestor {@link Key} via {@link Builder#setBinding(String,
+ * Key...)} or {@link Builder#addBinding(Key...)}.
+ *
  * @param <V> the type of the result values this query will produce
  * @see <a href="https://docs.cloud.google.com/datastore/docs/reference/gql_reference">GQL
  *     Reference</a>
@@ -150,7 +157,16 @@ public final class GqlQuery<V> extends Query<V> implements RecordQuery<V> {
     }
   }
 
-  /** A GQL query builder. */
+  /**
+   * A GQL query builder.
+   *
+   * <p>Named bindings omit the leading {@code @} (for example, {@code setBinding("age", 18)} binds
+   * {@code @age}). Positional bindings added via {@code addBinding} are 1-indexed ({@code @1},
+   * {@code @2}, ...). For varargs {@code setBinding} and {@code addBinding} overloads, passing zero
+   * values binds {@link NullValue}, one value binds a scalar value, and two or more values bind a
+   * single {@link ListValue} to that single binding site; call {@code addBinding} once per
+   * positional parameter.
+   */
   public static final class Builder<V> {
 
     private final ResultType<V> resultType;
@@ -178,8 +194,8 @@ public final class GqlQuery<V> extends Query<V> implements RecordQuery<V> {
     }
 
     /**
-     * Sets whether the query string can contain literals. When {@code false}, the query string must
-     * not contain any literals and instead must bind all values.
+     * Sets whether the query string can contain literals. Defaults to {@code false}; when {@code
+     * false}, the query string must not contain any literals and instead must bind all values.
      */
     public Builder<V> setAllowLiteral(boolean allowLiteral) {
       this.allowLiteral = allowLiteral;
@@ -260,10 +276,12 @@ public final class GqlQuery<V> extends Query<V> implements RecordQuery<V> {
     }
 
     /**
-     * Sets a new named binding.
+     * Sets a new named {@link Key} binding (such as an ancestor key for a {@code HAS ANCESTOR}
+     * filter). Passing multiple keys binds a single {@link ListValue} to {@code name}.
      *
-     * @param name name of the binding
-     * @param value a {@link Key} object or a list of {@link Key} objects that binds to a given name
+     * @param name name of the binding (without leading {@code @})
+     * @param value a {@link Key} object or multiple {@link Key} objects bound as a {@link
+     *     ListValue}
      */
     public Builder<V> setBinding(String name, Key... value) {
       namedBindings.put(name, toBinding(KeyValue.MARSHALLER, Arrays.asList(value)));
@@ -355,10 +373,12 @@ public final class GqlQuery<V> extends Query<V> implements RecordQuery<V> {
     }
 
     /**
-     * Sets a new positional binding.
+     * Adds a single positional {@link Key} binding (for example, for {@code WHERE __key__ HAS
+     * ANCESTOR @1}). Passing multiple keys binds a single {@link ListValue} to one positional
+     * parameter rather than multiple positional parameters.
      *
-     * @param value a {@link Key} object or a list of {@link Key} objects to be set as a new
-     *     positional binding
+     * @param value a {@link Key} object or multiple {@link Key} objects bound as a single {@link
+     *     ListValue}
      */
     public Builder<V> addBinding(Key... value) {
       positionalBindings.add(toBinding(KeyValue.MARSHALLER, Arrays.asList(value)));
@@ -415,8 +435,8 @@ public final class GqlQuery<V> extends Query<V> implements RecordQuery<V> {
   }
 
   /**
-   * Returns whether the query string can contain literals. When {@code false}, the query string
-   * must not contain any literals and instead must bind all values.
+   * Returns whether the query string can contain literals (defaults to {@code false}). When {@code
+   * false}, the query string must not contain any literals and instead must bind all values.
    */
   public boolean allowLiteral() {
     return allowLiteral;
