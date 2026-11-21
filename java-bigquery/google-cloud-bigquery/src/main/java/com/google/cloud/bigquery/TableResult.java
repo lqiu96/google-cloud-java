@@ -219,6 +219,7 @@ public abstract class TableResult implements Page<FieldValueList>, Serializable 
       return TableResult.newBuilder()
           .setSchema(getSchema())
           .setTotalRows(getTotalRows())
+          .setJobId(getJobId())
           .setPageNoSchema(nextPageNoSchema)
           .setQueryId(getQueryId())
           .setJobCreationReason(getJobCreationReason())

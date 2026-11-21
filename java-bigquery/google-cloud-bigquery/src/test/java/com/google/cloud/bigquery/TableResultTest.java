@@ -260,4 +260,31 @@ class TableResultTest {
     assertThat(result1.toString()).contains("cacheHit=true");
     assertThat(result1.toString()).contains("sessionId=" + SESSION_ID_1);
   }
+
+  @Test
+  void testGetNextPagePreservesJobId() {
+    JobId jobId = JobId.newBuilder().setProject("project").setLocation("EU").setJob("job").build();
+    TableResult result =
+        TableResult.newBuilder()
+            .setSchema(SCHEMA)
+            .setTotalRows(3L)
+            .setJobId(jobId)
+            .setPageNoSchema(INNER_PAGE_0)
+            .setRowsInPage(2L)
+            .build();
+    assertThat(result.getJobId()).isEqualTo(jobId);
+
+    TableResult next = result.getNextPage();
+    assertThat(next).isNotNull();
+    assertThat(next.getJobId()).isEqualTo(jobId);
+
+    TableResult nullJobIdResult =
+        TableResult.newBuilder()
+            .setSchema(SCHEMA)
+            .setTotalRows(3L)
+            .setPageNoSchema(INNER_PAGE_0)
+            .setRowsInPage(2L)
+            .build();
+    assertThat(nullJobIdResult.getNextPage().getJobId()).isNull();
+  }
 }
