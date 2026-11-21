@@ -30,7 +30,15 @@ import java.util.Optional;
  * is possible to get a {@code DatastoreException} upon {@link Iterator#hasNext hasNext} or {@link
  * Iterator#next next} calls.
  *
+ * <p>For cursor-based pagination, exhaust the iterator ({@link #hasNext()} returns {@code false})
+ * before checking {@link #getMoreResults()}. When {@link #getMoreResults()} equals {@link
+ * QueryResultBatch.MoreResultsType#MORE_RESULTS_AFTER_LIMIT} (or {@link
+ * QueryResultBatch.MoreResultsType#MORE_RESULTS_AFTER_CURSOR}), pass {@link #getCursorAfter()} to
+ * {@link StructuredQuery.Builder#setStartCursor(Cursor)} on the next query.
+ *
  * @param <V> the type of the results value.
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/queries">Datastore
+ *     Queries</a>
  */
 @InternalExtensionOnly
 public interface QueryResults<V> extends Iterator<V> {
@@ -39,9 +47,10 @@ public interface QueryResults<V> extends Iterator<V> {
   Class<?> getResultClass();
 
   /**
-   * Returns the Cursor for the point after the value returned in the last {@link #next} call. This
-   * cursor can be used to issue subsequent queries (with the same constraints) that may return
-   * additional results.
+   * Returns the {@link Cursor} for the point immediately after the last value returned by {@link
+   * #next()} (or the final batch's end cursor once the iterator is exhausted, or the initial
+   * skipped/start cursor before any {@link #next()} call). This cursor can be used to issue
+   * subsequent queries (with the same constraints) that may return additional results.
    *
    * <p>A simple use case:
    *
@@ -59,7 +68,8 @@ public interface QueryResults<V> extends Iterator<V> {
   Cursor getCursorAfter();
 
   /**
-   * Returns the number of results skipped, typically because of an offset.
+   * Returns the number of results skipped in the most recently fetched batch (not a cumulative
+   * total across multiple batches), typically because of an offset.
    *
    * <p>Example of checking skipped results with an offset:
    *
@@ -77,7 +87,17 @@ public interface QueryResults<V> extends Iterator<V> {
    */
   int getSkippedResults();
 
-  /** Returns MoreResults state of the query after the current batch. */
+  /**
+   * Returns the {@link QueryResultBatch.MoreResultsType} state of the query after the most recently
+   * fetched batch.
+   *
+   * <p>Because batches are fetched lazily, exhaust this iterator ({@link #hasNext()} returns {@code
+   * false}) before inspecting {@code getMoreResults()} to determine whether another page exists.
+   * Check for {@link QueryResultBatch.MoreResultsType#MORE_RESULTS_AFTER_LIMIT} (or {@link
+   * QueryResultBatch.MoreResultsType#MORE_RESULTS_AFTER_CURSOR}) to continue paginating; {@link
+   * QueryResultBatch.MoreResultsType#NOT_FINISHED} only indicates additional batches remain within
+   * the current query execution.
+   */
   QueryResultBatch.MoreResultsType getMoreResults();
 
   @BetaApi
