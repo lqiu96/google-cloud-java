@@ -65,7 +65,9 @@ public class UpdateTableDml {
       Path jsonPath =
           FileSystems.getDefault().getPath("src/test/resources", "userSessionsData.json");
 
-      // The location and JobName must be specified; other fields can be auto-detected.
+      // Specify a JobId with the location matching the destination dataset (required outside US/EU
+      // when looking up the job later with getJob()). See:
+      // https://docs.cloud.google.com/bigquery/docs/locations#specify_locations
       String jobName = "jobId_" + UUID.randomUUID().toString();
       JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
@@ -74,8 +76,14 @@ public class UpdateTableDml {
         Files.copy(jsonPath, stream);
       }
 
-      // Get the Job created by the TableDataWriteChannel and wait for it to complete.
+      // Upload finalizes and creates the load job only when TableDataWriteChannel.close()
+      // completes. If no bytes were written (e.g. an empty file), getJob() returns null. See:
+      // https://docs.cloud.google.com/bigquery/docs/batch-loading-data
       Job job = bigquery.getJob(jobId);
+      if (job == null) {
+        System.out.println("Job was not created (for example, the input file was empty).");
+        return;
+      }
       // Blocks until this job completes its execution. Throws BigQueryException if the job fails.
       Job completedJob = job.waitFor();
       if (completedJob == null) {
@@ -84,7 +92,7 @@ public class UpdateTableDml {
       }
 
       System.out.println(
-          job.getStatistics().toString() + " userSessionsData json uploaded successfully");
+          completedJob.getStatistics().toString() + " userSessionsData json uploaded successfully");
 
       // Write a DML query to modify UserSessions table
       // To create DML query job to mask the last octet in every row's ip_address column

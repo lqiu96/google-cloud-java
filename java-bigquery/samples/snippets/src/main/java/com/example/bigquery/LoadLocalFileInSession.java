@@ -54,9 +54,7 @@ public class LoadLocalFileInSession {
   public static String createSessionForLoading(
       String datasetName, String tableName, Path csvPath, CsvOptions formatOptions)
       throws IOException, InterruptedException {
-    LoadStatistics loadStatistics = null;
     try {
-
       // Initialize client that will be used to send requests. This client only needs to be created
       // once, and can be reused for multiple requests.
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
@@ -70,7 +68,9 @@ public class LoadLocalFileInSession {
               .setCreateSession(true)
               .build();
 
-      // The location and JobName must be specified; other fields can be auto-detected.
+      // Specify a JobId with the location matching the destination dataset (required outside US/EU
+      // when looking up the job later with getJob()). See:
+      // https://docs.cloud.google.com/bigquery/docs/locations#specify_locations
       String jobName = "jobId_" + UUID.randomUUID().toString();
       JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
@@ -80,21 +80,26 @@ public class LoadLocalFileInSession {
         Files.copy(csvPath, stream);
       }
 
-      // Get the Job created by the TableDataWriteChannel and wait for it to complete.
-      // Then retrieve the session ID
+      // Upload finalizes and creates the load job only when TableDataWriteChannel.close()
+      // completes. If no bytes were written (e.g. an empty file), getJob() returns null. See:
+      // https://docs.cloud.google.com/bigquery/docs/batch-loading-data
       Job job = bigquery.getJob(jobId);
+      if (job == null) {
+        System.out.println("Job was not created (for example, the input file was empty).");
+        return "";
+      }
       // Blocks until this job completes its execution. Throws BigQueryException if the job fails.
       Job completedJob = job.waitFor();
       if (completedJob == null) {
         System.out.println("Job not executed since it no longer exists.");
         return "";
       }
-      loadStatistics = completedJob.getStatistics();
-
+      LoadStatistics loadStatistics = completedJob.getStatistics();
+      return loadStatistics.getSessionInfo().getSessionId();
     } catch (BigQueryException e) {
       System.out.println("Local file not loaded. \n" + e.toString());
+      return "";
     }
-    return loadStatistics.getSessionInfo().getSessionId();
   }
 
   // [END bigquery_load_from_file_create_session]
@@ -124,7 +129,9 @@ public class LoadLocalFileInSession {
               .setConnectionProperties(ImmutableList.of(sessionConnectionProperty))
               .build();
 
-      // The location and JobName must be specified; other fields can be auto-detected.
+      // Specify a JobId with the location matching the destination dataset (required outside US/EU
+      // when looking up the job later with getJob()). See:
+      // https://docs.cloud.google.com/bigquery/docs/locations#specify_locations
       String jobName = "jobId_" + UUID.randomUUID().toString();
       JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build();
 
@@ -134,8 +141,14 @@ public class LoadLocalFileInSession {
         Files.copy(csvPath, stream);
       }
 
-      // Get the Job created by the TableDataWriteChannel and wait for it to complete.
+      // Upload finalizes and creates the load job only when TableDataWriteChannel.close()
+      // completes. If no bytes were written (e.g. an empty file), getJob() returns null. See:
+      // https://docs.cloud.google.com/bigquery/docs/batch-loading-data
       Job job = bigquery.getJob(jobId);
+      if (job == null) {
+        System.out.println("Job was not created (for example, the input file was empty).");
+        return;
+      }
       // Blocks until this job completes its execution. Throws BigQueryException if the job fails.
       Job completedJob = job.waitFor();
       if (completedJob == null) {
@@ -143,8 +156,8 @@ public class LoadLocalFileInSession {
         return;
       }
 
-      // Get output status
-      LoadStatistics stats = job.getStatistics();
+      // Get output status from the completed job snapshot.
+      LoadStatistics stats = completedJob.getStatistics();
       System.out.printf(
           "Successfully loaded to Session %s. \n", stats.getSessionInfo().getSessionId());
     } catch (BigQueryException e) {
