@@ -66,7 +66,9 @@ public class AggregationResults implements Iterable<AggregationResult> {
   }
 
   /**
-   * Returns {@code ExplainMetrics} if {@code ExplainOptions} were enabled. Otherwise, returns null.
+   * Returns an {@link Optional} containing {@link ExplainMetrics} if {@link
+   * com.google.cloud.datastore.models.ExplainOptions} were enabled, or {@link Optional#empty()}
+   * otherwise.
    */
   @BetaApi
   public Optional<ExplainMetrics> getExplainMetrics() {

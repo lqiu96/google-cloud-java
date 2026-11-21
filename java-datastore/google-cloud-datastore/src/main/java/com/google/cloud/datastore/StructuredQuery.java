@@ -69,14 +69,14 @@ import java.util.Objects;
  * }</pre>
  *
  * <p>A less trivial example of a projection query that returns the first 10 results of "age" and
- * "name" properties (sorted and grouped by "age") with an age greater than 18
+ * "name" properties (sorted and distinct on "age") with an age greater than 18
  *
  * <pre>{@code
  * Query<ProjectionEntity> query = Query.newProjectionEntityQueryBuilder()
  *     .setKind(kind)
- *     .setProjection(Projection.property("age"), Projection.first("name"))
+ *     .setProjection("age", "name")
  *     .setFilter(PropertyFilter.gt("age", 18))
- *     .setGroupBy("age")
+ *     .setDistinctOn("age")
  *     .setOrderBy(OrderBy.asc("age"))
  *     .setLimit(10)
  *     .build();

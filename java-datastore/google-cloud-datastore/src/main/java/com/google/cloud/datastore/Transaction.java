@@ -450,7 +450,7 @@ public interface Transaction extends DatastoreBatchWriter, DatastoreReaderWriter
   void rollback();
 
   /**
-   * Returns {@code true} if the transaction is still active (was not committed or rolledback).
+   * Returns {@code true} if the transaction is still active (was not committed or rolled back).
    *
    * <p>Example of verifying if a transaction is active.
    *
@@ -458,15 +458,15 @@ public interface Transaction extends DatastoreBatchWriter, DatastoreReaderWriter
    * // create an entity
    * KeyFactory keyFactory = datastore.newKeyFactory().setKind("MyKind");
    * Key key = datastore.allocateId(keyFactory.newKey());
-   * Entity entity = Entity.newBuilder(key).set("description", "active()").build();
-   * // calling transaction.active() now would return true
+   * Entity entity = Entity.newBuilder(key).set("description", "isActive()").build();
+   * // calling transaction.isActive() now would return true
    * try {
    *   // add the entity and commit
    *   transaction.put(entity);
    *   transaction.commit();
    * } finally {
    *   // if committing succeeded
-   *   // then transaction.active() will be false
+   *   // then transaction.isActive() will be false
    *   if (transaction.isActive()) {
    *     // otherwise it's true and we need to rollback
    *     transaction.rollback();

@@ -378,9 +378,11 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   List<Entity> put(FullEntity<?>... entities);
 
   /**
-   * {@inheritDoc} with specified {@link DatastoreExecutionOptions}.
+   * A Datastore put operation with specified {@link DatastoreExecutionOptions}. This method will
+   * also allocate an id for any entity with an incomplete key.
    *
    * @throws DatastoreException upon failure
+   * @throws IllegalArgumentException if any of the given entities is missing a key
    */
   @BetaApi
   List<Entity> put(List<FullEntity<?>> entities, DatastoreExecutionOptions executionOptions);
@@ -600,7 +602,7 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    *    .build();
    * AggregationResults aggregationResults = datastore.runAggregation(aggregationQuery);
    * for (AggregationResult aggregationResult : aggregationResults) {
-   *     System.out.println(aggregationResult.get("total_count"));
+   *   System.out.println(aggregationResult.getLong("total_count"));
    * }
    * }</pre>
    *
@@ -617,8 +619,8 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    *     .build();
    * AggregationResults aggregationResults = datastore.runAggregation(aggregationQuery);
    * for (AggregationResult aggregationResult : aggregationResults) {
-   *   System.out.println(aggregationResult.get("total_count"));
-   *   System.out.println(aggregationResult.get("count_upto_100"));
+   *   System.out.println(aggregationResult.getLong("total_count"));
+   *   System.out.println(aggregationResult.getLong("count_upto_100"));
    * }
    * }</pre>
    *
