@@ -2169,7 +2169,6 @@ public class BigQueryImplTest {
 
   @Test
   void testCreateJobTryGetNotRandom() throws IOException {
-    Map<BigQueryRpc.Option, ?> withStatisticOption = optionMap(JobOption.fields(STATISTICS));
     final String id = "testCreateJobTryGet-id";
     String query = "SELECT * in FOO";
 
@@ -2181,22 +2180,135 @@ public class BigQueryImplTest {
                 "already exists, for some reason",
                 new RuntimeException("Already Exists: Job")));
     when(bigqueryRpcMock.getJobSkipExceptionTranslation(
-            any(String.class), eq(id), eq((String) null), eq(withStatisticOption)))
+            any(String.class), eq(id), eq((String) null), eq(EMPTY_RPC_OPTIONS)))
         .thenReturn(
             newJobPb()
                 .setId(id)
+                .setStatus(new com.google.api.services.bigquery.model.JobStatus().setState("DONE"))
                 .setStatistics(new JobStatistics().setCreationTime(System.currentTimeMillis())));
 
     bigquery = options.getService();
     Job job =
         ((BigQueryImpl) bigquery).create(JobInfo.of(JobId.of(id), QueryJobConfiguration.of(query)));
     assertThat(job).isNotNull();
+    assertNotNull(job.getStatus());
+    assertEquals(JobStatus.State.DONE, job.getStatus().getState());
+    assertNotNull(job.getStatistics());
     assertThat(jobCapture.getValue().getJobReference().getJobId()).isEqualTo(id);
     verify(bigqueryRpcMock)
         .createSkipExceptionTranslation(jobCapture.capture(), eq(EMPTY_RPC_OPTIONS));
     verify(bigqueryRpcMock)
         .getJobSkipExceptionTranslation(
-            any(String.class), eq(id), eq((String) null), eq(withStatisticOption));
+            any(String.class), eq(id), eq((String) null), eq(EMPTY_RPC_OPTIONS));
+  }
+
+  @Test
+  void testCreateJobTryGetNotRandomPreservesLocation() throws IOException {
+    final String id = "testCreateJobTryGet-location-id";
+    JobId regionalJobId =
+        JobId.newBuilder().setProject(PROJECT).setJob(id).setLocation(LOCATION).build();
+    String query = "SELECT * in FOO";
+
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(
+            new BigQueryException(
+                409,
+                "already exists, for some reason",
+                new RuntimeException("Already Exists: Job")));
+    when(bigqueryRpcMock.getJobSkipExceptionTranslation(
+            eq(PROJECT), eq(id), eq(LOCATION), eq(EMPTY_RPC_OPTIONS)))
+        .thenReturn(
+            newJobPb()
+                .setId(id)
+                .setJobReference(regionalJobId.toPb())
+                .setStatus(
+                    new com.google.api.services.bigquery.model.JobStatus().setState("RUNNING"))
+                .setStatistics(new JobStatistics().setCreationTime(System.currentTimeMillis())));
+
+    bigquery = options.getService();
+    Job job = bigquery.create(JobInfo.of(regionalJobId, QueryJobConfiguration.of(query)));
+    assertThat(job).isNotNull();
+    assertThat(job.getJobId().getLocation()).isEqualTo(LOCATION);
+    assertThat(job.getStatus().getState()).isEqualTo(JobStatus.State.RUNNING);
+    verify(bigqueryRpcMock)
+        .getJobSkipExceptionTranslation(eq(PROJECT), eq(id), eq(LOCATION), eq(EMPTY_RPC_OPTIONS));
+  }
+
+  @Test
+  void testCreateJobTryGetNotRandomWhenGetJobReturnsNullRethrowsOriginal409() throws IOException {
+    final String id = "testCreateJobTryGet-null-id";
+    String query = "SELECT * in FOO";
+    BigQueryException originalConflict =
+        new BigQueryException(
+            409, "already exists, for some reason", new RuntimeException("Already Exists: Job"));
+
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(originalConflict);
+    when(bigqueryRpcMock.getJobSkipExceptionTranslation(
+            any(String.class), eq(id), eq((String) null), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(new BigQueryException(404, "Not found"));
+
+    bigquery = options.getService();
+    BigQueryException thrown =
+        assertThrows(
+            BigQueryException.class,
+            () -> bigquery.create(JobInfo.of(JobId.of(id), QueryJobConfiguration.of(query))));
+    assertEquals(409, thrown.getCode());
+    verify(bigqueryRpcMock)
+        .getJobSkipExceptionTranslation(
+            any(String.class), eq(id), eq((String) null), eq(EMPTY_RPC_OPTIONS));
+  }
+
+  @Test
+  void testCreateJobTryGetNotRandomWhenGetJobThrowsRethrowsOriginal409() throws IOException {
+    final String id = "testCreateJobTryGet-throw-id";
+    String query = "SELECT * in FOO";
+    BigQueryException originalConflict =
+        new BigQueryException(
+            409, "already exists, for some reason", new RuntimeException("Already Exists: Job"));
+
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(originalConflict);
+    when(bigqueryRpcMock.getJobSkipExceptionTranslation(
+            any(String.class), eq(id), eq((String) null), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(new BigQueryException(404, "Not found"));
+
+    options.setThrowNotFound(true);
+    bigquery = options.getService();
+    BigQueryException thrown =
+        assertThrows(
+            BigQueryException.class,
+            () -> bigquery.create(JobInfo.of(JobId.of(id), QueryJobConfiguration.of(query))));
+    assertEquals(409, thrown.getCode());
+    verify(bigqueryRpcMock)
+        .getJobSkipExceptionTranslation(
+            any(String.class), eq(id), eq((String) null), eq(EMPTY_RPC_OPTIONS));
+  }
+
+  @Test
+  void testCreateJobTryGetNotRandomWhenStatisticsMissingRethrowsOriginal409() throws IOException {
+    final String id = "testCreateJobTryGet-nostats-id";
+    String query = "SELECT * in FOO";
+    BigQueryException originalConflict =
+        new BigQueryException(
+            409, "already exists, for some reason", new RuntimeException("Already Exists: Job"));
+
+    when(bigqueryRpcMock.createSkipExceptionTranslation(
+            jobCapture.capture(), eq(EMPTY_RPC_OPTIONS)))
+        .thenThrow(originalConflict);
+    when(bigqueryRpcMock.getJobSkipExceptionTranslation(
+            any(String.class), eq(id), eq((String) null), eq(EMPTY_RPC_OPTIONS)))
+        .thenReturn(newJobPb().setId(id));
+
+    bigquery = options.getService();
+    BigQueryException thrown =
+        assertThrows(
+            BigQueryException.class,
+            () -> bigquery.create(JobInfo.of(JobId.of(id), QueryJobConfiguration.of(query))));
+    assertEquals(409, thrown.getCode());
   }
 
   @Test

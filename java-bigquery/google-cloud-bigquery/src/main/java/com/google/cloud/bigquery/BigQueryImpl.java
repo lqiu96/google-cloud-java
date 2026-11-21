@@ -991,20 +991,29 @@ final class BigQueryImpl extends BaseService<BigQueryOptions> implements BigQuer
 
           if (matcher.find()) {
             // If the Job ALREADY EXISTS, retrieve it.
-            Job job = this.getJob(jobInfo.getJobId(), JobOption.fields(JobField.STATISTICS));
+            Job job;
+            try {
+              job = this.getJob(jobInfo.getJobId());
+            } catch (BigQueryException e) {
+              throw createException;
+            }
 
-            long jobCreationTime = job.getStatistics().getCreationTime();
-            long jobMinStaleTime = System.currentTimeMillis();
-            long jobMaxStaleTime =
-                java.time.Instant.ofEpochMilli(jobMinStaleTime)
-                    .minus(1, java.time.temporal.ChronoUnit.DAYS)
-                    .toEpochMilli();
+            if (job != null
+                && job.getStatistics() != null
+                && job.getStatistics().getCreationTime() != null) {
+              long jobCreationTime = job.getStatistics().getCreationTime();
+              long jobMinStaleTime = System.currentTimeMillis();
+              long jobMaxStaleTime =
+                  java.time.Instant.ofEpochMilli(jobMinStaleTime)
+                      .minus(1, java.time.temporal.ChronoUnit.DAYS)
+                      .toEpochMilli();
 
-            // Only return the job if it has been created in the past 24 hours.
-            // This is assuming any job older than 24 hours is a valid duplicate JobID
-            // and not a false positive like b/290419183
-            if (jobCreationTime >= jobMaxStaleTime && jobCreationTime <= jobMinStaleTime) {
-              return job;
+              // Only return the job if it has been created in the past 24 hours.
+              // This is assuming any job older than 24 hours is a valid duplicate JobID
+              // and not a false positive like b/290419183
+              if (jobCreationTime >= jobMaxStaleTime && jobCreationTime <= jobMinStaleTime) {
+                return job;
+              }
             }
           }
         }
