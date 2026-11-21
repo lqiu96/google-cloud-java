@@ -140,9 +140,10 @@ public class BigQueryRetryAlgorithm<ResponseT> extends RetryAlgorithm<ResponseT>
     return false;
   }
 
-  public static boolean matchRegEx(
-      String retriableRegEx, String errorDesc) { // cases insensitive match regex matching
-    return Pattern.matches(retriableRegEx.toLowerCase(), errorDesc.toLowerCase());
+  public static boolean matchRegEx(String retriableRegEx, String errorDesc) {
+    return Pattern.compile(retriableRegEx, Pattern.CASE_INSENSITIVE | Pattern.DOTALL)
+        .matcher(errorDesc)
+        .matches();
   }
 
   /*Duplicating this method as it can not be inherited from the RetryAlgorithm due to the default access modifier*/
