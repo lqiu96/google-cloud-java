@@ -3955,11 +3955,11 @@ class ITBigQueryTest {
     int cnt = 0;
     assertTrue(rs.next());
     ++cnt;
-    java.sql.Date lastDate = rs.getDate(0);
+    java.sql.Date lastDate = rs.getDate(1);
     while (rs.next()) {
-      assertNotNull(rs.getDate(0));
-      assertTrue(rs.getDate(0).getTime() >= lastDate.getTime()); // sorted order is maintained
-      lastDate = rs.getDate(0);
+      assertNotNull(rs.getDate(1));
+      assertTrue(rs.getDate(1).getTime() >= lastDate.getTime()); // sorted order is maintained
+      lastDate = rs.getDate(1);
       ++cnt;
     }
     assertEquals(300000, cnt); // total 300000 rows should be read
@@ -3985,11 +3985,11 @@ class ITBigQueryTest {
     ResultSet rs = bigQueryResult.getResultSet();
     int cnt = 0;
     while (rs.next()) { // pagination starts after approx 120,000 records
-      assertNotNull(rs.getDate(0));
-      assertNotNull(rs.getString(1));
+      assertNotNull(rs.getDate(1));
       assertNotNull(rs.getString(2));
-      assertTrue(rs.getInt(3) >= 0);
+      assertNotNull(rs.getString(3));
       assertTrue(rs.getInt(4) >= 0);
+      assertTrue(rs.getInt(5) >= 0);
       ++cnt;
     }
     assertEquals(300000, cnt); // total 300000 rows should be read
@@ -4172,11 +4172,11 @@ class ITBigQueryTest {
     ResultSet rs = bigQueryResult.getResultSet();
     int cnt = 0;
     while (rs.next()) { // pagination starts after approx 120,000 records
-      assertNotNull(rs.getDate(0));
-      assertNotNull(rs.getString(1));
+      assertNotNull(rs.getDate(1));
       assertNotNull(rs.getString(2));
-      assertTrue(rs.getInt(3) >= 0);
+      assertNotNull(rs.getString(3));
       assertTrue(rs.getInt(4) >= 0);
+      assertTrue(rs.getInt(5) >= 0);
       ++cnt;
     }
     assertEquals(300000, cnt); // total 300000 rows should be read
@@ -4205,15 +4205,15 @@ class ITBigQueryTest {
     int cnt = 0;
     int lasConfirmedCases = Integer.MIN_VALUE;
     while (rs.next()) { // pagination starts after approx 120,000 records
-      assertNotNull(rs.getDate(0));
-      assertNotNull(rs.getString(1));
+      assertNotNull(rs.getDate(1));
       assertNotNull(rs.getString(2));
-      assertTrue(rs.getInt(3) >= 0);
+      assertNotNull(rs.getString(3));
       assertTrue(rs.getInt(4) >= 0);
+      assertTrue(rs.getInt(5) >= 0);
 
       // check if the records are sorted
-      assertTrue(rs.getInt(3) >= lasConfirmedCases);
-      lasConfirmedCases = rs.getInt(3);
+      assertTrue(rs.getInt(4) >= lasConfirmedCases);
+      lasConfirmedCases = rs.getInt(4);
       ++cnt;
     }
     assertEquals(300000, cnt); // total 300000 rows should be read
@@ -4248,16 +4248,16 @@ class ITBigQueryTest {
     int cnt = 0;
     int lasConfirmedCases = Integer.MIN_VALUE;
     while (rs.next()) { // pagination starts after approx 120,000 records
-      assertNotNull(rs.getDate(0));
-      assertNotNull(rs.getString(1));
+      assertNotNull(rs.getDate(1));
       assertNotNull(rs.getString(2));
-      assertTrue(rs.getInt(3) >= 0);
-      assertTrue(rs.getDouble(3) >= 0);
+      assertNotNull(rs.getString(3));
+      assertTrue(rs.getInt(4) >= 0);
       assertTrue(rs.getDouble(4) >= 0);
+      assertTrue(rs.getDouble(5) >= 0);
 
       // check if the records are sorted
-      assertTrue(rs.getInt(3) >= lasConfirmedCases);
-      lasConfirmedCases = rs.getInt(3);
+      assertTrue(rs.getInt(4) >= lasConfirmedCases);
+      lasConfirmedCases = rs.getInt(4);
       ++cnt;
     }
     assertEquals(300000, cnt); // total 300000 rows should be read
@@ -4406,7 +4406,7 @@ class ITBigQueryTest {
       ResultSet rs = bigQueryResult.getResultSet();
       int cnt = 0;
       while (rs.next()) { // pagination starts after approx 120,000 records
-        assertNotNull(rs.getDate(0));
+        assertNotNull(rs.getDate(1));
         ++cnt;
       }
       assertEquals(300000, cnt); // total 300000 rows should be read
@@ -4427,9 +4427,9 @@ class ITBigQueryTest {
             + TABLE_ID_FAST_QUERY_BQ_RESULTSET.getTable()
             + " order by TimestampField";
     /*
-    Column Index mapping for ref:
-    StringField,  0    BigNumericField, 1    BooleanField,  2   BytesField,  3    IntegerField, 4   TimestampField, 5   FloatField, " 6
-    NumericField, 7    TimeField, 8     DateField,  9    DateTimeField , 10   GeographyField, 11    RecordField.BytesField, 12     RecordField.BooleanField, 13   IntegerArrayField 14
+    Column Index mapping for ref (1-based JDBC indexing):
+    StringField,  1    BigNumericField, 2    BooleanField,  3   BytesField,  4    IntegerField, 5   TimestampField, 6   FloatField, " 7
+    NumericField, 8    TimeField, 9     DateField,  10   DateTimeField , 11  GeographyField, 12   RecordField.BytesField, 13    RecordField.BooleanField, 14  IntegerArrayField 15
          */
     ConnectionSettings connectionSettings =
         ConnectionSettings.newBuilder().setDefaultDataset(DatasetId.of(DATASET)).build();
@@ -4441,39 +4441,39 @@ class ITBigQueryTest {
     assertEquals(BQ_RESULTSET_EXPECTED_SCHEMA, sc); // match the schema
     assertEquals(2, bigQueryResult.getTotalRows()); // Expecting 2 rows
     while (rs.next()) {
-      assertEquals(rs.getString(0), rs.getString("StringField"));
-      assertEquals(rs.getDouble(1), rs.getDouble("BigNumericField"), 1e-9);
-      assertEquals(rs.getBoolean(2), rs.getBoolean("BooleanField"));
-      if (rs.getBytes(3) == null) { // both overloads should be null
-        assertEquals(rs.getBytes(3), rs.getBytes("BytesField"));
+      assertEquals(rs.getString(1), rs.getString("StringField"));
+      assertEquals(rs.getDouble(2), rs.getDouble("BigNumericField"), 1e-9);
+      assertEquals(rs.getBoolean(3), rs.getBoolean("BooleanField"));
+      if (rs.getBytes(4) == null) { // both overloads should be null
+        assertEquals(rs.getBytes(4), rs.getBytes("BytesField"));
       } else { // value in String representation should be the same
         assertEquals(
-            new String(rs.getBytes(3), StandardCharsets.UTF_8),
+            new String(rs.getBytes(4), StandardCharsets.UTF_8),
             new String(rs.getBytes("BytesField"), StandardCharsets.UTF_8));
       }
-      assertEquals(rs.getInt(4), rs.getInt("IntegerField"));
-      assertEquals(rs.getTimestamp(5), rs.getTimestamp("TimestampField"));
-      assertEquals(rs.getDate(9), rs.getDate("DateField"));
-      assertEquals(rs.getDouble("FloatField"), rs.getDouble(6), 1e-9);
-      assertEquals(rs.getDouble("NumericField"), rs.getDouble(7), 1e-9);
-      assertEquals(rs.getTime(8), rs.getTime("TimeField"));
-      assertEquals(rs.getString(10), rs.getString("DateTimeField"));
-      assertEquals(rs.getString(11), rs.getString("GeographyField"));
-      if (rs.getBytes(12) == null) { // both overloads should be null
-        assertEquals(rs.getBytes(12), rs.getBytes("BytesField_1"));
+      assertEquals(rs.getInt(5), rs.getInt("IntegerField"));
+      assertEquals(rs.getTimestamp(6), rs.getTimestamp("TimestampField"));
+      assertEquals(rs.getDate(10), rs.getDate("DateField"));
+      assertEquals(rs.getDouble("FloatField"), rs.getDouble(7), 1e-9);
+      assertEquals(rs.getDouble("NumericField"), rs.getDouble(8), 1e-9);
+      assertEquals(rs.getTime(9), rs.getTime("TimeField"));
+      assertEquals(rs.getString(11), rs.getString("DateTimeField"));
+      assertEquals(rs.getString(12), rs.getString("GeographyField"));
+      if (rs.getBytes(13) == null) { // both overloads should be null
+        assertEquals(rs.getBytes(13), rs.getBytes("BytesField_1"));
       } else { // value in String representation should be the same
         assertEquals(
-            new String(rs.getBytes(12), StandardCharsets.UTF_8),
+            new String(rs.getBytes(13), StandardCharsets.UTF_8),
             new String(rs.getBytes("BytesField_1"), StandardCharsets.UTF_8));
       }
-      assertEquals(rs.getBoolean(13), rs.getBoolean("BooleanField_1"));
+      assertEquals(rs.getBoolean(14), rs.getBoolean("BooleanField_1"));
       assertTrue(
           rs.getObject("IntegerArrayField") instanceof com.google.cloud.bigquery.FieldValueList);
       FieldValueList integerArrayFieldValue =
           (com.google.cloud.bigquery.FieldValueList) rs.getObject("IntegerArrayField");
-      assertTrue(rs.getObject(14) instanceof com.google.cloud.bigquery.FieldValueList);
+      assertTrue(rs.getObject(15) instanceof com.google.cloud.bigquery.FieldValueList);
       FieldValueList integerArrayFieldValueColInd =
-          (com.google.cloud.bigquery.FieldValueList) rs.getObject(14);
+          (com.google.cloud.bigquery.FieldValueList) rs.getObject(15);
       assertEquals(
           integerArrayFieldValue.size(),
           integerArrayFieldValueColInd.size()); // Array has 4 elements
@@ -4486,7 +4486,7 @@ class ITBigQueryTest {
       List<FieldValue> integerArrayFieldValueList =
           (List<FieldValue>) rs.getArray("IntegerArrayField").getArray();
       List<FieldValue> integerArrayFieldValueListColInd =
-          (List<FieldValue>) rs.getArray(14).getArray();
+          (List<FieldValue>) rs.getArray(15).getArray();
       assertEquals(
           integerArrayFieldValueList.size(),
           integerArrayFieldValueListColInd.size()); // Array has 4 elements
@@ -4525,7 +4525,7 @@ class ITBigQueryTest {
     assertTrue(rs.next());
     FieldValueList addressFieldValue =
         (com.google.cloud.bigquery.FieldValueList) rs.getObject("address");
-    assertEquals(rs.getObject("address"), rs.getObject(0));
+    assertEquals(rs.getObject("address"), rs.getObject(1));
     assertEquals("Vancouver", addressFieldValue.get(0).getStringValue());
     assertEquals(5, addressFieldValue.get(1).getLongValue());
     assertFalse(rs.next()); // only 1 row of data
@@ -4552,7 +4552,7 @@ class ITBigQueryTest {
     ResultSet rs = bigQueryResult.getResultSet();
     assertTrue(rs.next());
     String cityFieldValue = rs.getString("city");
-    assertEquals(rs.getString("city"), rs.getObject(0));
+    assertEquals(rs.getString("city"), rs.getObject(1));
     assertEquals("Vancouver", cityFieldValue);
     assertFalse(rs.next()); // only 1 row of data
   }
@@ -4574,7 +4574,7 @@ class ITBigQueryTest {
 
     ResultSet rs = bigQueryResult.getResultSet();
     assertTrue(rs.next());
-    FieldValueList arrayFieldValue = (com.google.cloud.bigquery.FieldValueList) rs.getObject(0);
+    FieldValueList arrayFieldValue = (com.google.cloud.bigquery.FieldValueList) rs.getObject(1);
     assertEquals(1, arrayFieldValue.get(0).getLongValue());
     assertEquals(2, arrayFieldValue.get(1).getLongValue());
     assertEquals(3, arrayFieldValue.get(2).getLongValue());
@@ -4609,7 +4609,7 @@ class ITBigQueryTest {
     ResultSet rs = bigQueryResult.getResultSet();
     assertTrue(rs.next());
     FieldValueList arrayOfStructFieldValue =
-        (com.google.cloud.bigquery.FieldValueList) rs.getObject(0);
+        (com.google.cloud.bigquery.FieldValueList) rs.getObject(1);
     // Verify the values of the two structs in the array
     assertEquals(Attribute.RECORD, arrayOfStructFieldValue.get(0).getAttribute());
     assertEquals(

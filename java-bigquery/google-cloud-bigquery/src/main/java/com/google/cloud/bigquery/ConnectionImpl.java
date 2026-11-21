@@ -69,6 +69,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -101,6 +102,8 @@ class ConnectionImpl implements Connection {
       bufferFvl; // initialized lazily iff we end up using the tabledata.list end point
   private BlockingQueue<BigQueryResultImpl.Row>
       bufferRow; // initialized lazily iff we end up using Read API
+  private final List<ArrowRowReader> arrowRowReaders =
+      Collections.synchronizedList(new ArrayList<>());
   private static final BigQueryRetryConfig EMPTY_RETRY_CONFIG =
       BigQueryRetryConfig.newBuilder().build();
 
@@ -168,10 +171,27 @@ class ConnectionImpl implements Connection {
           "\n" + Thread.currentThread().getName() + " Exception while awaitTermination",
           e); // Logging InterruptedException instead of throwing the exception back, close method
       // will return queryTaskExecutor.isShutdown()
+    } finally {
+      if (queryTaskExecutor.isTerminated()) {
+        closeArrowRowReaders();
+      }
     }
 
     return queryTaskExecutor.isShutdown()
         && isBqReadClientTerminated; // check if the executor has been shutdown
+  }
+
+  private void closeArrowRowReaders() {
+    synchronized (arrowRowReaders) {
+      for (ArrowRowReader reader : arrowRowReaders) {
+        try {
+          reader.close();
+        } catch (RuntimeException e) {
+          logger.log(Level.WARNING, "Error while closing ArrowRowReader", e);
+        }
+      }
+      arrowRowReaders.clear();
+    }
   }
 
   /**
@@ -1026,11 +1046,13 @@ class ConnectionImpl implements Connection {
       bufferRow = new LinkedBlockingDeque<>(getBufferSize());
       Map<String, Integer> arrowNameToIndex = new HashMap<>();
       // deserialize and populate the buffer async, so that the client isn't blocked
-      processArrowStreamAsync(
-          readSession,
-          bufferRow,
-          new ArrowRowReader(readSession.getArrowSchema(), arrowNameToIndex),
-          schema);
+      ArrowRowReader reader = new ArrowRowReader(readSession.getArrowSchema(), arrowNameToIndex);
+      try {
+        processArrowStreamAsync(readSession, bufferRow, reader, schema);
+      } catch (RuntimeException e) {
+        reader.close();
+        throw e;
+      }
 
       logger.log(Level.INFO, "\n Using BigQuery Read API");
       stats.getQueryStatistics().setUseReadApi(true);
@@ -1041,12 +1063,18 @@ class ConnectionImpl implements Connection {
     }
   }
 
-  private void processArrowStreamAsync(
+  @VisibleForTesting
+  void setBqReadClient(BigQueryReadClient bqReadClient) {
+    this.bqReadClient = bqReadClient;
+  }
+
+  @VisibleForTesting
+  void processArrowStreamAsync(
       ReadSession readSession,
       BlockingQueue<BigQueryResultImpl.Row> buffer,
       ArrowRowReader reader,
       Schema schema) {
-
+    arrowRowReaders.add(reader);
     Runnable arrowStreamProcessor =
         () -> {
           try {
@@ -1077,6 +1105,8 @@ class ConnectionImpl implements Connection {
               throw BigQueryException.translateAndThrow(e);
             }
           } finally { // logic needed for graceful shutdown
+            reader.close();
+            arrowRowReaders.remove(reader);
             // marking end of stream
             try {
               buffer.put(
@@ -1088,59 +1118,74 @@ class ConnectionImpl implements Connection {
                   "\n" + Thread.currentThread().getName() + " Interrupted @ markLast",
                   e);
             }
-            bqReadClient.shutdownNow(); // Shutdown the read client
+            if (bqReadClient != null) {
+              bqReadClient.shutdownNow(); // Shutdown the read client
+            }
             queryTaskExecutor.shutdownNow(); // Shutdown the thread pool
           }
         };
 
-    queryTaskExecutor.execute(arrowStreamProcessor);
+    try {
+      queryTaskExecutor.execute(arrowStreamProcessor);
+    } catch (RuntimeException e) {
+      reader.close();
+      arrowRowReaders.remove(reader);
+      throw e;
+    }
   }
 
-  private class ArrowRowReader
-      implements AutoCloseable { // TODO: Update to recent version of Arrow to avoid memoryleak
+  @VisibleForTesting
+  class ArrowRowReader implements AutoCloseable {
 
-    BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
+    final BufferAllocator allocator = new RootAllocator(Long.MAX_VALUE);
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
     // Decoder object will be reused to avoid re-allocation and too much garbage collection.
     private final VectorSchemaRoot root;
     private final VectorLoader loader;
 
-    private ArrowRowReader(ArrowSchema arrowSchema, Map<String, Integer> arrowNameToIndex)
+    ArrowRowReader(ArrowSchema arrowSchema, Map<String, Integer> arrowNameToIndex)
         throws IOException {
-      org.apache.arrow.vector.types.pojo.Schema schema =
-          MessageSerializer.deserializeSchema(
-              new org.apache.arrow.vector.ipc.ReadChannel(
-                  new ByteArrayReadableSeekableByteChannel(
-                      arrowSchema.getSerializedSchema().toByteArray())));
       List<FieldVector> vectors = new ArrayList<>();
-      List<Field> fields = schema.getFields();
-      for (int i = 0; i < fields.size(); i++) {
-        vectors.add(fields.get(i).createVector(allocator));
-        arrowNameToIndex.put(
-            fields.get(i).getName(),
-            i); // mapping for getting against the field name in the result set
+      try {
+        org.apache.arrow.vector.types.pojo.Schema schema =
+            MessageSerializer.deserializeSchema(
+                new org.apache.arrow.vector.ipc.ReadChannel(
+                    new ByteArrayReadableSeekableByteChannel(
+                        arrowSchema.getSerializedSchema().toByteArray())));
+        List<Field> fields = schema.getFields();
+        for (int i = 0; i < fields.size(); i++) {
+          vectors.add(fields.get(i).createVector(allocator));
+          arrowNameToIndex.put(
+              fields.get(i).getName(),
+              i); // mapping for getting against the field name in the result set
+        }
+        root = new VectorSchemaRoot(vectors);
+        loader = new VectorLoader(root);
+      } catch (Throwable t) {
+        for (FieldVector vector : vectors) {
+          vector.close();
+        }
+        allocator.close();
+        throw t;
       }
-      root = new VectorSchemaRoot(vectors);
-      loader = new VectorLoader(root);
     }
 
     /**
      * @param batch object returned from the ReadRowsResponse.
      */
-    private void processRows(
+    void processRows(
         ArrowRecordBatch batch, BlockingQueue<BigQueryResultImpl.Row> buffer, Schema schema)
         throws IOException { // deserialize the values and consume the hash of the values
       try {
-        org.apache.arrow.vector.ipc.message.ArrowRecordBatch deserializedBatch =
+        try (org.apache.arrow.vector.ipc.message.ArrowRecordBatch deserializedBatch =
             MessageSerializer.deserializeRecordBatch(
                 new ReadChannel(
                     new ByteArrayReadableSeekableByteChannel(
                         batch.getSerializedRecordBatch().toByteArray())),
-                allocator);
-
-        loader.load(deserializedBatch);
-        // Release buffers from batch (they are still held in the vectors in root).
-        deserializedBatch.close();
+                allocator)) {
+          loader.load(deserializedBatch);
+        }
 
         // Parse the vectors using BQ Schema. Deserialize the data at the row level and add it to
         // the
@@ -1177,10 +1222,20 @@ class ConnectionImpl implements Connection {
       }
     }
 
+    @VisibleForTesting
+    boolean isClosed() {
+      return closed.get();
+    }
+
     @Override
     public void close() {
-      root.close();
-      allocator.close();
+      if (closed.compareAndSet(false, true)) {
+        try {
+          root.close();
+        } finally {
+          allocator.close();
+        }
+      }
     }
   }
 

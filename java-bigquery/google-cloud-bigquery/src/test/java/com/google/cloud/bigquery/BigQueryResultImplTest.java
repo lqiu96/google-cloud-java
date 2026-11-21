@@ -17,6 +17,7 @@
 package com.google.cloud.bigquery;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.cloud.bigquery.ConnectionImpl.EndOfFieldValueList;
 import com.google.cloud.bigquery.FieldValue.Attribute;
@@ -310,10 +311,183 @@ class BigQueryResultImplTest {
     ResultSet resultSet = bigQueryResult.getResultSet();
 
     assertThat(resultSet.next()).isTrue();
-    assertThat(resultSet.getLong(1)).isEqualTo(largeInt64Value);
+    assertThat(resultSet.getLong(2)).isEqualTo(largeInt64Value);
     assertThat(resultSet.wasNull()).isFalse();
     assertThat(resultSet.getLong("long")).isEqualTo(largeInt64Value);
     assertThat(resultSet.wasNull()).isFalse();
     assertThat(resultSet.next()).isFalse();
+  }
+
+  @Test
+  void testResultSetFieldValueListOneBasedColumnIndex() throws InterruptedException, SQLException {
+    BlockingQueue<AbstractList<FieldValue>> buffer = new LinkedBlockingDeque<>(BUFFER_SIZE);
+    FieldValueList fieldValues =
+        FieldValueList.of(
+            ImmutableList.of(
+                FieldValue.of(Attribute.PRIMITIVE, "true"),
+                FieldValue.of(Attribute.PRIMITIVE, "42"),
+                FieldValue.of(Attribute.PRIMITIVE, "1.5"),
+                FieldValue.of(Attribute.PRIMITIVE, "string_value"),
+                FieldValue.of(Attribute.PRIMITIVE, BYTES_BASE64),
+                FieldValue.of(
+                    Attribute.PRIMITIVE, Long.toString(EXPECTED_TIMESTAMP.getTime() / 1000), false),
+                FieldValue.of(Attribute.PRIMITIVE, TIME),
+                FieldValue.of(Attribute.PRIMITIVE, DATE),
+                FieldValue.of(Attribute.REPEATED, EXPECTED_INT_ARRAY),
+                FieldValue.of(Attribute.REPEATED, STRING_ARRAY)),
+            FIELD_LIST_SCHEMA);
+    buffer.put(fieldValues);
+    buffer.put(new EndOfFieldValueList());
+
+    BigQueryResultImpl<AbstractList<FieldValue>> bigQueryResult =
+        new BigQueryResultImpl<>(SCHEMA, 1, buffer, null);
+    try (ResultSet resultSet = bigQueryResult.getResultSet()) {
+      assertThat(resultSet.next()).isTrue();
+      assertThat(resultSet.getBoolean(1)).isTrue();
+      assertThat(resultSet.getInt(2)).isEqualTo(42);
+      assertThat(resultSet.getLong(2)).isEqualTo(42L);
+      assertThat(resultSet.getDouble(3)).isEqualTo(1.5);
+      assertThat(resultSet.getBigDecimal(3)).isEqualTo(new BigDecimal("1.5"));
+      assertThat(resultSet.getString(4)).isEqualTo("string_value");
+      assertThat(resultSet.getObject(4)).isEqualTo("string_value");
+      assertThat(resultSet.getBytes(5)).isEqualTo(BYTES);
+      assertThat(resultSet.getTimestamp(6)).isEqualTo(EXPECTED_TIMESTAMP);
+      assertThat(resultSet.getTime(7).getTime()).isEqualTo(EXPECTED_TIME.getTime());
+      assertThat(resultSet.getDate(8).getTime()).isEqualTo(EXPECTED_DATE.getTime());
+      assertThat(resultSet.getArray(9).getArray()).isEqualTo(EXPECTED_INT_ARRAY);
+      assertThat(resultSet.getArray(10).getArray()).isEqualTo(EXPECTED_STRING_ARRAY);
+
+      assertThrows(SQLException.class, () -> resultSet.getString(0));
+      assertThrows(SQLException.class, () -> resultSet.getString(11));
+      assertThrows(SQLException.class, () -> resultSet.getInt(0));
+    }
+  }
+
+  @Test
+  void testResultSetReadApiOneBasedColumnIndex() throws InterruptedException, SQLException {
+    BlockingQueue<BigQueryResultImpl.Row> buffer = new LinkedBlockingDeque<>(BUFFER_SIZE);
+    Map<String, Object> rowValues = new HashMap<>();
+    rowValues.put("boolean", true);
+    rowValues.put("long", 42L);
+    rowValues.put("double", 1.5);
+    rowValues.put("string", new Text("string_value"));
+    rowValues.put("bytes", BYTES);
+    rowValues.put("timestamp", EXPECTED_TIMESTAMP.getTime() * 1000);
+    rowValues.put("time", EXPECTED_TIME.getTime() * 1000);
+    rowValues.put("date", DATE_INT);
+    rowValues.put("intArray", EXPECTED_INT_ARRAY);
+    rowValues.put("stringArray", STRING_ARRAY);
+    buffer.put(new BigQueryResultImpl.Row(rowValues));
+    buffer.put(new BigQueryResultImpl.Row(null, true));
+
+    BigQueryResultImpl<BigQueryResultImpl.Row> bigQueryResult =
+        new BigQueryResultImpl<>(SCHEMA, 1, buffer, null);
+    try (ResultSet resultSet = bigQueryResult.getResultSet()) {
+      assertThat(resultSet.next()).isTrue();
+      assertThat(resultSet.getBoolean(1)).isTrue();
+      assertThat(resultSet.getInt(2)).isEqualTo(42);
+      assertThat(resultSet.getLong(2)).isEqualTo(42L);
+      assertThat(resultSet.getDouble(3)).isEqualTo(1.5);
+      assertThat(resultSet.getBigDecimal(3)).isEqualTo(new BigDecimal("1.5"));
+      assertThat(resultSet.getString(4)).isEqualTo("string_value");
+      assertThat(resultSet.getObject(4)).isEqualTo(new Text("string_value"));
+      assertThat(resultSet.getBytes(5)).isEqualTo(BYTES);
+      assertThat(resultSet.getTimestamp(6)).isEqualTo(EXPECTED_TIMESTAMP);
+      assertThat(resultSet.getTime(7).getTime()).isEqualTo(EXPECTED_TIME.getTime());
+      assertThat(resultSet.getDate(8)).isNotNull();
+      assertThat(resultSet.getArray(9).getArray()).isEqualTo(EXPECTED_INT_ARRAY);
+      assertThat(resultSet.getArray(10).getArray()).isEqualTo(EXPECTED_STRING_ARRAY);
+
+      assertThrows(SQLException.class, () -> resultSet.getString(0));
+      assertThrows(SQLException.class, () -> resultSet.getString(11));
+    }
+  }
+
+  @Test
+  void testResultSetCloseAndIsClosed() throws InterruptedException, SQLException {
+    BlockingQueue<AbstractList<FieldValue>> buffer = new LinkedBlockingDeque<>(BUFFER_SIZE);
+    buffer.put(
+        FieldValueList.of(
+            ImmutableList.of(FieldValue.of(Attribute.PRIMITIVE, "val")),
+            FieldList.of(Field.of("col", LegacySQLTypeName.STRING))));
+    buffer.put(new EndOfFieldValueList());
+
+    Schema singleColSchema = Schema.of(Field.of("col", StandardSQLTypeName.STRING));
+    BigQueryResultImpl<AbstractList<FieldValue>> bigQueryResult =
+        new BigQueryResultImpl<>(singleColSchema, 1, buffer, null);
+    ResultSet resultSet = bigQueryResult.getResultSet();
+
+    assertThat(resultSet.isClosed()).isFalse();
+    assertThat(resultSet.next()).isTrue();
+    assertThat(resultSet.getString(1)).isEqualTo("val");
+
+    resultSet.close();
+    assertThat(resultSet.isClosed()).isTrue();
+    resultSet.close(); // idempotent
+    assertThat(resultSet.isClosed()).isTrue();
+
+    assertThrows(SQLException.class, resultSet::next);
+    assertThrows(SQLException.class, () -> resultSet.getString(1));
+    assertThrows(SQLException.class, () -> resultSet.getString("col"));
+    assertThrows(SQLException.class, resultSet::wasNull);
+  }
+
+  @Test
+  void testResultSetGetBigDecimalPreservesFullPrecision()
+      throws InterruptedException, SQLException {
+    String exactDecimalStr = "12345678901234567890123456789.123456789";
+    BigDecimal exactDecimal = new BigDecimal(exactDecimalStr);
+    long exactInt64 = 9007199254740993L; // 2^53 + 1, loses precision via double
+
+    Schema numericSchema =
+        Schema.of(
+            Field.of("num", StandardSQLTypeName.NUMERIC),
+            Field.of("bigInt", StandardSQLTypeName.INT64),
+            Field.of("numText", StandardSQLTypeName.STRING));
+    FieldList fieldList =
+        FieldList.of(
+            Field.of("num", LegacySQLTypeName.NUMERIC),
+            Field.of("bigInt", LegacySQLTypeName.INTEGER),
+            Field.of("numText", LegacySQLTypeName.STRING));
+
+    // FieldValueList path
+    BlockingQueue<AbstractList<FieldValue>> fvlBuffer = new LinkedBlockingDeque<>(BUFFER_SIZE);
+    fvlBuffer.put(
+        FieldValueList.of(
+            ImmutableList.of(
+                FieldValue.of(Attribute.PRIMITIVE, exactDecimalStr),
+                FieldValue.of(Attribute.PRIMITIVE, Long.toString(exactInt64)),
+                FieldValue.of(Attribute.PRIMITIVE, exactDecimalStr)),
+            fieldList));
+    fvlBuffer.put(new EndOfFieldValueList());
+
+    try (ResultSet rs =
+        new BigQueryResultImpl<>(numericSchema, 1, fvlBuffer, null).getResultSet()) {
+      assertThat(rs.next()).isTrue();
+      assertThat(rs.getBigDecimal("num")).isEqualTo(exactDecimal);
+      assertThat(rs.getBigDecimal(1)).isEqualTo(exactDecimal);
+      assertThat(rs.getBigDecimal("bigInt")).isEqualTo(BigDecimal.valueOf(exactInt64));
+      assertThat(rs.getBigDecimal(2)).isEqualTo(BigDecimal.valueOf(exactInt64));
+    }
+
+    // Read API (Arrow) path
+    BlockingQueue<BigQueryResultImpl.Row> arrowBuffer = new LinkedBlockingDeque<>(BUFFER_SIZE);
+    Map<String, Object> arrowRow = new HashMap<>();
+    arrowRow.put("num", exactDecimal);
+    arrowRow.put("bigInt", exactInt64);
+    arrowRow.put("numText", new Text(exactDecimalStr));
+    arrowBuffer.put(new BigQueryResultImpl.Row(arrowRow));
+    arrowBuffer.put(new BigQueryResultImpl.Row(null, true));
+
+    try (ResultSet rs =
+        new BigQueryResultImpl<>(numericSchema, 1, arrowBuffer, null).getResultSet()) {
+      assertThat(rs.next()).isTrue();
+      assertThat(rs.getBigDecimal("num")).isEqualTo(exactDecimal);
+      assertThat(rs.getBigDecimal(1)).isEqualTo(exactDecimal);
+      assertThat(rs.getBigDecimal("bigInt")).isEqualTo(BigDecimal.valueOf(exactInt64));
+      assertThat(rs.getBigDecimal(2)).isEqualTo(BigDecimal.valueOf(exactInt64));
+      assertThat(rs.getBigDecimal("numText")).isEqualTo(exactDecimal);
+      assertThat(rs.getBigDecimal(3)).isEqualTo(exactDecimal);
+    }
   }
 }

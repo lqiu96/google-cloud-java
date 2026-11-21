@@ -210,8 +210,47 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
     }
 
     @Override
+    public void close() throws SQLException {
+      super.close();
+      cursor = null;
+      hasReachedEnd = true;
+    }
+
+    private void checkOpen() throws SQLException {
+      if (isClosed()) {
+        throw new BigQuerySQLException("ResultSet is closed");
+      }
+    }
+
+    private int toZeroBasedIndex(int columnIndex) throws SQLException {
+      int maxColumns =
+          schemaFieldList != null
+              ? schemaFieldList.size()
+              : (cursor instanceof FieldValueList ? ((FieldValueList) cursor).size() : 0);
+      if (columnIndex < 1 || columnIndex > maxColumns) {
+        throw new SQLException(
+            String.format("Column index %d out of range [1, %d]", columnIndex, maxColumns));
+      }
+      return columnIndex - 1;
+    }
+
+    private BigDecimal toBigDecimal(Object curVal) {
+      if (curVal instanceof BigDecimal) {
+        return (BigDecimal) curVal;
+      }
+      if (curVal instanceof Long
+          || curVal instanceof Integer
+          || curVal instanceof Short
+          || curVal instanceof Byte) {
+        return BigDecimal.valueOf(((Number) curVal).longValue());
+      }
+      return new BigDecimal(curVal.toString());
+    }
+
+    @Override
     /*Advances the result set to the next row, returning false if no such row exists. Potentially blocking operation*/
     public boolean next() throws SQLException {
+      checkOpen();
       if (buffer == null) {
         return false;
       }
@@ -257,6 +296,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public java.sql.Array getArray(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -288,10 +328,12 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public java.sql.Array getArray(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         return null;
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if (fieldValue == null || fieldValue.getValue() == null) {
           wasNull = true;
           return null;
@@ -299,12 +341,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         wasNull = false;
         return new BigQueryArrayResult(fieldValue.getValue());
       } else {
-        return getArray(schemaFieldList.get(columnIndex).getName());
+        return getArray(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public Object getObject(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -331,10 +374,12 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         return null;
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if (fieldValue == null || fieldValue.getValue() == null) {
           wasNull = true;
           return null;
@@ -342,12 +387,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         wasNull = false;
         return fieldValue.getValue();
       } else { // Data received from Read API (Arrow)
-        return getObject(schemaFieldList.get(columnIndex).getName());
+        return getObject(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public String getString(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -387,10 +433,12 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public String getString(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         return null;
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if (fieldValue == null || fieldValue.getValue() == null) {
           wasNull = true;
           return null;
@@ -398,12 +446,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         wasNull = false;
         return fieldValue.getStringValue();
       } else { // Data received from Read API (Arrow)
-        return getString(schemaFieldList.get(columnIndex).getName());
+        return getString(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public int getInt(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -438,23 +487,27 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public int getInt(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         return 0; // the column value; if the value is SQL NULL, the value returned is 0 as per
         // java.sql.ResultSet definition
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if (fieldValue == null || fieldValue.getValue() == null) {
           wasNull = true;
           return 0;
         }
+        wasNull = false;
         return fieldValue.getNumericValue().intValue();
       } else { // Data received from Read API (Arrow)
-        return getInt(schemaFieldList.get(columnIndex).getName());
+        return getInt(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public long getLong(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -482,11 +535,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public long getLong(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         return 0L; // the column value; if the value is SQL NULL, the value returned is 0 as per
         // java.sql.ResultSet definition
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if ((fieldValue == null || fieldValue.getValue() == null)) {
           wasNull = true;
           return 0L;
@@ -494,12 +549,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         wasNull = false;
         return fieldValue.getNumericValue().longValue();
       } else { // Data received from Read API (Arrow)
-        return getLong(schemaFieldList.get(columnIndex).getName());
+        return getLong(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public double getDouble(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -526,11 +582,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public double getDouble(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         return 0d; // the column value; if the value is SQL NULL, the value returned is 0 as per
         // java.sql.ResultSet definition
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if ((fieldValue == null || fieldValue.getValue() == null)) {
           wasNull = true;
           return 0.0d;
@@ -538,12 +596,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         wasNull = false;
         return fieldValue.getNumericValue().doubleValue();
       } else { // Data received from Read API (Arrow)
-        return getDouble(schemaFieldList.get(columnIndex).getName());
+        return getDouble(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public BigDecimal getBigDecimal(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -556,7 +615,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return null;
         }
         wasNull = false;
-        return BigDecimal.valueOf(fieldValue.getNumericValue().doubleValue());
+        return fieldValue.getNumericValue();
       } else { // Data received from Read API (Arrow)
         Object curVal = getCurrentValueForReadApiData(fieldName);
         if (curVal == null) {
@@ -564,29 +623,32 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
           return null;
         }
         wasNull = false;
-        return BigDecimal.valueOf(getDouble(fieldName));
+        return toBigDecimal(curVal);
       }
     }
 
     @Override
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         throw new BigQuerySQLException(NULL_CURSOR_MSG);
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if ((fieldValue == null || fieldValue.getValue() == null)) {
           wasNull = true;
           return null;
         }
         wasNull = false;
-        return BigDecimal.valueOf(fieldValue.getNumericValue().doubleValue());
+        return fieldValue.getNumericValue();
       } else { // Data received from Read API (Arrow)
-        return getBigDecimal(schemaFieldList.get(columnIndex).getName());
+        return getBigDecimal(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public boolean getBoolean(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -613,10 +675,12 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public boolean getBoolean(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         throw new BigQuerySQLException(NULL_CURSOR_MSG);
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if ((fieldValue == null || fieldValue.getValue() == null)) {
           wasNull = true;
           return false;
@@ -624,12 +688,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         wasNull = false;
         return fieldValue.getBooleanValue();
       } else { // Data received from Read API (Arrow)
-        return getBoolean(schemaFieldList.get(columnIndex).getName());
+        return getBoolean(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public byte[] getBytes(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -656,10 +721,12 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public byte[] getBytes(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         return null; //  if the value is SQL NULL, the value returned is null
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if ((fieldValue == null || fieldValue.getValue() == null)) {
           wasNull = true;
           return null;
@@ -667,12 +734,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         wasNull = false;
         return fieldValue.getBytesValue();
       } else { // Data received from Read API (Arrow)
-        return getBytes(schemaFieldList.get(columnIndex).getName());
+        return getBytes(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public Timestamp getTimestamp(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new BigQuerySQLException(NULL_CURSOR_MSG);
       }
@@ -702,10 +770,12 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public Timestamp getTimestamp(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         throw new BigQuerySQLException(NULL_CURSOR_MSG);
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if ((fieldValue == null || fieldValue.getValue() == null)) {
           wasNull = true;
           return null;
@@ -716,12 +786,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
                 / 1000); // getTimestampValue returns time in microseconds, and TimeStamp expects it
         // in millis
       } else { // Data received from Read API (Arrow)
-        return getTimestamp(schemaFieldList.get(columnIndex).getName());
+        return getTimestamp(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
     @Override
     public Time getTime(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new BigQuerySQLException(NULL_CURSOR_MSG);
       }
@@ -751,10 +822,12 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public Time getTime(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         throw new BigQuerySQLException(NULL_CURSOR_MSG);
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if ((fieldValue == null || fieldValue.getValue() == null)) {
           wasNull = true;
           return null;
@@ -762,7 +835,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         wasNull = false;
         return getTimeFromFieldVal(fieldValue);
       } else { // Data received from Read API (Arrow)
-        return getTime(schemaFieldList.get(columnIndex).getName());
+        return getTime(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
@@ -789,6 +862,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public Date getDate(String fieldName) throws SQLException {
+      checkOpen();
       if (fieldName == null) {
         throw new SQLException("fieldName can't be null");
       }
@@ -821,10 +895,12 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
     @Override
     public Date getDate(int columnIndex) throws SQLException {
+      checkOpen();
+      int zeroBasedIndex = toZeroBasedIndex(columnIndex);
       if (cursor == null) {
         throw new BigQuerySQLException(NULL_CURSOR_MSG);
       } else if (cursor instanceof FieldValueList) {
-        FieldValue fieldValue = ((FieldValueList) cursor).get(columnIndex);
+        FieldValue fieldValue = ((FieldValueList) cursor).get(zeroBasedIndex);
         if ((fieldValue == null || fieldValue.getValue() == null)) {
           wasNull = true;
           return null;
@@ -832,7 +908,7 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
         wasNull = false;
         return Date.valueOf(fieldValue.getStringValue());
       } else { // Data received from Read API (Arrow)
-        return getDate(schemaFieldList.get(columnIndex).getName());
+        return getDate(schemaFieldList.get(zeroBasedIndex).getName());
       }
     }
 
@@ -842,7 +918,8 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
      * wasNull to see if the value read was SQL NULL. *
      */
     @Override
-    public boolean wasNull() {
+    public boolean wasNull() throws SQLException {
+      checkOpen();
       return wasNull;
     }
   }

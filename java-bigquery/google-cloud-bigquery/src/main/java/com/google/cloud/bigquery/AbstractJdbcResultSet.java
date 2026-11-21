@@ -26,6 +26,8 @@ import java.util.Map;
 
 abstract class AbstractJdbcResultSet implements ResultSet {
 
+  private boolean closed = false;
+
   @Override
   public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
     // TODO: Implement the logic
@@ -34,8 +36,7 @@ abstract class AbstractJdbcResultSet implements ResultSet {
 
   @Override
   public void close() throws SQLException {
-    // TODO: Implement the logic
-    throw new RuntimeException("Not implemented");
+    closed = true;
   }
 
   @Override
@@ -830,7 +831,7 @@ abstract class AbstractJdbcResultSet implements ResultSet {
 
   @Override
   public boolean isClosed() throws SQLException {
-    throw new SQLFeatureNotSupportedException();
+    return closed;
   }
 
   @Override

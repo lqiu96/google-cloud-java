@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -28,6 +29,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.api.gax.rpc.ServerStream;
+import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.services.bigquery.model.GetQueryResultsResponse;
 import com.google.api.services.bigquery.model.QueryParameter;
 import com.google.api.services.bigquery.model.QueryParameterType;
@@ -41,10 +44,19 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.Tuple;
 import com.google.cloud.bigquery.spi.BigQueryRpcFactory;
 import com.google.cloud.bigquery.spi.v2.HttpBigQueryRpc;
+import com.google.cloud.bigquery.storage.v1.ArrowSchema;
+import com.google.cloud.bigquery.storage.v1.BigQueryReadClient;
+import com.google.cloud.bigquery.storage.v1.ReadRowsRequest;
+import com.google.cloud.bigquery.storage.v1.ReadRowsResponse;
+import com.google.cloud.bigquery.storage.v1.ReadSession;
+import com.google.cloud.bigquery.storage.v1.ReadStream;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.protobuf.ByteString;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.channels.Channels;
 import java.sql.SQLException;
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -55,6 +67,10 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.RejectedExecutionException;
+import org.apache.arrow.vector.ipc.WriteChannel;
+import org.apache.arrow.vector.ipc.message.MessageSerializer;
+import org.apache.arrow.vector.types.pojo.ArrowType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -816,5 +832,92 @@ class ConnectionImplTest {
     com.google.api.services.bigquery.model.Job createdJob =
         connection.createQueryJob(SQL_QUERY, connectionSettings, emptyParameters, emptyLabels);
     assertEquals(JOB, createdJob.getId());
+  }
+
+  private ArrowSchema createSerializedArrowSchema() throws IOException {
+    org.apache.arrow.vector.types.pojo.Schema arrowPojoSchema =
+        new org.apache.arrow.vector.types.pojo.Schema(
+            Collections.singletonList(
+                org.apache.arrow.vector.types.pojo.Field.nullable(
+                    "country", new ArrowType.Utf8())));
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    MessageSerializer.serialize(new WriteChannel(Channels.newChannel(out)), arrowPojoSchema);
+    return ArrowSchema.newBuilder()
+        .setSerializedSchema(ByteString.copyFrom(out.toByteArray()))
+        .build();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testProcessArrowStreamClosesAllocatorOnCompletion() throws Exception {
+    BigQueryReadClient readClientMock = mock(BigQueryReadClient.class);
+    ServerStreamingCallable<ReadRowsRequest, ReadRowsResponse> callableMock =
+        mock(ServerStreamingCallable.class);
+    ServerStream<ReadRowsResponse> streamMock = mock(ServerStream.class);
+    when(streamMock.iterator()).thenReturn(Collections.emptyIterator());
+    when(callableMock.call(any(ReadRowsRequest.class))).thenReturn(streamMock);
+    when(readClientMock.readRowsCallable()).thenReturn(callableMock);
+    connection.setBqReadClient(readClientMock);
+
+    ReadSession readSession =
+        ReadSession.newBuilder()
+            .addStreams(ReadStream.newBuilder().setName("stream-1").build())
+            .build();
+    BlockingQueue<BigQueryResultImpl.Row> buffer = new LinkedBlockingDeque<>(10);
+    ConnectionImpl.ArrowRowReader reader =
+        connection.new ArrowRowReader(createSerializedArrowSchema(), new HashMap<>());
+
+    connection.processArrowStreamAsync(readSession, buffer, reader, QUERY_SCHEMA);
+    BigQueryResultImpl.Row eos = buffer.take();
+    assertTrue(eos.isLast());
+    assertTrue(reader.isClosed());
+    assertEquals(0L, reader.allocator.getAllocatedMemory());
+    assertThrows(IllegalStateException.class, () -> reader.allocator.buffer(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testProcessArrowStreamClosesAllocatorOnError() throws Exception {
+    BigQueryReadClient readClientMock = mock(BigQueryReadClient.class);
+    ServerStreamingCallable<ReadRowsRequest, ReadRowsResponse> callableMock =
+        mock(ServerStreamingCallable.class);
+    when(callableMock.call(any(ReadRowsRequest.class)))
+        .thenThrow(new RuntimeException("stream failed"));
+    when(readClientMock.readRowsCallable()).thenReturn(callableMock);
+    connection.setBqReadClient(readClientMock);
+
+    ReadSession readSession =
+        ReadSession.newBuilder()
+            .addStreams(ReadStream.newBuilder().setName("stream-1").build())
+            .build();
+    BlockingQueue<BigQueryResultImpl.Row> buffer = new LinkedBlockingDeque<>(10);
+    ConnectionImpl.ArrowRowReader reader =
+        connection.new ArrowRowReader(createSerializedArrowSchema(), new HashMap<>());
+
+    connection.processArrowStreamAsync(readSession, buffer, reader, QUERY_SCHEMA);
+    BigQueryResultImpl.Row eos = buffer.take();
+    assertTrue(eos.isLast());
+    assertTrue(reader.isClosed());
+    assertEquals(0L, reader.allocator.getAllocatedMemory());
+    assertThrows(IllegalStateException.class, () -> reader.allocator.buffer(1));
+  }
+
+  @Test
+  void testProcessArrowStreamClosesAllocatorWhenConnectionAlreadyClosed() throws Exception {
+    ConnectionImpl.ArrowRowReader reader =
+        connection.new ArrowRowReader(createSerializedArrowSchema(), new HashMap<>());
+    assertTrue(connection.close());
+
+    ReadSession readSession =
+        ReadSession.newBuilder()
+            .addStreams(ReadStream.newBuilder().setName("stream-1").build())
+            .build();
+    BlockingQueue<BigQueryResultImpl.Row> buffer = new LinkedBlockingDeque<>(10);
+
+    assertThrows(
+        RejectedExecutionException.class,
+        () -> connection.processArrowStreamAsync(readSession, buffer, reader, QUERY_SCHEMA));
+    assertTrue(reader.isClosed());
+    assertEquals(0L, reader.allocator.getAllocatedMemory());
   }
 }
