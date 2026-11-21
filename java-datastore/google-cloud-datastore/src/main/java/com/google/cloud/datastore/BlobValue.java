@@ -23,7 +23,7 @@ import static com.google.datastore.v1.Value.BLOB_VALUE_FIELD_NUMBER;
  *
  * <p>Values are indexed by default ({@link #excludeFromIndexes()} is {@code false}), and Datastore
  * limits indexed blobs to 1,500 bytes. To store larger blobs (or blobs that do not need to be
- * queried), build with {@code BlobValue.newBuilder(blob).setExcludeFromIndexes(true)}.
+ * queried), build with {@code BlobValue.newBuilder(blob).setExcludeFromIndexes(true).build()}.
  *
  * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/indexes">Datastore
  *     Indexes</a>

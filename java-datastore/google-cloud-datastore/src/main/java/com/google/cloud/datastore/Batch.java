@@ -96,8 +96,8 @@ public interface Batch extends DatastoreBatchWriter {
    * com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode.
    *
    * <p>Because submission is non-transactional, it is not atomic across entities: partial writes
-   * may persist if another mutation in the batch fails. Once submitted, this batch is deactivated
-   * and cannot be reused.
+   * may persist if another mutation in the batch fails. Once submitted successfully, this batch is
+   * deactivated and cannot be reused.
    *
    * @return response of the batch submit operation
    * @throws DatastoreException if there was any failure or if the batch is no longer active

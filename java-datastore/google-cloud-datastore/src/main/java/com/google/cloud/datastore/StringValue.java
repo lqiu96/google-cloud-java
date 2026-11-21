@@ -23,7 +23,8 @@ import static com.google.datastore.v1.Value.STRING_VALUE_FIELD_NUMBER;
  *
  * <p>Values are indexed by default ({@link #excludeFromIndexes()} is {@code false}), and Datastore
  * limits indexed strings to 1,500 UTF-8 bytes. To store longer strings (or strings that do not need
- * to be queried), build with {@code StringValue.newBuilder(value).setExcludeFromIndexes(true)}.
+ * to be queried), build with {@code
+ * StringValue.newBuilder(value).setExcludeFromIndexes(true).build()}.
  *
  * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/indexes">Datastore
  *     Indexes</a>

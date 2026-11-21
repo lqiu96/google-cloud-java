@@ -114,8 +114,8 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * <p>All reads and writes that must participate in the transaction must be executed on the {@link
    * DatastoreReaderWriter} passed to {@link #run(DatastoreReaderWriter)}, not on the standalone
    * {@link Datastore} instance. Because {@link Datastore#runInTransaction} automatically retries
-   * the callback on contention ({@code ABORTED}) or other retryable errors, implementations must be
-   * idempotent and avoid non-idempotent side effects before the transaction commits.
+   * the callback on contention ({@code ABORTED}) errors, implementations must be idempotent and
+   * avoid non-idempotent side effects before the transaction commits.
    *
    * @param <T> the type of the return value
    * @see Datastore#runInTransaction(TransactionCallable)
@@ -149,13 +149,14 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    *       and writes on the callback's {@link DatastoreReaderWriter}. Calls made directly on the
    *       {@link Datastore} client run outside the transaction and are not atomic with it.
    *   <li><b>Automatic retries and idempotency:</b> The entire callback is automatically retried on
-   *       contention ({@code ABORTED}) and other retryable failures according to the client's retry
-   *       settings. Keep callbacks idempotent and avoid non-idempotent side effects until {@code
-   *       runInTransaction} returns.
-   *   <li><b>Explicit {@link TransactionOptions}:</b> To explicitly control read-write vs.
-   *       read-only mode or guarantee {@code previousTransaction} retry priority across library
-   *       versions, use {@link #runInTransaction(TransactionCallable, TransactionOptions)} with
-   *       explicit {@link TransactionOptions.ReadWrite} options.
+   *       contention ({@code ABORTED}) errors according to the client's retry settings. Keep
+   *       callbacks idempotent and avoid non-idempotent side effects until {@code runInTransaction}
+   *       returns.
+   *   <li><b>Transaction mode and retry priority:</b> This overload runs a read-write transaction
+   *       and automatically populates {@code previousTransaction} on retries so Datastore
+   *       prioritizes the retried transaction under contention. Use {@link
+   *       #runInTransaction(TransactionCallable, TransactionOptions)} to specify custom {@link
+   *       TransactionOptions} (such as {@link TransactionOptions.ReadOnly}).
    *   <li><b>Wrapped exceptions:</b> Exceptions thrown from the callback or {@code commit()} are
    *       wrapped in a {@link DatastoreException} (with code {@code 0} and {@code null} reason)
    *       whose {@link Throwable#getCause()} holds the original exception or inner {@link
@@ -190,10 +191,10 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    *
    * <p>All reads and writes participating in the transaction must be executed on the callback's
    * {@link DatastoreReaderWriter}, not on {@link Datastore}. The callback must be idempotent
-   * because it is automatically retried on contention ({@code ABORTED}) and other retryable
-   * failures according to the client's retry settings. When {@code options} specifies read-write
-   * mode ({@link TransactionOptions.ReadWrite}), the previous transaction ID is automatically
-   * populated on retries so Datastore prioritizes the retried transaction under contention.
+   * because it is automatically retried on contention ({@code ABORTED}) errors according to the
+   * client's retry settings. For read-write transactions (including when {@code options} is {@code
+   * null} or has no mode set), the previous transaction ID is automatically populated on retries so
+   * Datastore prioritizes the retried transaction under contention.
    *
    * <p>Exceptions thrown from the callback or {@code commit()} are rolled back and propagated
    * wrapped in a {@link DatastoreException} (with code {@code 0} and {@code null} reason); unwrap
@@ -378,10 +379,12 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   Entity add(FullEntity<?> entity);
 
   /**
-   * Datastore add operation: inserts the provided entity with specified {@link
-   * DatastoreExecutionOptions}. This method will automatically allocate an id if necessary.
+   * A non-transactional Datastore add (insert-only) operation: inserts the provided entity with
+   * specified {@link DatastoreExecutionOptions} and fails with {@code ALREADY_EXISTS} if an entity
+   * with the same key already exists. This method will automatically allocate an id if necessary.
    *
-   * @throws DatastoreException upon failure
+   * @throws DatastoreException upon failure or if an entity for {@code entity.getKey()} already
+   *     exists
    * @throws IllegalArgumentException if the given entity is missing a key
    */
   @BetaApi
@@ -426,11 +429,13 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   List<Entity> add(FullEntity<?>... entities);
 
   /**
-   * Datastore add operation: inserts the provided entities with specified {@link
-   * DatastoreExecutionOptions}. This method will automatically allocate id for any entity with an
-   * incomplete key.
+   * A non-transactional Datastore add (insert-only) operation: inserts the provided entities with
+   * specified {@link DatastoreExecutionOptions} and fails with {@code ALREADY_EXISTS} if any
+   * entity's key already exists. Not atomic across multiple entities; entities whose keys did not
+   * exist may still be inserted if another key fails. This method will automatically allocate an id
+   * for any entity with an incomplete key.
    *
-   * @throws DatastoreException upon failure
+   * @throws DatastoreException upon failure or if any of the entities' keys already exists
    * @throws IllegalArgumentException if any of the given entities is missing a key
    */
   @BetaApi
@@ -543,7 +548,9 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   void delete(Key... keys);
 
   /**
-   * A datastore delete operation with specified {@link DatastoreExecutionOptions}.
+   * A non-transactional Datastore delete operation with specified {@link
+   * DatastoreExecutionOptions}. Not atomic across multiple keys; deleting a nonexistent key is a
+   * no-op.
    *
    * @throws DatastoreException upon failure
    */
@@ -840,11 +847,14 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
       AggregationQuery query, DatastoreExecutionOptions executionOptions);
 
   /**
-   * Closes the underlying RPC channels (such as gRPC channels) and built-in telemetry resources
-   * associated with this instance, blocking until shutdown completes.
+   * Closes the underlying RPC channels on the default gRPC transport ({@link
+   * com.google.cloud.grpc.GrpcTransportOptions}) and built-in telemetry resources associated with
+   * this instance, blocking until shutdown completes.
    *
-   * <p>Call this method once during application shutdown rather than per request. Once closed, this
-   * {@code Datastore} client is no longer usable.
+   * <p>Call this method once during application shutdown rather than per request. On the default
+   * gRPC transport, once closed, this {@code Datastore} client is no longer usable (under {@link
+   * com.google.cloud.http.HttpTransportOptions}, channel shutdown is not implemented and a warning
+   * is logged).
    */
   @Override
   void close() throws Exception;
