@@ -55,15 +55,11 @@ public class LoadParquet {
       // Load the table
       Job job = bigquery.create(JobInfo.of(configuration));
 
-      // Blocks until this load table job completes its execution, either failing or succeeding.
+      // Blocks until this load table job completes its execution.
+      // Throws BigQueryException if the job fails.
       Job completedJob = job.waitFor();
       if (completedJob == null) {
         System.out.println("Job not executed since it no longer exists.");
-        return;
-      } else if (completedJob.getStatus().getError() != null) {
-        System.out.println(
-            "BigQuery was unable to load the table due to an error: \n"
-                + job.getStatus().getError());
         return;
       }
 

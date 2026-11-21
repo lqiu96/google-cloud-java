@@ -67,19 +67,15 @@ public class CopyTableCmek {
       // https://googleapis.dev/java/google-cloud-clients/latest/index.html?com/google/cloud/bigquery/package-summary.html
       Job job = bigquery.create(JobInfo.of(configuration));
 
-      // Blocks until this job completes its execution, either failing or succeeding.
+      // Blocks until this job completes its execution. Throws BigQueryException if the job fails.
       Job completedJob = job.waitFor();
       if (completedJob == null) {
         System.out.println("Job not executed since it no longer exists.");
         return;
-      } else if (completedJob.getStatus().getError() != null) {
-        System.out.println(
-            "BigQuery was unable to copy table due to an error: \n" + job.getStatus().getError());
-        return;
       }
       System.out.println("Table cmek copied successfully.");
     } catch (BigQueryException | InterruptedException e) {
-      System.out.println("Table cmek copying job was interrupted. \n" + e.toString());
+      System.out.println("BigQuery was unable to copy table due to an error: \n" + e.toString());
     }
   }
 }

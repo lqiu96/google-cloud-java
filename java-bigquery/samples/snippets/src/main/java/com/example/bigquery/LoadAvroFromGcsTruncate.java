@@ -54,17 +54,16 @@ public class LoadAvroFromGcsTruncate {
 
       // Load data from a GCS Avro file into the table
       Job job = bigquery.create(JobInfo.of(loadConfig));
-      // Blocks until this load table job completes its execution, either failing or succeeding.
+      // Blocks until this load table job completes its execution.
+      // Throws BigQueryException if the job fails.
       job = job.waitFor();
-      if (job.isDone()) {
-        System.out.println("Table is successfully overwritten by AVRO file loaded from GCS");
-      } else {
-        System.out.println(
-            "BigQuery was unable to load into the table due to an error:"
-                + job.getStatus().getError());
+      if (job == null) {
+        System.out.println("Job not executed since it no longer exists.");
+        return;
       }
+      System.out.println("Table is successfully overwritten by AVRO file loaded from GCS");
     } catch (BigQueryException | InterruptedException e) {
-      System.out.println("Column not added during load append \n" + e.toString());
+      System.out.println("Table was not overwritten. \n" + e.toString());
     }
   }
 }

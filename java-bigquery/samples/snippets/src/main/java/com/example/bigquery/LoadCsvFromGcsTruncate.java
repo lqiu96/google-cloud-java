@@ -59,23 +59,15 @@ public class LoadCsvFromGcsTruncate {
       // Load the table
       Job loadJob = bigquery.create(JobInfo.of(configuration));
 
-      // Load data from a GCS parquet file into the table
-      // Blocks until this load table job completes its execution, either failing or succeeding.
+      // Blocks until this load table job completes its execution.
+      // Throws BigQueryException if the job fails.
       Job completedJob = loadJob.waitFor();
-
-      // Check for errors
       if (completedJob == null) {
         throw new Exception("Job not executed since it no longer exists.");
-      } else if (completedJob.getStatus().getError() != null) {
-        // You can also look at queryJob.getStatus().getExecutionErrors() for all
-        // errors, not just the latest one.
-        throw new Exception(
-            "BigQuery was unable to load into the table due to an error: \n"
-                + loadJob.getStatus().getError());
       }
       System.out.println("Table is successfully overwritten by CSV file loaded from GCS");
     } catch (BigQueryException | InterruptedException e) {
-      System.out.println("Column not added during load append \n" + e.toString());
+      System.out.println("Table was not overwritten. \n" + e.toString());
     }
   }
 }

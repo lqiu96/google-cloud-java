@@ -60,17 +60,16 @@ public class LoadCsvFromGcs {
 
       // Load data from a GCS CSV file into the table
       Job job = bigquery.create(JobInfo.of(loadConfig));
-      // Blocks until this load table job completes its execution, either failing or succeeding.
+      // Blocks until this load table job completes its execution.
+      // Throws BigQueryException if the job fails.
       job = job.waitFor();
-      if (job.isDone()) {
-        System.out.println("CSV from GCS successfully added during load append job");
-      } else {
-        System.out.println(
-            "BigQuery was unable to load into the table due to an error:"
-                + job.getStatus().getError());
+      if (job == null) {
+        System.out.println("Job not executed since it no longer exists.");
+        return;
       }
+      System.out.println("CSV from GCS successfully added during load append job");
     } catch (BigQueryException | InterruptedException e) {
-      System.out.println("Column not added during load append \n" + e.toString());
+      System.out.println("CSV from GCS was not loaded. \n" + e.toString());
     }
   }
 }
