@@ -1836,5 +1836,35 @@ public class HttpBigQueryRpcTest {
       assertEquals(500, ex.getCode());
       verifyNoSpans();
     }
+
+    @Test
+    public void testWriteFinalizesZeroLengthAtNonZeroOffset() throws Exception {
+      String uploadUrl = "https://bigquery.googleapis.com/upload/bigquery/v2/projects/p/jobs?u=1";
+      setMockResponse(
+          "{\"kind\":\"bigquery#job\",\"jobReference\":{\"projectId\":\""
+              + PROJECT_ID
+              + "\",\"jobId\":\""
+              + JOB_ID
+              + "\"}}");
+
+      Job result = rpc.writeSkipExceptionTranslation(uploadUrl, new byte[0], 0, 262144L, 0, true);
+
+      assertNotNull(result);
+      assertEquals(JOB_ID, result.getJobReference().getJobId());
+      assertEquals("PUT", lastRequestMethod);
+      assertEquals(uploadUrl, lastRequestUrl);
+      assertEquals(
+          Collections.singletonList("bytes */262144"),
+          lastRequest.getHeaders().get("content-range"));
+      assertEquals(0L, lastRequest.getContentLength());
+    }
+
+    @Test
+    public void testWriteReturnsNullForEmptyUploadOrZeroLengthNonFinal() throws Exception {
+      String uploadUrl = "https://bigquery.googleapis.com/upload/bigquery/v2/projects/p/jobs?u=1";
+      assertNull(rpc.writeSkipExceptionTranslation(uploadUrl, new byte[0], 0, 0L, 0, true));
+      assertNull(rpc.writeSkipExceptionTranslation(uploadUrl, new byte[0], 0, 262144L, 0, false));
+      assertNull(lastRequest);
+    }
   }
 }

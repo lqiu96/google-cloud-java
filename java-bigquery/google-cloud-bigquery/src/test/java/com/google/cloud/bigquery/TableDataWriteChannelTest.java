@@ -28,6 +28,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.LowLevelHttpRequest;
+import com.google.api.client.http.LowLevelHttpResponse;
+import com.google.api.client.json.Json;
+import com.google.api.client.testing.http.MockHttpTransport;
+import com.google.api.client.testing.http.MockLowLevelHttpRequest;
+import com.google.api.client.testing.http.MockLowLevelHttpResponse;
+import com.google.cloud.NoCredentials;
 import com.google.cloud.RestorableState;
 import com.google.cloud.WriteChannel;
 import com.google.cloud.bigquery.spi.BigQueryRpcFactory;
@@ -37,7 +45,9 @@ import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -477,6 +487,73 @@ public class TableDataWriteChannelTest {
             new com.google.api.services.bigquery.model.Job()
                 .setJobReference(JOB_INFO.getJobId().toPb())
                 .setConfiguration(LOAD_CONFIGURATION.toPb()));
+  }
+
+  @Test
+  public void testExactChunkSizeMultipleFinalizesUploadAndReturnsJob() throws IOException {
+    final String uploadUrl =
+        "https://bigquery.googleapis.com/upload/bigquery/v2/projects/projectid/jobs?upload_id=abc";
+    final List<String> putContentRanges = new ArrayList<>();
+    final List<Long> putContentLengths = new ArrayList<>();
+    HttpTransport mockTransport =
+        new MockHttpTransport() {
+          @Override
+          public LowLevelHttpRequest buildRequest(String method, String url) {
+            return new MockLowLevelHttpRequest(url) {
+              @Override
+              public LowLevelHttpResponse execute() {
+                if ("POST".equals(method)) {
+                  return new MockLowLevelHttpResponse()
+                      .setStatusCode(200)
+                      .addHeader("Location", uploadUrl);
+                }
+                List<String> ranges = getHeaders().get("content-range");
+                String contentRange = ranges != null && !ranges.isEmpty() ? ranges.get(0) : null;
+                putContentRanges.add(contentRange);
+                putContentLengths.add(getContentLength());
+                if (contentRange != null && contentRange.endsWith("/*")) {
+                  return new MockLowLevelHttpResponse().setStatusCode(308);
+                }
+                return new MockLowLevelHttpResponse()
+                    .setStatusCode(200)
+                    .setContentType(Json.MEDIA_TYPE)
+                    .setContent(
+                        "{\"jobReference\":{\"projectId\":\"projectid\",\"jobId\":\"load-job-1\"},"
+                            + "\"configuration\":{\"load\":{\"destinationTable\":"
+                            + "{\"projectId\":\"projectid\",\"datasetId\":\"dataset\",\"tableId\":\"table\"}}}}");
+              }
+            };
+          }
+        };
+
+    BigQueryOptions realOptions =
+        BigQueryOptions.newBuilder()
+            .setProjectId("projectid")
+            .setCredentials(NoCredentials.getInstance())
+            .setTransportOptions(
+                BigQueryOptions.getDefaultHttpTransportOptions().toBuilder()
+                    .setHttpTransportFactory(() -> mockTransport)
+                    .build())
+            .build();
+
+    TableDataWriteChannel channel =
+        new TableDataWriteChannel(
+            realOptions, JobId.of("projectid", "load-job-1"), LOAD_CONFIGURATION);
+    channel.setChunkSize(MIN_CHUNK_SIZE);
+    channel.write(randomBuffer(MIN_CHUNK_SIZE));
+    channel.write(randomBuffer(MIN_CHUNK_SIZE));
+    assertNull(channel.getJob());
+    channel.close();
+
+    assertEquals(
+        Arrays.asList(
+            "bytes 0-" + (MIN_CHUNK_SIZE - 1) + "/*",
+            "bytes " + MIN_CHUNK_SIZE + "-" + (2 * MIN_CHUNK_SIZE - 1) + "/*",
+            "bytes */" + (2 * MIN_CHUNK_SIZE)),
+        putContentRanges);
+    assertEquals(
+        Arrays.asList((long) MIN_CHUNK_SIZE, (long) MIN_CHUNK_SIZE, 0L), putContentLengths);
+    assertEquals(JobId.of("projectid", "load-job-1"), channel.getJob().getJobId());
   }
 
   private static ByteBuffer randomBuffer(int size) {

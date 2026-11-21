@@ -23,7 +23,9 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.http.EmptyContent;
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -2015,18 +2017,24 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public Job writeSkipExceptionTranslation(
       String uploadId, byte[] toWrite, int toWriteOffset, long destOffset, int length, boolean last)
       throws IOException {
-    if (length == 0) {
+    if (length == 0 && (!last || destOffset == 0)) {
       return null;
     }
     GenericUrl url = new GenericUrl(uploadId);
-    HttpRequest httpRequest =
-        bigquery
-            .getRequestFactory()
-            .buildPutRequest(url, new ByteArrayContent(null, toWrite, toWriteOffset, length));
+    HttpContent content =
+        length == 0
+            ? new EmptyContent()
+            : new ByteArrayContent(null, toWrite, toWriteOffset, length);
+    HttpRequest httpRequest = bigquery.getRequestFactory().buildPutRequest(url, content);
     httpRequest.setParser(bigquery.getObjectParser());
     long limit = destOffset + length;
     StringBuilder range = new StringBuilder("bytes ");
-    range.append(destOffset).append('-').append(limit - 1).append('/');
+    if (length == 0) {
+      range.append('*');
+    } else {
+      range.append(destOffset).append('-').append(limit - 1);
+    }
+    range.append('/');
     if (last) {
       range.append(limit);
     } else {
