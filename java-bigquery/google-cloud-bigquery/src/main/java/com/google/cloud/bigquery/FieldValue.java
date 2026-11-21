@@ -40,8 +40,21 @@ import org.threeten.extra.PeriodDuration;
 
 /**
  * Google BigQuery Table Field Value class. Objects of this class represent values of a BigQuery
- * Table Field. A list of values forms a table row. Tables rows can be gotten as the result of a
+ * Table Field. A list of values forms a table row. Table rows can be obtained as the result of a
  * query or when listing table data.
+ *
+ * <p>Always check {@link #isNull()} before calling typed getters (such as {@link #getLongValue()},
+ * {@link #getDoubleValue()}, {@link #getBooleanValue()}, {@link #getStringValue()}, or {@link
+ * #getTimestampValue()}), because typed getters throw {@link NullPointerException} on SQL {@code
+ * NULL} values. Use {@link #getValue()} or {@link #getStringValueOrDefault(String)} for null-safe
+ * access.
+ *
+ * <p>SQL types without dedicated getters (such as {@code DATE}, {@code DATETIME}, {@code TIME},
+ * {@code JSON}, and {@code GEOGRAPHY}) are returned as string-encoded primitive values accessible
+ * via {@link #getStringValue()}. {@code TIMESTAMP} values are returned in microseconds since the
+ * UNIX epoch via {@link #getTimestampValue()} (or {@link #getTimestampInstant()}), unless {@link
+ * DataFormatOptions.TimestampFormatOptions#ISO8601_STRING} is configured on {@link
+ * BigQueryOptions}, in which case they must be read via {@link #getStringValue()}.
  */
 public class FieldValue implements Serializable {
 
@@ -100,7 +113,14 @@ public class FieldValue implements Serializable {
     return attribute;
   }
 
-  /** Returns {@code true} if this field's value is {@code null}, {@code false} otherwise. */
+  /**
+   * Returns {@code true} if this field's value is {@code null}, {@code false} otherwise.
+   *
+   * <p>Check this method before invoking typed getters (such as {@link #getLongValue()}, {@link
+   * #getDoubleValue()}, {@link #getBooleanValue()}, {@link #getStringValue()}, or {@link
+   * #getTimestampValue()}), which throw {@link NullPointerException} when the value is SQL {@code
+   * NULL}.
+   */
   public boolean isNull() {
     return value == null;
   }
@@ -121,8 +141,14 @@ public class FieldValue implements Serializable {
    * Returns this field's value as a {@link String}. This method should only be used if the
    * corresponding field has primitive type ({@link LegacySQLTypeName#BYTES}, {@link
    * LegacySQLTypeName#BOOLEAN}, {@link LegacySQLTypeName#STRING}, {@link LegacySQLTypeName#FLOAT},
-   * {@link LegacySQLTypeName#INTEGER}, {@link LegacySQLTypeName#NUMERIC} {@link
-   * LegacySQLTypeName#TIMESTAMP}).
+   * {@link LegacySQLTypeName#INTEGER}, {@link LegacySQLTypeName#NUMERIC}, {@link
+   * LegacySQLTypeName#BIGNUMERIC}, {@link LegacySQLTypeName#TIMESTAMP}, {@link
+   * LegacySQLTypeName#DATE}, {@link LegacySQLTypeName#DATETIME}, {@link LegacySQLTypeName#TIME},
+   * {@link LegacySQLTypeName#JSON}, or {@link LegacySQLTypeName#GEOGRAPHY}).
+   *
+   * <p>Use this method to read string-encoded SQL types ({@code DATE}, {@code DATETIME}, {@code
+   * TIME}, {@code JSON}, {@code GEOGRAPHY}) as well as {@code TIMESTAMP} values when {@link
+   * DataFormatOptions.TimestampFormatOptions#ISO8601_STRING} is configured.
    *
    * @throws ClassCastException if the field is not a primitive type
    * @throws NullPointerException if {@link #isNull()} returns {@code true}
@@ -168,7 +194,7 @@ public class FieldValue implements Serializable {
    * corresponding field has {@link LegacySQLTypeName#INTEGER} type.
    *
    * @throws ClassCastException if the field is not a primitive type
-   * @throws NumberFormatException if the field's value could not be converted to {@link Integer}
+   * @throws NumberFormatException if the field's value could not be converted to {@code long}
    * @throws NullPointerException if {@link #isNull()} returns {@code true}
    */
   @SuppressWarnings("unchecked")
@@ -213,12 +239,21 @@ public class FieldValue implements Serializable {
   }
 
   /**
-   * Returns this field's value as a {@code long}, representing a timestamp in microseconds since
-   * epoch (UNIX time). This method should only be used if the corresponding field has {@link
-   * LegacySQLTypeName#TIMESTAMP} type.
+   * Returns this field's value as a {@code long}, representing a timestamp in microseconds (not
+   * milliseconds) since epoch (UNIX time). This method should only be used if the corresponding
+   * field has {@link LegacySQLTypeName#TIMESTAMP} type.
+   *
+   * <p>Supports the default {@code FLOAT64} and lossless {@link
+   * DataFormatOptions.TimestampFormatOptions#INT64} ({@link
+   * DataFormatOptions.Builder#useInt64Timestamp(boolean)}) encodings; prefer {@code INT64} to avoid
+   * floating-point rounding on extreme timestamps. If {@link
+   * DataFormatOptions.TimestampFormatOptions#ISO8601_STRING} is configured on {@link
+   * BigQueryOptions}, the value is encoded as an ISO-8601 string and this method throws {@link
+   * NumberFormatException}; use {@link #getStringValue()} instead.
    *
    * @throws ClassCastException if the field is not a primitive type
-   * @throws NumberFormatException if the field's value could not be converted to {@link Long}
+   * @throws NumberFormatException if the field's value could not be converted to {@code long} (for
+   *     example, when {@link DataFormatOptions.TimestampFormatOptions#ISO8601_STRING} is enabled)
    * @throws NullPointerException if {@link #isNull()} returns {@code true}
    */
   @SuppressWarnings("unchecked")
@@ -237,11 +272,16 @@ public class FieldValue implements Serializable {
   }
 
   /**
-   * Returns this field's value as an {@link Instant}. This method should only be used if the
-   * corresponding field has {@link LegacySQLTypeName#TIMESTAMP} type.
+   * Returns this field's value as an {@link Instant} derived from {@link #getTimestampValue()}
+   * (microseconds since epoch). This method should only be used if the corresponding field has
+   * {@link LegacySQLTypeName#TIMESTAMP} type.
+   *
+   * <p>If {@link DataFormatOptions.TimestampFormatOptions#ISO8601_STRING} is configured on {@link
+   * BigQueryOptions}, this method throws {@link NumberFormatException}; read the ISO-8601 string
+   * with {@link #getStringValue()} instead.
    *
    * @throws ClassCastException if the field is not a primitive type
-   * @throws NumberFormatException if the field's value could not be converted to {@link Long}
+   * @throws NumberFormatException if the field's value could not be parsed as a numeric timestamp
    * @throws NullPointerException if {@link #isNull()} returns {@code true}
    */
   @SuppressWarnings("unchecked")
@@ -252,7 +292,8 @@ public class FieldValue implements Serializable {
 
   /**
    * Returns this field's value as a {@link java.math.BigDecimal}. This method should only be used
-   * if the corresponding field has {@link LegacySQLTypeName#NUMERIC} type.
+   * if the corresponding field has {@link LegacySQLTypeName#NUMERIC} or {@link
+   * LegacySQLTypeName#BIGNUMERIC} type.
    *
    * @throws ClassCastException if the field is not a primitive type
    * @throws NumberFormatException if the field's value could not be converted to {@link
@@ -265,10 +306,10 @@ public class FieldValue implements Serializable {
   }
 
   /**
-   * Returns this field's value as a {@link Range}. This method should only be used * if the
+   * Returns this field's value as a {@link Range}. This method should only be used if the
    * corresponding field has {@link LegacySQLTypeName#RANGE} type.
    *
-   * @throws ClassCastException if the field is not a primitive type
+   * @throws ClassCastException if the field is not a primitive or range type
    * @throws IllegalArgumentException if the field's value could not be converted to {@link Range}
    * @throws NullPointerException if {@link #isNull()} returns {@code true}
    */
