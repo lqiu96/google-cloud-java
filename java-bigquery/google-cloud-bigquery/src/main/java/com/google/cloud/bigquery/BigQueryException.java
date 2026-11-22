@@ -32,14 +32,25 @@ import java.util.concurrent.ExecutionException;
  *
  * <p>BigQuery often indicates whether a failure is transient or permanent through a structured
  * error reason ({@link #getReason()}, {@link #getError()}, or {@link #getErrors()}) rather than the
- * HTTP status code alone. For example, rate-limit errors may arrive with HTTP 403, and
- * job-execution errors surfaced from job status have {@link #getCode()} equal to {@code 0}.
+ * HTTP status code alone. For example, rate-limit errors may arrive with HTTP 403. Job-execution
+ * errors surfaced from {@link JobStatus} (such as via {@link Job#reload(BigQuery.JobOption...)} or
+ * non-query {@link Job#waitFor(com.google.cloud.RetryOption...)}) have {@link #getCode()} equal to
+ * {@code 0}, whereas query execution errors surfaced through {@code jobs.getQueryResults} (such as
+ * via {@link BigQuery#query(QueryJobConfiguration, BigQuery.JobOption...)} or query {@link
+ * Job#waitFor(com.google.cloud.RetryOption...)}) carry the HTTP status code returned by that RPC.
+ * Synthesized not-found exceptions thrown by {@code get*} methods when {@link
+ * BigQueryOptions#getThrowNotFound()} is enabled carry {@link #getCode()} equal to {@code 404} with
+ * {@code null} {@link #getReason()} and {@link #getError()}.
  *
- * <p>{@link #isRetryable()} classifies only HTTP 500, 502, 503, 504, and low-level transport {@link
- * IOException} failures as retryable. When deciding whether to retry, inspect the structured error
- * reason alongside the HTTP status code and consult the BigQuery error codes reference. Transient
- * asynchronous job failures cannot be recovered by polling the failed job again. Resubmit the work
- * as a new job with a new {@link JobId}.
+ * <p>{@link #isRetryable()} returns {@code true} only for HTTP 500, 502, 503, 504, and specific
+ * transient socket or SSL {@link IOException} failures (such as {@link
+ * java.net.SocketTimeoutException} and {@link java.net.SocketException}). It returns {@code false}
+ * for HTTP 4xx errors (including 403 rate limits and 429), {@link JobStatus} errors with code
+ * {@code 0}, and other {@link IOException} types such as {@link java.io.EOFException}. When
+ * deciding whether to retry, inspect the structured error reason alongside the HTTP status code and
+ * consult the BigQuery error codes reference. Transient asynchronous job failures cannot be
+ * recovered by polling the failed job again. Resubmit the work as a new job with a new {@link
+ * JobId}.
  *
  * @see <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
  *     error codes</a>
