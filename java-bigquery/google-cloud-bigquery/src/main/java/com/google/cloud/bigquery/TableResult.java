@@ -29,6 +29,24 @@ import java.io.Serializable;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * A page of rows returned by a BigQuery query or table-data read.
+ *
+ * <p>Use {@link #iterateAll()} to read all rows across every page automatically, or pair {@link
+ * #getValues()} with {@link #hasNextPage()} and {@link #getNextPage()} for manual page-by-page
+ * pagination. Do not call {@link #iterateAll()} inside a {@link #hasNextPage()} loop, as that
+ * re-reads subsequent pages and produces duplicate rows.
+ *
+ * <p>{@link #getJobId()} may be {@code null} when results were not produced by a job (such as
+ * {@link BigQuery#listTableData} or stateless fast-path queries). {@link #getSchema()} may also be
+ * {@code null} if no schema was supplied; pass a {@link Schema} to {@link
+ * BigQuery#listTableData(TableId, Schema, BigQuery.TableDataListOption...)} or {@link
+ * Table#list(Schema, BigQuery.TableDataListOption...)} when by-name lookup on {@link
+ * FieldValueList} is required.
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/paging-results">Paging through table
+ *     data</a>
+ */
 @AutoValue
 public abstract class TableResult implements Page<FieldValueList>, Serializable {
 
@@ -68,7 +86,7 @@ public abstract class TableResult implements Page<FieldValueList>, Serializable 
 
     abstract TableResult.Builder setCacheHit(@Nullable Boolean cacheHit);
 
-    /** Creates a @code TableResult} object. */
+    /** Creates a {@code TableResult} object. */
     public abstract TableResult build();
   }
 
@@ -90,6 +108,12 @@ public abstract class TableResult implements Page<FieldValueList>, Serializable 
 
   public abstract Page<FieldValueList> getPageNoSchema();
 
+  /**
+   * Returns the {@link JobId} of the query job that produced this result, or {@code null} if no job
+   * was associated with the result (for example, {@link BigQuery#listTableData}, {@link
+   * Table#list}, or stateless queries executed with {@link
+   * QueryJobConfiguration.JobCreationMode#JOB_CREATION_OPTIONAL}).
+   */
   public abstract @Nullable JobId getJobId();
 
   public abstract @Nullable String getQueryId();
@@ -180,6 +204,13 @@ public abstract class TableResult implements Page<FieldValueList>, Serializable 
     return getPageNoSchema().getNextPageToken();
   }
 
+  /**
+   * Fetches and returns the next page of results, or {@code null} if {@link #hasNextPage()} is
+   * {@code false}.
+   *
+   * <p>When manually paging with this method, read each page's rows via {@link #getValues()} rather
+   * than {@link #iterateAll()}.
+   */
   @Override
   public TableResult getNextPage() {
     if (getPageNoSchema().hasNextPage()) {
@@ -204,11 +235,25 @@ public abstract class TableResult implements Page<FieldValueList>, Serializable 
     return null;
   }
 
+  /**
+   * Returns an iterable over all rows across all pages starting from this page, fetching subsequent
+   * pages automatically as needed.
+   *
+   * <p>Do not call this method inside a {@link #hasNextPage()} / {@link #getNextPage()} loop, as
+   * doing so re-fetches remaining pages and produces duplicate rows; use {@link #getValues()} for
+   * manual page-by-page iteration.
+   */
   @Override
   public Iterable<FieldValueList> iterateAll() {
     return addSchema(getPageNoSchema().iterateAll());
   }
 
+  /**
+   * Returns the rows in the current page only.
+   *
+   * <p>Use {@link #iterateAll()} to read all pages automatically, or pair this method with {@link
+   * #hasNextPage()} and {@link #getNextPage()} for manual pagination.
+   */
   @Override
   public Iterable<FieldValueList> getValues() {
     return addSchema(getPageNoSchema().getValues());

@@ -401,7 +401,15 @@ public class Table extends TableInfo {
   }
 
   /**
-   * Returns the paginated list rows in this table.
+   * Returns the paginated list of rows in this table.
+   *
+   * <p>Because the underlying {@code tabledata.list} API does not return table schema metadata, the
+   * returned {@link TableResult} has {@code getSchema() == null} (supporting positional {@link
+   * FieldValueList#get(int)} lookup only) and {@code getJobId() == null}. Pass a {@link Schema} to
+   * {@link #list(Schema, TableDataListOption...)} (for example, {@code
+   * getDefinition().getSchema()}) when by-name lookup via {@link FieldValueList#get(String)} is
+   * needed. Use {@link TableResult#iterateAll()} to read all pages or {@link
+   * TableResult#getValues()} for the current page only.
    *
    * <p>Example of listing rows in the table.
    *
@@ -422,7 +430,13 @@ public class Table extends TableInfo {
   }
 
   /**
-   * Returns the paginated list rows in this table.
+   * Returns the paginated list of rows in this table with an attached {@link Schema}.
+   *
+   * <p>When {@code schema} is non-null, it is attached to each returned {@link FieldValueList} so
+   * fields can be accessed by name via {@link FieldValueList#get(String)}. {@link
+   * TableResult#getJobId()} is {@code null} for table-data reads. Use {@link
+   * TableResult#iterateAll()} to read all pages or {@link TableResult#getValues()} for the current
+   * page only.
    *
    * <p>Example of listing rows in the table given a schema.
    *
@@ -435,6 +449,7 @@ public class Table extends TableInfo {
    * }
    * }</pre>
    *
+   * @param schema the table schema to attach to returned rows, or {@code null}
    * @param options table data list options
    * @throws BigQueryException upon failure
    */
