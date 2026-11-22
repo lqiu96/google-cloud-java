@@ -52,7 +52,7 @@ public class LoadParquetReplaceTable {
       TableId tableId = TableId.of(datasetName, tableName);
 
       // For more information on LoadJobConfiguration see:
-      // https://googleapis.dev/java/google-cloud-clients/latest/com/google/cloud/bigquery/LoadJobConfiguration.Builder.html
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.LoadJobConfiguration.Builder
       LoadJobConfiguration configuration =
           LoadJobConfiguration.builder(tableId, sourceUri)
               .setFormatOptions(FormatOptions.parquet())
@@ -61,7 +61,7 @@ public class LoadParquetReplaceTable {
               .build();
 
       // For more information on Job see:
-      // https://googleapis.dev/java/google-cloud-clients/latest/index.html?com/google/cloud/bigquery/package-summary.html
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery
       // Load the table
       Job job = bigquery.create(JobInfo.of(configuration));
 

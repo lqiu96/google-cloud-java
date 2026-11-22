@@ -57,14 +57,14 @@ public class CopyTableCmek {
       TableId destinationTable = TableId.of(destinationDatasetName, destinationTableId);
 
       // For more information on CopyJobConfiguration see:
-      // https://googleapis.dev/java/google-cloud-clients/latest/com/google/cloud/bigquery/JobConfiguration.html
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.JobConfiguration
       CopyJobConfiguration configuration =
           CopyJobConfiguration.newBuilder(destinationTable, sourceTable)
               .setDestinationEncryptionConfiguration(encryption)
               .build();
 
       // For more information on Job see:
-      // https://googleapis.dev/java/google-cloud-clients/latest/index.html?com/google/cloud/bigquery/package-summary.html
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery
       Job job = bigquery.create(JobInfo.of(configuration));
 
       // Blocks until this job completes its execution, either failing or succeeding.

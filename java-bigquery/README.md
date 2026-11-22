@@ -72,7 +72,7 @@ libraryDependencies += "com.google.cloud" % "google-cloud-bigquery" % "2.77.0"
 
 ## Authentication
 
-See the [Authentication][authentication] section in the base directory's README.
+See [Authentication][authentication] for details on authenticating client libraries.
 
 ## Authorization
 
@@ -311,7 +311,7 @@ and on [google-cloud-java][g-c-j].
 ## Versioning
 
 
-This library follows [Semantic Versioning](http://semver.org/).
+This library follows [Semantic Versioning](https://semver.org/).
 
 
 
@@ -333,29 +333,29 @@ Apache 2.0 - See [LICENSE][license] for more information.
 
 Java is a registered trademark of Oracle and/or its affiliates.
 
-[product-docs]: https://cloud.google.com/bigquery
-[javadocs]: https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/history
+[product-docs]: https://docs.cloud.google.com/bigquery/docs
+[javadocs]: https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/overview
 [stability-image]: https://img.shields.io/badge/stability-stable-green
 [maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-bigquery.svg
 [maven-version-link]: https://central.sonatype.com/artifact/com.google.cloud/google-cloud-bigquery/2.42.2
-[authentication]: https://github.com/googleapis/google-cloud-java#authentication
+[authentication]: https://docs.cloud.google.com/docs/authentication/client-libraries
 [auth-scopes]: https://developers.google.com/identity/protocols/oauth2/scopes
-[predefined-iam-roles]: https://cloud.google.com/iam/docs/understanding-roles#predefined_roles
-[iam-policy]: https://cloud.google.com/iam/docs/overview#cloud-iam-policy
-[developer-console]: https://console.developers.google.com/
-[create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
+[predefined-iam-roles]: https://docs.cloud.google.com/iam/docs/roles-overview#predefined
+[iam-policy]: https://docs.cloud.google.com/iam/docs/overview#cloud-iam-policy
+[developer-console]: https://console.cloud.google.com/
+[create-project]: https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-cli]: https://cloud.google.com/cli
 [troubleshooting]: https://docs.cloud.google.com/java/docs/troubleshooting
 [contributing]: https://github.com/googleapis/google-cloud-java/blob/main/CONTRIBUTING.md
 [code-of-conduct]: https://github.com/googleapis/google-cloud-java/blob/main/CODE_OF_CONDUCT.md#contributor-code-of-conduct
 [license]: https://github.com/googleapis/google-cloud-java/blob/main/LICENSE
-[enable-billing]: https://cloud.google.com/apis/docs/getting-started#enabling_billing
+[enable-billing]: https://docs.cloud.google.com/apis/docs/getting-started#enabling_billing
 [enable-api]: https://console.cloud.google.com/flows/enableapi?apiid=bigquery.googleapis.com
 [libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 
 [semver]: https://semver.org/
-[cloudlibs]: https://cloud.google.com/apis/docs/client-libraries-explained
-[apilibs]: https://cloud.google.com/apis/docs/client-libraries-explained#google_api_client_libraries
+[cloudlibs]: https://docs.cloud.google.com/apis/docs/client-libraries-explained
+[apilibs]: https://docs.cloud.google.com/apis/docs/client-libraries-explained#api-client-lib
 [oracle]: https://www.oracle.com/java/technologies/java-se-support-roadmap.html
-[g-c-j]: http://github.com/googleapis/google-cloud-java
+[g-c-j]: https://github.com/googleapis/google-cloud-java

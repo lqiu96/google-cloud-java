@@ -578,7 +578,7 @@ public class BigQueryImplTest {
   private BigQuery bigquery;
   private static final String RATE_LIMIT_ERROR_MSG =
       "Job exceeded rate limits: Your table exceeded quota for table update operations. For more"
-          + " information, see https://cloud.google.com/bigquery/docs/troubleshoot-quotas";
+          + " information, see https://docs.cloud.google.com/bigquery/docs/troubleshoot-quotas";
 
   @Captor private ArgumentCaptor<Map<BigQueryRpc.Option, Object>> capturedOptions;
   @Captor private ArgumentCaptor<com.google.api.services.bigquery.model.Job> jobCapture;
@@ -4131,7 +4131,7 @@ public class BigQueryImplTest {
   void testRateLimitRegEx() throws Exception {
     String msg2 =
         "Job eceeded rate limits: Your table exceeded quota for table update operations. For more"
-            + " information, see https://cloud.google.com/bigquery/docs/troubleshoot-quotas";
+            + " information, see https://docs.cloud.google.com/bigquery/docs/troubleshoot-quotas";
     String msg3 = "exceeded rate exceeded quota for table update";
     String msg4 = "exceeded rate limits";
     assertTrue(

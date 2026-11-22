@@ -228,8 +228,8 @@ public abstract class ExternalTableDefinition extends TableDefinition {
     abstract Builder setMetadataCacheModeInner(String metadataCacheMode);
 
     /**
-     * [Optional] Metadata Cache Mode for the table. Set this to enable caching of metadata from
-     * external data source.
+     * [Optional] The maximum staleness of data that could be returned when the table is queried.
+     * Staleness encoded as a string encoding of SQL IntervalValue type.
      *
      * @see <a
      *     href="https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/tables#Table.FIELDS.max_staleness">
