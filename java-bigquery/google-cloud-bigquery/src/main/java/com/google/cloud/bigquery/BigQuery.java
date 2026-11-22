@@ -1360,12 +1360,33 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   List<String> listPartitions(TableId tableId);
 
   /**
-   * Sends an insert all request.
+   * Sends an insert all request using the BigQuery Storage Write API (REST) ({@code
+   * tabledata.insertAll}).
    *
-   * <p>Example of inserting rows into a table without running a load job. To prevent duplicate
-   * rows, this method does not perform automatic retries unless insert IDs are provided. Transient
-   * service errors (such as UNAVAILABLE) may be thrown and should be handled by the caller when
-   * insert IDs are not provided.
+   * <p>This client does not automatically generate insert IDs for rows. To prevent duplicate rows,
+   * supply a non-empty insert ID on every row (via {@link InsertAllRequest.RowToInsert#of(String,
+   * Map)} or {@link InsertAllRequest.Builder#addRow(String, Map)}): automatic client retries are
+   * disabled for the entire request if any row omits an insert ID, and BigQuery requires a
+   * non-empty insert ID for best-effort deduplication (see <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataconsistency">Best effort
+   * de-duplication</a> and <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-failure">Failure
+   * HTTP response codes</a>).
+   *
+   * <p>Streamed rows are immediately available for GoogleSQL queries, but rows in the streaming
+   * buffer temporarily have {@code NULL} for {@code _PARTITIONTIME} on ingestion-time partitioned
+   * tables and may not be immediately available for table copy or {@link #listTableData}
+   * operations. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataavailability">Stream data
+   * availability</a>.
+   *
+   * <p>For new streaming workloads that need lower cost, higher throughput, or exactly-once
+   * delivery semantics, use the BigQuery Storage Write API (gRPC) in {@code
+   * com.google.cloud:google-cloud-bigquerystorage}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-grpc">Introduction to the BigQuery
+   * Storage Write API (gRPC)</a>.
+   *
+   * <p>Example of inserting rows into a table without running a load job.
    *
    * <pre>{@code
    * String datasetName = "my_dataset_name";
