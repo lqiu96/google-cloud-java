@@ -67,7 +67,7 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * try (EchoClient echoClient = EchoClient.create()) {
  *   EchoRequest request =
  *       EchoRequest.newBuilder()
@@ -314,8 +314,9 @@ import javax.annotation.Generated;
  * <p>See the individual methods for example code.
  *
  * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * these names, generated resource name classes (ending in {@code Name}) provide static {@code of},
+ * {@code format}, {@code parse}, and {@code isParsableFrom} methods to construct, validate, and
+ * extract individual identifiers from resource names.
  *
  * <p>This class can be customized by passing in a custom instance of EchoSettings to create(). For
  * example:
@@ -327,12 +328,15 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * EchoSettings echoSettings =
  *     EchoSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * EchoClient echoClient = EchoClient.create(echoSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * echoClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -342,9 +346,12 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * EchoSettings echoSettings = EchoSettings.newBuilder().setEndpoint(myEndpoint).build();
  * EchoClient echoClient = EchoClient.create(echoSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * echoClient.close();
  * }</pre>
  *
  * <p>To use REST (HTTP1.1/JSON) transport (instead of gRPC) for sending and receiving requests over
@@ -355,9 +362,11 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * EchoSettings echoSettings = EchoSettings.newHttpJsonBuilder().build();
  * EchoClient echoClient = EchoClient.create(echoSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * echoClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.
@@ -447,7 +456,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   EchoRequest request =
    *       EchoRequest.newBuilder()
@@ -479,7 +488,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   EchoRequest request =
    *       EchoRequest.newBuilder()
@@ -514,7 +523,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   EchoErrorDetailsRequest request =
    *       EchoErrorDetailsRequest.newBuilder()
@@ -547,7 +556,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   EchoErrorDetailsRequest request =
    *       EchoErrorDetailsRequest.newBuilder()
@@ -581,7 +590,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   FailEchoWithDetailsRequest request =
    *       FailEchoWithDetailsRequest.newBuilder().setMessage("message954925063").build();
@@ -611,7 +620,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   FailEchoWithDetailsRequest request =
    *       FailEchoWithDetailsRequest.newBuilder().setMessage("message954925063").build();
@@ -639,7 +648,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   ExpandRequest request =
    *       ExpandRequest.newBuilder()
@@ -671,7 +680,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   ApiStreamObserver<EchoRequest> responseObserver =
    *       new ApiStreamObserver<EchoRequest>() {
@@ -720,7 +729,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   BidiStream<EchoRequest, EchoResponse> bidiStream = echoClient.chatCallable().call();
    *   EchoRequest request =
@@ -754,7 +763,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   PagedExpandRequest request =
    *       PagedExpandRequest.newBuilder()
@@ -787,7 +796,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   PagedExpandRequest request =
    *       PagedExpandRequest.newBuilder()
@@ -820,7 +829,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   PagedExpandRequest request =
    *       PagedExpandRequest.newBuilder()
@@ -859,7 +868,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   PagedExpandLegacyRequest request =
    *       PagedExpandLegacyRequest.newBuilder()
@@ -890,7 +899,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   PagedExpandLegacyRequest request =
    *       PagedExpandLegacyRequest.newBuilder()
@@ -925,7 +934,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   PagedExpandRequest request =
    *       PagedExpandRequest.newBuilder()
@@ -963,7 +972,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   PagedExpandRequest request =
    *       PagedExpandRequest.newBuilder()
@@ -1000,7 +1009,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   PagedExpandRequest request =
    *       PagedExpandRequest.newBuilder()
@@ -1041,7 +1050,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   WaitRequest request = WaitRequest.newBuilder().build();
    *   WaitResponse response = echoClient.waitAsync(request).get();
@@ -1067,7 +1076,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   WaitRequest request = WaitRequest.newBuilder().build();
    *   OperationFuture<WaitResponse, WaitMetadata> future =
@@ -1093,7 +1102,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   WaitRequest request = WaitRequest.newBuilder().build();
    *   ApiFuture<Operation> future = echoClient.waitCallable().futureCall(request);
@@ -1118,7 +1127,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   BlockRequest request =
    *       BlockRequest.newBuilder().setResponseDelay(Duration.newBuilder().build()).build();
@@ -1145,7 +1154,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   BlockRequest request =
    *       BlockRequest.newBuilder().setResponseDelay(Duration.newBuilder().build()).build();
@@ -1170,7 +1179,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -1203,7 +1212,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -1236,7 +1245,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -1275,7 +1284,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   GetLocationRequest request = GetLocationRequest.newBuilder().setName("name3373707").build();
    *   Location response = echoClient.getLocation(request);
@@ -1300,7 +1309,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   GetLocationRequest request = GetLocationRequest.newBuilder().setName("name3373707").build();
    *   ApiFuture<Location> future = echoClient.getLocationCallable().futureCall(request);
@@ -1326,7 +1335,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   SetIamPolicyRequest request =
    *       SetIamPolicyRequest.newBuilder()
@@ -1358,7 +1367,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   SetIamPolicyRequest request =
    *       SetIamPolicyRequest.newBuilder()
@@ -1388,7 +1397,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   GetIamPolicyRequest request =
    *       GetIamPolicyRequest.newBuilder()
@@ -1418,7 +1427,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   GetIamPolicyRequest request =
    *       GetIamPolicyRequest.newBuilder()
@@ -1451,7 +1460,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   TestIamPermissionsRequest request =
    *       TestIamPermissionsRequest.newBuilder()
@@ -1485,7 +1494,7 @@ public class EchoClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoClient echoClient = EchoClient.create()) {
    *   TestIamPermissionsRequest request =
    *       TestIamPermissionsRequest.newBuilder()

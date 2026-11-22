@@ -59,22 +59,21 @@ import javax.annotation.Generated;
  * <ul>
  *   <li>The default service address (localhost) and default port (7469) are used.
  *   <li>Credentials are acquired automatically through Application Default Credentials.
- *   <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ *   <li>Default retry and timeout settings are configured per RPC from the service's retry
+ *       configuration.
  * </ul>
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders. When
  * build() is called, the tree of builders is called to create the complete settings object.
  *
- * <p>For example, to set the
- * [RetrySettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.retrying.RetrySettings)
- * of echo:
+ * <p>For example, to set the {@link com.google.api.gax.retrying.RetrySettings} of echo:
  *
  * <pre>{@code
  * // This snippet has been automatically generated and should be regarded as a code template only.
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * EchoSettings.Builder echoSettingsBuilder = EchoSettings.newBuilder();
  * echoSettingsBuilder
  *     .echoSettings()
@@ -95,9 +94,8 @@ import javax.annotation.Generated;
  * EchoSettings echoSettings = echoSettingsBuilder.build();
  * }</pre>
  *
- * Please refer to the [Client Side Retry
- * Guide](https://github.com/googleapis/google-cloud-java/blob/main/docs/client_retries.md) for
- * additional support in setting retries.
+ * <p>Please refer to the <a href="https://docs.cloud.google.com/java/docs/client-retries">Client
+ * Side Retry Guide</a> for additional support in setting retries.
  *
  * <p>To configure the RetrySettings of a Long Running Operation method, create an
  * OperationTimedPollAlgorithm object and update the RPC's polling algorithm. For example, to
@@ -108,10 +106,10 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * EchoSettings.Builder echoSettingsBuilder = EchoSettings.newBuilder();
  * TimedRetryAlgorithm timedRetryAlgorithm =
- *     OperationalTimedPollAlgorithm.create(
+ *     OperationTimedPollAlgorithm.create(
  *         RetrySettings.newBuilder()
  *             .setInitialRetryDelayDuration(Duration.ofMillis(500))
  *             .setRetryDelayMultiplier(1.5)
@@ -119,9 +117,9 @@ import javax.annotation.Generated;
  *             .setTotalTimeoutDuration(Duration.ofHours(24))
  *             .build());
  * echoSettingsBuilder
- *     .createClusterOperationSettings()
- *     .setPollingAlgorithm(timedRetryAlgorithm)
- *     .build();
+ *     .waitOperationSettings()
+ *     .setPollingAlgorithm(timedRetryAlgorithm);
+ * EchoSettings echoSettings = echoSettingsBuilder.build();
  * }</pre>
  */
 @BetaApi

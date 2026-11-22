@@ -57,7 +57,7 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * try (ComplianceClient complianceClient = ComplianceClient.create()) {
  *   RepeatRequest request =
  *       RepeatRequest.newBuilder()
@@ -306,8 +306,9 @@ import javax.annotation.Generated;
  * <p>See the individual methods for example code.
  *
  * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * these names, generated resource name classes (ending in {@code Name}) provide static {@code of},
+ * {@code format}, {@code parse}, and {@code isParsableFrom} methods to construct, validate, and
+ * extract individual identifiers from resource names.
  *
  * <p>This class can be customized by passing in a custom instance of ComplianceSettings to
  * create(). For example:
@@ -319,12 +320,15 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * ComplianceSettings complianceSettings =
  *     ComplianceSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * ComplianceClient complianceClient = ComplianceClient.create(complianceSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * complianceClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -334,10 +338,13 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * ComplianceSettings complianceSettings =
  *     ComplianceSettings.newBuilder().setEndpoint(myEndpoint).build();
  * ComplianceClient complianceClient = ComplianceClient.create(complianceSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * complianceClient.close();
  * }</pre>
  *
  * <p>To use REST (HTTP1.1/JSON) transport (instead of gRPC) for sending and receiving requests over
@@ -348,9 +355,11 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * ComplianceSettings complianceSettings = ComplianceSettings.newHttpJsonBuilder().build();
  * ComplianceClient complianceClient = ComplianceClient.create(complianceSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * complianceClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.
@@ -416,7 +425,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -454,7 +463,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -492,7 +501,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -530,7 +539,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -568,7 +577,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -606,7 +615,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -645,7 +654,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -684,7 +693,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -721,7 +730,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -758,7 +767,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -795,7 +804,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -832,7 +841,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -870,7 +879,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -907,7 +916,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -944,7 +953,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -981,7 +990,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   RepeatRequest request =
    *       RepeatRequest.newBuilder()
@@ -1025,7 +1034,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   EnumRequest request = EnumRequest.newBuilder().setUnknownEnum(true).build();
    *   EnumResponse response = complianceClient.getEnum(request);
@@ -1057,7 +1066,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   EnumRequest request = EnumRequest.newBuilder().setUnknownEnum(true).build();
    *   ApiFuture<EnumResponse> future = complianceClient.getEnumCallable().futureCall(request);
@@ -1088,7 +1097,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   EnumResponse request =
    *       EnumResponse.newBuilder()
@@ -1124,7 +1133,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   EnumResponse request =
    *       EnumResponse.newBuilder()
@@ -1152,7 +1161,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -1185,7 +1194,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -1219,7 +1228,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -1258,7 +1267,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   GetLocationRequest request = GetLocationRequest.newBuilder().setName("name3373707").build();
    *   Location response = complianceClient.getLocation(request);
@@ -1283,7 +1292,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   GetLocationRequest request = GetLocationRequest.newBuilder().setName("name3373707").build();
    *   ApiFuture<Location> future = complianceClient.getLocationCallable().futureCall(request);
@@ -1309,7 +1318,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   SetIamPolicyRequest request =
    *       SetIamPolicyRequest.newBuilder()
@@ -1341,7 +1350,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   SetIamPolicyRequest request =
    *       SetIamPolicyRequest.newBuilder()
@@ -1371,7 +1380,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   GetIamPolicyRequest request =
    *       GetIamPolicyRequest.newBuilder()
@@ -1401,7 +1410,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   GetIamPolicyRequest request =
    *       GetIamPolicyRequest.newBuilder()
@@ -1434,7 +1443,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   TestIamPermissionsRequest request =
    *       TestIamPermissionsRequest.newBuilder()
@@ -1468,7 +1477,7 @@ public class ComplianceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (ComplianceClient complianceClient = ComplianceClient.create()) {
    *   TestIamPermissionsRequest request =
    *       TestIamPermissionsRequest.newBuilder()

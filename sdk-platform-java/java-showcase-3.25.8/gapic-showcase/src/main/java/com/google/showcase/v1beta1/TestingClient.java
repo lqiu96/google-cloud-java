@@ -57,7 +57,7 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * try (TestingClient testingClient = TestingClient.create()) {
  *   CreateSessionRequest request =
  *       CreateSessionRequest.newBuilder().setSession(Session.newBuilder().build()).build();
@@ -270,8 +270,9 @@ import javax.annotation.Generated;
  * <p>See the individual methods for example code.
  *
  * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * these names, generated resource name classes (ending in {@code Name}) provide static {@code of},
+ * {@code format}, {@code parse}, and {@code isParsableFrom} methods to construct, validate, and
+ * extract individual identifiers from resource names.
  *
  * <p>This class can be customized by passing in a custom instance of TestingSettings to create().
  * For example:
@@ -283,12 +284,15 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * TestingSettings testingSettings =
  *     TestingSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * TestingClient testingClient = TestingClient.create(testingSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * testingClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -298,9 +302,12 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * TestingSettings testingSettings = TestingSettings.newBuilder().setEndpoint(myEndpoint).build();
  * TestingClient testingClient = TestingClient.create(testingSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * testingClient.close();
  * }</pre>
  *
  * <p>To use REST (HTTP1.1/JSON) transport (instead of gRPC) for sending and receiving requests over
@@ -311,9 +318,11 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * TestingSettings testingSettings = TestingSettings.newHttpJsonBuilder().build();
  * TestingClient testingClient = TestingClient.create(testingSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * testingClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.
@@ -380,7 +389,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   CreateSessionRequest request =
    *       CreateSessionRequest.newBuilder().setSession(Session.newBuilder().build()).build();
@@ -408,7 +417,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   CreateSessionRequest request =
    *       CreateSessionRequest.newBuilder().setSession(Session.newBuilder().build()).build();
@@ -433,7 +442,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   GetSessionRequest request =
    *       GetSessionRequest.newBuilder().setName(SessionName.of("[SESSION]").toString()).build();
@@ -459,7 +468,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   GetSessionRequest request =
    *       GetSessionRequest.newBuilder().setName(SessionName.of("[SESSION]").toString()).build();
@@ -484,7 +493,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ListSessionsRequest request =
    *       ListSessionsRequest.newBuilder()
@@ -515,7 +524,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ListSessionsRequest request =
    *       ListSessionsRequest.newBuilder()
@@ -546,7 +555,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ListSessionsRequest request =
    *       ListSessionsRequest.newBuilder()
@@ -583,7 +592,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   DeleteSessionRequest request =
    *       DeleteSessionRequest.newBuilder().setName(SessionName.of("[SESSION]").toString()).build();
@@ -609,7 +618,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   DeleteSessionRequest request =
    *       DeleteSessionRequest.newBuilder().setName(SessionName.of("[SESSION]").toString()).build();
@@ -635,7 +644,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ReportSessionRequest request =
    *       ReportSessionRequest.newBuilder().setName(SessionName.of("[SESSION]").toString()).build();
@@ -662,7 +671,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ReportSessionRequest request =
    *       ReportSessionRequest.newBuilder().setName(SessionName.of("[SESSION]").toString()).build();
@@ -688,7 +697,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ListTestsRequest request =
    *       ListTestsRequest.newBuilder()
@@ -720,7 +729,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ListTestsRequest request =
    *       ListTestsRequest.newBuilder()
@@ -751,7 +760,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ListTestsRequest request =
    *       ListTestsRequest.newBuilder()
@@ -794,7 +803,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   DeleteTestRequest request =
    *       DeleteTestRequest.newBuilder()
@@ -827,7 +836,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   DeleteTestRequest request =
    *       DeleteTestRequest.newBuilder()
@@ -857,7 +866,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   VerifyTestRequest request =
    *       VerifyTestRequest.newBuilder()
@@ -890,7 +899,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   VerifyTestRequest request =
    *       VerifyTestRequest.newBuilder()
@@ -919,7 +928,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -952,7 +961,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -985,7 +994,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -1024,7 +1033,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   GetLocationRequest request = GetLocationRequest.newBuilder().setName("name3373707").build();
    *   Location response = testingClient.getLocation(request);
@@ -1049,7 +1058,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   GetLocationRequest request = GetLocationRequest.newBuilder().setName("name3373707").build();
    *   ApiFuture<Location> future = testingClient.getLocationCallable().futureCall(request);
@@ -1075,7 +1084,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   SetIamPolicyRequest request =
    *       SetIamPolicyRequest.newBuilder()
@@ -1107,7 +1116,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   SetIamPolicyRequest request =
    *       SetIamPolicyRequest.newBuilder()
@@ -1137,7 +1146,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   GetIamPolicyRequest request =
    *       GetIamPolicyRequest.newBuilder()
@@ -1167,7 +1176,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   GetIamPolicyRequest request =
    *       GetIamPolicyRequest.newBuilder()
@@ -1200,7 +1209,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   TestIamPermissionsRequest request =
    *       TestIamPermissionsRequest.newBuilder()
@@ -1234,7 +1243,7 @@ public class TestingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (TestingClient testingClient = TestingClient.create()) {
    *   TestIamPermissionsRequest request =
    *       TestIamPermissionsRequest.newBuilder()
