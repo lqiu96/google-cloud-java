@@ -926,11 +926,24 @@ public class StreamWriter implements AutoCloseable {
       return this;
     }
 
+    /**
+     * Sets the maximum number of inflight append requests allowed before flow control applies.
+     *
+     * @param value maximum number of inflight requests
+     * @return this builder
+     */
     public Builder setMaxInflightRequests(long value) {
       this.maxInflightRequest = value;
       return this;
     }
 
+    /**
+     * Sets the maximum total size in bytes of inflight append requests allowed before flow control
+     * applies.
+     *
+     * @param value maximum inflight bytes
+     * @return this builder
+     */
     public Builder setMaxInflightBytes(long value) {
       this.maxInflightBytes = value;
       return this;
@@ -1049,6 +1062,13 @@ public class StreamWriter implements AutoCloseable {
       return this;
     }
 
+    /**
+     * Sets the gRPC compression algorithm to use for append requests. Only {@code "gzip"} is
+     * supported.
+     *
+     * @param compressorName the compressor name (must be {@code "gzip"})
+     * @return this builder
+     */
     public Builder setCompressorName(String compressorName) {
       Preconditions.checkNotNull(compressorName);
       Preconditions.checkArgument(

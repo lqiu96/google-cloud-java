@@ -368,9 +368,11 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
    * reuse a stream, you should use Builder newBuilder( String streamOrTableName,
    * BigQueryWriteClient client) instead, so the created Writer will be based on a fresh schema.
    *
-   * @param streamOrTableName name of the stream that must follow
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+" or table name
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+"
+   * @param streamOrTableName name of the stream ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}} or {@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/_default}) or bare table name ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}}, which writes to the table's {@code
+   *     _default} stream)
    * @param tableSchema The schema of the table when the stream was created, which is passed back
    *     through {@code WriteStream}
    * @return Builder
@@ -391,8 +393,11 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
    * reuse a stream, you should use Builder newBuilder( String streamOrTableName,
    * BigQueryWriteClient client) instead, so the created Writer will be based on a fresh schema.
    *
-   * @param streamOrTableName name of the stream that must follow
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+"
+   * @param streamOrTableName name of the stream ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}} or {@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/_default}) or bare table name ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}}, which writes to the table's {@code
+   *     _default} stream)
    * @param tableSchema The schema of the table when the stream was created, which is passed back
    *     through {@code WriteStream}
    * @param client
@@ -414,8 +419,11 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
    * newBuilder that constructs a SchemaAwareStreamWriter builder with TableSchema being initialized
    * by StreamWriter by default.
    *
-   * @param streamOrTableName name of the stream that must follow
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+"
+   * @param streamOrTableName name of the stream ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}} or {@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/_default}) or bare table name ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}}, which writes to the table's {@code
+   *     _default} stream)
    * @param client BigQueryWriteClient
    * @return Builder
    */

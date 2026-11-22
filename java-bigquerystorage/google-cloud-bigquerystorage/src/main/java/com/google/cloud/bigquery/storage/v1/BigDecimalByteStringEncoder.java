@@ -26,6 +26,10 @@ import com.google.protobuf.ByteString;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Encodes and decodes {@link BigDecimal} values to and from the little-endian two's-complement
+ * {@link ByteString} wire format used by BigQuery {@code NUMERIC} and {@code BIGNUMERIC} columns.
+ */
 public class BigDecimalByteStringEncoder {
   private static int NUMERIC_SCALE = 9;
   private static final BigDecimal MAX_NUMERIC_VALUE =
@@ -43,6 +47,15 @@ public class BigDecimalByteStringEncoder {
       new BigDecimal(
           "-578960446186580977117854925043439539266.34992332820282019728792003956564819968");
 
+  /**
+   * Encodes a {@link BigDecimal} into a little-endian two's-complement {@link ByteString} for a
+   * BigQuery {@code NUMERIC} column (scale up to 9).
+   *
+   * @param bigDecimal the decimal value to encode
+   * @return the encoded {@link ByteString}
+   * @throws IllegalArgumentException if the scale exceeds 9 or the value overflows {@code NUMERIC}
+   *     bounds
+   */
   public static ByteString encodeToNumericByteString(BigDecimal bigDecimal) {
     ByteString byteString =
         serializeBigDecimal(
@@ -50,6 +63,15 @@ public class BigDecimalByteStringEncoder {
     return byteString;
   }
 
+  /**
+   * Encodes a {@link BigDecimal} into a little-endian two's-complement {@link ByteString} for a
+   * BigQuery {@code BIGNUMERIC} column (scale up to 38).
+   *
+   * @param bigDecimal the decimal value to encode
+   * @return the encoded {@link ByteString}
+   * @throws IllegalArgumentException if the scale exceeds 38 or the value overflows {@code
+   *     BIGNUMERIC} bounds
+   */
   public static ByteString encodeToBigNumericByteString(BigDecimal bigDecimal) {
     ByteString byteString =
         serializeBigDecimal(
@@ -57,6 +79,14 @@ public class BigDecimalByteStringEncoder {
     return byteString;
   }
 
+  /**
+   * Decodes a BigQuery {@code NUMERIC} little-endian two's-complement {@link ByteString} into a
+   * {@link BigDecimal} with scale 9.
+   *
+   * @param byteString the encoded {@code NUMERIC} value
+   * @return the decoded {@link BigDecimal}
+   * @throws IllegalArgumentException if the decoded value overflows {@code NUMERIC} bounds
+   */
   public static BigDecimal decodeNumericByteString(ByteString byteString) {
     BigDecimal bigDecimal =
         deserializeBigDecimal(
@@ -64,6 +94,14 @@ public class BigDecimalByteStringEncoder {
     return bigDecimal;
   }
 
+  /**
+   * Decodes a BigQuery {@code BIGNUMERIC} little-endian two's-complement {@link ByteString} into a
+   * {@link BigDecimal} with scale 38.
+   *
+   * @param byteString the encoded {@code BIGNUMERIC} value
+   * @return the decoded {@link BigDecimal}
+   * @throws IllegalArgumentException if the decoded value overflows {@code BIGNUMERIC} bounds
+   */
   public static BigDecimal decodeBigNumericByteString(ByteString byteString) {
     BigDecimal bigDecimal =
         deserializeBigDecimal(
