@@ -77,9 +77,9 @@ import java.util.Set;
  *         &lt;!-- Optional: defaults to {@code false} --&gt;
  *         &lt;redirectToStdout&gt;true&lt;/redirectToStdout&gt;
  *
- *         &lt;!-- Optional: auto detects on App Engine Flex, Standard, GCE and GKE, defaults to "global". See <a
- *         href=
- * "https://cloud.google.com/logging/docs/api/v2/resource-list">supported resource types</a> --&gt;
+ *         &lt;!-- Optional: auto detects on App Engine Flex, Standard, GCE, GKE, Cloud Run, and Cloud Functions, defaults to "global". See <a
+ *         href="https://docs.cloud.google.com/logging/docs/api/v2/resource-list">supported resource
+ *         types</a> --&gt;
  *         &lt;resourceType&gt;&lt;/resourceType&gt;
  *
  *         &lt;!-- Optional: defaults to the default credentials of the environment --&gt;
@@ -95,11 +95,11 @@ import java.util.Set;
  *         &lt;!-- Optional: specifies if a batch's valid entries should be written even if some other entry failed due to an error. Defaults to {@code true} --&gt;
  *         &lt;partialSuccess&gt;true&lt;/partialSuccess&gt;
  *
- *         &lt;!-- Optional: In the asynchronous mode the call(s) to Logging API takes place asynchronously and few calls to `write()`
- *         method may be batched together to compose a single call to Logging API. In order to control the batching settings,
- *         the `logbackBatchingSettings` section can be used as shown below.
- *         See [BatchingSettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings)
- *         for more info regarding parameters shown below --&gt;
+ *         &lt;!-- Optional: In asynchronous mode, calls to the Logging API take place asynchronously and multiple {@code write()}
+ *         calls may be batched together into a single Logging API request. Use the {@code logbackBatchingSettings} section
+ *         to configure batching parameters. See
+ *         <a href="https://docs.cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings">BatchingSettings</a>
+ *         for details on the parameters shown below. --&gt;
  *         &lt;logbackBatchingSettings&gt;
  *            &lt;elementCountThreshold&gt;100&lt;/elementCountThreshold&gt;
  *            &lt;requestByteThreshold&gt;1000&lt;/requestByteThreshold&gt;
@@ -164,7 +164,7 @@ public class LoggingAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
   /**
    * Sets the LOG_ID part of the <a
-   * href="https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.log_name">log
+   * href="https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.log_name">log
    * name</a> for which the logs are ingested.
    *
    * @param log LOG_ID part of the name
@@ -174,13 +174,14 @@ public class LoggingAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
   }
 
   /**
-   * Sets the name of the monitored resource (Optional). If not define the appender will try to
-   * identify the resource type automatically. Currently support resource types include "gae_app",
-   * "gce_instance", "k8s_container", "cloud_run_revision" and "cloud_function". If the appender
-   * fails to identify the resource type, it will be set to "global".
+   * Sets the name of the monitored resource (Optional). If not defined, the appender will try to
+   * identify the resource type automatically. Currently supported resource types include "gae_app",
+   * "gce_instance", "k8s_container", "cloud_run_revision", "cloud_run_job", and "cloud_function".
+   * If the appender fails to identify the resource type, it will be set to "global".
    *
-   * <p>Must be a one of the <a href=
-   * "https://cloud.google.com/logging/docs/api/v2/resource-list">supported</a> resource types.
+   * <p>Must be one of the <a
+   * href="https://docs.cloud.google.com/logging/docs/api/v2/resource-list">supported</a> resource
+   * types.
    *
    * @param resourceType the name of the monitored resource.
    */
@@ -193,10 +194,10 @@ public class LoggingAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
    * #setCredentials(GoogleCredentials)} method instead.
    *
    * <p>If you know that you will be loading credential configurations of a specific type, it is
-   * recommended to use a credential-type-specific `fromStream()` method. This will ensure that an
-   * unexpected credential type with potential for malicious intent is not loaded unintentionally.
-   * You might still have to do validation for certain credential types. Please follow the
-   * recommendation for that method.
+   * recommended to use a credential-type-specific {@code fromStream()} method. This will ensure
+   * that an unexpected credential type with potential for malicious intent is not loaded
+   * unintentionally. You might still have to do validation for certain credential types. Please
+   * follow the recommendation for that method.
    *
    * <p>If you are loading your credential configuration from an untrusted source and have not
    * mitigated the risks (e.g. by validating the configuration yourself), make these changes as soon
@@ -205,10 +206,9 @@ public class LoggingAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
    * <p>Regardless of the method used, it is always your responsibility to validate configurations
    * received from external sources.
    *
-   * <p>Sets the path to the <a
-   * href="https://cloud.google.com/iam/docs/creating-managing-service-account-keys">credential
-   * file</a>. If not set the appender will use {@link GoogleCredentials#getApplicationDefault()} to
-   * authenticate.
+   * <p>Sets the path to the <a href="https://docs.cloud.google.com/iam/docs/keys-create-delete">
+   * credential file</a>. If not set the appender will use {@link
+   * GoogleCredentials#getApplicationDefault()} to authenticate.
    *
    * @param credentialsFile the path to the credentials file.
    */
@@ -303,6 +303,13 @@ public class LoggingAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
     this.enhancerClassNames.add(enhancerClassName);
   }
 
+  /**
+   * Adds a {@link LoggingEventEnhancer} implementation by fully qualified class name to enrich log
+   * entries with additional metadata from each {@link ILoggingEvent}.
+   *
+   * @param enhancerClassName the fully qualified class name of a {@link LoggingEventEnhancer}
+   *     implementation.
+   */
   public void addLoggingEventEnhancer(String enhancerClassName) {
     this.loggingEventEnhancerClassNames.add(enhancerClassName);
   }
@@ -310,9 +317,9 @@ public class LoggingAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
   /**
    * Returns the current value of the ingestion mode.
    *
-   * <p>The method is deprecated. Use appender configuration to set up the ingestion
-   *
-   * @return a {@link Synchronicity} value of the ingestion module.
+   * @return a {@link Synchronicity} value of the ingestion mode.
+   * @deprecated Use appender configuration or {@link #setWriteSynchronicity(Synchronicity)} to set
+   *     up the ingestion mode.
    */
   @Deprecated
   public Synchronicity getWriteSynchronicity() {
