@@ -1362,6 +1362,16 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Sends an insert all request.
    *
+   * <p>Row-level insertion failures do not throw {@link BigQueryException}: BigQuery returns an
+   * HTTP 200 response populated with per-row errors, so callers must check {@link
+   * InsertAllResponse#hasErrors()} and inspect {@link InsertAllResponse#getInsertErrors()}. By
+   * default ({@link InsertAllRequest#skipInvalidRows()} is {@code false}), a single invalid row
+   * aborts the entire batch and reports {@code "stopped"} errors on the remaining rows. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success">Success
+   * HTTP response codes</a> and <a
+   * href="https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/tabledata/insertAll">
+   * tabledata.insertAll</a>.
+   *
    * <p>Example of inserting rows into a table without running a load job. To prevent duplicate
    * rows, this method does not perform automatic retries unless insert IDs are provided. Transient
    * service errors (such as UNAVAILABLE) may be thrown and should be handled by the caller when
@@ -1385,14 +1395,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    *     // builder
    *     .build());
    * if (response.hasErrors()) {
-   *   // If any of the insertions failed, this lets you inspect the errors
+   *   // Row-level insert failures return HTTP 200 without throwing, so inspect per-row errors here
    *   for (Entry<Long, List<BigQueryError>> entry : response.getInsertErrors().entrySet()) {
    *     // inspect row error
    *   }
    * }
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon a request-level or transport failure (row-level insertion errors
+   *     are returned on {@link InsertAllResponse} instead)
    */
   InsertAllResponse insertAll(InsertAllRequest request);
 
