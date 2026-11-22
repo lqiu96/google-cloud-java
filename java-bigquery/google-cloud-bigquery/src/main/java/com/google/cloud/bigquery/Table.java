@@ -193,8 +193,9 @@ public class Table extends TableInfo {
      * Sets the labels applied to this table.
      *
      * <p>When used with {@link Table#update(TableOption...)}, map individual keys to {@code null}
-     * to remove those keys, or pass {@code null} to remove all labels; passing an empty map leaves
-     * existing labels unchanged.
+     * in a map that permits {@code null} values (such as {@link java.util.HashMap}) to remove those
+     * keys, or pass {@code null} to remove all labels; passing an empty map leaves existing labels
+     * unchanged.
      */
     @Override
     public Builder setLabels(Map<String, String> labels) {
@@ -304,8 +305,17 @@ public class Table extends TableInfo {
    *
    * <p>{@link TableOption#fields(BigQuery.TableField...)} controls only the response projection and
    * does not act as a write field mask. To clear individual labels, map their keys to {@code null}
-   * via {@link Builder#setLabels(Map)} (or pass {@code null} to remove all labels; an empty map
-   * leaves existing labels unchanged).
+   * in a map that permits {@code null} values (such as {@link java.util.HashMap}) via {@link
+   * Builder#setLabels(Map)}, or pass {@code null} to remove all labels; an empty map leaves
+   * existing labels unchanged.
+   *
+   * <p>Optimistic concurrency: this client sends {@link TableInfo#getEtag()} only inside the JSON
+   * request body (which BigQuery REST {@code tables.patch} ignores) and does not automatically send
+   * an HTTP {@code If-Match} request header. To enforce optimistic concurrency (HTTP 412 {@code
+   * PreconditionFailed} on concurrent modification), attach {@code If-Match: <etag>} via {@link
+   * com.google.api.gax.rpc.FixedHeaderProvider} on {@link
+   * BigQueryOptions.Builder#setHeaderProvider(com.google.api.gax.rpc.HeaderProvider)} when calling
+   * {@code update(...)}.
    *
    * <p>Example of updating the table's information.
    *

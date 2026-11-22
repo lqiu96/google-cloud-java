@@ -33,9 +33,23 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Google BigQuery Configuration for a load operation. A load configuration can be used to load data
+ * Google BigQuery configuration for a load operation. A load configuration can be used to load data
  * into a table with a {@link com.google.cloud.WriteChannel} ({@link
  * BigQuery#writer(WriteChannelConfiguration)}).
+ *
+ * <p>When omitted, {@code formatOptions} defaults to {@link FormatOptions#csv()} (pass {@link
+ * FormatOptions#json()} for newline-delimited JSON) and {@code writeDisposition} defaults to {@link
+ * JobInfo.WriteDisposition#WRITE_APPEND} (pass {@link JobInfo.WriteDisposition#WRITE_TRUNCATE} for
+ * full-refresh replacement).
+ *
+ * <p>After writing bytes to the {@link TableDataWriteChannel} returned by {@link
+ * BigQuery#writer(WriteChannelConfiguration)}, callers must call {@link
+ * TableDataWriteChannel#close()} to finalize the upload, check {@link
+ * TableDataWriteChannel#getJob()} for {@code null} (it returns {@code null} before {@code close()}
+ * or when zero bytes were written), wait for completion via {@link
+ * Job#waitFor(com.google.cloud.RetryOption...)}, and inspect {@link JobStatus#getError()} and
+ * {@link JobStatus#getExecutionErrors()} (in addition to handling {@link BigQueryException} thrown
+ * by {@code waitFor}) so malformed rows fail cleanly.
  */
 public final class WriteChannelConfiguration implements LoadConfiguration, Serializable {
 
@@ -211,12 +225,23 @@ public final class WriteChannelConfiguration implements LoadConfiguration, Seria
       return this;
     }
 
+    /**
+     * Sets the action that occurs if the destination table already exists. Defaults to {@link
+     * JobInfo.WriteDisposition#WRITE_APPEND} when omitted; pass {@link
+     * JobInfo.WriteDisposition#WRITE_TRUNCATE} to overwrite existing table data (full-refresh
+     * replacement).
+     */
     @Override
     public Builder setWriteDisposition(WriteDisposition writeDisposition) {
       this.writeDisposition = writeDisposition;
       return this;
     }
 
+    /**
+     * Sets the source format and optional parsing options for uploaded data. Defaults to {@link
+     * FormatOptions#csv()} when omitted; pass {@link FormatOptions#json()} for newline-delimited
+     * JSON ({@code NEWLINE_DELIMITED_JSON}).
+     */
     @Override
     public Builder setFormatOptions(FormatOptions formatOptions) {
       this.formatOptions = formatOptions;
@@ -341,6 +366,10 @@ public final class WriteChannelConfiguration implements LoadConfiguration, Seria
     return this.createDisposition;
   }
 
+  /**
+   * Returns the configured write disposition, or {@code null} if unset (defaults to {@link
+   * JobInfo.WriteDisposition#WRITE_APPEND} on the server).
+   */
   @Override
   public WriteDisposition getWriteDisposition() {
     return writeDisposition;
@@ -366,6 +395,10 @@ public final class WriteChannelConfiguration implements LoadConfiguration, Seria
     return schema;
   }
 
+  /**
+   * Returns the configured source format string, or {@code null} if unset (defaults to {@code CSV}
+   * on the server).
+   */
   @Override
   public String getFormat() {
     return formatOptions != null ? formatOptions.getType() : null;

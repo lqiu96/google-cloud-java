@@ -1234,8 +1234,17 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    *
    * <p>{@link TableOption#fields(TableField...)} controls only which fields are returned in the
    * response and does not act as a write field mask. To clear individual labels, map those keys to
-   * {@code null} via {@link TableInfo.Builder#setLabels(java.util.Map)}, or pass {@code null} to
-   * remove all labels; an empty map leaves existing labels unchanged.
+   * {@code null} in a map that permits {@code null} values (such as {@link java.util.HashMap}) via
+   * {@link TableInfo.Builder#setLabels(java.util.Map)}, or pass {@code null} to remove all labels;
+   * an empty map leaves existing labels unchanged.
+   *
+   * <p>Optimistic concurrency: this client sends {@link TableInfo#getEtag()} only inside the JSON
+   * request body (which BigQuery REST {@code tables.patch} ignores) and does not automatically send
+   * an HTTP {@code If-Match} request header. To enforce optimistic concurrency (HTTP 412 {@code
+   * PreconditionFailed} on concurrent modification), attach {@code If-Match: <etag>} via {@link
+   * com.google.api.gax.rpc.FixedHeaderProvider} on {@link
+   * BigQueryOptions.Builder#setHeaderProvider(com.google.api.gax.rpc.HeaderProvider)} when calling
+   * {@code update(...)}.
    *
    * <p>Example of updating a table by changing its description.
    *

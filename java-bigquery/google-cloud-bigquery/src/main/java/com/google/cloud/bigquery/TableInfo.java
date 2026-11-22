@@ -36,6 +36,15 @@ import java.util.Objects;
  * table. Use {@link ViewDefinition} to create a BigQuery view. Use {@link ExternalTableDefinition}
  * to create a BigQuery a table backed by external data.
  *
+ * <p>When passed to {@link BigQuery#update(TableInfo, BigQuery.TableOption...)} or {@link
+ * com.google.cloud.bigquery.Table#update(BigQuery.TableOption...)}, this client sends {@link
+ * #getEtag()} only inside the JSON request body (which BigQuery REST {@code tables.patch} ignores)
+ * and does not automatically send an HTTP {@code If-Match} request header. To enforce optimistic
+ * concurrency (HTTP 412 {@code PreconditionFailed} on concurrent modification), attach {@code
+ * If-Match: <etag>} via {@link com.google.api.gax.rpc.FixedHeaderProvider} on {@link
+ * BigQueryOptions.Builder#setHeaderProvider(com.google.api.gax.rpc.HeaderProvider)} when calling
+ * {@code update(...)}.
+ *
  * @see <a href="https://docs.cloud.google.com/bigquery/docs/tables">Managing Tables</a>
  */
 public class TableInfo implements Serializable {
@@ -145,9 +154,11 @@ public class TableInfo implements Serializable {
     /**
      * Sets the labels applied to this table.
      *
-     * <p>When used with {@link BigQuery#update(TableInfo, TableOption...)}, setting {@code labels}
-     * to {@code null} removes all labels; otherwise all keys that are mapped to {@code null} values
-     * are removed and other keys are updated to their respective values.
+     * <p>When used with {@link BigQuery#update(TableInfo, BigQuery.TableOption...)}, setting {@code
+     * labels} to {@code null} removes all labels; otherwise map individual keys to {@code null} in
+     * a map that permits {@code null} values (such as {@link java.util.HashMap}) to remove those
+     * keys while updating other keys to their respective values. Passing an empty map leaves
+     * existing labels unchanged.
      *
      * @see <a href="https://docs.cloud.google.com/bigquery/docs/labels-intro">Introduction to
      *     labels</a>
@@ -472,7 +483,17 @@ public class TableInfo implements Serializable {
     this.tableConstraints = builder.tableConstraints;
   }
 
-  /** Returns the hash of the table resource. */
+  /**
+   * Returns the hash of the table resource.
+   *
+   * <p>Note that {@link BigQuery#update(TableInfo, BigQuery.TableOption...)} and {@link
+   * com.google.cloud.bigquery.Table#update(BigQuery.TableOption...)} send this ETag only inside the
+   * JSON request body (which BigQuery REST {@code tables.patch} ignores) and do not automatically
+   * send an HTTP {@code If-Match} request header. To enforce optimistic concurrency (HTTP 412
+   * {@code PreconditionFailed} on concurrent modification), attach {@code If-Match: <etag>} via
+   * {@link com.google.api.gax.rpc.FixedHeaderProvider} on {@link
+   * BigQueryOptions.Builder#setHeaderProvider(com.google.api.gax.rpc.HeaderProvider)}.
+   */
   public String getEtag() {
     return etag;
   }
