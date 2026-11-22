@@ -134,7 +134,8 @@ import java.util.logging.SimpleFormatter;
  * {@code com.example.mypackage.handlers=com.google.cloud.logging.LoggingHandler}
  * </pre>
  *
- * @see <a href="https://cloud.google.com/logging/docs/structured-logging">Structured logging</a>
+ * @see <a href="https://docs.cloud.google.com/logging/docs/structured-logging">Structured
+ *     logging</a>
  */
 public class LoggingHandler extends Handler {
 
@@ -237,8 +238,9 @@ public class LoggingHandler extends Handler {
    *     a default resource is created based on the project ID and deployment environment.
    * @param enhancers List of {@link LoggingEnhancer} instances used to enhance any{@link LogEntry}
    *     instances built by this handler.
-   * @param destination the log destination {@link LogDestinationName} (see 'logName' parameter in
-   *     https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry)
+   * @param destination the log destination {@link LogDestinationName} (see the {@code logName}
+   *     field in <a
+   *     href="https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry">LogEntry</a>)
    */
   public LoggingHandler(
       String log,

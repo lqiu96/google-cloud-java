@@ -48,7 +48,7 @@ import java.util.Objects;
  * generated the log (see {@link LogEntry#getOperation()} and {@link LogEntry#getHttpRequest()},
  * respectively).
  *
- * @see <a href="https://cloud.google.com/logging/docs/view/logs_index">Log Entries and Logs</a>
+ * @see <a href="https://docs.cloud.google.com/logging/docs/overview">Log Entries and Logs</a>
  */
 public class LogEntry implements Serializable {
 
@@ -302,7 +302,7 @@ public class LogEntry implements Serializable {
      * (see {@link Payload.StringPayload}), a JSON object (see {@link Payload.JsonPayload}, or a
      * protobuf object (see {@link Payload.ProtoPayload}).
      *
-     * @see <a href="https://cloud.google.com/logging/docs/view/logs_index">Log Entries and Logs</a>
+     * @see <a href="https://docs.cloud.google.com/logging/docs/overview">Log Entries and Logs</a>
      */
     @CanIgnoreReturnValue
     public Builder setPayload(Payload<?> payload) {
@@ -467,7 +467,7 @@ public class LogEntry implements Serializable {
    * {@link Payload.StringPayload}), a JSON object (see {@link Payload.JsonPayload}, or a protobuf
    * object (see {@link Payload.ProtoPayload}).
    *
-   * @see <a href="https://cloud.google.com/logging/docs/view/logs_index">Log Entries and Logs</a>
+   * @see <a href="https://docs.cloud.google.com/logging/docs/overview">Log Entries and Logs</a>
    */
   @SuppressWarnings("unchecked")
   public <T extends Payload<?>> T getPayload() {
@@ -478,7 +478,8 @@ public class LogEntry implements Serializable {
    * Returns the log path destination name type associated with log entry. By default, project name
    * based destination is used.
    *
-   * @see <a href="https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry">logName</a>
+   * @see <a
+   *     href="https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry">logName</a>
    */
   public LogDestinationName getDestination() {
     return destination;

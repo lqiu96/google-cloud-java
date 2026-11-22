@@ -34,7 +34,7 @@ import java.util.Objects;
  * of this class are immutable. To get a {@code Metric} object with the most recent information use
  * {@link #reload} or {@link #reloadAsync}.
  *
- * @see <a href="https://cloud.google.com/logging/docs/view/logs_based_metrics">Logs-based Metrics
+ * @see <a href="https://docs.cloud.google.com/logging/docs/logs-based-metrics">Logs-based Metrics
  *     </a>
  */
 public class Metric extends MetricInfo {

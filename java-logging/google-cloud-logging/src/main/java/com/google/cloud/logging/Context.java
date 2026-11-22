@@ -83,8 +83,8 @@ public class Context {
     /**
      * Sets the referer URL of the request, as defined in HTTP/1.1 Header Field Definitions.
      *
-     * @see <a href= "http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1 Header Field
-     *     Definitions</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110.html#field.referer">HTTP/1.1 Header
+     *     Field Definitions</a>
      */
     @CanIgnoreReturnValue
     public Builder setReferer(String referer) {
@@ -139,7 +139,8 @@ public class Context {
      * x-cloud-trace-context} header (can be in Pascal case format). The string format is <code>
      * TRACE_ID/SPAN_ID;o=TRACE_TRUE</code>.
      *
-     * @see <a href="https://cloud.google.com/trace/docs/trace-context#legacy-http-header">Cloud
+     * @see <a
+     *     href="https://docs.cloud.google.com/trace/docs/trace-context#legacy-http-header">Cloud
      *     Trace header format.</a>
      */
     @CanIgnoreReturnValue

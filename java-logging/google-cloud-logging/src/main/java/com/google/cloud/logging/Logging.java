@@ -128,7 +128,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
 
     /**
      * Returns an option to set partialSuccess flag. See <a
-     * href="https://cloud.google.com/logging/docs/reference/v2/rest/v2/entries/write#body.request_body.FIELDS.partial_success">the
+     * href="https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/entries/write#body.request_body.FIELDS.partial_success">the
      * API documentation</a> for more details.
      */
     public static WriteOption partialSuccess(boolean partialSuccess) {
@@ -205,7 +205,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
     /**
      * Returns an option to specify a filter to the log entries to be listed.
      *
-     * @see <a href= "https://cloud.google.com/logging/docs/view/advanced_filters">Advanced Logs
+     * @see <a href="https://docs.cloud.google.com/logging/docs/view/building-queries">Advanced Logs
      *     Filters</a>
      */
     public static EntryListOption filter(String filter) {
@@ -254,7 +254,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
     /**
      * Returns an option to specify a filter to the log entries to be tailed.
      *
-     * @see <a href= "https://cloud.google.com/logging/docs/view/advanced_filters">Advanced Logs
+     * @see <a href="https://docs.cloud.google.com/logging/docs/view/building-queries">Advanced Logs
      *     Filters</a>
      */
     public static TailOption filter(String filter) {
@@ -266,8 +266,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
      * being returned to prevent out of order results due to late arriving log entries. Valid values
      * are between 0-60000 ms. Default is 2000 ms.
      *
-     * @see <a href=
-     *     "https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.Duration">Duration
+     * @see <a href= "https://protobuf.dev/reference/protobuf/google.protobuf/#duration">Duration
      *     format</a>
      */
     public static TailOption bufferWindow(String duration) {
@@ -723,9 +722,10 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
   boolean deleteLog(String log);
 
   /**
-   * Deletes a log and all its log entries for given log destination (see 'logName' parameter in
-   * https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry). The log will reappear if
-   * new entries are written to it.
+   * Deletes a log and all its log entries for given log destination (see the {@code logName} field
+   * in <a
+   * href="https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry">LogEntry</a>).
+   * The log will reappear if new entries are written to it.
    *
    * <p>Example of deleting a log by folder destination.
    *
@@ -748,8 +748,9 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
   }
 
   /**
-   * Sends a request for deleting a log and all its log entries for given log destination (see
-   * 'logName' parameter in https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry).
+   * Sends a request for deleting a log and all its log entries for given log destination (see the
+   * {@code logName} field in <a
+   * href="https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry">LogEntry</a>).
    * This method returns a {@code ApiFuture} object to consume the result. {@link ApiFuture#get()}
    * returns {@code true} if the log was deleted, {@code false} if it was not found.
    *
