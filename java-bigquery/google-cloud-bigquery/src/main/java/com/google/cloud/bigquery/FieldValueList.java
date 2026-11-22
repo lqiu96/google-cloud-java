@@ -25,12 +25,15 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Google BigQuery Table Field Values class, which represents a row in returned query result (table
- * row). Tables rows can be retrieved as a result of a query or when listing table data.
+ * Google BigQuery Table Field Values class, which represents a table or query result row, or a
+ * nested {@link LegacySQLTypeName#RECORD} ({@code STRUCT}) value returned by {@link
+ * FieldValue#getRecordValue()}.
  *
- * <p>Depending on how a corresponding query was executed, each row (an instance of {@code
- * FieldValueList}) may or may not contain related schema. If schema is not provided, the individual
- * cells of the row will still be accessible by index but not by name.
+ * <p>By-name lookup via {@link #get(String)} requires an attached {@link Schema} ({@link
+ * #hasSchema()} returns {@code true}) and throws {@link UnsupportedOperationException} when no
+ * schema is attached (for example, rows returned by {@link BigQuery#listTableData(TableId,
+ * BigQuery.TableDataListOption...)} without a {@link Schema}). Positional access via {@link
+ * #get(int)} is always available.
  */
 public class FieldValueList extends AbstractList<FieldValue> implements Serializable {
 
@@ -58,11 +61,12 @@ public class FieldValueList extends AbstractList<FieldValue> implements Serializ
   }
 
   /**
-   * Gets field value by name.
+   * Gets field value by name (case-insensitive) using the attached schema.
    *
-   * @param name field name (defined in schema)
-   * @throws IllegalArgumentException if schema is not provided or if {@code name} was not found in
-   *     the schema
+   * @param name field name defined in the attached schema
+   * @throws UnsupportedOperationException if no schema is attached ({@link #hasSchema()} is {@code
+   *     false}), in which case use positional {@link #get(int)}
+   * @throws IllegalArgumentException if {@code name} was not found in the attached schema
    */
   public FieldValue get(String name) {
     if (schema == null) {
