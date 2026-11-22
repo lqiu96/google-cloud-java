@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * try (BookshopClient bookshopClient = BookshopClient.create()) {
  *   int booksCount = 1618425911;
  *   List<Book> books = new ArrayList<>();
@@ -77,7 +77,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * BookshopSettings bookshopSettings =
  *     BookshopSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
@@ -92,7 +92,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * BookshopSettings bookshopSettings =
  *     BookshopSettings.newBuilder().setEndpoint(myEndpoint).build();
  * BookshopClient bookshopClient = BookshopClient.create(bookshopSettings);
@@ -159,7 +159,7 @@ public class BookshopClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (BookshopClient bookshopClient = BookshopClient.create()) {
    *   int booksCount = 1618425911;
    *   List<Book> books = new ArrayList<>();
@@ -186,7 +186,7 @@ public class BookshopClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (BookshopClient bookshopClient = BookshopClient.create()) {
    *   String booksList = "booksList2-1119589686";
    *   List<Book> books = new ArrayList<>();
@@ -213,7 +213,7 @@ public class BookshopClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (BookshopClient bookshopClient = BookshopClient.create()) {
    *   GetBookRequest request =
    *       GetBookRequest.newBuilder()
@@ -241,7 +241,7 @@ public class BookshopClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (BookshopClient bookshopClient = BookshopClient.create()) {
    *   GetBookRequest request =
    *       GetBookRequest.newBuilder()

@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
  *     EchoServiceShouldGeneratePartialUsualClient.create()) {
  *   EchoResponse response =
@@ -130,7 +130,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * EchoServiceShouldGeneratePartialUsualSettings echoServiceShouldGeneratePartialUsualSettings =
  *     EchoServiceShouldGeneratePartialUsualSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
@@ -147,7 +147,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * EchoServiceShouldGeneratePartialUsualSettings echoServiceShouldGeneratePartialUsualSettings =
  *     EchoServiceShouldGeneratePartialUsualSettings.newBuilder().setEndpoint(myEndpoint).build();
  * EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
@@ -227,7 +227,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   EchoResponse response =
@@ -252,7 +252,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   FoobarName name = FoobarName.of("[PROJECT]", "[FOOBAR]");
@@ -279,7 +279,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   String name = FoobarName.of("[PROJECT]", "[FOOBAR]").toString();
@@ -305,7 +305,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   EchoRequest request =
@@ -335,7 +335,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   EchoRequest request =
@@ -366,7 +366,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   BidiStream<EchoRequest, EchoResponse> bidiStream =
@@ -398,7 +398,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   BidiStream<EchoRequest, EchoResponse> bidiStream =
@@ -432,7 +432,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   EchoResponse response =
@@ -460,7 +460,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   FoobarName name = FoobarName.of("[PROJECT]", "[FOOBAR]");
@@ -490,7 +490,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   String name = FoobarName.of("[PROJECT]", "[FOOBAR]").toString();
@@ -519,7 +519,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   EchoRequest request =
@@ -552,7 +552,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   EchoRequest request =
@@ -586,7 +586,7 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (EchoServiceShouldGeneratePartialUsualClient echoServiceShouldGeneratePartialUsualClient =
    *     EchoServiceShouldGeneratePartialUsualClient.create()) {
    *   BidiStream<EchoRequest, EchoResponse> bidiStream =
