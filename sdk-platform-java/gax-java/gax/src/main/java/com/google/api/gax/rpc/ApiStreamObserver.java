@@ -42,12 +42,11 @@ import org.jspecify.annotations.NullMarked;
  * implements the {@code ApiStreamObserver} and passes it to GAX, which then calls the observer with
  * the messages for the application to receive them.
  *
- * <p>Implementations are expected to be <a
- * href="http://www.ibm.com/developerworks/library/j-jtp09263/">thread-compatible</a>. Separate
- * {@code ApiStreamObserver}s do not need to be synchronized together; incoming and outgoing
- * directions are independent. Since individual {@code ApiStreamObserver}s are not thread-safe, if
- * multiple threads will be writing to a {@code ApiStreamObserver} concurrently, the application
- * must synchronize calls.
+ * <p>Implementations are expected to be thread-compatible (safe to use across threads only with
+ * external synchronization). Separate {@code ApiStreamObserver}s do not need to be synchronized
+ * together; incoming and outgoing directions are independent. Since individual {@code
+ * ApiStreamObserver}s are not thread-safe, if multiple threads will be writing to a {@code
+ * ApiStreamObserver} concurrently, the application must synchronize calls.
  *
  * <p>This interface is a fork of io.grpc.stub.StreamObserver to enable shadowing of Guava, and also
  * to allow for a transport-agnostic interface that doesn't depend on gRPC.

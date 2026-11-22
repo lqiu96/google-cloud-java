@@ -51,10 +51,10 @@ import java.util.concurrent.TimeoutException;
  * <p>There are deviations from this if there are failures or if {@link ApiService#stopAsync} is
  * called before the {@link ApiService} reaches the {@linkplain State#RUNNING RUNNING} state. The
  * set of legal transitions form a <a
- * href="http://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a>, therefore every method of the
- * listener will be called at most once. N.B. The {@link State#FAILED} and {@link State#TERMINATED}
- * states are terminal states, once a service enters either of these states it cannot ever leave
- * them.
+ * href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a>, therefore every method of
+ * the listener will be called at most once. N.B. The {@link State#FAILED} and {@link
+ * State#TERMINATED} states are terminal states, once a service enters either of these states it
+ * cannot ever leave them.
  *
  * <p>Implementors of this interface are strongly encouraged to extend {@link AbstractApiService}
  * which implement this interface and make the threading and state management easier.

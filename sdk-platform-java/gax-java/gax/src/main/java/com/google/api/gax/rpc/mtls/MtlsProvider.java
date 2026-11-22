@@ -182,7 +182,7 @@ public class MtlsProvider {
         // exitValue throws IllegalThreadStateException if process has not yet terminated.
         // Once the process is terminated, exitValue no longer throws exception. Therefore
         // in the while loop, we use exitValue to check if process is terminated. See
-        // https://docs.oracle.com/javase/7/docs/api/java/lang/Process.html#exitValue()
+        // https://docs.oracle.com/javase/8/docs/api/java/lang/Process.html#exitValue--
         // for more details.
       }
     }

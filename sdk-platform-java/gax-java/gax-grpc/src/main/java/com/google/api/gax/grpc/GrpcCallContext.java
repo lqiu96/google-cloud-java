@@ -643,8 +643,8 @@ public final class GrpcCallContext implements ApiCallContext {
   }
 
   /**
-   * This method is obsolete. Use {@link #withTransportChannel()} instead. Returns a new instance
-   * with the channel set to the given channel.
+   * This method is obsolete. Use {@link #withTransportChannel(TransportChannel)} instead. Returns a
+   * new instance with the channel set to the given channel.
    */
   @ObsoleteApi("Use withTransportChannel() instead")
   public GrpcCallContext withChannel(@Nullable Channel newChannel) {
