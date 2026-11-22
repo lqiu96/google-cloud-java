@@ -84,7 +84,7 @@ public final class Watchdog implements Runnable, BackgroundResource {
    * This method is obsolete. Use {@link #createDuration(ApiClock, java.time.Duration,
    * ScheduledExecutorService)} instead.
    */
-  @ObsoleteApi("Use create(ApiClock, java.time.Duration, ScheduledExecutorService) instead")
+  @ObsoleteApi("Use createDuration(ApiClock, java.time.Duration, ScheduledExecutorService) instead")
   public static Watchdog create(
       ApiClock clock,
       org.threeten.bp.Duration scheduleInterval,
