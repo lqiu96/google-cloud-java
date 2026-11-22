@@ -52,27 +52,26 @@ import org.jspecify.annotations.Nullable;
 /**
  * Service Description: Manages long-running operations with an API service.
  *
- * <p>When an API method normally takes long time to complete, it can be designed to return
- * [Operation][google.longrunning.Operation] to the client, and the client can use this interface to
- * receive the real response asynchronously by polling the operation resource, or pass the operation
- * resource to another API (such as Google Cloud Pub/Sub API) to receive the response. Any API
- * service that returns long-running operations should implement the `Operations` interface so
- * developers can have a consistent client experience.
+ * <p>When an API method normally takes a long time to complete, it can be designed to return an
+ * {@link Operation} to the client, and the client can use this interface to receive the real
+ * response asynchronously by polling the operation resource, or pass the operation resource to
+ * another API (such as Google Cloud Pub/Sub API) to receive the response. Any API service that
+ * returns long-running operations should implement the {@code Operations} interface so developers
+ * can have a consistent client experience.
  *
  * <p>This class provides the ability to make remote calls to the backing service through method
  * calls that map to API methods. Sample code to get started:
  *
- * <pre>
- * <code>
- * try (OperationsClient operationsClient = OperationsClient.create()) {
- *   String name = "";
- *   Operation response = operationsClient.getOperation(name);
- * }
- * </code>
- * </pre>
+ * <pre>{@code
+ * OperationsSettings operationsSettings = OperationsSettings.newBuilder().build();
+ * OperationsClient operationsClient = OperationsClient.create(operationsSettings);
+ * String name = "";
+ * Operation response = operationsClient.getOperation(name);
+ * // Reuse operationsClient across calls, and call operationsClient.close() on shutdown.
+ * }</pre>
  *
- * <p>Note: close() needs to be called on the operationsClient object to clean up resources such as
- * threads. In the example above, try-with-resources is used, which automatically calls close().
+ * <p>Note: {@code OperationsClient} is intended to be reused across calls. Call {@link #close()} on
+ * shutdown to clean up resources such as threads and channels.
  *
  * <p>The surface of this class includes several types of Java methods for each of the API's
  * methods:
@@ -94,21 +93,19 @@ import org.jspecify.annotations.Nullable;
  * these names, this class includes a format method for each type of name, and additionally a parse
  * method to extract the individual identifiers contained within names that are returned.
  *
- * <p>This class can be customized by passing in a custom instance of OperationsSettings to
- * create(). For example:
+ * <p>This class can be customized by passing in a custom instance of {@link OperationsSettings} to
+ * {@link #create(OperationsSettings)}. For example:
  *
  * <p>To customize credentials:
  *
- * <pre>
- * <code>
+ * <pre>{@code
  * OperationsSettings operationsSettings =
  *     OperationsSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * OperationsClient operationsClient =
  *     OperationsClient.create(operationsSettings);
- * </code>
- * </pre>
+ * }</pre>
  */
 @NullMarked
 public class OperationsClient implements BackgroundResource {
@@ -125,7 +122,7 @@ public class OperationsClient implements BackgroundResource {
 
   /**
    * Constructs an instance of OperationsClient, using the given stub for making calls. This is for
-   * advanced usage - prefer to use OperationsSettings}.
+   * advanced usage - prefer to use {@link OperationsSettings}.
    */
   public static final OperationsClient create(OperationsStub stub) {
     return new OperationsClient(stub);
@@ -159,12 +156,12 @@ public class OperationsClient implements BackgroundResource {
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   Operation response = operationsClient.getOperation(name);
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * Operation response = operationsClient.getOperation(name);
+   * }</pre>
    *
    * @param name The name of the operation resource.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
@@ -181,15 +178,13 @@ public class OperationsClient implements BackgroundResource {
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   GetOperationRequest request = GetOperationRequest.newBuilder()
-   *     .setName(name)
-   *     .build();
-   *   Operation response = operationsClient.getOperation(request);
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * GetOperationRequest request = GetOperationRequest.newBuilder().setName(name).build();
+   * Operation response = operationsClient.getOperationCallable().call(request);
+   * }</pre>
    *
    * @param request the request object containing all of the parameters for the API call
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
@@ -204,17 +199,15 @@ public class OperationsClient implements BackgroundResource {
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   GetOperationRequest request = GetOperationRequest.newBuilder()
-   *     .setName(name)
-   *     .build();
-   *   ApiFuture&lt;Operation&gt; future = operationsClient.getOperationCallable().futureCall(request);
-   *   // Do something
-   *   Operation response = future.get();
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * GetOperationRequest request = GetOperationRequest.newBuilder().setName(name).build();
+   * ApiFuture<Operation> future = operationsClient.getOperationCallable().futureCall(request);
+   * // Do something
+   * Operation response = future.get();
+   * }</pre>
    */
   public final UnaryCallable<GetOperationRequest, Operation> getOperationCallable() {
     return stub.getOperationCallable();
@@ -222,22 +215,22 @@ public class OperationsClient implements BackgroundResource {
 
   /**
    * Lists operations that match the specified filter in the request. If the server doesn't support
-   * this method, it returns `UNIMPLEMENTED`.
+   * this method, it returns {@code UNIMPLEMENTED}.
    *
-   * <p>NOTE: the `name` binding below allows API services to override the binding to use different
-   * resource name schemes, such as `users/&#42;/operations`.
+   * <p>NOTE: the {@code name} binding below allows API services to override the binding to use
+   * different resource name schemes, such as <code>users/&#42;/operations</code>.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   String filter = "";
-   *   for (Operation element : operationsClient.listOperations(name, filter).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * String filter = "";
+   * for (Operation element : operationsClient.listOperations(name, filter).iterateAll()) {
+   *   // doThingsWith(element);
    * }
-   * </code></pre>
+   * }</pre>
    *
    * @param name The name of the operation collection.
    * @param filter The standard list filter.
@@ -251,26 +244,24 @@ public class OperationsClient implements BackgroundResource {
 
   /**
    * Lists operations that match the specified filter in the request. If the server doesn't support
-   * this method, it returns `UNIMPLEMENTED`.
+   * this method, it returns {@code UNIMPLEMENTED}.
    *
-   * <p>NOTE: the `name` binding below allows API services to override the binding to use different
-   * resource name schemes, such as `users/&#42;/operations`.
+   * <p>NOTE: the {@code name} binding below allows API services to override the binding to use
+   * different resource name schemes, such as <code>users/&#42;/operations</code>.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   String filter = "";
-   *   ListOperationsRequest request = ListOperationsRequest.newBuilder()
-   *     .setName(name)
-   *     .setFilter(filter)
-   *     .build();
-   *   for (Operation element : operationsClient.listOperations(request).iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * String filter = "";
+   * ListOperationsRequest request =
+   *     ListOperationsRequest.newBuilder().setName(name).setFilter(filter).build();
+   * for (Operation element : operationsClient.listOperations(request).iterateAll()) {
+   *   // doThingsWith(element);
    * }
-   * </code></pre>
+   * }</pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
@@ -281,28 +272,27 @@ public class OperationsClient implements BackgroundResource {
 
   /**
    * Lists operations that match the specified filter in the request. If the server doesn't support
-   * this method, it returns `UNIMPLEMENTED`.
+   * this method, it returns {@code UNIMPLEMENTED}.
    *
-   * <p>NOTE: the `name` binding below allows API services to override the binding to use different
-   * resource name schemes, such as `users/&#42;/operations`.
+   * <p>NOTE: the {@code name} binding below allows API services to override the binding to use
+   * different resource name schemes, such as <code>users/&#42;/operations</code>.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   String filter = "";
-   *   ListOperationsRequest request = ListOperationsRequest.newBuilder()
-   *     .setName(name)
-   *     .setFilter(filter)
-   *     .build();
-   *   ApiFuture&lt;ListOperationsPagedResponse&gt; future = operationsClient.listOperationsPagedCallable().futureCall(request);
-   *   // Do something
-   *   for (Operation element : future.get().iterateAll()) {
-   *     // doThingsWith(element);
-   *   }
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * String filter = "";
+   * ListOperationsRequest request =
+   *     ListOperationsRequest.newBuilder().setName(name).setFilter(filter).build();
+   * ApiFuture<ListOperationsPagedResponse> future =
+   *     operationsClient.listOperationsPagedCallable().futureCall(request);
+   * // Do something
+   * for (Operation element : future.get().iterateAll()) {
+   *   // doThingsWith(element);
    * }
-   * </code></pre>
+   * }</pre>
    */
   public final UnaryCallable<ListOperationsRequest, ListOperationsPagedResponse>
       listOperationsPagedCallable() {
@@ -311,35 +301,33 @@ public class OperationsClient implements BackgroundResource {
 
   /**
    * Lists operations that match the specified filter in the request. If the server doesn't support
-   * this method, it returns `UNIMPLEMENTED`.
+   * this method, it returns {@code UNIMPLEMENTED}.
    *
-   * <p>NOTE: the `name` binding below allows API services to override the binding to use different
-   * resource name schemes, such as `users/&#42;/operations`.
+   * <p>NOTE: the {@code name} binding below allows API services to override the binding to use
+   * different resource name schemes, such as <code>users/&#42;/operations</code>.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   String filter = "";
-   *   ListOperationsRequest request = ListOperationsRequest.newBuilder()
-   *     .setName(name)
-   *     .setFilter(filter)
-   *     .build();
-   *   while (true) {
-   *     ListOperationsResponse response = operationsClient.listOperationsCallable().call(request);
-   *     for (Operation element : response.getOperationsList()) {
-   *       // doThingsWith(element);
-   *     }
-   *     String nextPageToken = response.getNextPageToken();
-   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
-   *       request = request.toBuilder().setPageToken(nextPageToken).build();
-   *     } else {
-   *       break;
-   *     }
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * String filter = "";
+   * ListOperationsRequest request =
+   *     ListOperationsRequest.newBuilder().setName(name).setFilter(filter).build();
+   * while (true) {
+   *   ListOperationsResponse response = operationsClient.listOperationsCallable().call(request);
+   *   for (Operation element : response.getOperationsList()) {
+   *     // doThingsWith(element);
+   *   }
+   *   String nextPageToken = response.getNextPageToken();
+   *   if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *     request = request.toBuilder().setPageToken(nextPageToken).build();
+   *   } else {
+   *     break;
    *   }
    * }
-   * </code></pre>
+   * }</pre>
    */
   public final UnaryCallable<ListOperationsRequest, ListOperationsResponse>
       listOperationsCallable() {
@@ -349,21 +337,20 @@ public class OperationsClient implements BackgroundResource {
   /**
    * Starts asynchronous cancellation on a long-running operation. The server makes a best effort to
    * cancel the operation, but success is not guaranteed. If the server doesn't support this method,
-   * it returns `google.rpc.Code.UNIMPLEMENTED`. Clients can use
-   * [Operations.GetOperation][google.longrunning.Operations.GetOperation] or other methods to check
-   * whether the cancellation succeeded or whether the operation completed despite cancellation. On
-   * successful cancellation, the operation is not deleted; instead, it becomes an operation with an
-   * [Operation.error][google.longrunning.Operation.error] value with a
-   * [google.rpc.Status.code][google.rpc.Status.code] of 1, corresponding to `Code.CANCELLED`.
+   * it returns {@code google.rpc.Code.UNIMPLEMENTED}. Clients can use {@link #getOperation(String)}
+   * or other methods to check whether the cancellation succeeded or whether the operation completed
+   * despite cancellation. On successful cancellation, the operation is not deleted; instead, it
+   * becomes an operation with an {@link Operation#getError()} value with a {@code
+   * google.rpc.Status.code} of 1, corresponding to {@code Code.CANCELLED}.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   operationsClient.cancelOperation(name);
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * operationsClient.cancelOperation(name);
+   * }</pre>
    *
    * @param name The name of the operation resource to be cancelled.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
@@ -377,24 +364,21 @@ public class OperationsClient implements BackgroundResource {
   /**
    * Starts asynchronous cancellation on a long-running operation. The server makes a best effort to
    * cancel the operation, but success is not guaranteed. If the server doesn't support this method,
-   * it returns `google.rpc.Code.UNIMPLEMENTED`. Clients can use
-   * [Operations.GetOperation][google.longrunning.Operations.GetOperation] or other methods to check
-   * whether the cancellation succeeded or whether the operation completed despite cancellation. On
-   * successful cancellation, the operation is not deleted; instead, it becomes an operation with an
-   * [Operation.error][google.longrunning.Operation.error] value with a
-   * [google.rpc.Status.code][google.rpc.Status.code] of 1, corresponding to `Code.CANCELLED`.
+   * it returns {@code google.rpc.Code.UNIMPLEMENTED}. Clients can use {@link #getOperation(String)}
+   * or other methods to check whether the cancellation succeeded or whether the operation completed
+   * despite cancellation. On successful cancellation, the operation is not deleted; instead, it
+   * becomes an operation with an {@link Operation#getError()} value with a {@code
+   * google.rpc.Status.code} of 1, corresponding to {@code Code.CANCELLED}.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   CancelOperationRequest request = CancelOperationRequest.newBuilder()
-   *     .setName(name)
-   *     .build();
-   *   operationsClient.cancelOperation(request);
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * CancelOperationRequest request = CancelOperationRequest.newBuilder().setName(name).build();
+   * operationsClient.cancelOperationCallable().call(request);
+   * }</pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
@@ -406,26 +390,23 @@ public class OperationsClient implements BackgroundResource {
   /**
    * Starts asynchronous cancellation on a long-running operation. The server makes a best effort to
    * cancel the operation, but success is not guaranteed. If the server doesn't support this method,
-   * it returns `google.rpc.Code.UNIMPLEMENTED`. Clients can use
-   * [Operations.GetOperation][google.longrunning.Operations.GetOperation] or other methods to check
-   * whether the cancellation succeeded or whether the operation completed despite cancellation. On
-   * successful cancellation, the operation is not deleted; instead, it becomes an operation with an
-   * [Operation.error][google.longrunning.Operation.error] value with a
-   * [google.rpc.Status.code][google.rpc.Status.code] of 1, corresponding to `Code.CANCELLED`.
+   * it returns {@code google.rpc.Code.UNIMPLEMENTED}. Clients can use {@link #getOperation(String)}
+   * or other methods to check whether the cancellation succeeded or whether the operation completed
+   * despite cancellation. On successful cancellation, the operation is not deleted; instead, it
+   * becomes an operation with an {@link Operation#getError()} value with a {@code
+   * google.rpc.Status.code} of 1, corresponding to {@code Code.CANCELLED}.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   CancelOperationRequest request = CancelOperationRequest.newBuilder()
-   *     .setName(name)
-   *     .build();
-   *   ApiFuture&lt;Void&gt; future = operationsClient.cancelOperationCallable().futureCall(request);
-   *   // Do something
-   *   future.get();
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * CancelOperationRequest request = CancelOperationRequest.newBuilder().setName(name).build();
+   * ApiFuture<Empty> future = operationsClient.cancelOperationCallable().futureCall(request);
+   * // Do something
+   * future.get();
+   * }</pre>
    */
   public final UnaryCallable<CancelOperationRequest, Empty> cancelOperationCallable() {
     return stub.cancelOperationCallable();
@@ -434,16 +415,16 @@ public class OperationsClient implements BackgroundResource {
   /**
    * Deletes a long-running operation. This method indicates that the client is no longer interested
    * in the operation result. It does not cancel the operation. If the server doesn't support this
-   * method, it returns `google.rpc.Code.UNIMPLEMENTED`.
+   * method, it returns {@code google.rpc.Code.UNIMPLEMENTED}.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   operationsClient.deleteOperation(name);
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * operationsClient.deleteOperation(name);
+   * }</pre>
    *
    * @param name The name of the operation resource to be deleted.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
@@ -457,19 +438,17 @@ public class OperationsClient implements BackgroundResource {
   /**
    * Deletes a long-running operation. This method indicates that the client is no longer interested
    * in the operation result. It does not cancel the operation. If the server doesn't support this
-   * method, it returns `google.rpc.Code.UNIMPLEMENTED`.
+   * method, it returns {@code google.rpc.Code.UNIMPLEMENTED}.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   DeleteOperationRequest request = DeleteOperationRequest.newBuilder()
-   *     .setName(name)
-   *     .build();
-   *   operationsClient.deleteOperation(request);
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * DeleteOperationRequest request = DeleteOperationRequest.newBuilder().setName(name).build();
+   * operationsClient.deleteOperationCallable().call(request);
+   * }</pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
@@ -481,21 +460,19 @@ public class OperationsClient implements BackgroundResource {
   /**
    * Deletes a long-running operation. This method indicates that the client is no longer interested
    * in the operation result. It does not cancel the operation. If the server doesn't support this
-   * method, it returns `google.rpc.Code.UNIMPLEMENTED`.
+   * method, it returns {@code google.rpc.Code.UNIMPLEMENTED}.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   DeleteOperationRequest request = DeleteOperationRequest.newBuilder()
-   *     .setName(name)
-   *     .build();
-   *   ApiFuture&lt;Void&gt; future = operationsClient.deleteOperationCallable().futureCall(request);
-   *   // Do something
-   *   future.get();
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * DeleteOperationRequest request = DeleteOperationRequest.newBuilder().setName(name).build();
+   * ApiFuture<Empty> future = operationsClient.deleteOperationCallable().futureCall(request);
+   * // Do something
+   * future.get();
+   * }</pre>
    */
   public final UnaryCallable<DeleteOperationRequest, Empty> deleteOperationCallable() {
     return stub.deleteOperationCallable();
@@ -505,23 +482,24 @@ public class OperationsClient implements BackgroundResource {
    * Waits until the specified long-running operation is done or reaches at most a specified
    * timeout, returning the latest state. If the operation is already done, the latest state is
    * immediately returned. If the timeout specified is greater than the default HTTP/RPC timeout,
-   * the HTTP/RPC timeout is used. If the server does not support this method, it returns
-   * `google.rpc.Code.UNIMPLEMENTED`. Note that this method is on a best-effort basis. It may return
+   * the HTTP/RPC timeout is used. If the server does not support this method, it returns {@code
+   * google.rpc.Code.UNIMPLEMENTED}. Note that this method is on a best-effort basis. It may return
    * the latest state before the specified timeout (including immediately), meaning even an
    * immediate response is no guarantee that the operation is done.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   WaitOperationRequest request = WaitOperationRequest.newBuilder()
-   *     .setName(name)
-   *     .setTimeout(Duration.ofMillis(100))
-   *     .build();
-   *   Operation response = operationsClient.waitOperation(request);
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * WaitOperationRequest request =
+   *     WaitOperationRequest.newBuilder()
+   *         .setName(name)
+   *         .setTimeout(com.google.protobuf.Duration.newBuilder().setNanos(100_000_000).build())
+   *         .build();
+   * Operation response = operationsClient.waitOperation(request);
+   * }</pre>
    *
    * @param request the request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
@@ -534,23 +512,24 @@ public class OperationsClient implements BackgroundResource {
    * Waits until the specified long-running operation is done or reaches at most a specified
    * timeout, returning the latest state. If the operation is already done, the latest state is
    * immediately returned. If the timeout specified is greater than the default HTTP/RPC timeout,
-   * the HTTP/RPC timeout is used. If the server does not support this method, it returns
-   * `google.rpc.Code.UNIMPLEMENTED`. Note that this method is on a best-effort basis. It may return
+   * the HTTP/RPC timeout is used. If the server does not support this method, it returns {@code
+   * google.rpc.Code.UNIMPLEMENTED}. Note that this method is on a best-effort basis. It may return
    * the latest state before the specified timeout (including immediately), meaning even an
    * immediate response is no guarantee that the operation is done.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (OperationsClient operationsClient = OperationsClient.create()) {
-   *   String name = "";
-   *   WaitOperationRequest request = WaitOperationRequest.newBuilder()
-   *     .setName(name)
-   *     .setTimeout(Duration.ofMillis(100))
-   *     .build();
-   *   ApiFuture&lt;Operation&gt; future = operationsClient.waitOperationCallable().futureCall(request);
-   * }
-   * </code></pre>
+   * <pre>{@code
+   * OperationsClient operationsClient =
+   *     OperationsClient.create(OperationsSettings.newBuilder().build());
+   * String name = "";
+   * WaitOperationRequest request =
+   *     WaitOperationRequest.newBuilder()
+   *         .setName(name)
+   *         .setTimeout(com.google.protobuf.Duration.newBuilder().setNanos(100_000_000).build())
+   *         .build();
+   * ApiFuture<Operation> future = operationsClient.waitOperationCallable().futureCall(request);
+   * }</pre>
    */
   public final UnaryCallable<WaitOperationRequest, Operation> waitOperationCallable() {
     return stub.waitOperationCallable();

@@ -94,7 +94,7 @@ import org.jspecify.annotations.Nullable;
  *             .getOperationSettings()
  *             .getRetrySettings()
  *             .toBuilder()
- *             .setTotalTimeout(Duration.ofSeconds(30))
+ *             .setTotalTimeoutDuration(java.time.Duration.ofSeconds(30))
  *             .build());
  * OperationsStubSettings operationsSettings = operationsSettingsBuilder.build();
  * }</pre>
