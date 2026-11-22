@@ -271,12 +271,33 @@ class ServiceOptionsTest {
   }
 
   static class TestServiceOptions extends ServiceOptions<TestService, TestServiceOptions> {
-    private static class Builder
-        extends ServiceOptions.Builder<TestService, TestServiceOptions, Builder> {
-      private Builder() {}
+    private final boolean overrideEnvUniverseDomain;
+    private final String envUniverseDomain;
+    private final boolean forceNullCredentials;
 
-      private Builder(TestServiceOptions options) {
+    static class Builder extends ServiceOptions.Builder<TestService, TestServiceOptions, Builder> {
+      private boolean overrideEnvUniverseDomain;
+      private String envUniverseDomain;
+      private boolean forceNullCredentials;
+
+      Builder() {}
+
+      Builder(TestServiceOptions options) {
         super(options);
+        this.overrideEnvUniverseDomain = options.overrideEnvUniverseDomain;
+        this.envUniverseDomain = options.envUniverseDomain;
+        this.forceNullCredentials = options.forceNullCredentials;
+      }
+
+      private Builder setEnvUniverseDomain(String envUniverseDomain) {
+        this.overrideEnvUniverseDomain = true;
+        this.envUniverseDomain = envUniverseDomain;
+        return this;
+      }
+
+      private Builder setForceNullCredentials(boolean forceNullCredentials) {
+        this.forceNullCredentials = forceNullCredentials;
+        return this;
       }
 
       @Override
@@ -285,12 +306,25 @@ class ServiceOptionsTest {
       }
     }
 
-    private TestServiceOptions(Builder builder) {
+    TestServiceOptions(Builder builder) {
       super(
           TestServiceFactory.class,
           TestServiceRpcFactory.class,
           builder,
           new TestServiceDefaults());
+      this.overrideEnvUniverseDomain = builder.overrideEnvUniverseDomain;
+      this.envUniverseDomain = builder.envUniverseDomain;
+      this.forceNullCredentials = builder.forceNullCredentials;
+    }
+
+    @Override
+    String getUniverseDomainFromEnv() {
+      return overrideEnvUniverseDomain ? envUniverseDomain : super.getUniverseDomainFromEnv();
+    }
+
+    @Override
+    public com.google.auth.Credentials getCredentials() {
+      return forceNullCredentials ? null : super.getCredentials();
     }
 
     private static class TestServiceDefaults
@@ -334,6 +368,44 @@ class ServiceOptionsTest {
     @Override
     public int hashCode() {
       return baseHashCode();
+    }
+  }
+
+  static class DynamicHostTestServiceOptions extends TestServiceOptions {
+    private static class Builder extends TestServiceOptions.Builder {
+      private Builder() {}
+
+      private Builder(DynamicHostTestServiceOptions options) {
+        super(options);
+      }
+
+      @Override
+      protected DynamicHostTestServiceOptions build() {
+        return new DynamicHostTestServiceOptions(this);
+      }
+    }
+
+    private DynamicHostTestServiceOptions(Builder builder) {
+      super(builder);
+    }
+
+    @Override
+    protected String getDefaultHost() {
+      return "https://dynamic." + getResolvedUniverseDomain();
+    }
+
+    @Override
+    String getUniverseDomainFromEnv() {
+      return null;
+    }
+
+    @Override
+    public Builder toBuilder() {
+      return new Builder(this);
+    }
+
+    private static Builder newBuilder() {
+      return new Builder();
     }
   }
 
@@ -628,6 +700,137 @@ class ServiceOptionsTest {
             .setCredentials(credentialsNotInGDU)
             .build();
     assertThat(options.hasValidUniverseDomain()).isTrue();
+  }
+
+  @Test
+  void testGetResolvedUniverseDomain_precedenceAndValidation() {
+    TestServiceOptions defaultOptions =
+        TestServiceOptions.newBuilder()
+            .setProjectId("project-id")
+            .setEnvUniverseDomain(null)
+            .build();
+    assertThat(defaultOptions.getResolvedUniverseDomain()).isEqualTo("googleapis.com");
+
+    TestServiceOptions envOptions =
+        TestServiceOptions.newBuilder()
+            .setProjectId("project-id")
+            .setEnvUniverseDomain("env.com")
+            .build();
+    assertThat(envOptions.getResolvedUniverseDomain()).isEqualTo("env.com");
+
+    TestServiceOptions explicitOverridesEnv =
+        TestServiceOptions.newBuilder()
+            .setProjectId("project-id")
+            .setUniverseDomain("explicit.com")
+            .setEnvUniverseDomain("env.com")
+            .build();
+    assertThat(explicitOverridesEnv.getResolvedUniverseDomain()).isEqualTo("explicit.com");
+
+    TestServiceOptions emptyExplicit =
+        TestServiceOptions.newBuilder()
+            .setProjectId("project-id")
+            .setUniverseDomain("")
+            .setEnvUniverseDomain("env.com")
+            .build();
+    IllegalArgumentException explicitException =
+        assertThrows(IllegalArgumentException.class, emptyExplicit::getResolvedUniverseDomain);
+    assertThat(explicitException.getMessage()).isEqualTo("The universe domain cannot be empty");
+
+    TestServiceOptions emptyEnv =
+        TestServiceOptions.newBuilder().setProjectId("project-id").setEnvUniverseDomain("").build();
+    assertThat(emptyEnv.getResolvedUniverseDomain()).isEqualTo("googleapis.com");
+  }
+
+  @Test
+  void testHasExplicitHost_andToBuilderClearsDefaultHost() {
+    TestServiceOptions defaultOptions =
+        TestServiceOptions.newBuilder().setProjectId("project-id").build();
+    assertThat(defaultOptions.hasExplicitHost()).isFalse();
+    assertThat(defaultOptions.toBuilder().build().hasExplicitHost()).isFalse();
+
+    TestServiceOptions explicitCustomHost =
+        TestServiceOptions.newBuilder()
+            .setProjectId("project-id")
+            .setHost("https://custom.example.com")
+            .build();
+    assertThat(explicitCustomHost.hasExplicitHost()).isTrue();
+    TestServiceOptions copiedCustomHost = explicitCustomHost.toBuilder().build();
+    assertThat(copiedCustomHost.hasExplicitHost()).isTrue();
+    assertThat(copiedCustomHost.getHost()).isEqualTo("https://custom.example.com");
+
+    TestServiceOptions explicitDefaultHost =
+        TestServiceOptions.newBuilder()
+            .setProjectId("project-id")
+            .setHost("https://www.googleapis.com")
+            .build();
+    assertThat(explicitDefaultHost.hasExplicitHost()).isTrue();
+    assertThat(explicitDefaultHost.toBuilder().build().hasExplicitHost()).isTrue();
+
+    TestServiceOptions dynamicDefault =
+        DynamicHostTestServiceOptions.newBuilder().setProjectId("project-id").build();
+    assertThat(dynamicDefault.hasExplicitHost()).isFalse();
+    assertThat(dynamicDefault.getHost()).isEqualTo("https://dynamic.googleapis.com");
+
+    TestServiceOptions dynamicWithUniverse =
+        dynamicDefault.toBuilder().setUniverseDomain("custom.com").build();
+    assertThat(dynamicWithUniverse.hasExplicitHost()).isFalse();
+    assertThat(dynamicWithUniverse.getHost()).isEqualTo("https://dynamic.custom.com");
+
+    TestServiceOptions dynamicWithExplicitHost =
+        dynamicDefault.toBuilder().setHost("https://override.example.com").build().toBuilder()
+            .setUniverseDomain("custom.com")
+            .build();
+    assertThat(dynamicWithExplicitHost.hasExplicitHost()).isTrue();
+    assertThat(dynamicWithExplicitHost.getHost()).isEqualTo("https://override.example.com");
+  }
+
+  @Test
+  void testGetResolvedEndpointAndApiaryHost_envVarFallbackAndPrecedence() {
+    TestServiceOptions envOptions =
+        TestServiceOptions.newBuilder()
+            .setProjectId("project-id")
+            .setEnvUniverseDomain("env.com")
+            .build();
+    assertThat(envOptions.getResolvedHost("service")).isEqualTo("https://service.env.com");
+    assertThat(envOptions.getResolvedApiaryHost("service")).isEqualTo("https://service.env.com/");
+
+    TestServiceOptions explicitOptions =
+        envOptions.toBuilder().setUniverseDomain("explicit.com").build();
+    assertThat(explicitOptions.getResolvedHost("service"))
+        .isEqualTo("https://service.explicit.com");
+    assertThat(explicitOptions.getResolvedApiaryHost("service"))
+        .isEqualTo("https://service.explicit.com/");
+  }
+
+  @Test
+  void testIsValidUniverseDomain_envVarAndNullCredentials() throws IOException {
+    TestServiceOptions envBase =
+        TestServiceOptions.newBuilder()
+            .setProjectId("project-id")
+            .setEnvUniverseDomain("random.com")
+            .setCredentials(credentialsNotInGDU)
+            .build();
+    assertThat(envBase.hasValidUniverseDomain()).isTrue();
+    assertThat(envBase.toBuilder().setCredentials(credentials).build().hasValidUniverseDomain())
+        .isFalse();
+    assertThat(
+            envBase.toBuilder()
+                .setCredentials(credentials)
+                .setUniverseDomain("googleapis.com")
+                .build()
+                .hasValidUniverseDomain())
+        .isTrue();
+
+    TestServiceOptions nullCreds =
+        TestServiceOptions.newBuilder()
+            .setProjectId("project-id")
+            .setEnvUniverseDomain(null)
+            .setForceNullCredentials(true)
+            .build();
+    assertThat(nullCreds.hasValidUniverseDomain()).isTrue();
+    assertThat(
+            nullCreds.toBuilder().setUniverseDomain("random.com").build().hasValidUniverseDomain())
+        .isFalse();
   }
 
   @Test
