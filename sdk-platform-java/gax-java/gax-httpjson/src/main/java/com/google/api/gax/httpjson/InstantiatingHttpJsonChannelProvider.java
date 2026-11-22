@@ -58,16 +58,13 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
- * InstantiatingHttpJsonChannelProvider is a TransportChannelProvider which constructs a {@link
- * ManagedHttpJsonChannel} with a number of configured inputs every time getChannel(...) is called.
- * These inputs include a port, a service address, and credentials.
+ * InstantiatingHttpJsonChannelProvider is a {@link TransportChannelProvider} which constructs a
+ * {@link HttpJsonTransportChannel} backed by a {@link ManagedHttpJsonChannel} every time {@link
+ * #getTransportChannel()} is called.
  *
- * <p>The credentials can either be supplied directly (by providing a FixedCredentialsProvider to
- * Builder.setCredentialsProvider()) or acquired implicitly from Application Default Credentials (by
- * providing a GoogleCredentialsProvider to Builder.setCredentialsProvider()).
- *
- * <p>The client lib header and generator header values are used to form a value that goes into the
- * http header of requests to the service.
+ * <p>Configure instances via {@link #newBuilder()} (or {@link #toBuilder()}) with an endpoint,
+ * headers, optional {@link HttpTransport}, optional {@link Executor}, and optional {@link
+ * HttpJsonInterceptorProvider}.
  */
 @NullMarked
 @InternalExtensionOnly
@@ -371,12 +368,10 @@ public final class InstantiatingHttpJsonChannelProvider implements TransportChan
     }
 
     /**
-     * Sets the Executor for this TransportChannelProvider.
+     * Sets the {@link Executor} for this {@link TransportChannelProvider}.
      *
-     * <p>This is optional; if it is not provided, needsExecutor() will return true, meaning that an
-     * Executor must be provided when getChannel is called on the constructed
-     * TransportChannelProvider instance. Note: InstantiatingHttpJsonChannelProvider will
-     * automatically provide its own Executor in this circumstance when it calls getChannel.
+     * <p>This is optional; if it is not provided, {@link ManagedHttpJsonChannel} uses its default
+     * executor when {@link #getTransportChannel()} creates channels.
      */
     public Builder setExecutor(Executor executor) {
       this.executor = executor;
@@ -392,11 +387,11 @@ public final class InstantiatingHttpJsonChannelProvider implements TransportChan
     }
 
     /**
-     * Sets the HeaderProvider for this TransportChannelProvider.
+     * Sets the {@link HeaderProvider} for this {@link TransportChannelProvider}.
      *
-     * <p>This is optional; if it is not provided, needsHeaders() will return true, meaning that
-     * headers must be provided when getChannel is called on the constructed
-     * TransportChannelProvider instance.
+     * <p>This is optional; if it is not provided, {@link #needsHeaders()} will return true, meaning
+     * that headers must be provided via {@link #withHeaders(Map)} before calling {@link
+     * #getTransportChannel()}.
      */
     public Builder setHeaderProvider(HeaderProvider headerProvider) {
       this.headerProvider = headerProvider;
@@ -404,11 +399,11 @@ public final class InstantiatingHttpJsonChannelProvider implements TransportChan
     }
 
     /**
-     * Sets the GrpcInterceptorProvider for this TransportChannelProvider.
+     * Sets the {@link HttpJsonInterceptorProvider} for this {@link TransportChannelProvider}.
      *
-     * <p>The provider will be called once for each underlying gRPC ManagedChannel that is created.
-     * It is recommended to return a new list of new interceptors on each call so that interceptors
-     * are not shared among channels, but this is not required.
+     * <p>The provider will be called once for each underlying {@link ManagedHttpJsonChannel} that
+     * is created. It is recommended to return a new list of new interceptors on each call so that
+     * interceptors are not shared among channels, but this is not required.
      */
     public Builder setInterceptorProvider(HttpJsonInterceptorProvider interceptorProvider) {
       this.interceptorProvider = interceptorProvider;

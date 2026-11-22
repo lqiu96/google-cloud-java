@@ -49,7 +49,7 @@ public final class ApiFutures {
    * Registers a callback to be run when the {@link ApiFuture}'s computation is complete or, if the
    * computation is already complete, immediately.
    *
-   * @param future The future attach the callback to
+   * @param future The future to attach the callback to
    * @param callback The callback to invoke when future is completed
    * @deprecated Use {@linkplain #addCallback(ApiFuture, ApiFutureCallback, Executor) the overload
    *     that requires an executor}. For identical behavior, pass {@link
@@ -69,7 +69,7 @@ public final class ApiFutures {
    * <p>Note that this method is a delegate of {@link Futures#addCallback(ListenableFuture,
    * FutureCallback, Executor)}.
    *
-   * @param future The future attach the callback to
+   * @param future The future to attach the callback to
    * @param callback The callback to invoke when future is completed
    * @param executor The executor to run callback when the future completes
    * @see Futures#addCallback(ListenableFuture, FutureCallback, Executor)
@@ -155,7 +155,7 @@ public final class ApiFutures {
    * @param input The primary input {@code ApiFuture}
    * @param exceptionType The exception type that triggers use of {@code fallback}.
    * @param callback The {@link ApiAsyncFunction} to be called if {@code input} fails with the
-   *     expected * exception type.
+   *     expected exception type.
    * @param executor The executor that runs {@code fallback} if {@code input} fails
    * @return A future whose result is taken either from the given {@code input} or by the {@code
    *     callback}

@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * InstantiatingChannelProvider is an ExecutorProvider which constructs a new
+ * InstantiatingExecutorProvider is an {@link ExecutorProvider} which constructs a new
  * ScheduledExecutorService every time getExecutor() is called.
  */
 @NullMarked

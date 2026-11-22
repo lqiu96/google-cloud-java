@@ -36,9 +36,10 @@ import org.jspecify.annotations.NullMarked;
 /**
  * A Page object wraps an API list method response.
  *
- * <p>Callers can iterate over the Page object to get all elements returned in the page. The Page
- * object also provides methods to retrieve additional pages using the page token, and to get the
- * API request and response objects.
+ * <p>Callers can iterate over {@link #getValues()} to read all elements returned in this page, or
+ * {@link #iterateAll()} to iterate across this page and all subsequent pages. The Page object also
+ * provides methods to retrieve additional pages using the page token, and to get the API request
+ * and response objects.
  */
 @NullMarked
 public interface Page<ResourceT> {

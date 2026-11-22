@@ -73,10 +73,10 @@ public interface StreamController {
    * <p>If called multiple times, the number of messages able to delivered will be the sum of the
    * calls.
    *
-   * <p>This method is safe to call from multiple threads without external synchronizaton.
+   * <p>This method is safe to call from multiple threads without external synchronization.
    *
-   * @param count the requested number of messages to be delivered to the listener. Must be
-   *     non-negative.
+   * @param count the requested number of messages to be delivered to the listener. Must be positive
+   *     ({@code > 0}).
    */
   void request(int count);
 }

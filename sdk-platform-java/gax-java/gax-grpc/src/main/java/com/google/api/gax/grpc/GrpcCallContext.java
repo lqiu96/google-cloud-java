@@ -176,8 +176,8 @@ public final class GrpcCallContext implements ApiCallContext {
   }
 
   /**
-   * Returns inputContext cast to {@link GrpcCallContext}, or an empty {@link GrpcCallContext} if
-   * inputContext is null.
+   * Returns {@code inputContext} cast to {@link GrpcCallContext}, or {@code this} if {@code
+   * inputContext} is null.
    *
    * @param inputContext the {@link ApiCallContext} to cast if it is not null
    */

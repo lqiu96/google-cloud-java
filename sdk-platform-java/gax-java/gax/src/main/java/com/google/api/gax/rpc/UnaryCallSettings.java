@@ -42,20 +42,20 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A base settings class to configure a UnaryCallable. An instance of UnaryCallSettings is not
- * sufficient on its own to construct a UnaryCallable; a concrete derived type is necessary.
+ * A settings class to configure a {@link UnaryCallable}. Instances can be constructed directly via
+ * {@link #newUnaryCallSettingsBuilder()} or subclassed (for example, by {@link PagedCallSettings}
+ * and {@link BatchingCallSettings}).
  *
- * <p>This base class includes settings that are applicable to all calls, which currently is just
- * retry settings.
+ * <p>This class includes settings that are applicable to all unary calls, which currently is retry
+ * configuration.
  *
  * <p>Retry configuration is composed of two parts: the retryable codes, and the retry settings. The
  * retryable codes indicate which codes cause a retry to occur, and the retry settings configure the
  * retry logic when the retry needs to happen. To turn off retries, set the retryable codes to the
  * empty set.
  *
- * <p>UnaryCallSettings contains a concrete builder class, {@link UnaryCallSettings.Builder}. This
- * builder class cannot be used to create an instance of UnaryCallSettings, because
- * UnaryCallSettings is an abstract class.
+ * <p>UnaryCallSettings contains a concrete builder class, {@link UnaryCallSettings.Builder}, which
+ * can be created via {@link #newUnaryCallSettingsBuilder()} or {@link #toBuilder()}.
  */
 @NullMarked
 @InternalExtensionOnly
@@ -129,11 +129,9 @@ public class UnaryCallSettings<RequestT, ResponseT> {
   }
 
   /**
-   * A base builder class for {@link UnaryCallSettings}. This class should not be used to create an
-   * instance of the base class UnaryCallSettings. See the class documentation of {@link
-   * UnaryCallSettings} for a description of the different values that can be set, and for a
-   * description of when this builder may be used. Builders for concrete derived classes can be used
-   * to create instances of those classes.
+   * A builder class for {@link UnaryCallSettings}. See the class documentation of {@link
+   * UnaryCallSettings} for a description of the different values that can be set. Derived settings
+   * classes extend this builder to add specialized options.
    */
   public static class Builder<RequestT, ResponseT> {
 
@@ -244,10 +242,7 @@ public class UnaryCallSettings<RequestT, ResponseT> {
       return this.retrySettingsBuilder.build();
     }
 
-    /**
-     * Builds an instance of the containing class. This operation is unsupported on the abstract
-     * base class UnaryCallSettings, but is valid on concrete derived classes.
-     */
+    /** Builds an instance of {@link UnaryCallSettings} (or a derived subclass). */
     public UnaryCallSettings<RequestT, ResponseT> build() {
       return new UnaryCallSettings<>(this);
     }
