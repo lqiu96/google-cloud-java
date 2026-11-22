@@ -89,14 +89,21 @@ public class InsertingDataTypes {
       rowContent.put("measurements", new Float[] {50.05f, 100.5f});
       rowContent.put("datesTime", datesTimeContent);
 
+      // Note: Omitting an insert ID disables best-effort deduplication and automatic client
+      // retries. For new streaming workloads, consider the Storage Write API (gRPC):
+      // https://docs.cloud.google.com/bigquery/docs/write-api-grpc
       InsertAllResponse response =
           bigquery.insertAll(InsertAllRequest.newBuilder(tableId).addRow(rowContent).build());
 
+      // Row-level insert failures return HTTP 200 without throwing BigQueryException, so always
+      // check hasErrors(). See:
+      // https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success
       if (response.hasErrors()) {
         // If any of the insertions failed, this lets you inspect the errors
         for (Map.Entry<Long, List<BigQueryError>> entry : response.getInsertErrors().entrySet()) {
           System.out.println("Response error: \n" + entry.getValue());
         }
+        return;
       }
       System.out.println("Rows successfully inserted into table");
     } catch (BigQueryException e) {

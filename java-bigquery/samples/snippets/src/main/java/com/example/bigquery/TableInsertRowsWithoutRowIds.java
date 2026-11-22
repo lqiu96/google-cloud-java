@@ -29,7 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Sample to insert rows without row ids in a table
+// Sample to insert rows without insert IDs using the Storage Write API (REST).
+// For new streaming workloads that need lower cost, higher throughput, or exactly-once delivery,
+// consider the Storage Write API (gRPC):
+// https://docs.cloud.google.com/bigquery/docs/write-api-grpc
 public class TableInsertRowsWithoutRowIds {
 
   public static void main(String[] args) {
@@ -54,19 +57,24 @@ public class TableInsertRowsWithoutRowIds {
       InsertAllResponse response =
           bigquery.insertAll(
               InsertAllRequest.newBuilder(TableId.of(datasetName, tableName))
-                  // No row ids disable de-duplication, and also disable the retries in the Java
-                  // library.
+                  // Omitting insert IDs disables best-effort deduplication and automatic client
+                  // retries in the Java library. See:
+                  // https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataconsistency
                   .setRows(
                       ImmutableList.of(
                           InsertAllRequest.RowToInsert.of(rowContent1),
                           InsertAllRequest.RowToInsert.of(rowContent2)))
                   .build());
 
+      // Row-level insert failures return HTTP 200 without throwing BigQueryException, so always
+      // check hasErrors(). By default (skipInvalidRows=false), any invalid row aborts the entire
+      // batch. See: https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success
       if (response.hasErrors()) {
         // If any of the insertions failed, this lets you inspect the errors
         for (Map.Entry<Long, List<BigQueryError>> entry : response.getInsertErrors().entrySet()) {
           System.out.println("Response error: \n" + entry.getValue());
         }
+        return;
       }
       System.out.println("Rows successfully inserted into table without row ids");
     } catch (BigQueryException e) {

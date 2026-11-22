@@ -18,10 +18,12 @@ package com.example.bigquery;
 
 // [START bigquery_create_and_query_repeated_record]
 import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.BigQueryError;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.InsertAllRequest;
+import com.google.cloud.bigquery.InsertAllResponse;
 import com.google.cloud.bigquery.LegacySQLTypeName;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.QueryParameterValue;
@@ -149,7 +151,17 @@ public class CreateAndQueryRepeatedRecordField {
               .addRow(builder1.build())
               .addRow(builder2.build())
               .build();
-      bigquery.insertAll(request);
+      // Note: Omitting insert IDs disables best-effort deduplication and automatic client retries.
+      // Row-level insert failures return HTTP 200 without throwing BigQueryException, so always
+      // check hasErrors(). See:
+      // https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success
+      InsertAllResponse response = bigquery.insertAll(request);
+      if (response.hasErrors()) {
+        for (Map.Entry<Long, List<BigQueryError>> entry : response.getInsertErrors().entrySet()) {
+          System.out.println("Response error: \n" + entry.getValue());
+        }
+        return;
+      }
 
       // Query using a named parameter
       QueryParameterValue statusValue = QueryParameterValue.string("single");
