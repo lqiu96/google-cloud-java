@@ -34,17 +34,19 @@ public class ListLogEntries {
     // or provide it as an argument.
     String logName = args.length > 0 ? args[0] : "test-log";
 
-    try (Logging logging = LoggingOptions.getDefaultInstance().getService()) {
-
+    // Instantiates a client (create once and reuse across requests; close on application shutdown)
+    Logging logging = LoggingOptions.getDefaultInstance().getService();
+    try {
       // When composing a filter, using indexed fields, such as timestamp, resource.type, logName
-      // and
-      // others can help accelerate the results
+      // and others can help accelerate the results.
       // Full list of indexed fields here:
-      // https://cloud.google.com/logging/docs/view/advanced-queries#finding-quickly
-      // This sample restrict the results to only last minute to minimize number of API calls
+      // https://docs.cloud.google.com/logging/docs/view/building-queries
+      // This sample restricts the results to only the last minute to minimize the number of API
+      // calls.
       Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
       calendar.add(Calendar.MINUTE, -1);
       DateFormat rfc3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+      rfc3339.setTimeZone(TimeZone.getTimeZone("UTC"));
       String logFilter =
           "logName=projects/"
               + logging.getOptions().getProjectId()
@@ -56,12 +58,11 @@ public class ListLogEntries {
 
       // List all log entries
       Page<LogEntry> entries = logging.listLogEntries(EntryListOption.filter(logFilter));
-      while (entries != null) {
-        for (LogEntry logEntry : entries.iterateAll()) {
-          System.out.println(logEntry);
-        }
-        entries = entries.getNextPage();
+      for (LogEntry logEntry : entries.iterateAll()) {
+        System.out.println(logEntry);
       }
+    } finally {
+      logging.close();
     }
   }
 }

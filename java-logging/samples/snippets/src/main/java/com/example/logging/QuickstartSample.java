@@ -27,11 +27,10 @@ import java.util.Collections;
 
 /**
  * This sample demonstrates writing logs using the Cloud Logging API. The library also offers a
- * java.util.logging Handler `com.google.cloud.logging.LoggingHandler` Logback integration is also
- * available :
- * https://github.com/googleapis/google-cloud-java/tree/master/google-cloud-clients/google-cloud-contrib/google-cloud-logging-logback
- * Using the java.util.logging handler / Logback appender should be preferred to using the API
- * directly.
+ * {@code java.util.logging} handler ({@code com.google.cloud.logging.LoggingHandler}). Logback
+ * integration is also available at
+ * https://github.com/googleapis/google-cloud-java/tree/main/java-logging-logback. Using the {@code
+ * java.util.logging} handler or Logback appender should be preferred to using the API directly.
  */
 public class QuickstartSample {
 
@@ -41,9 +40,9 @@ public class QuickstartSample {
     String logName = args[0]; // "my-log";
     String textPayload = "Hello, world!";
 
-    // Instantiates a client
-    try (Logging logging = LoggingOptions.getDefaultInstance().getService()) {
-
+    // Instantiates a client (create once and reuse across requests; close on application shutdown)
+    Logging logging = LoggingOptions.getDefaultInstance().getService();
+    try {
       LogEntry entry =
           LogEntry.newBuilder(StringPayload.of(textPayload))
               .setSeverity(Severity.ERROR)
@@ -54,8 +53,10 @@ public class QuickstartSample {
       // Writes the log entry asynchronously
       logging.write(Collections.singleton(entry));
 
-      // Optional - flush any pending log entries just before Logging is closed
+      // Flush any pending log entries before shutting down
       logging.flush();
+    } finally {
+      logging.close();
     }
     System.out.printf("Logged: %s%n", textPayload);
   }
