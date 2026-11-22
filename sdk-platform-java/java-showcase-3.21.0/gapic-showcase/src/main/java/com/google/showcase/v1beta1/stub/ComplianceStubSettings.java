@@ -74,22 +74,21 @@ import javax.annotation.Generated;
  * <ul>
  *   <li>The default service address (localhost) and default port (7469) are used.
  *   <li>Credentials are acquired automatically through Application Default Credentials.
- *   <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ *   <li>Default retry and timeout settings are configured per RPC from the service's retry
+ *       configuration.
  * </ul>
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders. When
  * build() is called, the tree of builders is called to create the complete settings object.
  *
- * <p>For example, to set the
- * [RetrySettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.retrying.RetrySettings)
- * of repeatDataBody:
+ * <p>For example, to set the {@link com.google.api.gax.retrying.RetrySettings} of repeatDataBody:
  *
  * <pre>{@code
  * // This snippet has been automatically generated and should be regarded as a code template only.
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * ComplianceStubSettings.Builder complianceSettingsBuilder = ComplianceStubSettings.newBuilder();
  * complianceSettingsBuilder
  *     .repeatDataBodySettings()
@@ -110,9 +109,8 @@ import javax.annotation.Generated;
  * ComplianceStubSettings complianceSettings = complianceSettingsBuilder.build();
  * }</pre>
  *
- * Please refer to the [Client Side Retry
- * Guide](https://github.com/googleapis/google-cloud-java/blob/main/docs/client_retries.md) for
- * additional support in setting retries.
+ * <p>Please refer to the <a href="https://docs.cloud.google.com/java/docs/client-retries">Client
+ * Side Retry Guide</a> for additional support in setting retries.
  */
 @BetaApi
 @Generated("by gapic-generator-java")

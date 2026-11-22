@@ -54,7 +54,7 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
  *   Sequence sequence = Sequence.newBuilder().build();
  *   Sequence response = sequenceServiceClient.createSequence(sequence);
@@ -253,8 +253,9 @@ import javax.annotation.Generated;
  * <p>See the individual methods for example code.
  *
  * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * these names, generated resource name classes (ending in {@code Name}) provide static {@code of},
+ * {@code format}, {@code parse}, and {@code isParsableFrom} methods to construct, validate, and
+ * extract individual identifiers from resource names.
  *
  * <p>This class can be customized by passing in a custom instance of SequenceServiceSettings to
  * create(). For example:
@@ -266,13 +267,16 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * SequenceServiceSettings sequenceServiceSettings =
  *     SequenceServiceSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * SequenceServiceClient sequenceServiceClient =
  *     SequenceServiceClient.create(sequenceServiceSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * sequenceServiceClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -282,11 +286,14 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * SequenceServiceSettings sequenceServiceSettings =
  *     SequenceServiceSettings.newBuilder().setEndpoint(myEndpoint).build();
  * SequenceServiceClient sequenceServiceClient =
  *     SequenceServiceClient.create(sequenceServiceSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * sequenceServiceClient.close();
  * }</pre>
  *
  * <p>To use REST (HTTP1.1/JSON) transport (instead of gRPC) for sending and receiving requests over
@@ -297,11 +304,13 @@ import javax.annotation.Generated;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * SequenceServiceSettings sequenceServiceSettings =
  *     SequenceServiceSettings.newHttpJsonBuilder().build();
  * SequenceServiceClient sequenceServiceClient =
  *     SequenceServiceClient.create(sequenceServiceSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * sequenceServiceClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.
@@ -368,7 +377,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   Sequence sequence = Sequence.newBuilder().build();
    *   Sequence response = sequenceServiceClient.createSequence(sequence);
@@ -395,7 +404,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   CreateSequenceRequest request =
    *       CreateSequenceRequest.newBuilder().setSequence(Sequence.newBuilder().build()).build();
@@ -421,7 +430,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   CreateSequenceRequest request =
    *       CreateSequenceRequest.newBuilder().setSequence(Sequence.newBuilder().build()).build();
@@ -447,7 +456,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   StreamingSequence streamingSequence = StreamingSequence.newBuilder().build();
    *   StreamingSequence response = sequenceServiceClient.createStreamingSequence(streamingSequence);
@@ -474,7 +483,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   CreateStreamingSequenceRequest request =
    *       CreateStreamingSequenceRequest.newBuilder()
@@ -502,7 +511,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   CreateStreamingSequenceRequest request =
    *       CreateStreamingSequenceRequest.newBuilder()
@@ -531,7 +540,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   SequenceReportName name = SequenceReportName.of("[SEQUENCE]");
    *   SequenceReport response = sequenceServiceClient.getSequenceReport(name);
@@ -560,7 +569,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   String name = SequenceReportName.of("[SEQUENCE]").toString();
    *   SequenceReport response = sequenceServiceClient.getSequenceReport(name);
@@ -586,7 +595,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   GetSequenceReportRequest request =
    *       GetSequenceReportRequest.newBuilder()
@@ -614,7 +623,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   GetSequenceReportRequest request =
    *       GetSequenceReportRequest.newBuilder()
@@ -642,7 +651,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   StreamingSequenceReportName name = StreamingSequenceReportName.of("[STREAMING_SEQUENCE]");
    *   StreamingSequenceReport response = sequenceServiceClient.getStreamingSequenceReport(name);
@@ -672,7 +681,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   String name = StreamingSequenceReportName.of("[STREAMING_SEQUENCE]").toString();
    *   StreamingSequenceReport response = sequenceServiceClient.getStreamingSequenceReport(name);
@@ -699,7 +708,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   GetStreamingSequenceReportRequest request =
    *       GetStreamingSequenceReportRequest.newBuilder()
@@ -728,7 +737,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   GetStreamingSequenceReportRequest request =
    *       GetStreamingSequenceReportRequest.newBuilder()
@@ -757,7 +766,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   SequenceName name = SequenceName.of("[SEQUENCE]");
    *   sequenceServiceClient.attemptSequence(name);
@@ -784,7 +793,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   String name = SequenceName.of("[SEQUENCE]").toString();
    *   sequenceServiceClient.attemptSequence(name);
@@ -810,7 +819,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   AttemptSequenceRequest request =
    *       AttemptSequenceRequest.newBuilder()
@@ -838,7 +847,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   AttemptSequenceRequest request =
    *       AttemptSequenceRequest.newBuilder()
@@ -866,7 +875,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   AttemptStreamingSequenceRequest request =
    *       AttemptStreamingSequenceRequest.newBuilder()
@@ -898,7 +907,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -931,7 +940,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -965,7 +974,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   ListLocationsRequest request =
    *       ListLocationsRequest.newBuilder()
@@ -1005,7 +1014,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   GetLocationRequest request = GetLocationRequest.newBuilder().setName("name3373707").build();
    *   Location response = sequenceServiceClient.getLocation(request);
@@ -1030,7 +1039,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   GetLocationRequest request = GetLocationRequest.newBuilder().setName("name3373707").build();
    *   ApiFuture<Location> future = sequenceServiceClient.getLocationCallable().futureCall(request);
@@ -1056,7 +1065,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   SetIamPolicyRequest request =
    *       SetIamPolicyRequest.newBuilder()
@@ -1088,7 +1097,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   SetIamPolicyRequest request =
    *       SetIamPolicyRequest.newBuilder()
@@ -1118,7 +1127,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   GetIamPolicyRequest request =
    *       GetIamPolicyRequest.newBuilder()
@@ -1148,7 +1157,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   GetIamPolicyRequest request =
    *       GetIamPolicyRequest.newBuilder()
@@ -1181,7 +1190,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   TestIamPermissionsRequest request =
    *       TestIamPermissionsRequest.newBuilder()
@@ -1215,7 +1224,7 @@ public class SequenceServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (SequenceServiceClient sequenceServiceClient = SequenceServiceClient.create()) {
    *   TestIamPermissionsRequest request =
    *       TestIamPermissionsRequest.newBuilder()
