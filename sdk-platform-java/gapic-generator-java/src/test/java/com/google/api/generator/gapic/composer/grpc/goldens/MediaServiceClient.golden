@@ -25,7 +25,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * try (MediaServiceClient mediaServiceClient = MediaServiceClient.create()) {
  *   GetMediaMetadataRequest request =
  *       GetMediaMetadataRequest.newBuilder().setName("name3373707").build();
@@ -89,7 +89,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * MediaServiceSettings mediaServiceSettings =
  *     MediaServiceSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
@@ -104,7 +104,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * MediaServiceSettings mediaServiceSettings =
  *     MediaServiceSettings.newBuilder().setEndpoint(myEndpoint).build();
  * MediaServiceClient mediaServiceClient = MediaServiceClient.create(mediaServiceSettings);
@@ -195,7 +195,7 @@ public class MediaServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MediaServiceClient mediaServiceClient = MediaServiceClient.create()) {
    *   GetMediaMetadataRequest request =
    *       GetMediaMetadataRequest.newBuilder().setName("name3373707").build();
@@ -219,7 +219,7 @@ public class MediaServiceClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MediaServiceClient mediaServiceClient = MediaServiceClient.create()) {
    *   GetMediaMetadataRequest request =
    *       GetMediaMetadataRequest.newBuilder().setName("name3373707").build();

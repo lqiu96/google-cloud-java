@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * try (WickedClient wickedClient = WickedClient.create()) {
  *   EvilRequest request =
  *       EvilRequest.newBuilder().setMaliciousIdea("maliciousIdea712541645").build();
@@ -93,7 +93,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * WickedSettings wickedSettings =
  *     WickedSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
@@ -108,7 +108,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * WickedSettings wickedSettings = WickedSettings.newBuilder().setEndpoint(myEndpoint).build();
  * WickedClient wickedClient = WickedClient.create(wickedSettings);
  * }</pre>
@@ -174,7 +174,7 @@ public class WickedClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (WickedClient wickedClient = WickedClient.create()) {
    *   EvilRequest request =
    *       EvilRequest.newBuilder().setMaliciousIdea("maliciousIdea712541645").build();
@@ -198,7 +198,7 @@ public class WickedClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (WickedClient wickedClient = WickedClient.create()) {
    *   EvilRequest request =
    *       EvilRequest.newBuilder().setMaliciousIdea("maliciousIdea712541645").build();
@@ -221,7 +221,7 @@ public class WickedClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (WickedClient wickedClient = WickedClient.create()) {
    *   BidiStream<EvilRequest, EvilResponse> bidiStream =
    *       wickedClient.brainstormEvilPlansCallable().call();
@@ -247,7 +247,7 @@ public class WickedClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (WickedClient wickedClient = WickedClient.create()) {
    *   ApiStreamObserver<EvilRequest> responseObserver =
    *       new ApiStreamObserver<EvilRequest>() {

@@ -38,7 +38,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * try (MessagingClient messagingClient = MessagingClient.create()) {
  *   String displayName = "displayName1714148973";
  *   String description = "description-1724546052";
@@ -304,7 +304,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * MessagingSettings messagingSettings =
  *     MessagingSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
@@ -319,7 +319,7 @@ import org.jspecify.annotations.Nullable;
  * // It will require modifications to work:
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * MessagingSettings messagingSettings =
  *     MessagingSettings.newBuilder().setEndpoint(myEndpoint).build();
  * MessagingClient messagingClient = MessagingClient.create(messagingSettings);
@@ -397,7 +397,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   String displayName = "displayName1714148973";
    *   String description = "description-1724546052";
@@ -427,7 +427,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   CreateRoomRequest request =
    *       CreateRoomRequest.newBuilder().setRoom(Room.newBuilder().build()).build();
@@ -451,7 +451,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   CreateRoomRequest request =
    *       CreateRoomRequest.newBuilder().setRoom(Room.newBuilder().build()).build();
@@ -474,7 +474,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   RoomName name = RoomName.of("[ROOM]");
    *   Room response = messagingClient.getRoom(name);
@@ -499,7 +499,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   String name = RoomName.of("[ROOM]").toString();
    *   Room response = messagingClient.getRoom(name);
@@ -523,7 +523,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   GetRoomRequest request =
    *       GetRoomRequest.newBuilder().setName(RoomName.of("[ROOM]").toString()).build();
@@ -547,7 +547,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   GetRoomRequest request =
    *       GetRoomRequest.newBuilder().setName(RoomName.of("[ROOM]").toString()).build();
@@ -570,7 +570,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   UpdateRoomRequest request =
    *       UpdateRoomRequest.newBuilder().setRoom(Room.newBuilder().build()).build();
@@ -594,7 +594,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   UpdateRoomRequest request =
    *       UpdateRoomRequest.newBuilder().setRoom(Room.newBuilder().build()).build();
@@ -617,7 +617,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   RoomName name = RoomName.of("[ROOM]");
    *   messagingClient.deleteRoom(name);
@@ -642,7 +642,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   String name = RoomName.of("[ROOM]").toString();
    *   messagingClient.deleteRoom(name);
@@ -666,7 +666,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   DeleteRoomRequest request =
    *       DeleteRoomRequest.newBuilder().setName(RoomName.of("[ROOM]").toString()).build();
@@ -690,7 +690,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   DeleteRoomRequest request =
    *       DeleteRoomRequest.newBuilder().setName(RoomName.of("[ROOM]").toString()).build();
@@ -713,7 +713,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ListRoomsRequest request =
    *       ListRoomsRequest.newBuilder()
@@ -742,7 +742,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ListRoomsRequest request =
    *       ListRoomsRequest.newBuilder()
@@ -770,7 +770,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ListRoomsRequest request =
    *       ListRoomsRequest.newBuilder()
@@ -805,7 +805,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ProfileName parent = ProfileName.of("[USER]");
    *   ByteString image = ByteString.EMPTY;
@@ -835,7 +835,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ProfileName parent = ProfileName.of("[USER]");
    *   String text = "text3556653";
@@ -865,7 +865,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   RoomName parent = RoomName.of("[ROOM]");
    *   ByteString image = ByteString.EMPTY;
@@ -895,7 +895,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   RoomName parent = RoomName.of("[ROOM]");
    *   String text = "text3556653";
@@ -925,7 +925,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   String parent = ProfileName.of("[USER]").toString();
    *   ByteString image = ByteString.EMPTY;
@@ -955,7 +955,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   String parent = ProfileName.of("[USER]").toString();
    *   String text = "text3556653";
@@ -985,7 +985,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   CreateBlurbRequest request =
    *       CreateBlurbRequest.newBuilder()
@@ -1012,7 +1012,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   CreateBlurbRequest request =
    *       CreateBlurbRequest.newBuilder()
@@ -1038,7 +1038,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   BlurbName name = BlurbName.ofRoomBlurbName("[ROOM]", "[BLURB]");
    *   Blurb response = messagingClient.getBlurb(name);
@@ -1063,7 +1063,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   String name =
    *       BlurbName.ofUserLegacyUserBlurbName("[USER]", "[LEGACY_USER]", "[BLURB]").toString();
@@ -1088,7 +1088,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   GetBlurbRequest request =
    *       GetBlurbRequest.newBuilder()
@@ -1114,7 +1114,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   GetBlurbRequest request =
    *       GetBlurbRequest.newBuilder()
@@ -1139,7 +1139,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   UpdateBlurbRequest request =
    *       UpdateBlurbRequest.newBuilder().setBlurb(Blurb.newBuilder().build()).build();
@@ -1163,7 +1163,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   UpdateBlurbRequest request =
    *       UpdateBlurbRequest.newBuilder().setBlurb(Blurb.newBuilder().build()).build();
@@ -1186,7 +1186,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   BlurbName name = BlurbName.ofRoomBlurbName("[ROOM]", "[BLURB]");
    *   messagingClient.deleteBlurb(name);
@@ -1211,7 +1211,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   String name =
    *       BlurbName.ofUserLegacyUserBlurbName("[USER]", "[LEGACY_USER]", "[BLURB]").toString();
@@ -1236,7 +1236,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   DeleteBlurbRequest request =
    *       DeleteBlurbRequest.newBuilder()
@@ -1262,7 +1262,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   DeleteBlurbRequest request =
    *       DeleteBlurbRequest.newBuilder()
@@ -1287,7 +1287,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ProfileName parent = ProfileName.of("[USER]");
    *   for (Blurb element : messagingClient.listBlurbs(parent).iterateAll()) {
@@ -1314,7 +1314,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   RoomName parent = RoomName.of("[ROOM]");
    *   for (Blurb element : messagingClient.listBlurbs(parent).iterateAll()) {
@@ -1341,7 +1341,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   String parent = ProfileName.of("[USER]").toString();
    *   for (Blurb element : messagingClient.listBlurbs(parent).iterateAll()) {
@@ -1367,7 +1367,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ListBlurbsRequest request =
    *       ListBlurbsRequest.newBuilder()
@@ -1397,7 +1397,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ListBlurbsRequest request =
    *       ListBlurbsRequest.newBuilder()
@@ -1426,7 +1426,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ListBlurbsRequest request =
    *       ListBlurbsRequest.newBuilder()
@@ -1462,7 +1462,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   String query = "query107944136";
    *   SearchBlurbsResponse response = messagingClient.searchBlurbsAsync(query).get();
@@ -1487,7 +1487,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   SearchBlurbsRequest request =
    *       SearchBlurbsRequest.newBuilder()
@@ -1517,7 +1517,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   SearchBlurbsRequest request =
    *       SearchBlurbsRequest.newBuilder()
@@ -1547,7 +1547,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   SearchBlurbsRequest request =
    *       SearchBlurbsRequest.newBuilder()
@@ -1575,7 +1575,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   StreamBlurbsRequest request =
    *       StreamBlurbsRequest.newBuilder().setName(ProfileName.of("[USER]").toString()).build();
@@ -1601,7 +1601,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   ApiStreamObserver<CreateBlurbRequest> responseObserver =
    *       new ApiStreamObserver<CreateBlurbRequest>() {
@@ -1645,7 +1645,7 @@ public class MessagingClient implements BackgroundResource {
    * // It will require modifications to work:
    * // - It may require correct/in-range values for request initialization.
    * // - It may require specifying regional endpoints when creating the service client as shown in
-   * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+   * // https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
    * try (MessagingClient messagingClient = MessagingClient.create()) {
    *   BidiStream<ConnectRequest, StreamBlurbsResponse> bidiStream =
    *       messagingClient.connectCallable().call();

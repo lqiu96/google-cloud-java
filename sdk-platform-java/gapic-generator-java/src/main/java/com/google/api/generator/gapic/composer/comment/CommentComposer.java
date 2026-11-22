@@ -80,7 +80,7 @@ public class CommentComposer {
                   "- It may require specifying regional endpoints when creating the service client as shown in")),
           CommentStatement.withComment(
               LineComment.withComment(
-                  "https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library")));
+                  "https://docs.cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library")));
 
   // This environment variable is mainly used to override the current year to a fixed year in tests
   // so we don't have to update golden tests every year.
