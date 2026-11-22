@@ -32,8 +32,7 @@
  * String metricName = RemoteLoggingHelper.formatForTest("test-metric");
  * }</pre>
  *
- * @see <a
- *     href="https://github.com/googleapis/google-cloud-java/blob/master/TESTING.md#testing-code-that-uses-logging">
- *     Google Cloud Java tools for testing</a>
+ * @see RemoteLoggingHelper
+ * @see <a href="https://docs.cloud.google.com/logging/docs">Cloud Logging Documentation</a>
  */
 package com.google.cloud.logging.testing;
