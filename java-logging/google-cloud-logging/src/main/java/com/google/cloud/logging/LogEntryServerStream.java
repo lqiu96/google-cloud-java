@@ -24,10 +24,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * The class implements {@link Iterable} interface over {@see LogEntry}. It wraps around {@link
+ * The class implements {@link Iterable} interface over {@link LogEntry}. It wraps around {@link
  * BidiStream} bi-directional gRPC stream to support iterating through ingested responses. The class
- * uses {@see LogEntryIterator} to iterate through the processed responses. The stream should be
- * explicitly canceled by calling {@see LogEntryServerStream#cancel()} method. The class does not
+ * uses {@link LogEntryIterator} to iterate through the processed responses. The stream should be
+ * explicitly canceled by calling {@link LogEntryServerStream#cancel()} method. The class does not
  * provide recovery or resuming functionality over the stream.
  *
  * <p>To iterate run:

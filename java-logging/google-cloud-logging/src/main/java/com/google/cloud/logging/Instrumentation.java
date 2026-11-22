@@ -96,11 +96,11 @@ public final class Instrumentation {
   }
 
   /**
-   * Adds a partialSuccess flag option to array of WriteOption
+   * Adds a {@code partialSuccess} flag option to the array of {@link WriteOption}.
    *
-   * @param options {WriteOption[]} The options array to be extended
-   * @return The new array of oprions containing WriteOption.OptionType.PARTIAL_SUCCESS flag set to
-   *     true
+   * @param options the options array to be extended
+   * @return a new array of options containing {@code WriteOption.OptionType.PARTIAL_SUCCESS} set to
+   *     {@code true}
    */
   public static WriteOption[] addPartialSuccessOption(WriteOption[] options) {
     if (options == null) {
@@ -116,13 +116,13 @@ public final class Instrumentation {
   }
 
   /**
-   * The helper method to generate a log entry with diagnostic instrumentation data.
+   * Generates a {@link LogEntry} with diagnostic instrumentation data.
    *
-   * @param libraryName {string} The name of the logging library to be reported. Should be prefixed
-   *     with 'java'. Will be truncated if longer than 14 characters.
-   * @param libraryVersion {string} The version of the logging library to be reported. Will be
-   *     truncated if longer than 14 characters.
-   * @return {LogEntry} The entry with diagnostic instrumentation data.
+   * @param libraryName the name of the logging library to be reported. Should be prefixed with
+   *     {@code "java"}. Will be truncated if longer than 14 characters.
+   * @param libraryVersion the version of the logging library to be reported. Will be truncated if
+   *     longer than 14 characters.
+   * @return the {@link LogEntry} with diagnostic instrumentation data
    */
   public static LogEntry createDiagnosticEntry(String libraryName, String libraryVersion) {
     return createDiagnosticEntry(libraryName, libraryVersion, null);
@@ -237,10 +237,11 @@ public final class Instrumentation {
   }
 
   /**
-   * Trancates given string to MAX_DIAGNOSTIC_VALUE_LENGTH and adds "*" instead of reduced suffix
+   * Truncates the given string to {@link #MAX_DIAGNOSTIC_VALUE_LENGTH} and appends {@code "*"} in
+   * place of the truncated suffix.
    *
-   * @param value {String} Value to be truncated
-   * @return The truncated string
+   * @param value value to be truncated
+   * @return the truncated string
    */
   public static String truncateValue(String value) {
     if (Strings.isNullOrEmpty(value) || value.length() < MAX_DIAGNOSTIC_VALUE_LENGTH) {

@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Class to hold context attributes including information about {@see HttpRequest} and tracing. */
+/** Class to hold context attributes including information about {@link HttpRequest} and tracing. */
 public class Context {
   // validate W3C trace context value on load according to the existing version format.
   // see https://www.w3.org/TR/trace-context/#traceparent-header-field-values for details.
@@ -44,7 +44,7 @@ public class Context {
   private final String spanId;
   private final boolean traceSampled;
 
-  /** A builder for {@see Context} objects. */
+  /** A builder for {@link Context} objects. */
   public static final class Builder {
     private HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
     private String traceId;
@@ -171,13 +171,12 @@ public class Context {
      * Sets the trace id, span id and trace sampled flag values by parsing the string which
      * represents the standard W3C trace context propagation header. The context propagation header
      * is passed as {@code traceparent} header. The method currently supports ONLY version {@code
-     * "00"}. The string format is <code>00-TRACE_ID-SPAN_ID-FLAGS</code>. field of the {@code
-     * version-format} value.
+     * "00"}. The string format is {@code 00-TRACE_ID-SPAN_ID-FLAGS}.
      *
      * @see <a href=
      *     "https://www.w3.org/TR/trace-context/#traceparent-header-field-values">traceparent header
      *     value format</a>
-     * @throws IllegalArgumentException if passed argument does not follow the @W3C trace format or
+     * @throws IllegalArgumentException if passed argument does not follow the W3C trace format or
      *     the format version is not supported.
      */
     @CanIgnoreReturnValue
@@ -217,7 +216,7 @@ public class Context {
       return this;
     }
 
-    /** Creates a {@see Context} object for this builder. */
+    /** Creates a {@link Context} object for this builder. */
     public Context build() {
       return new Context(this);
     }
@@ -286,7 +285,7 @@ public class Context {
     return new Builder(this);
   }
 
-  /** Returns a builder for {@code HttpRequest} objects. */
+  /** Returns a builder for {@code Context} objects. */
   public static Builder newBuilder() {
     return new Builder();
   }

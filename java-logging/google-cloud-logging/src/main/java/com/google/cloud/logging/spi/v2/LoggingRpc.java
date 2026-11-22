@@ -111,7 +111,7 @@ public interface LoggingRpc extends AutoCloseable, ServiceRpc {
   }
 
   /**
-   * Sends a request to deletes a log. This method returns a {@code ApiFuture} object to consume the
+   * Sends a request to delete a log. This method returns an {@code ApiFuture} object to consume the
    * result. {@link ApiFuture#get()} returns {@link Empty#getDefaultInstance()} or {@code null} if
    * the log was not found. The deleted log will reappear if it receives new log entries.
    *
@@ -137,7 +137,7 @@ public interface LoggingRpc extends AutoCloseable, ServiceRpc {
    */
   ApiFuture<ListLogEntriesResponse> list(ListLogEntriesRequest request);
 
-  /** This method returns a {code BidiStream} object to consume the stream of log entries. */
+  /** This method returns a {@code BidiStream} object to consume the stream of log entries. */
   default BidiStream<TailLogEntriesRequest, TailLogEntriesResponse> getTailLogEntriesStream() {
     throw new UnsupportedOperationException(
         "method tailLogEntries() does not have default implementation");
@@ -189,9 +189,9 @@ public interface LoggingRpc extends AutoCloseable, ServiceRpc {
   ApiFuture<ListLogMetricsResponse> list(ListLogMetricsRequest request);
 
   /**
-   * Sends a request to delete a log metric. This method returns a {@code ApiFuture} object to
+   * Sends a request to delete a log metric. This method returns an {@code ApiFuture} object to
    * consume the result. {@link ApiFuture#get()} returns {@link Empty#getDefaultInstance()} or
-   * {@code null} if the log was not found.
+   * {@code null} if the metric was not found.
    *
    * @param request the request object containing all of the parameters for the API call
    */
