@@ -90,13 +90,11 @@ public class GdchCredentials extends GoogleCredentials {
 
   /**
    * The expected format version for GDCH credential profiles. Version "1" indicates the initial and
-   * currently supported JSON format for these credentials. See go/gdch-python-auth-lib for more
-   * info.
+   * currently supported JSON format for these credentials.
    */
   @VisibleForTesting static final String SUPPORTED_JSON_FORMAT_VERSION = "1";
 
   // Custom URN used by GDCH to identify service account tokens in token exchange requests.
-  // See go/gdch-python-auth-lib for more information.
   private static final String SERVICE_ACCOUNT_TOKEN_TYPE =
       "urn:k8s:params:oauth:token-type:serviceaccount";
 
@@ -737,14 +735,14 @@ public class GdchCredentials extends GoogleCredentials {
    * Signs the JWS header and payload using the ES256 algorithm (ECDSA with SHA-256).
    *
    * <p>The ES256 algorithm is defined in <a
-   * href="https://tools.ietf.org/html/rfc7518#section-3.4">RFC 7518 Section 3.4</a>. This method
-   * follows the JWS Compact Serialization format described in <a
-   * href="https://tools.ietf.org/html/rfc7515#section-3.1">RFC 7515 Section 3.1</a>.
+   * href="https://datatracker.ietf.org/doc/html/rfc7518#section-3.4">RFC 7518 Section 3.4</a>. This
+   * method follows the JWS Compact Serialization format described in <a
+   * href="https://datatracker.ietf.org/doc/html/rfc7515#section-3.1">RFC 7515 Section 3.1</a>.
    *
    * <p>Unlike RSA signatures, ECDSA signatures produced by the Java Cryptography Architecture (JCA)
    * are DER-encoded. This method transcodes the DER-encoded signature into the concatenated R|S
    * format required by the JWS standard, as specified in <a
-   * href="https://tools.ietf.org/html/rfc7515#appendix-A.3">RFC 7515 Appendix A.3</a>.
+   * href="https://datatracker.ietf.org/doc/html/rfc7515#appendix-A.3">RFC 7515 Appendix A.3</a>.
    *
    * @param privateKey The Elliptic Curve private key used for signing.
    * @param jsonFactory The JSON factory to serialize header and payload.

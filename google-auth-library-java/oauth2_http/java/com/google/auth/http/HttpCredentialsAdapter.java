@@ -113,11 +113,11 @@ public class HttpCredentialsAdapter
    * {@inheritDoc}
    *
    * <p>Checks if {@code WWW-Authenticate} exists and contains a "Bearer" value (see <a
-   * href="http://tools.ietf.org/html/rfc6750#section-3.1">rfc6750 section 3.1</a> for more
-   * details). If so, it refreshes the token in case the error code contains {@code invalid_token}.
-   * If there is no "Bearer" in {@code WWW-Authenticate} and the status code is {@link
-   * HttpStatusCodes#STATUS_CODE_UNAUTHORIZED} it refreshes the token. If the token refresh throws
-   * an I/O exception, this implementation will log the exception and return {@code false}.
+   * href="https://datatracker.ietf.org/doc/html/rfc6750#section-3.1">RFC 6750 Section 3.1</a> for
+   * more details). If so, it refreshes the token in case the error code contains {@code
+   * invalid_token}. If there is no "Bearer" in {@code WWW-Authenticate} and the status code is
+   * {@link HttpStatusCodes#STATUS_CODE_UNAUTHORIZED} it refreshes the token. If the token refresh
+   * throws an I/O exception, this implementation will log the exception and return {@code false}.
    */
   @Override
   public boolean handleResponse(HttpRequest request, HttpResponse response, boolean supportsRetry) {

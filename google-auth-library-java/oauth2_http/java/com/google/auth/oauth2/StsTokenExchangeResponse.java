@@ -42,8 +42,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a successful OAuth 2.0 token exchange response from the Google Security Token Service
- * (STS), as defined in <a href="https://tools.ietf.org/html/rfc8693#section-2.2.1">RFC 8693,
- * Section 2.2.1</a>.
+ * (STS), as defined in <a href="https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.1">RFC
+ * 8693, Section 2.2.1</a>.
  *
  * <p>This class provides access to the exchanged access token, issued token type, token type,
  * expiration time, refresh token (optional), scopes (optional), and the access boundary session key
