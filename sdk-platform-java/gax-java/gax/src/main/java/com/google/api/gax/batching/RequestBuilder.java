@@ -31,9 +31,16 @@ package com.google.api.gax.batching;
 
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Accumulates multiple individual requests into a single batched request.
+ *
+ * @param <RequestT> the request message type
+ */
 @NullMarked
 public interface RequestBuilder<RequestT> {
+  /** Appends an individual request to the accumulated batch request. */
   void appendRequest(RequestT request);
 
+  /** Builds the combined batch request containing all appended requests. */
   RequestT build();
 }

@@ -45,6 +45,10 @@ import com.google.longrunning.Operation;
 import com.google.longrunning.stub.OperationsStub;
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Factory interface for creating gRPC-backed callables (unary, paged, batching, long-running
+ * operation, and streaming) used by generated service stubs.
+ */
 @NullMarked
 public interface GrpcStubCallableFactory {
 

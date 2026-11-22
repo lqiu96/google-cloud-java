@@ -40,6 +40,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * A {@link ServerStreamingCallable} wrapper for HTTP/JSON that extracts dynamic routing header
+ * parameters from each request and attaches them to the {@link ApiCallContext} before delegating to
+ * the underlying callable.
+ *
+ * @param <RequestT> the request message type
+ * @param <ResponseT> the response message type
+ */
 @NullMarked
 public class HttpJsonServerStreamingRequestParamCallable<RequestT, ResponseT>
     extends ServerStreamingCallable<RequestT, ResponseT> {

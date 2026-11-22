@@ -34,16 +34,22 @@ import com.google.api.core.InternalExtensionOnly;
 import java.util.concurrent.Callable;
 import org.jspecify.annotations.NullMarked;
 
-/**
- * A {@link RetryingExecutor} that accepts a per-operation context.
- *
- * @see RetryingExecutor
- */
 // TODO(igorbernstein2): Consider replacing this with a default implementation in RetryingExecutor
 // once support for java 7 is dropped
+
+/**
+ * A {@link RetryingExecutor} that accepts a per-operation {@link RetryingContext}.
+ *
+ * @param <ResponseT> the type of the operation response
+ * @see RetryingExecutor
+ */
 @NullMarked
 @BetaApi("The surface for per invocation state is unstable and will probably change in the future")
 @InternalExtensionOnly
 public interface RetryingExecutorWithContext<ResponseT> extends RetryingExecutor<ResponseT> {
+  /**
+   * Creates a {@link RetryingFuture} for the given {@code callable} using the provided {@link
+   * RetryingContext}.
+   */
   RetryingFuture<ResponseT> createFuture(Callable<ResponseT> callable, RetryingContext context);
 }

@@ -33,8 +33,14 @@ import com.google.auto.value.AutoValue;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * Describes an API method transmitted over HTTP/JSON, including its full method name, HTTP verb,
+ * method type, request formatter, response parser, and optional long-running operation factories.
+ *
+ * @param <RequestT> the request message type
+ * @param <ResponseT> the response message type
+ */
 @AutoValue
-/* Method descriptor for messages to be transmitted over HTTP. */
 @NullMarked
 public abstract class ApiMethodDescriptor<RequestT, ResponseT> {
   public enum MethodType {

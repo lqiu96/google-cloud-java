@@ -34,6 +34,10 @@ import com.google.common.collect.ImmutableList;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * An immutable composite key used to group batched requests into separate partitions based on one
+ * or more key components.
+ */
 @NullMarked
 public final class PartitionKey {
   private final ImmutableList<Object> keys;

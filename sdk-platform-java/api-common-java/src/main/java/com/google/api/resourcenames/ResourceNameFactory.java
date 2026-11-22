@@ -29,8 +29,14 @@
  */
 package com.google.api.resourcenames;
 
+/**
+ * Factory interface that parses formatted resource name strings into typed {@link ResourceName}
+ * instances.
+ *
+ * @param <T> the {@link ResourceName} type created by this factory
+ */
 public interface ResourceNameFactory<T extends ResourceName> {
 
-  /* Create a new ResourceName from a formatted String representing a ResourceName. */
+  /** Creates a new {@link ResourceName} from a formatted string representing a resource name. */
   T parse(String formattedString);
 }
