@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * Destination.DatasetDestination}) or a Google Cloud Pub/Sub topic (see {@link
  * Destination.TopicDestination}).
  *
- * @see <a href="https://cloud.google.com/logging/docs/api/tasks/exporting-logs#about_sinks">About
+ * @see <a href="https://docs.cloud.google.com/logging/docs/export/configure_export_v2">About
  *     Sinks</a>
  */
 public class SinkInfo implements Serializable {
@@ -509,7 +509,7 @@ public class SinkInfo implements Serializable {
      * BigQuery dataset. Use a {@link Destination.TopicDestination} object to create a sink that
      * exports logs to a Google Cloud Pub/Sub topic.
      *
-     * @see <a href="https://cloud.google.com/logging/docs/api/tasks/exporting-logs#about_sinks">
+     * @see <a href="https://docs.cloud.google.com/logging/docs/export/configure_export_v2">
      *     Exporting Logs</a>
      */
     public abstract Builder setDestination(Destination destination);
@@ -521,7 +521,7 @@ public class SinkInfo implements Serializable {
      * originally written to Cloud Logging. Example (V2 format): {@code
      * logName=projects/my-projectid/logs/syslog AND severity>=ERROR}.
      *
-     * @see <a href="https://cloud.google.com/logging/docs/view/advanced_filters">Advanced Log
+     * @see <a href="https://docs.cloud.google.com/logging/docs/view/building-queries">Advanced Log
      *     Filters</a>
      */
     public abstract Builder setFilter(String filter);
@@ -613,8 +613,8 @@ public class SinkInfo implements Serializable {
    * Returns {@link Destination.TopicDestination} for sinks that export logs to Google Cloud Pub/Sub
    * topics.
    *
-   * @see <a href="https://cloud.google.com/logging/docs/api/tasks/exporting-logs#about_sinks">
-   *     Exporting Logs</a>
+   * @see <a href="https://docs.cloud.google.com/logging/docs/export/configure_export_v2">Exporting
+   *     Logs</a>
    */
   @SuppressWarnings("unchecked")
   public <T extends Destination> T getDestination() {
@@ -627,7 +627,7 @@ public class SinkInfo implements Serializable {
    * regardless of the format of the log entry that wa originally written to Cloud Logging. Example
    * (V2 format): {@code logName=projects/my-projectid/logs/syslog AND severity>=ERROR}.
    *
-   * @see <a href="https://cloud.google.com/logging/docs/view/advanced_filters">Advanced Log
+   * @see <a href="https://docs.cloud.google.com/logging/docs/view/building-queries">Advanced Log
    *     Filters</a>
    */
   public String getFilter() {

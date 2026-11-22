@@ -34,8 +34,8 @@ import java.util.Objects;
  * log entry.
  *
  * @see <a href=
- *     "https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/LogEntry#httprequest">
- *     Http Request</a>
+ *     "https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#HttpRequest"> Http
+ *     Request</a>
  */
 public final class HttpRequest implements Serializable {
 
@@ -215,8 +215,8 @@ public final class HttpRequest implements Serializable {
     /**
      * Sets the referer URL of the request, as defined in HTTP/1.1 Header Field Definitions.
      *
-     * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1 Header Field
-     *     Definitions</a>
+     * @see <a href="https://www.rfc-editor.org/rfc/rfc9110.html#field.referer">HTTP/1.1 Header
+     *     Field Definitions</a>
      */
     @CanIgnoreReturnValue
     public Builder setReferer(String referer) {
@@ -363,7 +363,7 @@ public final class HttpRequest implements Serializable {
   /**
    * Returns the referer URL of the request, as defined in HTTP/1.1 Header Field Definitions.
    *
-   * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP/1.1 Header Field
+   * @see <a href="https://www.rfc-editor.org/rfc/rfc9110.html#field.referer">HTTP/1.1 Header Field
    *     Definitions</a>
    */
   public String getReferer() {
@@ -413,7 +413,7 @@ public final class HttpRequest implements Serializable {
    * Returns the processing latency on the server, from the time the request was received until the
    * response was sent.
    *
-   * @return the latency, for null if not populated.
+   * @return the latency, or {@code null} if not populated.
    */
   public Duration getLatencyDuration() {
     return latency;

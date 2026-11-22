@@ -40,7 +40,7 @@ import java.util.Objects;
  * this class are immutable. To get a {@code Sink} object with the most recent information use
  * {@link #reload} or {@link #reloadAsync}.
  *
- * @see <a href="https://cloud.google.com/logging/docs/api/tasks/exporting-logs#about_sinks">About
+ * @see <a href="https://docs.cloud.google.com/logging/docs/export/configure_export_v2">About
  *     Sinks</a>
  */
 public class Sink extends SinkInfo {
