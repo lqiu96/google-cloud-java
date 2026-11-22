@@ -186,6 +186,13 @@ public class Table extends TableInfo {
       return this;
     }
 
+    /**
+     * Sets the labels applied to this table.
+     *
+     * <p>When used with {@link Table#update(TableOption...)}, map individual keys to {@code null}
+     * to remove those keys, or pass {@code null} to remove all labels; passing an empty map leaves
+     * existing labels unchanged.
+     */
     @Override
     public Builder setLabels(Map<String, String> labels) {
       infoBuilder.setLabels(labels);
@@ -281,6 +288,12 @@ public class Table extends TableInfo {
   /**
    * Updates the table's information with this table's information. Dataset's and table's
    * user-defined ids cannot be changed. A new {@code Table} object is returned.
+   *
+   * <p>Uses HTTP {@code PATCH} (partial update; omitted fields are preserved on the server). {@link
+   * TableOption#fields(BigQuery.TableField...)} controls only the response projection and does not
+   * act as a write field mask. To clear individual labels, map their keys to {@code null} via
+   * {@link Builder#setLabels(Map)} (or pass {@code null} to remove all labels; an empty map leaves
+   * existing labels unchanged).
    *
    * <p>Example of updating the table's information.
    *
