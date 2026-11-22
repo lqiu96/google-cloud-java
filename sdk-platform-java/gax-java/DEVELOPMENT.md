@@ -5,8 +5,8 @@
 To build GAX:
 
 ```sh
-# Go to the repository root
-cd gapic-generator-java
+# Go to the sdk-platform-java directory
+cd sdk-platform-java
 
 # Install dependency modules to local Maven repository. Note that
 # gapic-generator-java module is not a dependency of gax-java
