@@ -229,6 +229,44 @@ public class InsertAllRequestTest {
     assertThat(row.getContent()).containsExactly("foo", null);
   }
 
+  @Test
+  public void testWithoutCopy() {
+    Map<String, Object> map1 = new HashMap<>();
+    map1.put("key", "val1");
+    Map<String, Object> map2 = new HashMap<>();
+    map2.put("key", "val2");
+
+    InsertAllRequest.RowToInsert rowWithoutId = InsertAllRequest.RowToInsert.ofWithoutCopy(map1);
+    assertThat(rowWithoutId.getId()).isNull();
+    assertThat(rowWithoutId.getContent()).isEqualTo(CONTENT1);
+    assertThrows(
+        UnsupportedOperationException.class, () -> rowWithoutId.getContent().put("k", "v"));
+
+    InsertAllRequest.RowToInsert rowWithId =
+        InsertAllRequest.RowToInsert.ofWithoutCopy("id1", map1);
+    assertThat(rowWithId.getId()).isEqualTo("id1");
+    assertThat(rowWithId.getContent()).isEqualTo(CONTENT1);
+    assertThrows(UnsupportedOperationException.class, () -> rowWithId.getContent().put("k", "v"));
+
+    InsertAllRequest requestWithoutId =
+        InsertAllRequest.newBuilder(TABLE_ID)
+            .addRowWithoutCopy(map1)
+            .addRowWithoutCopy(map2)
+            .setIgnoreUnknownValues(IGNORE_UNKNOWN_VALUES)
+            .setSkipInvalidRows(SKIP_INVALID_ROWS)
+            .build();
+    compareInsertAllRequest(INSERT_ALL_REQUEST1, requestWithoutId);
+
+    InsertAllRequest requestWithId =
+        InsertAllRequest.newBuilder(TABLE_ID)
+            .addRowWithoutCopy("id1", map1)
+            .addRowWithoutCopy("id2", map2)
+            .setIgnoreUnknownValues(IGNORE_UNKNOWN_VALUES)
+            .setSkipInvalidRows(SKIP_INVALID_ROWS)
+            .build();
+    compareInsertAllRequest(INSERT_ALL_REQUEST3, requestWithId);
+  }
+
   private void compareInsertAllRequest(InsertAllRequest expected, InsertAllRequest value) {
     assertThat(expected).isEqualTo(value);
     assertThat(expected.toString()).isEqualTo(value.toString());

@@ -85,12 +85,20 @@ public final class InsertAllRequest implements Serializable {
     private final Map<String, Object> content;
 
     RowToInsert(String id, Map<String, ?> content) {
+      this(id, content, true);
+    }
+
+    private RowToInsert(String id, Map<String, ?> content, boolean defensiveCopy) {
       this.id = id;
 
       if (content instanceof ImmutableMap) {
         this.content = ImmutableMap.copyOf(content);
-      } else {
+      } else if (content.isEmpty()) {
+        this.content = ImmutableMap.of();
+      } else if (defensiveCopy) {
         this.content = Collections.unmodifiableMap(new HashMap<>(content));
+      } else {
+        this.content = Collections.unmodifiableMap(content);
       }
     }
 
@@ -152,6 +160,34 @@ public final class InsertAllRequest implements Serializable {
      */
     public static RowToInsert of(Map<String, ?> content) {
       return new RowToInsert(null, checkNotNull(content));
+    }
+
+    /**
+     * Creates a row to be inserted with associated id without defensively copying {@code content}.
+     *
+     * <p>The caller must not mutate {@code content} after passing it to this method. The returned
+     * row wraps {@code content} in an unmodifiable view when it is not already an {@link
+     * ImmutableMap}.
+     *
+     * @param id id of the row, used to identify duplicates
+     * @param content the actual content of the row
+     */
+    public static RowToInsert ofWithoutCopy(String id, Map<String, ?> content) {
+      return new RowToInsert(checkNotNull(id), checkNotNull(content), false);
+    }
+
+    /**
+     * Creates a row to be inserted without associated id and without defensively copying {@code
+     * content}.
+     *
+     * <p>The caller must not mutate {@code content} after passing it to this method. The returned
+     * row wraps {@code content} in an unmodifiable view when it is not already an {@link
+     * ImmutableMap}.
+     *
+     * @param content the actual content of the row
+     */
+    public static RowToInsert ofWithoutCopy(Map<String, ?> content) {
+      return new RowToInsert(null, checkNotNull(content), false);
     }
   }
 
@@ -240,6 +276,27 @@ public final class InsertAllRequest implements Serializable {
      */
     public Builder addRow(Map<String, ?> content) {
       addRow(new RowToInsert(null, content));
+      return this;
+    }
+
+    /**
+     * Adds a row to be inserted with associated id without defensively copying {@code content}.
+     *
+     * <p>The caller must not mutate {@code content} after passing it to this method.
+     */
+    public Builder addRowWithoutCopy(String id, Map<String, ?> content) {
+      addRow(RowToInsert.ofWithoutCopy(id, content));
+      return this;
+    }
+
+    /**
+     * Adds a row to be inserted without an associated id and without defensively copying {@code
+     * content}.
+     *
+     * <p>The caller must not mutate {@code content} after passing it to this method.
+     */
+    public Builder addRowWithoutCopy(Map<String, ?> content) {
+      addRow(RowToInsert.ofWithoutCopy(content));
       return this;
     }
 
