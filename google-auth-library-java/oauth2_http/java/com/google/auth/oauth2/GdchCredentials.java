@@ -82,6 +82,12 @@ import java.util.Objects;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * OAuth2 credentials for Google Distributed Cloud Hosted (GDCH) service accounts.
+ *
+ * <p>Exchanges a locally signed ES256 JWT assertion with the configured GDCH token server to obtain
+ * short-lived access tokens for a target API audience.
+ */
 @NullMarked
 public class GdchCredentials extends GoogleCredentials {
   private static final LoggerProvider LOGGER_PROVIDER =
@@ -137,8 +143,7 @@ public class GdchCredentials extends GoogleCredentials {
   }
 
   /**
-   * Returns credentials defined by a GdchCredentials key file in JSON format from the Google
-   * Developers Console.
+   * Returns credentials defined by a GDCH service account key file in JSON format.
    *
    * <p>Important: If you accept a credential configuration (credential JSON/File/Stream) from an
    * external source for authentication to Google Cloud Platform, you must validate it before
@@ -156,8 +161,7 @@ public class GdchCredentials extends GoogleCredentials {
   }
 
   /**
-   * Returns credentials defined by a GdchCredentials key file in JSON format from the Google
-   * Developers Console.
+   * Returns credentials defined by a GDCH service account key file in JSON format.
    *
    * <p>Important: If you accept a credential configuration (credential JSON/File/Stream) from an
    * external source for authentication to Google Cloud Platform, you must validate it before

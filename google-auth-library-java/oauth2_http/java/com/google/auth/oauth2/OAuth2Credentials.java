@@ -429,7 +429,7 @@ public class OAuth2Credentials extends Credentials {
      * This is typically used by code caching the access token.
      *
      * @param credentials The updated credentials instance
-     * @throws IOException My be thrown by listeners if saving credentials fails.
+     * @throws IOException May be thrown by listeners if saving credentials fails.
      */
     void onChanged(OAuth2Credentials credentials) throws IOException;
   }

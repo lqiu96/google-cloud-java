@@ -281,7 +281,7 @@ class DefaultCredentialsProvider {
     }
     throw new RuntimeException(
         String.format(
-            "Unexpected error trying to determine if runnning on Google App Engine: %s",
+            "Unexpected error trying to determine if running on Google App Engine: %s",
             cause.getMessage()),
         cause);
   }

@@ -33,6 +33,10 @@ package com.google.auth.oauth2;
 
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Provider of Proof Key for Code Exchange (PKCE) parameters ({@code code_verifier}, {@code
+ * code_challenge}, and {@code code_challenge_method}) for OAuth 2.0 authorization flows.
+ */
 @NullMarked
 public interface PKCEProvider {
   /**

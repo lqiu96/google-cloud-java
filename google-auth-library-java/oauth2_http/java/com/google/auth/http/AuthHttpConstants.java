@@ -39,6 +39,6 @@ public class AuthHttpConstants {
   /** HTTP "Bearer" authentication scheme */
   public static final String BEARER = "Bearer";
 
-  /** HTTP "Authentication" header */
+  /** HTTP "Authorization" header */
   public static final String AUTHORIZATION = "Authorization";
 }

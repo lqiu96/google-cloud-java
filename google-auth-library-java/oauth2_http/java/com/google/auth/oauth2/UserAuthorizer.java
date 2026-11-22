@@ -112,7 +112,7 @@ public class UserAuthorizer {
   }
 
   /**
-   * Returns the Client ID user to identify the OAuth2 consent prompt.
+   * Returns the Client ID used to identify the OAuth2 consent prompt.
    *
    * @return The Client ID.
    */
