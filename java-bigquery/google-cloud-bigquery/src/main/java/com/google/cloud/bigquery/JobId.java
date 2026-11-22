@@ -26,7 +26,19 @@ import java.io.Serializable;
 import java.util.UUID;
 import javax.annotation.Nullable;
 
-/** Google BigQuery Job identity. */
+/**
+ * Google BigQuery Job identity, consisting of a project ID, job name, and geographic processing
+ * location (such as {@code "US"}, {@code "EU"}, or {@code "asia-northeast1"}).
+ *
+ * <p>BigQuery jobs are scoped to a location. When referencing an existing job outside {@code "US"}
+ * or {@code "EU"} (for example, via {@link BigQuery#getJob(JobId, BigQuery.JobOption...)}, {@link
+ * BigQuery#cancel(JobId)}, or {@link BigQuery#delete(JobId)}), the {@code JobId} must specify the
+ * job's {@link #getLocation() location} via {@link Builder#setLocation(String)}; otherwise BigQuery
+ * reports the job as not found.
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+ *     locations</a>
+ */
 @AutoValue
 public abstract class JobId implements Serializable {
 
@@ -54,10 +66,13 @@ public abstract class JobId implements Serializable {
   public abstract String getJob();
 
   /**
-   * Returns the job's location.
+   * Returns the job's geographic processing location (for example, {@code "US"}, {@code "EU"}, or
+   * {@code "asia-northeast1"}), or {@code null} if unset.
    *
-   * <p>When sending requests, the location must be specified for jobs whose location not "US" or
-   * "EU".
+   * <p>When looking up, cancelling, or deleting a job whose location is not {@code "US"} or {@code
+   * "EU"}, the location must be specified on the {@code JobId} via {@link
+   * Builder#setLocation(String)}. When starting a query without specifying a location, BigQuery
+   * infers the location from referenced datasets when possible.
    */
   @Nullable
   public abstract String getLocation();
@@ -79,19 +94,35 @@ public abstract class JobId implements Serializable {
       return setJob(UUID.randomUUID().toString());
     }
 
+    /**
+     * Sets the job's geographic processing location (for example, {@code "US"}, {@code "EU"}, or
+     * {@code "asia-northeast1"}).
+     *
+     * <p>Required when looking up, cancelling, or deleting jobs outside {@code "US"} or {@code
+     * "EU"}. When starting a query, the specified location must match the region of any tables
+     * referenced by the query.
+     */
     public abstract Builder setLocation(String location);
 
     public abstract JobId build();
   }
 
-  /** Creates a job identity given project's and job's user-defined id. */
+  /**
+   * Creates a job identity given project's and job's user-defined id, with no location set. To
+   * specify a regional location (required for jobs outside {@code "US"} and {@code "EU"}), use
+   * {@link #newBuilder()} and {@link Builder#setLocation(String)}.
+   */
   public static JobId of(String project, String job) {
     checkArgument(!isNullOrEmpty(project), "Provided project is null or empty");
     checkArgument(!isNullOrEmpty(job), "Provided job is null or empty");
     return newBuilder().setProject(project).setJob(job).build();
   }
 
-  /** Creates a job identity given only its user-defined id. */
+  /**
+   * Creates a job identity given only its user-defined id, with no project or location set. To
+   * specify a regional location (required for jobs outside {@code "US"} and {@code "EU"}), use
+   * {@link #newBuilder()} and {@link Builder#setLocation(String)}.
+   */
   public static JobId of(String job) {
     checkArgument(!isNullOrEmpty(job), "Provided job is null or empty");
     return newBuilder().setJob(job).build();
