@@ -50,8 +50,8 @@ import javax.annotation.Nullable;
  * <p>NOTE: The schema update ability will be disabled when you pass in a table schema explicitly
  * through the writer. It is recommended that user either use JsonStreamWriter (which fully manages
  * table schema) or StreamWriter (which accepts proto format in raw and user will handle the schema
- * update event themsevles). If you use this class, you need to be very cautious about possible
- * mistmach between the writer's schema and the input data, any mismatch of the two will cause data
+ * update event themselves). If you use this class, you need to be very cautious about possible
+ * mismatch between the writer's schema and the input data, any mismatch of the two will cause data
  * corruption.
  */
 public class SchemaAwareStreamWriter<T> implements AutoCloseable {
@@ -285,9 +285,9 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
   }
 
   /**
-   * Gets the location of the destination
+   * Gets the location of the destination.
    *
-   * @return Descriptor
+   * @return the location of the destination
    */
   public String getLocation() {
     return this.streamWriter.getLocation();
@@ -297,8 +297,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
    * Returns the wait of a request in Client side before sending to the Server. Request could wait
    * in Client because it reached the client side inflight request limit (adjustable when
    * constructing the Writer). The value is the wait time for the last sent request. A constant high
-   * wait value indicates a need for more throughput, you can create a new Stream for to increase
-   * the throughput in exclusive stream case, or create a new Writer in the default stream case.
+   * wait value indicates a need for more throughput; you can create a new Stream to increase the
+   * throughput in exclusive stream case, or create a new Writer in the default stream case.
    */
   public long getInflightWaitSeconds() {
     return streamWriter.getInflightWaitSeconds();
@@ -395,7 +395,7 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
    *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+"
    * @param tableSchema The schema of the table when the stream was created, which is passed back
    *     through {@code WriteStream}
-   * @param client
+   * @param client the {@link BigQueryWriteClient} to use
    * @return Builder
    */
   public static <T> Builder<T> newBuilder(
@@ -496,7 +496,7 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
      *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+" or
      *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+"
      * @param tableSchema schema used to convert items to proto messages.
-     * @param client
+     * @param client the {@link BigQueryWriteClient} to use
      * @param toProtoConverter converter used to convert items to proto messages
      */
     private Builder(
@@ -541,8 +541,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's TransportChannelProvider.
      *
-     * @param channelProvider
-     * @return Builder
+     * @param channelProvider the transport channel provider to use
+     * @return this builder
      */
     public Builder<T> setChannelProvider(TransportChannelProvider channelProvider) {
       this.channelProvider =
@@ -553,8 +553,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's CredentialsProvider.
      *
-     * @param credentialsProvider
-     * @return Builder
+     * @param credentialsProvider the credentials provider to use
+     * @return this builder
      */
     public Builder<T> setCredentialsProvider(CredentialsProvider credentialsProvider) {
       this.credentialsProvider =
@@ -565,8 +565,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's ExecutorProvider.
      *
-     * @param executorProvider
-     * @return
+     * @param executorProvider the executor provider to use
+     * @return this builder
      */
     public Builder<T> setExecutorProvider(ExecutorProvider executorProvider) {
       this.executorProvider =
@@ -577,8 +577,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's FlowControlSettings.
      *
-     * @param flowControlSettings
-     * @return Builder
+     * @param flowControlSettings the flow control settings to apply
+     * @return this builder
      */
     public Builder<T> setFlowControlSettings(FlowControlSettings flowControlSettings) {
       this.flowControlSettings =
@@ -589,7 +589,7 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     /**
      * Stream name on the builder.
      *
-     * @return Builder
+     * @return the stream name on the builder
      */
     public String getStreamName() {
       return streamName;
@@ -598,8 +598,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's Endpoint.
      *
-     * @param endpoint
-     * @return Builder
+     * @param endpoint the service endpoint to connect to
+     * @return this builder
      */
     public Builder<T> setEndpoint(String endpoint) {
       this.endpoint = Preconditions.checkNotNull(endpoint, "Endpoint is null.");
@@ -609,8 +609,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     /**
      * Setter for a traceId to help identify traffic origin.
      *
-     * @param traceId
-     * @return Builder
+     * @param traceId the trace identifier to attach to requests
+     * @return this builder
      */
     public Builder<T> setTraceId(String traceId) {
       this.traceId = Preconditions.checkNotNull(traceId, "TraceId is null.");
@@ -623,11 +623,11 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     }
 
     /**
-     * Setter for a ignoreUnknownFields, if true, unknown fields to BigQuery will be ignored instead
-     * of error out. 1
+     * Setter for ignoreUnknownFields; if true, unknown fields to BigQuery will be ignored instead
+     * of causing an error.
      *
-     * @param ignoreUnknownFields
-     * @return Builder
+     * @param ignoreUnknownFields whether unknown fields should be ignored
+     * @return this builder
      */
     public Builder<T> setIgnoreUnknownFields(boolean ignoreUnknownFields) {
       this.ignoreUnknownFields = ignoreUnknownFields;
@@ -636,11 +636,10 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
 
     /**
      * Enable multiplexing for this writer. In multiplexing mode tables will share the same
-     * connection if possible until the connection is overwhelmed. This feature is still under
-     * development, please contact write api team before using.
+     * connection if possible until the connection is overwhelmed.
      *
-     * @param enableConnectionPool
-     * @return Builder
+     * @param enableConnectionPool whether to enable connection multiplexing
+     * @return this builder
      */
     public Builder<T> setEnableConnectionPool(boolean enableConnectionPool) {
       this.enableConnectionPool = enableConnectionPool;
@@ -651,8 +650,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
      * Location of the table this stream writer is targeting. Connection pools are shared by
      * location.
      *
-     * @param location
-     * @return Builder
+     * @param location the geographic location of the destination table
+     * @return this builder
      */
     public Builder<T> setLocation(String location) {
       if (this.location != null && !this.location.equals(location)) {
@@ -666,8 +665,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     /**
      * Sets the compression to use for the calls. The compressor must be of type gzip.
      *
-     * @param compressorName
-     * @return Builder
+     * @param compressorName the name of the compressor to use (must be {@code "gzip"})
+     * @return this builder
      */
     public Builder<T> setCompressorName(String compressorName) {
       this.compressorName = compressorName;
@@ -690,7 +689,7 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
      *
      * @param missingValueInterpretationMap the missing value interpretation map used by the
      *     SchemaAwareStreamWriter.
-     * @return Builder
+     * @return this builder
      */
     public Builder setMissingValueInterpretationMap(
         Map<String, AppendRowsRequest.MissingValueInterpretation> missingValueInterpretationMap) {
@@ -701,8 +700,8 @@ public class SchemaAwareStreamWriter<T> implements AutoCloseable {
     /**
      * Sets the RetrySettings to use for in-stream error retry.
      *
-     * @param retrySettings
-     * @return Builder
+     * @param retrySettings the retry settings to apply to in-stream retries
+     * @return this builder
      */
     public Builder setRetrySettings(RetrySettings retrySettings) {
       this.retrySettings = retrySettings;

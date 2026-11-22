@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
-/** Pool of connections to accept appends and distirbute to different connections. */
+/** Pool of connections to accept appends and distribute to different connections. */
 public class ConnectionWorkerPool {
   static final Pattern STREAM_NAME_PATTERN =
       Pattern.compile("projects/([^/]+)/datasets/([^/]+)/tables/([^/]+)/streams/([^/]+)");
