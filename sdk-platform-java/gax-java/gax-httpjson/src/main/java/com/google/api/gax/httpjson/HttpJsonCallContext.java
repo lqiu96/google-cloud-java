@@ -148,8 +148,8 @@ public final class HttpJsonCallContext implements ApiCallContext {
   }
 
   /**
-   * Returns inputContext cast to {@link HttpJsonCallContext}, or an empty {@link
-   * HttpJsonCallContext} if inputContext is null.
+   * Returns {@code inputContext} cast to {@link HttpJsonCallContext}, or {@code this} if {@code
+   * inputContext} is null.
    *
    * @param inputContext the {@link ApiCallContext} to cast if it is not null
    */

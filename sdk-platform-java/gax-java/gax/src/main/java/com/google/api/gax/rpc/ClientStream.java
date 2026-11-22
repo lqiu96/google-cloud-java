@@ -65,8 +65,8 @@ public interface ClientStream<RequestT> {
   /**
    * Closes the stream. If called, this must be the last call on this {@code ClientStream}.
    *
-   * <p>Note that if {@code close()} itself throws, a further call to {@code closeSendWithError} is
-   * not allowed.
+   * <p>Note that if {@code closeSend()} itself throws, a further call to {@code closeSendWithError}
+   * is not allowed.
    */
   void closeSend();
 

@@ -86,16 +86,14 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
- * InstantiatingGrpcChannelProvider is a TransportChannelProvider which constructs a gRPC
- * ManagedChannel with a number of configured inputs every time getChannel(...) is called. These
- * inputs include a port, a service address, and credentials.
+ * InstantiatingGrpcChannelProvider is a {@link TransportChannelProvider} which constructs a gRPC
+ * {@link TransportChannel} backed by a {@link ChannelPool} with a number of configured inputs every
+ * time {@link #getTransportChannel()} is called. These inputs include an endpoint ({@code
+ * host:port}), headers, optional executor, channel pooling settings, interceptors, and optional
+ * transport credentials (for example, for DirectPath or mTLS).
  *
- * <p>The credentials can either be supplied directly (by providing a FixedCredentialsProvider to
- * Builder.setCredentialsProvider()) or acquired implicitly from Application Default Credentials (by
- * providing a GoogleCredentialsProvider to Builder.setCredentialsProvider()).
- *
- * <p>The client lib header and generator header values are used to form a value that goes into the
- * http header of requests to the service.
+ * <p>Configure instances via {@link #newBuilder()} (or {@link #toBuilder()}), and pass the
+ * resulting provider to {@code ClientSettings.Builder#setTransportChannelProvider}.
  */
 @NullMarked
 public final class InstantiatingGrpcChannelProvider implements TransportChannelProvider {
@@ -1115,12 +1113,10 @@ public final class InstantiatingGrpcChannelProvider implements TransportChannelP
     }
 
     /**
-     * Sets the Executor for this TransportChannelProvider.
+     * Sets the {@link Executor} for this {@link TransportChannelProvider}.
      *
-     * <p>This is optional; if it is not provided, needsExecutor() will return true, meaning that an
-     * Executor must be provided when getChannel is called on the constructed
-     * TransportChannelProvider instance. Note: GrpcTransportProvider will automatically provide its
-     * own Executor in this circumstance when it calls getChannel.
+     * <p>This is optional; if it is not provided, gRPC's default executor is used when {@link
+     * #getTransportChannel()} creates channels.
      */
     public Builder setExecutor(Executor executor) {
       this.executor = executor;
@@ -1145,11 +1141,11 @@ public final class InstantiatingGrpcChannelProvider implements TransportChannelP
     }
 
     /**
-     * Sets the HeaderProvider for this TransportChannelProvider.
+     * Sets the {@link HeaderProvider} for this {@link TransportChannelProvider}.
      *
-     * <p>This is optional; if it is not provided, needsHeaders() will return true, meaning that
-     * headers must be provided when getChannel is called on the constructed
-     * TransportChannelProvider instance.
+     * <p>This is optional; if it is not provided, {@link #needsHeaders()} will return true, meaning
+     * that headers must be provided via {@link #withHeaders(Map)} before calling {@link
+     * #getTransportChannel()}.
      */
     public Builder setHeaderProvider(HeaderProvider headerProvider) {
       this.headerProvider = headerProvider;
@@ -1366,12 +1362,13 @@ public final class InstantiatingGrpcChannelProvider implements TransportChannelP
     }
 
     /**
-     * By setting a channelPrimer, the ChannelPool created by the provider will be refreshing
-     * ChannelPool. channelPrimer will be invoked periodically when the channels are refreshed
+     * Sets a {@link ChannelPrimer} invoked to prime newly created channels (including channels
+     * created during periodic refresh when enabled via {@link
+     * ChannelPoolSettings#isPreemptiveRefreshEnabled()}).
      *
      * <p>This is public only for technical reasons, for advanced usage.
      *
-     * @param channelPrimer invoked when the channels are refreshed
+     * @param channelPrimer invoked to prime newly created channels
      * @return builder for the provider
      */
     @InternalApi("For internal use by google-cloud-java clients only")

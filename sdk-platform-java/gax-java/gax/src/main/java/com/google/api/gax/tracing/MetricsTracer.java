@@ -121,9 +121,9 @@ public class MetricsTracer implements ApiTracer {
   }
 
   /**
-   * Signals that the operation was cancelled by the user. The tracer is now considered closed and
-   * should no longer be used. Failed operation extracts the error from the throwable and adds it to
-   * the status attribute key.
+   * Signals that the operation failed with an error. The tracer is now considered closed and should
+   * no longer be used. Extracts the status from the throwable and adds it to the status attribute
+   * key.
    *
    * @throws IllegalStateException if an operation completion call has already been invoked
    */
