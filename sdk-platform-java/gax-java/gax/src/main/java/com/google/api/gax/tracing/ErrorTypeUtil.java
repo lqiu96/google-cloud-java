@@ -47,6 +47,10 @@ import javax.net.ssl.SSLHandshakeException;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * Utility methods for extracting low-cardinality error-type classifications from {@link Throwable}
+ * instances for telemetry and observability attributes.
+ */
 @NullMarked
 public class ErrorTypeUtil {
 

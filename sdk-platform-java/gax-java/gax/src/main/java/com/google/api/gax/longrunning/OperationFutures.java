@@ -40,6 +40,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Static utility methods for creating {@link OperationFuture} instances (for example,
+ * already-completed futures for testing via {@link #immediateOperationFuture(OperationSnapshot)}).
+ */
 @NullMarked
 public class OperationFutures {
   private OperationFutures() {

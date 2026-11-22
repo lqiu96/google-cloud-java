@@ -37,11 +37,17 @@ import com.google.api.gax.rpc.OperationCallable;
 import com.google.api.gax.rpc.PagedCallSettings;
 import com.google.api.gax.rpc.ServerStreamingCallSettings;
 import com.google.api.gax.rpc.ServerStreamingCallable;
-import com.google.api.gax.rpc.StreamingCallSettings;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Factory interface for creating HTTP/JSON-backed callables (unary, paged, batching, long-running
+ * operation, and server-streaming) used by generated service stubs.
+ *
+ * @param <OperationT> the long-running operation message type
+ * @param <OperationsStub> the operations stub type used for polling long-running operations
+ */
 @NullMarked
 public interface HttpJsonStubCallableFactory<
     OperationT, OperationsStub extends BackgroundResource> {
@@ -98,7 +104,7 @@ public interface HttpJsonStubCallableFactory<
    * @param operationCallSettings {@link OperationCallSettings} to configure the method-level
    *     settings with
    * @param clientContext {@link ClientContext} to use to connect to the service
-   * @param operationsStub opertation stub to use to poll for updates on the Operation
+   * @param operationsStub operation stub to use to poll for updates on the Operation
    * @return {@link OperationCallable} callable object
    */
   <RequestT, ResponseT, MetadataT>
@@ -109,10 +115,12 @@ public interface HttpJsonStubCallableFactory<
           OperationsStub operationsStub);
 
   /**
-   * Create a server-streaming callable with. Designed for use by generated code.
+   * Creates a server-streaming callable with HTTP/JSON-specific functionality. Designed for use by
+   * generated code.
    *
-   * @param httpJsonCallSettings the gRPC call settings
-   * @param callSettings {@link StreamingCallSettings} to configure the method-level settings with.
+   * @param httpJsonCallSettings the HTTP/JSON call settings
+   * @param callSettings {@link ServerStreamingCallSettings} to configure the method-level settings
+   *     with.
    * @param clientContext {@link ClientContext} to use to connect to the service.
    */
   default <RequestT, ResponseT>

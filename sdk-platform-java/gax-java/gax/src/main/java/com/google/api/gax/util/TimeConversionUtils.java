@@ -33,6 +33,11 @@ package com.google.api.gax.util;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * Utility methods for converting between {@code java.time} and {@code org.threeten.bp} {@code
+ * Duration} and {@code Instant} types. All methods return {@code null} when given a {@code null}
+ * input.
+ */
 @NullMarked
 public class TimeConversionUtils {
   public static java.time.@Nullable Duration toJavaTimeDuration(

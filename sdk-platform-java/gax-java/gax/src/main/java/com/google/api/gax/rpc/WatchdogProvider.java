@@ -36,6 +36,13 @@ import com.google.api.core.ObsoleteApi;
 import java.util.concurrent.ScheduledExecutorService;
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Provides an interface to either supply a fixed {@link Watchdog} or instantiate a new one for
+ * monitoring server-streaming RPCs.
+ *
+ * @see InstantiatingWatchdogProvider
+ * @see FixedWatchdogProvider
+ */
 @NullMarked
 public interface WatchdogProvider {
   boolean needsClock();

@@ -34,6 +34,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * An {@link ApiFuture} that forwards all method calls to a delegate {@link ApiFuture}. Subclasses
+ * can override specific methods to decorate or intercept future operations.
+ *
+ * @param <T> the result type returned by the future
+ */
 public class ForwardingApiFuture<T> implements ApiFuture<T> {
   private final ApiFuture<T> delegate;
 

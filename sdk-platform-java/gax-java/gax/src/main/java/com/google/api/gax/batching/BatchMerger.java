@@ -31,7 +31,13 @@ package com.google.api.gax.batching;
 
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Merges a newly added batch into an existing accumulated batch in a {@link ThresholdBatcher}.
+ *
+ * @param <B> the batch type being merged
+ */
 @NullMarked
 public interface BatchMerger<B> {
+  /** Merges {@code newBatch} into {@code batch}. */
   void merge(B batch, B newBatch);
 }

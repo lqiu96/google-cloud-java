@@ -38,6 +38,10 @@ import java.util.Map;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * Immutable metadata container for HTTP/JSON call headers, status message, and any associated
+ * exception.
+ */
 @NullMarked
 @AutoValue
 @InternalExtensionOnly

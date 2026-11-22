@@ -31,6 +31,13 @@ package com.google.api.gax.rpc;
 
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Combines {@link ResponseObserver} and {@link ClientStreamReadyObserver} into a single observer
+ * for bidirectional streaming calls via {@link BidiStreamingCallable#call(BidiStreamObserver)}.
+ *
+ * @param <RequestT> the type of each request message
+ * @param <ResponseT> the type of each response message
+ */
 @NullMarked
 public interface BidiStreamObserver<RequestT, ResponseT>
     extends ResponseObserver<ResponseT>, ClientStreamReadyObserver<RequestT> {}
