@@ -18,6 +18,16 @@ package com.google.cloud.datastore;
 
 import static com.google.datastore.v1.Value.BLOB_VALUE_FIELD_NUMBER;
 
+/**
+ * A Google Cloud Datastore binary ({@link Blob}) value.
+ *
+ * <p>Values are indexed by default ({@link #excludeFromIndexes()} is {@code false}), and Datastore
+ * limits indexed blobs to 1,500 bytes. To store larger blobs (or blobs that do not need to be
+ * queried), build with {@code BlobValue.newBuilder(blob).setExcludeFromIndexes(true).build()}.
+ *
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/indexes">Datastore
+ *     Indexes</a>
+ */
 public final class BlobValue extends Value<Blob> {
 
   private static final long serialVersionUID = -5096238337676649540L;
@@ -73,10 +83,15 @@ public final class BlobValue extends Value<Blob> {
     return new Builder().mergeFrom(this);
   }
 
+  /**
+   * Creates an indexed {@code BlobValue}. For blobs over 1,500 bytes, use {@link #newBuilder(Blob)}
+   * with {@code setExcludeFromIndexes(true)}.
+   */
   public static BlobValue of(Blob blob) {
     return new BlobValue(blob);
   }
 
+  /** Returns a builder for a {@code BlobValue} initialized with {@code blob}. */
   public static Builder newBuilder(Blob blob) {
     return new Builder().set(blob);
   }

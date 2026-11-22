@@ -30,7 +30,15 @@ import java.util.Optional;
  * is possible to get a {@code DatastoreException} upon {@link Iterator#hasNext hasNext} or {@link
  * Iterator#next next} calls.
  *
+ * <p>For cursor-based pagination, exhaust the iterator ({@link #hasNext()} returns {@code false})
+ * before checking {@link #getMoreResults()}. When {@link #getMoreResults()} equals {@link
+ * QueryResultBatch.MoreResultsType#MORE_RESULTS_AFTER_LIMIT} (or {@link
+ * QueryResultBatch.MoreResultsType#MORE_RESULTS_AFTER_CURSOR}), pass {@link #getCursorAfter()} to
+ * {@link StructuredQuery.Builder#setStartCursor(Cursor)} on the next query.
+ *
  * @param <V> the type of the results value.
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/queries">Datastore
+ *     Queries</a>
  */
 @InternalExtensionOnly
 public interface QueryResults<V> extends Iterator<V> {
@@ -39,14 +47,21 @@ public interface QueryResults<V> extends Iterator<V> {
   Class<?> getResultClass();
 
   /**
-   * Returns the Cursor for the point after the value returned in the last {@link #next} call. This
-   * cursor can be used to issue subsequent queries (with the same constraints) that may return
-   * additional results.
+   * Returns the {@link Cursor} for the point immediately after the last fetched result (or the
+   * final batch's end cursor once the iterator is exhausted, or the initial skipped/start cursor
+   * before any {@link #hasNext()} or {@link #next()} call). This cursor can be used to issue
+   * subsequent queries (with the same constraints) that may return additional results.
+   *
+   * <p><strong>Note on {@link #hasNext()} prefetching:</strong> Calling {@link #hasNext()}
+   * prefetches the next result and immediately advances this cursor before {@link #next()} is
+   * called. If you stop iterating early, read {@code getCursorAfter()} immediately after {@link
+   * #next()} and before calling {@link #hasNext()} again (or exhaust the iterator until {@link
+   * #hasNext()} returns {@code false} to obtain the final batch's end cursor).
    *
    * <p>A simple use case:
    *
    * <pre>{@code
-   * Query<Entity> query = Query.newEntityQueryBuilder()
+   * EntityQuery query = Query.newEntityQueryBuilder()
    *     .setKind("Person")
    *     .setFilter(PropertyFilter.eq("favoriteFood", "pizza"))
    *     .build();
@@ -59,23 +74,48 @@ public interface QueryResults<V> extends Iterator<V> {
   Cursor getCursorAfter();
 
   /**
-   * Returns the number of results skipped, typically because of an offset.
+   * Returns the number of results skipped in the most recently fetched batch (not a cumulative
+   * total across multiple batches), typically because of an offset.
    *
-   * <p>A simple use case to count entities:
+   * <p>Example of checking skipped results with an offset:
    *
    * <pre>{@code
-   * Query<Key> query = Query.newKeyQueryBuilder().setOffset(Integer.MAX_VALUE).build();
-   * QueryResults<Key> result = datasore.datastore.run(query);
-   * if (!result.hasNext()) {
-   *  int numberOfEntities = result.getSkippedResults();
-   * }
+   * Query<Entity> query = Query.newEntityQueryBuilder()
+   *     .setKind("Person")
+   *     .setOffset(10)
+   *     .build();
+   * QueryResults<Entity> results = datastore.run(query);
+   * int skipped = results.getSkippedResults();
    * }</pre>
+   *
+   * <p>To count matching entities without scanning or skipping them, use an {@link
+   * AggregationQuery} with {@link com.google.cloud.datastore.aggregation.Aggregation#count()}.
    */
   int getSkippedResults();
 
-  /** Returns MoreResults state of the query after the current batch. */
+  /**
+   * Returns the {@link QueryResultBatch.MoreResultsType} state of the query after the most recently
+   * fetched batch.
+   *
+   * <p>Because batches are fetched lazily, exhaust this iterator ({@link #hasNext()} returns {@code
+   * false}) before inspecting {@code getMoreResults()} to determine whether another page exists.
+   * Check for {@link QueryResultBatch.MoreResultsType#MORE_RESULTS_AFTER_LIMIT} (or {@link
+   * QueryResultBatch.MoreResultsType#MORE_RESULTS_AFTER_CURSOR}) to continue paginating; {@link
+   * QueryResultBatch.MoreResultsType#NOT_FINISHED} only indicates additional batches remain within
+   * the current query execution.
+   */
   QueryResultBatch.MoreResultsType getMoreResults();
 
+  /**
+   * Returns an {@link Optional} containing {@link ExplainMetrics} when {@link
+   * com.google.cloud.datastore.models.ExplainOptions} were supplied, or {@link Optional#empty()}
+   * otherwise.
+   *
+   * <p>When {@link com.google.cloud.datastore.models.ExplainOptions#shouldAnalyze()} is {@code
+   * true}, Datastore returns {@link ExplainMetrics} only on the final response batch, so exhaust
+   * this iterator ({@link #hasNext()} returns {@code false}) before calling {@code
+   * getExplainMetrics()}.
+   */
   @BetaApi
   Optional<ExplainMetrics> getExplainMetrics();
 }

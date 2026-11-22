@@ -20,6 +20,16 @@ import static com.google.datastore.v1.Value.TIMESTAMP_VALUE_FIELD_NUMBER;
 
 import com.google.cloud.Timestamp;
 
+/**
+ * A Google Cloud Datastore timestamp value wrapping a {@link Timestamp}.
+ *
+ * <p>When stored in Datastore, timestamps are precise to microseconds; any sub-microsecond
+ * precision is rounded down. Values are indexed by default ({@link #excludeFromIndexes()} is {@code
+ * false}).
+ *
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/indexes">Datastore
+ *     Indexes</a>
+ */
 public final class TimestampValue extends Value<Timestamp> {
 
   private static final long serialVersionUID = -8502433575902990648L;
@@ -75,10 +85,12 @@ public final class TimestampValue extends Value<Timestamp> {
     return new Builder().mergeFrom(this);
   }
 
+  /** Creates an indexed {@code TimestampValue}. */
   public static TimestampValue of(Timestamp timestamp) {
     return new TimestampValue(timestamp);
   }
 
+  /** Returns a builder for a {@code TimestampValue} initialized with {@code timestamp}. */
   public static Builder newBuilder(Timestamp timestamp) {
     return new Builder().set(timestamp);
   }

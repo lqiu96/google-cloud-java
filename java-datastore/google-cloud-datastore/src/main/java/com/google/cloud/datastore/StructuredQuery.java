@@ -69,14 +69,14 @@ import java.util.Objects;
  * }</pre>
  *
  * <p>A less trivial example of a projection query that returns the first 10 results of "age" and
- * "name" properties (sorted and grouped by "age") with an age greater than 18
+ * "name" properties (sorted and distinct on "age") with an age greater than 18
  *
  * <pre>{@code
  * Query<ProjectionEntity> query = Query.newProjectionEntityQueryBuilder()
  *     .setKind(kind)
- *     .setProjection(Projection.property("age"), Projection.first("name"))
+ *     .setProjection("age", "name")
  *     .setFilter(PropertyFilter.gt("age", 18))
- *     .setGroupBy("age")
+ *     .setDistinctOn("age")
  *     .setOrderBy(OrderBy.asc("age"))
  *     .setLimit(10)
  *     .build();
@@ -85,7 +85,7 @@ import java.util.Objects;
  * }</pre>
  *
  * @param <V> the type of the result values this query will produce
- * @see <a href="https://cloud.google.com/appengine/docs/java/datastore/queries">Datastore
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/queries">Datastore
  *     queries</a>
  */
 public abstract class StructuredQuery<V> extends Query<V> implements RecordQuery<V> {
@@ -230,10 +230,12 @@ public abstract class StructuredQuery<V> extends Query<V> implements RecordQuery
       return new CompositeFilter(operator, filters.build());
     }
 
+    /** Combines the provided filters with logical AND. */
     public static CompositeFilter and(Filter first, Filter... other) {
       return new CompositeFilter(Operator.AND, first, other);
     }
 
+    /** Combines the provided filters with logical OR. */
     public static CompositeFilter or(Filter first, Filter... other) {
       return new CompositeFilter(Operator.OR, first, other);
     }
@@ -722,6 +724,14 @@ public abstract class StructuredQuery<V> extends Query<V> implements RecordQuery
     /** Sets the limit for the query. */
     Builder<V> setLimit(Integer limit);
 
+    /**
+     * Sets the filter for the query, replacing any previously set filter rather than combining
+     * filters with logical AND.
+     *
+     * <p>To combine multiple filter conditions, pass a {@link CompositeFilter} constructed with
+     * {@link CompositeFilter#and(Filter, Filter...)} or {@link CompositeFilter#or(Filter,
+     * Filter...)}.
+     */
     Builder<V> setFilter(Filter filter);
 
     /** Clears any previously specified order by settings. */

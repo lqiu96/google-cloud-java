@@ -24,7 +24,19 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
-/** A Google Cloud Datastore list value. A list value is a list of {@link Value} objects. */
+/**
+ * A Google Cloud Datastore list value. A list value is a list of {@link Value} objects and cannot
+ * contain another {@code ListValue}.
+ *
+ * <p><strong>Indexing:</strong> Never set {@link ValueBuilder#setExcludeFromIndexes(boolean)
+ * setExcludeFromIndexes(true)} on the {@code ListValue} container itself—Datastore rejects array
+ * values with {@code excludeFromIndexes} set on the container. Instead, set {@code
+ * setExcludeFromIndexes(true)} on each element {@link Value} added to the list, and apply the same
+ * {@code excludeFromIndexes} setting uniformly to all elements to preserve array order.
+ *
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/indexes">Datastore
+ *     Indexes</a>
+ */
 public final class ListValue extends Value<List<? extends Value<?>>> {
 
   private static final long serialVersionUID = -5121887228607148857L;
@@ -64,6 +76,10 @@ public final class ListValue extends Value<List<? extends Value<?>>> {
         }
       };
 
+  /**
+   * Builder for {@link ListValue}. Do not call {@code setExcludeFromIndexes(true)} on this builder;
+   * configure {@code setExcludeFromIndexes} uniformly on each element {@link Value} instead.
+   */
   public static final class Builder
       extends Value.BaseBuilder<List<? extends Value<?>>, ListValue, Builder> {
 

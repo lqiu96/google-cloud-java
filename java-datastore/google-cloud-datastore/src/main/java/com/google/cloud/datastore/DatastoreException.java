@@ -33,12 +33,25 @@ import java.util.Set;
 /**
  * Datastore service exception.
  *
- * @see <a href="https://cloud.google.com/datastore/docs/concepts/errors#Error_Codes">Google Cloud
+ * <p>Although this class extends {@link BaseHttpServiceException}, {@link #getCode()} returns
+ * canonical gRPC ({@link com.google.rpc.Code}) integer values for server errors (for example,
+ * {@code 10} for {@code ABORTED}, {@code 14} for {@code UNAVAILABLE}, {@code 4} for {@code
+ * DEADLINE_EXCEEDED}, and {@code 6} for {@code ALREADY_EXISTS}) rather than HTTP status codes, and
+ * {@link #getReason()} carries the corresponding status name.
+ *
+ * <p>Client-side validation errors, low-level I/O failures, and exceptions propagated from {@link
+ * Datastore#runInTransaction(Datastore.TransactionCallable)} callbacks carry {@link #getCode()}
+ * equal to {@code 0} ({@link #UNKNOWN_CODE}); inspect {@link #getCause()} alongside {@link
+ * #getReason()} to identify the underlying error. {@link #isRetryable()} classifies {@code
+ * ABORTED}, {@code DEADLINE_EXCEEDED}, {@code UNAVAILABLE}, and low-level transport {@link
+ * IOException} failures as retryable, subject to operation idempotency.
+ *
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/errors">Google Cloud
  *     Datastore error codes</a>
  */
 public final class DatastoreException extends BaseHttpServiceException {
 
-  // see https://cloud.google.com/datastore/docs/concepts/errors#Error_Codes
+  // see https://docs.cloud.google.com/datastore/docs/concepts/errors#error_codes
   private static final Set<Error> RETRYABLE_ERRORS =
       ImmutableSet.of(
           new Error(10, "ABORTED", false),

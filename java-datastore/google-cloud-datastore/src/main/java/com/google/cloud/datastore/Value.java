@@ -30,7 +30,13 @@ import java.util.Objects;
  * To edit (a copy) use {@link #toBuilder()}. Unsupported value (deprecated or unrecognized) would
  * be represented by {@link RawValue}.
  *
+ * <p>Values are indexed by default ({@link #excludeFromIndexes()} is {@code false}). For {@link
+ * ListValue} properties, never set {@code excludeFromIndexes} on the {@code ListValue} container
+ * itself; configure it uniformly on each element {@link Value} instead.
+ *
  * @param <V> the type of the content for this value
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/indexes">Datastore
+ *     Indexes</a>
  */
 public abstract class Value<V> implements Serializable {
 
@@ -159,7 +165,11 @@ public abstract class Value<V> implements Serializable {
     return valueType;
   }
 
-  /** Returns whether this value should be excluded from indexes. */
+  /**
+   * Returns whether this value should be excluded from indexes (defaults to {@code false}). For
+   * {@link ListValue} properties, this flag must remain {@code false} on the container and be set
+   * uniformly on each element {@link Value} to preserve array order.
+   */
   public final boolean excludeFromIndexes() {
     return excludeFromIndexes;
   }

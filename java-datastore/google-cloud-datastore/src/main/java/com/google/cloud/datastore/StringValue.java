@@ -18,6 +18,17 @@ package com.google.cloud.datastore;
 
 import static com.google.datastore.v1.Value.STRING_VALUE_FIELD_NUMBER;
 
+/**
+ * A Google Cloud Datastore UTF-8 string value.
+ *
+ * <p>Values are indexed by default ({@link #excludeFromIndexes()} is {@code false}), and Datastore
+ * limits indexed strings to 1,500 UTF-8 bytes. To store longer strings (or strings that do not need
+ * to be queried), build with {@code
+ * StringValue.newBuilder(value).setExcludeFromIndexes(true).build()}.
+ *
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/indexes">Datastore
+ *     Indexes</a>
+ */
 public final class StringValue extends Value<String> {
 
   private static final long serialVersionUID = -8709280401468276732L;
@@ -73,10 +84,15 @@ public final class StringValue extends Value<String> {
     return new Builder().mergeFrom(this);
   }
 
+  /**
+   * Creates an indexed {@code StringValue}. For strings over 1,500 UTF-8 bytes, use {@link
+   * #newBuilder(String)} with {@code setExcludeFromIndexes(true)}.
+   */
   public static StringValue of(String value) {
     return new StringValue(value);
   }
 
+  /** Returns a builder for a {@code StringValue} initialized with {@code value}. */
   public static Builder newBuilder(String value) {
     return new Builder().set(value);
   }

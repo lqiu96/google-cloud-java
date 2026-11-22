@@ -31,14 +31,19 @@ import java.util.Map;
 /**
  * Specifies options for read operations in Datastore, namely getting/fetching entities and running
  * queries.
+ *
+ * <p>In Cloud Firestore in Datastore mode, lookups and queries default to strong consistency when
+ * no {@code ReadOption} is provided. At most one {@code ReadOption} type may be supplied per
+ * operation; combining different option types throws {@link DatastoreException}.
  */
 public abstract class ReadOption implements Serializable {
 
   private static final long serialVersionUID = -4406964829189800528L;
 
   /**
-   * Specifies eventual consistency for reads from Datastore. Lookups and ancestor queries using
-   * this option permit Datastore to return stale results.
+   * Specifies eventual consistency for reads from Datastore instead of the default strong
+   * consistency in Cloud Firestore in Datastore mode. Lookups and queries using this option permit
+   * Datastore to return stale results.
    */
   public static final class EventualConsistency extends ReadOption {
 
@@ -92,8 +97,9 @@ public abstract class ReadOption implements Serializable {
   private ReadOption() {}
 
   /**
-   * Returns a {@code ReadOption} that specifies eventual consistency, allowing Datastore to return
-   * stale results from gets, fetches, and ancestor queries.
+   * Returns a {@code ReadOption} that specifies eventual consistency instead of the default strong
+   * consistency in Cloud Firestore in Datastore mode, allowing Datastore to return stale results
+   * from gets, fetches, and queries.
    */
   public static EventualConsistency eventualConsistency() {
     return new EventualConsistency(true);

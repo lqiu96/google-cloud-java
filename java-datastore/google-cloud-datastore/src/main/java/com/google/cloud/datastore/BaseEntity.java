@@ -46,8 +46,15 @@ import java.util.Set;
  * and a value (as {@link com.google.cloud.datastore.Value}), and may be associated with a key. For
  * a list of possible values see {@link ValueType}.
  *
- * @see <a href="https://cloud.google.com/datastore/docs/concepts/entities">Google Cloud Datastore
- *     Entities, Properties, and Keys</a>
+ * <p>Calling {@link #getValue(String)}, {@link #isNull(String)}, or any typed getter for a missing
+ * property throws {@link DatastoreException}; check {@link #contains(String)} first for optional
+ * properties. When a property holds a {@link NullValue}, primitive getters ({@link
+ * #getLong(String)}, {@link #getDouble(String)}, {@link #getBoolean(String)}) throw {@link
+ * NullPointerException}, while reference-typed getters return {@code null}; check {@link
+ * #isNull(String)} before calling primitive getters.
+ *
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/entities">Google Cloud
+ *     Datastore Entities, Properties, and Keys</a>
  */
 public abstract class BaseEntity<K extends IncompleteKey> implements Serializable {
 
@@ -55,6 +62,21 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
   private final ImmutableSortedMap<String, Value<?>> properties;
   private final K key;
 
+  /**
+   * Base builder for entities.
+   *
+   * <p>Passing {@code null} to any {@code set} method throws {@link NullPointerException} (either
+   * immediately or during {@link #build()}). Use {@link #setNull(String)} to store a null property
+   * ({@link NullValue}).
+   *
+   * <p>Properties are indexed by default, and Datastore limits indexed string (UTF-8) and blob
+   * values to 1,500 bytes. To store larger strings or blobs (or avoid indexing a property), build a
+   * {@link StringValue} or {@link BlobValue} with {@code setExcludeFromIndexes(true)} and pass it
+   * to {@link #set(String, Value)}.
+   *
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/indexes">Datastore
+   *     Indexes</a>
+   */
   public abstract static class Builder<K extends IncompleteKey, B extends Builder<K, B>> {
 
     private K key;
@@ -126,10 +148,11 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
     }
 
     /**
-     * Sets a property.
+     * Sets a property. {@code value} must not be {@code null} (otherwise {@link #build()} throws
+     * {@link NullPointerException}); use {@link #setNull(String)} to store a null property.
      *
      * @param name name of the property
-     * @param value value associated with the property
+     * @param value non-null value associated with the property
      */
     public B set(String name, Value<?> value) {
       properties.put(name, value);
@@ -137,7 +160,9 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
     }
 
     /**
-     * Sets a property of type {@link StringValue}.
+     * Sets an indexed property of type {@link StringValue}. For strings exceeding Datastore's
+     * 1,500-byte UTF-8 indexed limit, build a {@link StringValue} with {@code
+     * setExcludeFromIndexes(true)} and pass it to {@link #set(String, Value)}.
      *
      * @param name name of the property
      * @param value value associated with the property
@@ -401,7 +426,9 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
     }
 
     /**
-     * Sets a property of type {@link BlobValue}.
+     * Sets an indexed property of type {@link BlobValue}. For blobs exceeding Datastore's
+     * 1,500-byte indexed limit, build a {@link BlobValue} with {@code setExcludeFromIndexes(true)}
+     * and pass it to {@link #set(String, Value)}.
      *
      * @param name name of the property
      * @param value value associated with the property
@@ -431,7 +458,8 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
     }
 
     /**
-     * Sets a property of type {@code NullValue}.
+     * Sets a property of type {@link NullValue}. Use this method to store a null property, as
+     * passing {@code null} to {@code set} methods throws {@link NullPointerException}.
      *
      * @param name name of the property
      */
@@ -508,7 +536,8 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
   }
 
   /**
-   * Returns true if property is an instance of NullValue.
+   * Returns {@code true} if the property holds a {@link NullValue}. Call {@link #contains(String)}
+   * first if the property may be absent.
    *
    * @throws DatastoreException if no such property
    */
@@ -517,7 +546,8 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
   }
 
   /**
-   * Returns the property value as a string.
+   * Returns the property value as a string, or {@code null} if the property holds a {@link
+   * NullValue}.
    *
    * @throws DatastoreException if no such property
    * @throws ClassCastException if value is not a string
@@ -532,6 +562,8 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
    *
    * @throws DatastoreException if no such property
    * @throws ClassCastException if value is not a long
+   * @throws NullPointerException if the property holds a {@link NullValue} (check {@link
+   *     #isNull(String)} first)
    */
   @SuppressWarnings("unchecked")
   public long getLong(String name) {
@@ -543,6 +575,8 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
    *
    * @throws DatastoreException if no such property
    * @throws ClassCastException if value is not a double
+   * @throws NullPointerException if the property holds a {@link NullValue} (check {@link
+   *     #isNull(String)} first)
    */
   @SuppressWarnings("unchecked")
   public double getDouble(String name) {
@@ -554,6 +588,8 @@ public abstract class BaseEntity<K extends IncompleteKey> implements Serializabl
    *
    * @throws DatastoreException if no such property
    * @throws ClassCastException if value is not a boolean
+   * @throws NullPointerException if the property holds a {@link NullValue} (check {@link
+   *     #isNull(String)} first)
    */
   @SuppressWarnings("unchecked")
   public boolean getBoolean(String name) {

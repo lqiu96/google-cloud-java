@@ -21,8 +21,18 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * An interface to represent a batch of write operations. Any write operation that is applied on a
- * batch will only be sent to the Datastore upon {@link #submit}. A usage example:
+ * An interface to represent a non-transactional batch of write operations. Write operations applied
+ * to a batch are buffered locally and sent to Datastore in a single RPC upon {@link #submit}.
+ *
+ * <p><b>Not atomic:</b> {@link #submit()} commits in {@link
+ * com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode. Unlike a Firestore {@code
+ * WriteBatch} or a Datastore {@link Transaction}, a {@code Batch} is not atomic across entities: if
+ * one mutation fails (for example, {@code add} on an existing key or {@code update} on a missing
+ * key), other mutations in the same batch may still be applied and persist. For atomic multi-entity
+ * writes, use {@link Datastore#runInTransaction(Datastore.TransactionCallable)} or {@link
+ * Datastore#newTransaction()} instead.
+ *
+ * <p>A usage example:
  *
  * <pre>{@code
  * Entity entity1 = datastore.get(key1);
@@ -35,12 +45,12 @@ import javax.annotation.concurrent.NotThreadSafe;
  * batch.submit();
  * }</pre>
  *
- * <p><b> WARNING: This class maintains an internal state in terms of {@link
- * java.util.LinkedHashMap} and {@link java.util.LinkedHashSet} which gets updated on every method
- * call performing CRUD operations to record the mutations. Since {@link java.util.LinkedHashMap} is
- * not thread safe as per its <a
- * href="https://docs.oracle.com/javase/8/docs/api/java/util/LinkedHashMap.html">documentation</a>,
- * This class too should not be treated as a thread safe class. </b>
+ * <p><b>Not thread-safe:</b> This class maintains mutable internal state ({@link
+ * java.util.LinkedHashMap} and {@link java.util.LinkedHashSet}) to record buffered mutations and
+ * must not be shared concurrently across threads.
+ *
+ * @see Transaction
+ * @see Datastore#runInTransaction(Datastore.TransactionCallable)
  */
 @NotThreadSafe
 @InternalExtensionOnly
@@ -82,10 +92,15 @@ public interface Batch extends DatastoreBatchWriter {
   List<Entity> add(FullEntity<?>... entities);
 
   /**
-   * Submit the batch to the Datastore.
+   * Submits the buffered mutations to Datastore in {@link
+   * com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode.
    *
-   * @return Response of the batch submit operation.
-   * @throws DatastoreException if there was any failure or if batch is no longer active
+   * <p>Because submission is non-transactional, it is not atomic across entities: partial writes
+   * may persist if another mutation in the batch fails. Once submitted successfully, this batch is
+   * deactivated and cannot be reused.
+   *
+   * @return response of the batch submit operation
+   * @throws DatastoreException if there was any failure or if the batch is no longer active
    */
   Response submit();
 

@@ -49,6 +49,19 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Configuration options for creating a {@link Datastore} client.
+ *
+ * <p>By default, {@link #getDefaultInstance()} uses Application Default Credentials, infers the
+ * project ID from the environment (checking {@link #PROJECT_ID_ENV_VAR} first), and connects over
+ * gRPC ({@link GrpcTransportOptions}). Build one {@code DatastoreOptions} instance and reuse the
+ * resulting {@link Datastore} client across requests, calling {@link Datastore#close()} on
+ * application shutdown.
+ *
+ * @see Datastore
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/reference/libraries">Cloud Datastore
+ *     client libraries</a>
+ */
 public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions> {
 
   private static final long serialVersionUID = -1018382430058137336L;
@@ -58,6 +71,18 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
   private static final Set<String> SCOPES = ImmutableSet.of(DATASTORE_SCOPE);
   private static final String DEFAULT_DATABASE_ID = "";
   public static final String PROJECT_ID_ENV_VAR = "DATASTORE_PROJECT_ID";
+
+  /**
+   * Environment variable and system property name ({@code DATASTORE_EMULATOR_HOST}) for the
+   * Datastore emulator host. Note that {@link Builder#build()} defaults an unset host to the
+   * transport-specific production endpoint without automatically applying this variable; when
+   * connecting to an emulator, pass the host explicitly to {@link Builder#setHost(String)} and
+   * configure {@link com.google.cloud.NoCredentials#getInstance()} to avoid Application Default
+   * Credentials lookup.
+   *
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/tools/datastore-emulator">Running
+   *     the Datastore emulator</a>
+   */
   public static final String LOCAL_HOST_ENV_VAR = "DATASTORE_EMULATOR_HOST";
 
   // Default to a slightly larger channel count to handle a larger initial QPS. The initial
@@ -129,6 +154,23 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     return openTelemetryOptions;
   }
 
+  /**
+   * Builder for {@link DatastoreOptions}.
+   *
+   * <p>Configure retry bounds (maximum attempts, backoff delays, and RPC/total timeouts) via {@link
+   * #setRetrySettings(com.google.api.gax.retrying.RetrySettings)}. Under the default gRPC
+   * transport, read-only and idempotent RPCs ({@code lookup}, {@code runQuery}, {@code
+   * runAggregationQuery}, and {@code reserveIds}) automatically retry transient {@code UNAVAILABLE}
+   * and {@code DEADLINE_EXCEEDED} errors using those settings, whereas write and
+   * transaction-lifecycle RPCs ({@code commit}, {@code beginTransaction}, {@code rollback}, and
+   * {@code allocateIds}) have no retryable status codes configured by default and are not
+   * automatically retried at the RPC layer. Separately, {@link
+   * Datastore#runInTransaction(Datastore.TransactionCallable)} uses these retry settings to retry
+   * transaction callbacks on {@code ABORTED} contention errors.
+   *
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/errors">Google Cloud
+   *     Datastore error codes</a>
+   */
   public static class Builder extends ServiceOptions.Builder<Datastore, DatastoreOptions, Builder> {
 
     private String namespace;
@@ -159,10 +201,17 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     /**
      * Sets the transport options.
      *
+     * <p>By default, {@code DatastoreOptions} uses gRPC ({@link GrpcTransportOptions}) with a
+     * managed channel pool configurable via {@link #setChannelProvider(TransportChannelProvider)}.
+     * Pass {@link HttpTransportOptions} to opt into HTTP/JSON transport instead (in which case any
+     * configured channel provider is ignored).
+     *
      * @param transportOptions the transport options to set, must be {@link HttpTransportOptions} or
      *     {@link GrpcTransportOptions}
      * @return the builder
      * @throws IllegalArgumentException if the transport options are not supported
+     * @see <a href="https://docs.cloud.google.com/datastore/docs/java-client-grpc">Datastore Java
+     *     gRPC client guide</a>
      */
     @Override
     public Builder setTransportOptions(@Nonnull TransportOptions transportOptions) {
@@ -189,6 +238,28 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
       return setTransportOptions((TransportOptions) transportOptions);
     }
 
+    /**
+     * Sets the service host endpoint.
+     *
+     * <p>When connecting to a local or containerized Datastore emulator, explicitly set both the
+     * host and {@link com.google.cloud.NoCredentials#getInstance()} (along with a project ID) so
+     * the client uses plaintext connections and skips Application Default Credentials lookup:
+     *
+     * <pre>{@code
+     * DatastoreOptions options = DatastoreOptions.newBuilder()
+     *     .setProjectId("test-project")
+     *     .setHost("localhost:8081")
+     *     .setCredentials(NoCredentials.getInstance())
+     *     .build();
+     * }</pre>
+     *
+     * <p>If omitted, {@link #build()} defaults to the transport-specific production endpoint (it
+     * does not automatically apply {@link #LOCAL_HOST_ENV_VAR} / {@code DATASTORE_EMULATOR_HOST}),
+     * so emulator connections must call {@code setHost(...)} explicitly.
+     *
+     * @see <a href="https://docs.cloud.google.com/datastore/docs/tools/datastore-emulator">Running
+     *     the Datastore emulator</a>
+     */
     @Override
     public Builder setHost(String host) {
       this.host = host;
@@ -215,10 +286,13 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     /**
      * Builds the {@link DatastoreOptions} instance.
      *
-     * <p>If the host is not explicitly set, it defaults to the transport-specific default host:
+     * <p>If the host is not explicitly set via {@link #setHost(String)}, it defaults to the
+     * transport-specific production host ({@link #LOCAL_HOST_ENV_VAR} / {@code
+     * DATASTORE_EMULATOR_HOST} is not automatically applied; pass emulator hosts explicitly via
+     * {@link #setHost(String)}):
      *
      * <ul>
-     *   <li>gRPC: {@code datastore.googleapis.com:443}
+     *   <li>gRPC (default): {@code datastore.googleapis.com:443}
      *   <li>HTTP: {@code https://datastore.googleapis.com}
      * </ul>
      *
@@ -238,12 +312,35 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
       return new DatastoreOptions(this);
     }
 
-    /** Sets the default namespace to be used by the datastore service. */
+    /**
+     * Sets the default namespace used by queries and {@link Datastore#newKeyFactory()}. Must not be
+     * {@code null}; omit or pass {@code ""} for the default namespace.
+     *
+     * <p>Keys created via {@link Datastore#newKeyFactory()} inherit this namespace automatically.
+     * Keys constructed manually (for example via {@link Key#newBuilder(String, String, String)} or
+     * {@link KeyFactory#KeyFactory(String)}) default to {@code ""} and must explicitly set the
+     * matching namespace when targeting a non-default namespace.
+     *
+     * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/multitenancy">Datastore
+     *     Multitenancy</a>
+     */
     public Builder setNamespace(String namespace) {
       this.namespace = validateNamespace(namespace);
       return this;
     }
 
+    /**
+     * Sets the database ID used by this client. Omit or pass {@code ""} for the default database
+     * (do not pass {@code "(default)"}).
+     *
+     * <p>Keys created via {@link Datastore#newKeyFactory()} inherit this database ID automatically.
+     * Keys constructed manually (for example via {@link Key#newBuilder(String, String, String)} or
+     * {@link KeyFactory#KeyFactory(String)}) default to {@code ""} and must explicitly specify the
+     * matching database ID when targeting a named database.
+     *
+     * @see <a href="https://docs.cloud.google.com/datastore/docs/manage-databases">Manage Datastore
+     *     Databases</a>
+     */
     public Builder setDatabaseId(String databaseId) {
       this.databaseId = databaseId;
       return this;
@@ -386,6 +483,9 @@ public class DatastoreOptions extends ServiceOptions<Datastore, DatastoreOptions
     return namespace;
   }
 
+  /**
+   * Returns the database ID used by this datastore service, or {@code ""} for the default database.
+   */
   public String getDatabaseId() {
     return this.databaseId;
   }

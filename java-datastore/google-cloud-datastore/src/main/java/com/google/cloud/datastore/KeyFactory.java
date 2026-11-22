@@ -19,8 +19,18 @@ package com.google.cloud.datastore;
 import com.google.common.collect.ImmutableList;
 
 /**
- * A helper for creating keys for a specific {@link Datastore}, using its associated projectId and
- * namespace.
+ * A mutable helper for creating keys for a specific {@link Datastore}, preconfigured with its
+ * project ID, database ID, and namespace.
+ *
+ * <p>{@code KeyFactory} is stateful and <strong>not thread-safe</strong>. Calling {@link
+ * #setKind(String)}, {@link #addAncestor(PathElement)}, or {@link #addAncestors(Iterable)} mutates
+ * this instance, and configured kind and ancestors persist and accumulate across {@link #newKey()},
+ * {@link #newKey(String)}, and {@link #newKey(long)} calls until {@link #reset()} is called.
+ *
+ * <p>Prefer creating a fresh instance via {@link Datastore#newKeyFactory()} for each operation (it
+ * is lightweight and inherits the client's project ID, database ID, and namespace), or call {@link
+ * #reset()} between unrelated keys on a single thread. Do not share a {@code KeyFactory} instance
+ * across threads.
  */
 public final class KeyFactory extends BaseKey.Builder<KeyFactory> {
 
@@ -45,12 +55,21 @@ public final class KeyFactory extends BaseKey.Builder<KeyFactory> {
     this.initialDatabaseId = databaseId;
   }
 
+  /**
+   * Creates an {@link IncompleteKey} using the currently configured kind and accumulated ancestors.
+   * Does not clear the factory's kind or ancestors; call {@link #reset()} to start over.
+   */
   public IncompleteKey newKey() {
     ImmutableList<PathElement> path =
         ImmutableList.<PathElement>builder().addAll(ancestors).add(PathElement.of(kind)).build();
     return new IncompleteKey(projectId, namespace, databaseId, path);
   }
 
+  /**
+   * Creates a complete {@link Key} with the given string name using the currently configured kind
+   * and accumulated ancestors. Does not clear the factory's kind or ancestors; call {@link
+   * #reset()} to start over.
+   */
   public Key newKey(String name) {
     ImmutableList<PathElement> path =
         ImmutableList.<PathElement>builder()
@@ -60,6 +79,11 @@ public final class KeyFactory extends BaseKey.Builder<KeyFactory> {
     return new Key(projectId, namespace, databaseId, path);
   }
 
+  /**
+   * Creates a complete {@link Key} with the given numeric ID using the currently configured kind
+   * and accumulated ancestors. Does not clear the factory's kind or ancestors; call {@link
+   * #reset()} to start over.
+   */
   public Key newKey(long id) {
     ImmutableList<PathElement> path =
         ImmutableList.<PathElement>builder()
@@ -70,7 +94,8 @@ public final class KeyFactory extends BaseKey.Builder<KeyFactory> {
   }
 
   /**
-   * Resets the KeyFactory to its initial state.
+   * Resets this {@code KeyFactory} to its initial state, clearing the configured kind and all
+   * accumulated ancestors and restoring the initial project ID, namespace, and database ID.
    *
    * @return {@code this} for chaining
    */

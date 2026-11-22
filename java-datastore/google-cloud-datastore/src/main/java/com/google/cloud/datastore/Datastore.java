@@ -24,39 +24,82 @@ import com.google.datastore.v1.TransactionOptions;
 import java.util.Iterator;
 import java.util.List;
 
-/** An interface for Google Cloud Datastore. */
+/**
+ * An interface for Google Cloud Datastore.
+ *
+ * <p>Provides synchronous operations to look up entities ({@link #get}, {@link #fetch}), write
+ * entities ({@link #add}, {@link #put}, {@link #update}, {@link #delete}), run queries and
+ * aggregations ({@link #run}, {@link #runAggregation}), execute atomic transactions ({@link
+ * #runInTransaction}, {@link #newTransaction}), submit non-atomic write batches ({@link
+ * #newBatch}), and allocate or reserve keys ({@link #allocateId}, {@link #reserveIds}).
+ *
+ * <p>Typically, create one {@code Datastore} instance per application via {@link
+ * DatastoreOptions#getService()} and reuse it across threads. Call {@link #close()} on application
+ * shutdown to close underlying gRPC channels and release background resources. Operations on {@code
+ * Datastore} are thread-safe, except for stateful helpers returned by this client such as {@link
+ * KeyFactory}, {@link Transaction}, and {@link Batch}.
+ *
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/overview">Google Cloud
+ *     Datastore</a>
+ */
 @InternalExtensionOnly
 public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWriter, AutoCloseable {
 
   /**
-   * Returns a new Datastore transaction.
+   * Begins and returns a new explicit Datastore transaction configured with {@code options}.
    *
-   * @param options a transaction option indicating the mode of the transaction (read-only or
-   *     read-write)
+   * <p>Unlike {@link #runInTransaction(TransactionCallable, TransactionOptions)}, explicit
+   * transactions do not automatically retry on contention ({@code ABORTED}), and {@link
+   * Transaction} is not {@link AutoCloseable}. Always execute transactional reads and writes on the
+   * returned {@link Transaction} (not on this {@code Datastore} instance), and ensure uncommitted
+   * transactions are rolled back in a {@code finally} block checking {@link Transaction#isActive()}
+   * before calling {@link Transaction#rollback()}.
+   *
+   * @param options transaction options indicating read-only or read-write mode (and optional {@code
+   *     previousTransaction} ID when manually retrying a read-write transaction)
    * @throws DatastoreException upon failure
+   * @see Transaction
+   * @see #runInTransaction(TransactionCallable, TransactionOptions)
    */
   Transaction newTransaction(TransactionOptions options);
 
   /**
-   * Returns a new Datastore transaction.
+   * Begins and returns a new explicit Datastore transaction.
+   *
+   * <p>Unlike {@link #runInTransaction(TransactionCallable)}, explicit transactions do not
+   * automatically retry on contention ({@code ABORTED}), and {@link Transaction} is not {@link
+   * AutoCloseable}. Always wrap usage in a {@code try}/{@code finally} block that rolls back if
+   * {@link Transaction#isActive()} is still {@code true}, and invoke transactional reads and writes
+   * on the returned {@link Transaction} rather than on this {@code Datastore} instance.
    *
    * @throws DatastoreException upon failure
+   * @see Transaction
+   * @see #runInTransaction(TransactionCallable)
    */
   Transaction newTransaction();
 
   /**
-   * Returns a new Datastore transaction with specified {@link DatastoreExecutionOptions}.
+   * Begins and returns a new explicit Datastore transaction with specified {@link
+   * DatastoreExecutionOptions}.
+   *
+   * <p>Explicit transactions do not automatically retry on contention ({@code ABORTED}) and are not
+   * {@link AutoCloseable}; roll back in a {@code finally} block if {@link Transaction#isActive()}.
    *
    * @throws DatastoreException upon failure
+   * @see #newTransaction()
    */
   @BetaApi
   Transaction newTransaction(DatastoreExecutionOptions executionOptions);
 
   /**
-   * Returns a new Datastore transaction with specified {@link TransactionOptions} and {@link
-   * DatastoreExecutionOptions}.
+   * Begins and returns a new explicit Datastore transaction with specified {@link
+   * TransactionOptions} and {@link DatastoreExecutionOptions}.
+   *
+   * <p>Explicit transactions do not automatically retry on contention ({@code ABORTED}) and are not
+   * {@link AutoCloseable}; roll back in a {@code finally} block if {@link Transaction#isActive()}.
    *
    * @throws DatastoreException upon failure
+   * @see #newTransaction(TransactionOptions)
    */
   @BetaApi
   Transaction newTransaction(
@@ -64,86 +107,139 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
 
   /**
    * A callback for running with a transactional {@link
-   * com.google.cloud.datastore.DatastoreReaderWriter}. The associated transaction will be committed
-   * after a successful return from the {@code run} method. Any propagated exception will cause the
-   * transaction to be rolled-back.
+   * com.google.cloud.datastore.DatastoreReaderWriter}. The associated transaction is committed
+   * after a successful return from {@link #run(DatastoreReaderWriter)}, and rolled back if an
+   * exception is thrown.
+   *
+   * <p>All reads and writes that must participate in the transaction must be executed on the {@link
+   * DatastoreReaderWriter} passed to {@link #run(DatastoreReaderWriter)}, not on the standalone
+   * {@link Datastore} instance. Because {@link Datastore#runInTransaction} automatically retries
+   * the callback on contention ({@code ABORTED}) errors, implementations must be idempotent and
+   * avoid non-idempotent side effects before the transaction commits.
    *
    * @param <T> the type of the return value
+   * @see Datastore#runInTransaction(TransactionCallable)
+   * @see Datastore#runInTransaction(TransactionCallable, TransactionOptions)
    */
   interface TransactionCallable<T> {
     /**
-     * Callback's invoke method for the TransactionCallable.
+     * Executes transactional work using the provided {@link DatastoreReaderWriter}.
      *
-     * @param readerWriter DatastoreReaderWriter associated with the new transaction
-     * @return T The transaction result
-     * @throws Exception upon failure
+     * <p>Use {@code readerWriter} (not the standalone {@link Datastore} client) for all reads and
+     * writes that belong to this transaction. Writes buffered on {@code readerWriter} are not
+     * visible to subsequent reads in the same transaction; they are applied only on commit.
+     *
+     * @param readerWriter {@link DatastoreReaderWriter} associated with the active transaction
+     * @return the transaction result
+     * @throws Exception upon failure (triggers rollback and is propagated wrapped in a {@link
+     *     DatastoreException})
      */
     T run(DatastoreReaderWriter readerWriter) throws Exception;
   }
 
   /**
    * Invokes the callback's {@link Datastore.TransactionCallable#run} method with a {@link
-   * DatastoreReaderWriter} that is associated with a new transaction. The transaction will be
-   * committed upon successful invocation. Any thrown exception will cause the transaction to
-   * rollback and will be propagated as a {@link DatastoreException} with the original exception as
-   * its root cause.
+   * DatastoreReaderWriter} associated with a new transaction, commits upon normal return, and rolls
+   * back if an exception is thrown.
    *
-   * <p>Example of running in a transaction.
+   * <p>Important behavioral contracts:
+   *
+   * <ul>
+   *   <li><b>Use {@code readerWriter}, not {@code datastore}:</b> Execute all transactional reads
+   *       and writes on the callback's {@link DatastoreReaderWriter}. Calls made directly on the
+   *       {@link Datastore} client run outside the transaction and are not atomic with it.
+   *   <li><b>Automatic retries and idempotency:</b> The entire callback is automatically retried on
+   *       contention ({@code ABORTED}) errors according to the client's retry settings. Keep
+   *       callbacks idempotent and avoid non-idempotent side effects until {@code runInTransaction}
+   *       returns.
+   *   <li><b>Explicit {@link TransactionOptions}:</b> To explicitly control read-write vs.
+   *       read-only mode or guarantee {@code previousTransaction} retry priority across library
+   *       versions, use {@link #runInTransaction(TransactionCallable, TransactionOptions)} with
+   *       explicit {@link TransactionOptions.ReadWrite} options.
+   *   <li><b>Wrapped exceptions:</b> Exceptions thrown from the callback or {@code commit()} are
+   *       wrapped in a {@link DatastoreException} (with code {@code 0} and {@code null} reason)
+   *       whose {@link Throwable#getCause()} holds the original exception or inner {@link
+   *       DatastoreException}. Unwrap {@code getCause()} to inspect the underlying failure.
+   * </ul>
+   *
+   * <p>Example of running in a transaction:
    *
    * <pre>{@code
    * String callableResult = "my_callable_result";
-   * TransactionCallable<String> callable = new TransactionCallable<String>() {
-   *   public String run(DatastoreReaderWriter readerWriter) {
-   *     // use readerWriter to run in transaction
-   *     return callableResult;
-   *   }
-   * };
+   * TransactionCallable<String> callable =
+   *     readerWriter -> {
+   *       // Use readerWriter (not datastore) for all transactional reads and writes.
+   *       return callableResult;
+   *     };
    * String result = datastore.runInTransaction(callable);
    * }</pre>
    *
-   * @param callable the callback to call with a newly created transactional readerWriter
-   * @throws DatastoreException upon failure
+   * @param callable the callback to invoke with a newly created transactional {@code readerWriter}
+   * @throws DatastoreException upon failure (unwrap {@link Throwable#getCause()} for the original
+   *     callback or commit exception)
+   * @see #runInTransaction(TransactionCallable, TransactionOptions)
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/transactions">Google Cloud
+   *     Datastore transactions</a>
    */
   <T> T runInTransaction(TransactionCallable<T> callable);
 
   /**
    * Invokes the callback's {@link Datastore.TransactionCallable#run} method with a {@link
-   * DatastoreReaderWriter} that is associated with a new transaction. The transaction will be
-   * committed upon successful invocation. Any thrown exception will cause the transaction to
-   * rollback and will be propagated as a {@link DatastoreException} with the original exception as
-   * its root cause. If {@link TransactionOptions} is set to read-write mode, previous transaction
-   * Id in the options will be automatically populated each time a transaction is retried.
+   * DatastoreReaderWriter} associated with a new transaction configured by {@code options}, commits
+   * upon normal return, and rolls back if an exception is thrown.
    *
-   * <p>Example of running in a transaction.
+   * <p>All reads and writes participating in the transaction must be executed on the callback's
+   * {@link DatastoreReaderWriter}, not on {@link Datastore}. The callback must be idempotent
+   * because it is automatically retried on contention ({@code ABORTED}) errors according to the
+   * client's retry settings. When {@code options} specifies read-write mode ({@link
+   * TransactionOptions.ReadWrite}), the previous transaction ID is automatically populated on
+   * retries so Datastore prioritizes the retried transaction under contention.
+   *
+   * <p>Exceptions thrown from the callback or {@code commit()} are rolled back and propagated
+   * wrapped in a {@link DatastoreException} (with code {@code 0} and {@code null} reason); unwrap
+   * {@link Throwable#getCause()} to inspect the original user exception or inner {@link
+   * DatastoreException}.
+   *
+   * <p>Example of running in a read-write transaction with explicit options:
    *
    * <pre>{@code
    * String callableResult = "my_callable_result";
-   * TransactionCallable<String> callable = new TransactionCallable<String>() {
-   *   public String run(DatastoreReaderWriter readerWriter) {
-   *     // use readerWriter to run in transaction
-   *     return callableResult;
-   *   }
-   * };
+   * TransactionCallable<String> callable =
+   *     readerWriter -> {
+   *       // Use readerWriter (not datastore) for all transactional reads and writes.
+   *       return callableResult;
+   *     };
    *
    * TransactionOptions options = TransactionOptions.newBuilder()
-   *     .setReadWrite(TransactionOptions.ReadWrite
-   *         .getDefaultInstance())
+   *     .setReadWrite(TransactionOptions.ReadWrite.getDefaultInstance())
    *     .build();
    *
    * String result = datastore.runInTransaction(callable, options);
    * }</pre>
    *
-   * @param callable the callback to call with a newly created transactional readerWriter
-   * @param options the Transaction options indicating whether the transaction mode is Read-only or
-   *     Read-Write
-   * @throws DatastoreException upon failure
+   * @param callable the callback to invoke with a newly created transactional {@code readerWriter}
+   * @param options the transaction options indicating read-only or read-write mode
+   * @throws DatastoreException upon failure (unwrap {@link Throwable#getCause()} for the original
+   *     callback or commit exception)
+   * @see #runInTransaction(TransactionCallable)
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/transactions">Google Cloud
+   *     Datastore transactions</a>
    */
   <T> T runInTransaction(TransactionCallable<T> callable, TransactionOptions options);
 
   /**
-   * Returns a new Batch for processing multiple write operations in one request.
+   * Returns a new {@link Batch} for sending multiple write operations in one RPC request.
    *
-   * <p>Example of starting a new batch.
+   * <p><b>Not atomic:</b> Unlike a Firestore {@code WriteBatch} or a Datastore {@link Transaction},
+   * {@link Batch#submit()} commits in {@link
+   * com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode. Mutations are not atomic
+   * across entities, so partial writes may persist even if another mutation in the same batch
+   * fails. Use {@link #runInTransaction(TransactionCallable)} or {@link #newTransaction()} when
+   * all-or-nothing atomicity is required.
+   *
+   * <p>The returned {@link Batch} is stateful and not thread-safe.
+   *
+   * <p>Example of starting a new batch:
    *
    * <pre>{@code
    * String keyName1 = "my_key_name_1";
@@ -157,50 +253,70 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * batch.add(entity2);
    * batch.submit();
    * }</pre>
+   *
+   * @see Batch
+   * @see #runInTransaction(TransactionCallable)
    */
   Batch newBatch();
 
   /**
-   * Allocate a unique id for the given key. The returned key will have the same information
-   * (projectId, kind, namespace and ancestors) as the given key and will have a newly assigned id.
+   * Allocates a unique ID for the given incomplete key. The returned {@link Key} has the same
+   * project ID, database ID, kind, namespace, and ancestors as {@code key}, plus a newly assigned
+   * numeric ID.
    *
-   * <p>Example of allocating an id.
+   * <p>Although {@link Key} extends {@link IncompleteKey}, the input must be an incomplete key (for
+   * example, from {@link KeyFactory#newKey()}); passing an already-complete {@link Key} throws
+   * {@link IllegalArgumentException}.
+   *
+   * <p>Example of allocating an ID:
    *
    * <pre>{@code
    * KeyFactory keyFactory = datastore.newKeyFactory().setKind("MyKind");
    * IncompleteKey incompleteKey = keyFactory.newKey();
    *
-   * // let cloud datastore automatically assign an id
+   * // Let Cloud Datastore automatically assign an ID.
    * Key key = datastore.allocateId(incompleteKey);
    * }</pre>
    *
+   * @throws IllegalArgumentException if {@code key} is already a complete {@link Key}
    * @throws DatastoreException upon failure
    */
   Key allocateId(IncompleteKey key);
 
   /**
-   * Returns a list of keys using the allocated ids ordered by the input.
+   * Allocates unique IDs for the given incomplete keys and returns the resulting complete {@link
+   * Key}s in input order.
    *
-   * <p>Example of allocating multiple ids in a single batch.
+   * <p>Every element must be an {@link IncompleteKey}; passing an already-complete {@link Key}
+   * throws {@link IllegalArgumentException}.
+   *
+   * <p>Example of allocating multiple IDs in a single batch:
    *
    * <pre>{@code
    * KeyFactory keyFactory = datastore.newKeyFactory().setKind("MyKind");
    * IncompleteKey incompleteKey1 = keyFactory.newKey();
    * IncompleteKey incompleteKey2 = keyFactory.newKey();
    *
-   * // let cloud datastore automatically assign the ids
+   * // Let Cloud Datastore automatically assign the IDs.
    * List<Key> keys = datastore.allocateId(incompleteKey1, incompleteKey2);
    * }</pre>
    *
+   * @throws IllegalArgumentException if any element in {@code keys} is already a complete {@link
+   *     Key}
    * @throws DatastoreException upon failure
    * @see #allocateId(IncompleteKey)
    */
   List<Key> allocateId(IncompleteKey... keys);
 
   /**
-   * Returns a list of keys using the allocated ids with specified {@link
-   * DatastoreExecutionOptions}.
+   * Allocates unique IDs for the given incomplete keys with specified {@link
+   * DatastoreExecutionOptions} and returns the resulting complete {@link Key}s in input order.
    *
+   * <p>Every element must be an {@link IncompleteKey}; passing an already-complete {@link Key}
+   * throws {@link IllegalArgumentException}.
+   *
+   * @throws IllegalArgumentException if any element in {@code keys} is already a complete {@link
+   *     Key}
    * @throws DatastoreException upon failure
    */
   @BetaApi
@@ -262,10 +378,12 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   Entity add(FullEntity<?> entity);
 
   /**
-   * Datastore add operation: inserts the provided entity with specified {@link
-   * DatastoreExecutionOptions}. This method will automatically allocate an id if necessary.
+   * A non-transactional Datastore add (insert-only) operation: inserts the provided entity with
+   * specified {@link DatastoreExecutionOptions} and fails with {@code ALREADY_EXISTS} if an entity
+   * with the same key already exists. This method will automatically allocate an id if necessary.
    *
-   * @throws DatastoreException upon failure
+   * @throws DatastoreException upon failure or if an entity for {@code entity.getKey()} already
+   *     exists
    * @throws IllegalArgumentException if the given entity is missing a key
    */
   @BetaApi
@@ -310,11 +428,13 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   List<Entity> add(FullEntity<?>... entities);
 
   /**
-   * Datastore add operation: inserts the provided entities with specified {@link
-   * DatastoreExecutionOptions}. This method will automatically allocate id for any entity with an
-   * incomplete key.
+   * A non-transactional Datastore add (insert-only) operation: inserts the provided entities with
+   * specified {@link DatastoreExecutionOptions} and fails with {@code ALREADY_EXISTS} if any
+   * entity's key already exists. Not atomic across multiple entities; entities whose keys did not
+   * exist may still be inserted if another key fails. This method will automatically allocate an id
+   * for any entity with an incomplete key.
    *
-   * @throws DatastoreException upon failure
+   * @throws DatastoreException upon failure or if any of the entities' keys already exists
    * @throws IllegalArgumentException if any of the given entities is missing a key
    */
   @BetaApi
@@ -323,7 +443,13 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   /**
    * {@inheritDoc}
    *
-   * <p>Example of updating multiple entities.
+   * <p>This call commits in {@link com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL}
+   * mode and is not atomic across entities; partial updates may persist if another entity in the
+   * call does not exist ({@code NOT_FOUND}). Each update replaces the entire stored entity (not a
+   * field-level patch). Use {@link #runInTransaction(TransactionCallable)} or {@link
+   * #newTransaction()} for atomic updates.
+   *
+   * <p>Example of updating multiple entities:
    *
    * <pre>{@code
    * String keyName1 = "my_key_name_1";
@@ -341,14 +467,16 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * datastore.update(entity1, entity2);
    * }</pre>
    *
-   * @throws DatastoreException upon failure
+   * @throws DatastoreException upon failure or if any entity's key does not exist
    */
   @Override
   void update(Entity... entities);
 
   /**
-   * A Datastore update operation with specified {@link DatastoreExecutionOptions}. The operation
-   * will fail if an entity with the same key does not already exist.
+   * A non-transactional Datastore update operation with specified {@link
+   * DatastoreExecutionOptions}. Replaces each existing entity in full (not a field-level patch) and
+   * fails with {@code NOT_FOUND} if a key does not already exist. Not atomic across multiple
+   * entities.
    *
    * @throws DatastoreException upon failure
    */
@@ -358,7 +486,7 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   /**
    * {@inheritDoc}
    *
-   * <p>Example of putting a single entity.
+   * <p>Example of putting a single entity:
    *
    * <pre>{@code
    * String keyName = "my_key_name";
@@ -374,13 +502,24 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   @Override
   Entity put(FullEntity<?> entity);
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>Commits in {@link com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode and is
+   * not atomic across entities; use {@link #runInTransaction(TransactionCallable)} or {@link
+   * #newTransaction()} for atomic multi-entity writes.
+   */
   @Override
   List<Entity> put(FullEntity<?>... entities);
 
   /**
-   * {@inheritDoc} with specified {@link DatastoreExecutionOptions}.
+   * A non-transactional Datastore put (upsert) operation with specified {@link
+   * DatastoreExecutionOptions}. Replaces existing entities in full (not a field-level patch) and
+   * automatically allocates IDs for any entities with an {@link IncompleteKey}. Not atomic across
+   * multiple entities.
    *
    * @throws DatastoreException upon failure
+   * @throws IllegalArgumentException if any of the given entities is missing a key
    */
   @BetaApi
   List<Entity> put(List<FullEntity<?>> entities, DatastoreExecutionOptions executionOptions);
@@ -388,7 +527,11 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   /**
    * {@inheritDoc}
    *
-   * <p>Example of deleting multiple entities.
+   * <p>Commits in {@link com.google.datastore.v1.CommitRequest.Mode#NON_TRANSACTIONAL} mode and is
+   * not atomic across keys; use {@link #runInTransaction(TransactionCallable)} or {@link
+   * #newTransaction()} for atomic deletes.
+   *
+   * <p>Example of deleting multiple entities:
    *
    * <pre>{@code
    * String keyName1 = "my_key_name1";
@@ -404,7 +547,9 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   void delete(Key... keys);
 
   /**
-   * A datastore delete operation with specified {@link DatastoreExecutionOptions}.
+   * A non-transactional Datastore delete operation with specified {@link
+   * DatastoreExecutionOptions}. Not atomic across multiple keys; deleting a nonexistent key is a
+   * no-op.
    *
    * @throws DatastoreException upon failure
    */
@@ -412,7 +557,13 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   void delete(List<Key> keys, DatastoreExecutionOptions executionOptions);
 
   /**
-   * Returns a new KeyFactory for this service
+   * Returns a new {@link KeyFactory} initialized with this client's project ID, database ID, and
+   * namespace.
+   *
+   * <p>{@link KeyFactory} is mutable, not thread-safe, and retains its configured kind and
+   * accumulated ancestors across {@code newKey} calls until {@link KeyFactory#reset()} is called.
+   * Prefer calling {@code newKeyFactory()} per operation rather than sharing an instance across
+   * threads or reusing it without resetting.
    *
    * <p>Example of creating a {@code KeyFactory}.
    *
@@ -449,12 +600,19 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
   Entity get(Key key, DatastoreExecutionOptions executionOptions);
 
   /**
-   * Returns an {@link Entity} for each given {@link Key} that exists in the Datastore. The order of
-   * the result is unspecified. Results are loaded lazily, so it is possible to get a {@code
-   * DatastoreException} from the returned {@code Iterator}'s {@link Iterator#hasNext hasNext} or
-   * {@link Iterator#next next} methods. {@link ReadOption}s can be specified if desired.
+   * Returns an iterator over the {@link Entity} objects that exist in Datastore for the given keys.
+   * {@link ReadOption}s can be specified if desired.
    *
-   * <p>Example of getting multiple entity objects.
+   * <p>Input keys are deduplicated, nonexistent keys are silently omitted, and result order is
+   * unspecified (it does not necessarily match the input order). Any keys deferred by Datastore are
+   * fetched lazily during {@link Iterator#hasNext hasNext} or {@link Iterator#next next}, which may
+   * throw {@link DatastoreException}. Cloud Datastore limits a single lookup request to at most
+   * 1,000 keys; split larger key sets into batches.
+   *
+   * <p>Use {@link #fetch(Iterable, ReadOption...)} instead if you need results in input order with
+   * {@code null} placeholders for missing keys.
+   *
+   * <p>Example of getting multiple entity objects:
    *
    * <pre>{@code
    * String firstKeyName = "my_first_key_name";
@@ -472,25 +630,38 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * }</pre>
    *
    * @throws DatastoreException upon failure
-   * @see #get(Key)
+   * @see #get(Key, ReadOption...)
+   * @see #fetch(Iterable, ReadOption...)
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/limits">Cloud Datastore
+   *     limits</a>
    */
   Iterator<Entity> get(Iterable<Key> keys, ReadOption... options);
 
   /**
-   * Returns an {@link Entity} for each given {@link Key} with specified {@link
-   * DatastoreExecutionOptions}.
+   * Returns an iterator over the {@link Entity} objects that exist in Datastore for the given keys
+   * with specified {@link DatastoreExecutionOptions}.
+   *
+   * <p>Input keys are deduplicated, nonexistent keys are omitted, result order is unspecified, and
+   * deferred keys are fetched lazily during iteration. Cloud Datastore limits a single lookup
+   * request to at most 1,000 keys.
    *
    * @throws DatastoreException upon failure
+   * @see #get(Iterable, ReadOption...)
    */
   @BetaApi
   Iterator<Entity> get(Iterable<Key> keys, DatastoreExecutionOptions executionOptions);
 
   /**
-   * Returns a list with a value for each given key (ordered by input). {@code null} values are
-   * returned for nonexistent keys. When possible prefer using {@link #get(Key...)} to avoid eagerly
-   * loading the results. {@link ReadOption}s can be specified if desired.
+   * Eagerly fetches entities for the given keys and returns a list aligned 1:1 with the input
+   * (preserving input order and duplicate keys). {@code null} placeholders are returned at the
+   * corresponding indices for nonexistent keys. {@link ReadOption}s can be specified if desired.
    *
-   * <p>Example of fetching a list of Entity objects.
+   * <p>All results, including any deferred lookup batches, are loaded into memory before returning.
+   * Prefer {@link #get(Iterable, ReadOption...)} when input ordering and missing-key placeholders
+   * are not needed. Cloud Datastore limits a single lookup request to at most 1,000 keys; split
+   * larger key sets into batches.
+   *
+   * <p>Example of fetching a list of Entity objects:
    *
    * <pre>{@code
    * String firstKeyName = "my_first_key_name";
@@ -500,15 +671,27 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * Key secondKey = keyFactory.newKey(secondKeyName);
    * List<Entity> entities = datastore.fetch(Lists.newArrayList(firstKey, secondKey));
    * for (Entity entity : entities) {
-   *   // do something with the entity
+   *   if (entity != null) {
+   *     // do something with the entity
+   *   }
    * }
    * }</pre>
+   *
+   * @throws DatastoreException upon failure
+   * @see #get(Iterable, ReadOption...)
+   * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/limits">Cloud Datastore
+   *     limits</a>
    */
   List<Entity> fetch(Iterable<Key> keys, ReadOption... options);
 
   /**
-   * Returns a list with a value for each given key with specified {@link
-   * DatastoreExecutionOptions}.
+   * Eagerly fetches entities for the given keys with specified {@link DatastoreExecutionOptions},
+   * preserving input order and duplicates with {@code null} placeholders for nonexistent keys.
+   *
+   * <p>Cloud Datastore limits a single lookup request to at most 1,000 keys.
+   *
+   * @throws DatastoreException upon failure
+   * @see #fetch(Iterable, ReadOption...)
    */
   @BetaApi
   List<Entity> fetch(Iterable<Key> keys, DatastoreExecutionOptions executionOptions);
@@ -560,6 +743,11 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    * Submits a {@link Query} with specified {@link com.google.cloud.datastore.models.ExplainOptions}
    * and returns its result. {@link ReadOption}s can be specified if desired.
    *
+   * <p>When {@link ExplainOptions#shouldAnalyze()} is {@code true}, exhaust the returned {@link
+   * QueryResults} iterator ({@link QueryResults#hasNext()} returns {@code false}) before calling
+   * {@link QueryResults#getExplainMetrics()}, because Datastore returns execution metrics only on
+   * the final response batch.
+   *
    * <p>Example of running a query to find all entities of one kind.
    *
    * <pre>{@code
@@ -600,7 +788,7 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    *    .build();
    * AggregationResults aggregationResults = datastore.runAggregation(aggregationQuery);
    * for (AggregationResult aggregationResult : aggregationResults) {
-   *     System.out.println(aggregationResult.get("total_count"));
+   *   System.out.println(aggregationResult.getLong("total_count"));
    * }
    * }</pre>
    *
@@ -617,8 +805,8 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
    *     .build();
    * AggregationResults aggregationResults = datastore.runAggregation(aggregationQuery);
    * for (AggregationResult aggregationResult : aggregationResults) {
-   *   System.out.println(aggregationResult.get("total_count"));
-   *   System.out.println(aggregationResult.get("count_upto_100"));
+   *   System.out.println(aggregationResult.getLong("total_count"));
+   *   System.out.println(aggregationResult.getLong("count_upto_100"));
    * }
    * }</pre>
    *
@@ -663,13 +851,25 @@ public interface Datastore extends Service<DatastoreOptions>, DatastoreReaderWri
       AggregationQuery query, DatastoreExecutionOptions executionOptions);
 
   /**
-   * Closes the gRPC channels associated with this instance and frees up their resources. This
-   * method blocks until all channels are closed. Once this method is called, this Datastore client
-   * is no longer usable.
+   * Closes the underlying RPC channels on the default gRPC transport ({@link
+   * com.google.cloud.grpc.GrpcTransportOptions}) and built-in telemetry resources associated with
+   * this instance, blocking until shutdown completes.
+   *
+   * <p>Call this method once during application shutdown rather than per request. On the default
+   * gRPC transport, once closed, this {@code Datastore} client is no longer usable (under {@link
+   * com.google.cloud.http.HttpTransportOptions}, channel shutdown is not implemented and a warning
+   * is logged).
    */
   @Override
   void close() throws Exception;
 
-  /** Returns true if this background resource has been shut down. */
+  /**
+   * Returns {@code true} if the underlying gRPC transport resources for this client have been shut
+   * down via {@link #close()}.
+   *
+   * <p>This check is supported for the default gRPC transport ({@link
+   * com.google.cloud.grpc.GrpcTransportOptions}) and throws {@link UnsupportedOperationException}
+   * when configured with {@link com.google.cloud.http.HttpTransportOptions}.
+   */
   boolean isClosed();
 }
