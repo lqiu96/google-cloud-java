@@ -21,6 +21,7 @@ import com.google.api.generator.engine.ast.MethodDefinition;
 import com.google.api.generator.engine.ast.MethodInvocationExpr;
 import com.google.api.generator.engine.ast.ScopeNode;
 import com.google.api.generator.engine.ast.TypeNode;
+import com.google.api.generator.gapic.composer.comment.SettingsCommentComposer;
 import com.google.api.generator.gapic.composer.common.AbstractServiceStubSettingsClassComposer;
 import com.google.api.generator.gapic.composer.store.TypeStore;
 import com.google.api.generator.gapic.model.Service;
@@ -83,6 +84,8 @@ public class ServiceStubSettingsClassComposer extends AbstractServiceStubSetting
             .setReturnType(returnType)
             .build();
     return MethodDefinition.builder()
+        .setHeaderCommentStatements(
+            SettingsCommentComposer.DEFAULT_TRANSPORT_CHANNEL_PROVIDER_METHOD_COMMENT)
         .setScope(ScopeNode.PUBLIC)
         .setIsStatic(true)
         .setReturnType(returnType)

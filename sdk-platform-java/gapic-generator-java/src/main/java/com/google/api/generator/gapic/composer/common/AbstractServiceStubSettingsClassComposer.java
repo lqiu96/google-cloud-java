@@ -403,12 +403,24 @@ public abstract class AbstractServiceStubSettingsClassComposer implements ClassC
               .build();
     }
     return MethodDefinition.builder()
+        .setHeaderCommentStatements(createApiClientHeaderProviderBuilderComment(methodName))
         .setScope(ScopeNode.PUBLIC)
         .setIsStatic(true)
         .setReturnType(returnType)
         .setName(methodName)
         .setReturnExpr(returnExpr)
         .build();
+  }
+
+  private static CommentStatement createApiClientHeaderProviderBuilderComment(String methodName) {
+    if (methodName.equals("defaultGrpcApiClientHeaderProviderBuilder")) {
+      return SettingsCommentComposer.createTransportApiClientHeaderProviderBuilderComment("gRPC");
+    }
+    if (methodName.equals("defaultHttpJsonApiClientHeaderProviderBuilder")) {
+      return SettingsCommentComposer.createTransportApiClientHeaderProviderBuilderComment(
+          "HTTP/JSON");
+    }
+    return SettingsCommentComposer.DEFAULT_API_CLIENT_HEADER_PROVIDER_BUILDER_METHOD_COMMENT;
   }
 
   public abstract MethodDefinition createDefaultTransportChannelProviderMethod();
@@ -1093,16 +1105,31 @@ public abstract class AbstractServiceStubSettingsClassComposer implements ClassC
       final Set<String> internalSettingVarNames) {
     Function<Map.Entry<String, VariableExpr>, MethodDefinition> varToMethodFn =
         e -> {
-          boolean isDeprecated = deprecatedSettingVarNames.contains(e.getKey());
-          boolean isInternal = internalSettingVarNames.contains(e.getKey());
+          String varName = e.getKey();
+          boolean isDeprecated = deprecatedSettingVarNames.contains(varName);
+          boolean isInternal = internalSettingVarNames.contains(varName);
+          String rpcMethodName = getMethodNameFromSettingsVarName(varName);
+          CommentStatement headerComment;
+          if (varName.endsWith(CommonStrings.OPERATION_SETTINGS_LITERAL)) {
+            headerComment =
+                SettingsCommentComposer.createOperationCallSettingsGetterComment(
+                    rpcMethodName, isDeprecated, isInternal);
+          } else if (methodSettingsMemberVarExprs.containsKey(
+              rpcMethodName + CommonStrings.OPERATION_SETTINGS_LITERAL)) {
+            headerComment =
+                SettingsCommentComposer.createLroInitialCallSettingsGetterComment(
+                    rpcMethodName, isDeprecated, isInternal);
+          } else {
+            headerComment =
+                SettingsCommentComposer.createCallSettingsGetterComment(
+                    rpcMethodName, isDeprecated, isInternal);
+          }
           return MethodDefinition.builder()
-              .setHeaderCommentStatements(
-                  SettingsCommentComposer.createCallSettingsGetterComment(
-                      getMethodNameFromSettingsVarName(e.getKey()), isDeprecated, isInternal))
+              .setHeaderCommentStatements(headerComment)
               .setAnnotations(createMethodAnnotation(isDeprecated, isInternal))
               .setScope(ScopeNode.PUBLIC)
               .setReturnType(e.getValue().type())
-              .setName(e.getKey())
+              .setName(varName)
               .setReturnExpr(e.getValue())
               .build();
         };
@@ -1193,6 +1220,9 @@ public abstract class AbstractServiceStubSettingsClassComposer implements ClassC
     TypeNode returnType = typeStore.get(ClassNames.getServiceStubClassName(service));
 
     return MethodDefinition.builder()
+        .setHeaderCommentStatements(
+            SettingsCommentComposer.createCreateStubMethodComment(
+                ClassNames.getServiceStubClassName(service)))
         .setScope(ScopeNode.PUBLIC)
         .setReturnType(returnType)
         .setName("createStub")
@@ -2122,12 +2152,26 @@ public abstract class AbstractServiceStubSettingsClassComposer implements ClassC
 
       boolean isDeprecated = nestedDeprecatedSettingVarNames.contains(varName);
       boolean isInternal = nestedInternalSettingVarNames.contains(varName);
+      String rpcMethodName = getMethodNameFromSettingsVarName(varName);
+      CommentStatement headerComment;
+      if (varName.endsWith(CommonStrings.OPERATION_SETTINGS_LITERAL)) {
+        headerComment =
+            SettingsCommentComposer.createOperationCallSettingsBuilderGetterComment(
+                rpcMethodName, isDeprecated, isInternal);
+      } else if (nestedMethodSettingsMemberVarExprs.containsKey(
+          rpcMethodName + CommonStrings.OPERATION_SETTINGS_LITERAL)) {
+        headerComment =
+            SettingsCommentComposer.createLroInitialCallSettingsBuilderGetterComment(
+                rpcMethodName, isDeprecated, isInternal);
+      } else {
+        headerComment =
+            SettingsCommentComposer.createCallSettingsBuilderGetterComment(
+                rpcMethodName, isDeprecated, isInternal);
+      }
 
       javaMethods.add(
           MethodDefinition.builder()
-              .setHeaderCommentStatements(
-                  SettingsCommentComposer.createCallSettingsBuilderGetterComment(
-                      getMethodNameFromSettingsVarName(varName), isDeprecated, isInternal))
+              .setHeaderCommentStatements(headerComment)
               .setAnnotations(createMethodAnnotation(isDeprecated, isInternal))
               .setScope(ScopeNode.PUBLIC)
               .setReturnType(settingsVarExpr.type())
@@ -2144,6 +2188,9 @@ public abstract class AbstractServiceStubSettingsClassComposer implements ClassC
     TypeNode builderType = typeStore.get(NESTED_BUILDER_CLASS_NAME);
 
     return MethodDefinition.builder()
+        .setHeaderCommentStatements(
+            SettingsCommentComposer.createBuildMethodComment(
+                ClassNames.getServiceStubSettingsClassName(service)))
         .setIsOverride(true)
         .setScope(ScopeNode.PUBLIC)
         .setReturnType(outerClassType)

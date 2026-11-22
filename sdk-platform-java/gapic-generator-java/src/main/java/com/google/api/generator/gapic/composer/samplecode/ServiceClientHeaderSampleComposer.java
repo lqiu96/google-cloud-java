@@ -16,13 +16,17 @@ package com.google.api.generator.gapic.composer.samplecode;
 
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.api.generator.engine.ast.AssignmentExpr;
+import com.google.api.generator.engine.ast.CommentStatement;
 import com.google.api.generator.engine.ast.ConcreteReference;
 import com.google.api.generator.engine.ast.Expr;
 import com.google.api.generator.engine.ast.ExprStatement;
+import com.google.api.generator.engine.ast.LineComment;
 import com.google.api.generator.engine.ast.MethodInvocationExpr;
 import com.google.api.generator.engine.ast.Statement;
+import com.google.api.generator.engine.ast.StringObjectValue;
 import com.google.api.generator.engine.ast.TryCatchStatement;
 import com.google.api.generator.engine.ast.TypeNode;
+import com.google.api.generator.engine.ast.ValueExpr;
 import com.google.api.generator.engine.ast.VaporReference;
 import com.google.api.generator.engine.ast.Variable;
 import com.google.api.generator.engine.ast.VariableExpr;
@@ -148,19 +152,40 @@ public class ServiceClientHeaderSampleComposer {
     return Sample.builder().setBody(body).setRegionTag(regionTag).build();
   }
 
+  private static final CommentStatement CLIENT_LIFECYCLE_CLOSE_COMMENT =
+      CommentStatement.withComment(
+          LineComment.withComment(
+              "Reuse the client across requests, and close it on application shutdown."));
+
   public static Sample composeSetCredentialsSample(
       TypeNode clientType, TypeNode settingsType, Service service) {
     // Initialize clientSettings with builder() method.
-    // e.g. EchoSettings echoSettings =
-    // EchoSettings.newBuilder().setCredentialsProvider(FixedCredentialsProvider.create("myCredentials")).build();
+    // e.g. GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
+    // EchoSettings echoSettings =
+    //     EchoSettings.newBuilder()
+    //         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+    //         .build();
     String settingsName = JavaStyle.toLowerCamelCase(settingsType.reference().name());
     String clientName = JavaStyle.toLowerCamelCase(clientType.reference().name());
-    TypeNode myCredentialsType =
+    TypeNode googleCredentialsType =
         TypeNode.withReference(
             VaporReference.builder()
-                .setName("myCredentials")
-                .setPakkage(clientType.reference().pakkage())
+                .setName("GoogleCredentials")
+                .setPakkage("com.google.auth.oauth2")
                 .build());
+    VariableExpr myCredentialsVarExpr =
+        VariableExpr.withVariable(
+            Variable.builder().setName("myCredentials").setType(googleCredentialsType).build());
+    Expr initCredentialsVarExpr =
+        AssignmentExpr.builder()
+            .setVariableExpr(myCredentialsVarExpr.toBuilder().setIsDecl(true).build())
+            .setValueExpr(
+                MethodInvocationExpr.builder()
+                    .setStaticReferenceType(googleCredentialsType)
+                    .setMethodName("getApplicationDefault")
+                    .setReturnType(googleCredentialsType)
+                    .build())
+            .build();
     VariableExpr settingsVarExpr =
         VariableExpr.withVariable(
             Variable.builder().setName(settingsName).setType(settingsType).build());
@@ -174,9 +199,7 @@ public class ServiceClientHeaderSampleComposer {
     MethodInvocationExpr credentialArgExpr =
         MethodInvocationExpr.builder()
             .setStaticReferenceType(fixedCredentialProvideType)
-            .setArguments(
-                VariableExpr.withVariable(
-                    Variable.builder().setName("myCredentials").setType(myCredentialsType).build()))
+            .setArguments(myCredentialsVarExpr)
             .setMethodName("create")
             .build();
     MethodInvocationExpr credentialsMethodExpr =
@@ -197,7 +220,7 @@ public class ServiceClientHeaderSampleComposer {
             .setValueExpr(buildMethodExpr)
             .build();
 
-    // Initialized client with create() method.
+    // Initialize client with create() method.
     // e.g. EchoClient echoClient = EchoClient.create(echoSettings);
     VariableExpr clientVarExpr =
         VariableExpr.withVariable(
@@ -215,10 +238,19 @@ public class ServiceClientHeaderSampleComposer {
             .setVariableExpr(clientVarExpr.toBuilder().setIsDecl(true).build())
             .setValueExpr(createMethodExpr)
             .build();
+    Expr closeClientExpr =
+        MethodInvocationExpr.builder()
+            .setExprReferenceExpr(clientVarExpr)
+            .setMethodName("close")
+            .build();
 
     List<Statement> sampleBody =
         Arrays.asList(
-            ExprStatement.withExpr(initSettingsVarExpr), ExprStatement.withExpr(initClientVarExpr));
+            ExprStatement.withExpr(initCredentialsVarExpr),
+            ExprStatement.withExpr(initSettingsVarExpr),
+            ExprStatement.withExpr(initClientVarExpr),
+            CLIENT_LIFECYCLE_CLOSE_COMMENT,
+            ExprStatement.withExpr(closeClientExpr));
     RegionTag regionTag =
         RegionTag.builder()
             .setServiceName(service.name())
@@ -232,15 +264,18 @@ public class ServiceClientHeaderSampleComposer {
   public static Sample composeSetEndpointSample(
       TypeNode clientType, TypeNode settingsType, Service service) {
     // Initialize client settings with builder() method.
-    // e.g. EchoSettings echoSettings = EchoSettings.newBuilder().setEndpoint("myEndpoint").build();
+    // e.g. String myEndpoint = "my-endpoint:443";
+    // EchoSettings echoSettings = EchoSettings.newBuilder().setEndpoint(myEndpoint).build();
     String settingsName = JavaStyle.toLowerCamelCase(settingsType.reference().name());
     String clientName = JavaStyle.toLowerCamelCase(clientType.reference().name());
-    TypeNode myEndpointType =
-        TypeNode.withReference(
-            VaporReference.builder()
-                .setName("myEndpoint")
-                .setPakkage(clientType.reference().pakkage())
-                .build());
+    VariableExpr myEndpointVarExpr =
+        VariableExpr.withVariable(
+            Variable.builder().setName("myEndpoint").setType(TypeNode.STRING).build());
+    Expr initEndpointVarExpr =
+        AssignmentExpr.builder()
+            .setVariableExpr(myEndpointVarExpr.toBuilder().setIsDecl(true).build())
+            .setValueExpr(ValueExpr.withValue(StringObjectValue.withValue("my-endpoint:443")))
+            .build();
     VariableExpr settingsVarExpr =
         VariableExpr.withVariable(
             Variable.builder().setName(settingsName).setType(settingsType).build());
@@ -249,17 +284,15 @@ public class ServiceClientHeaderSampleComposer {
             .setStaticReferenceType(settingsType)
             .setMethodName("newBuilder")
             .build();
-    MethodInvocationExpr credentialsMethodExpr =
+    MethodInvocationExpr endpointMethodExpr =
         MethodInvocationExpr.builder()
             .setExprReferenceExpr(newBuilderMethodExpr)
-            .setArguments(
-                VariableExpr.withVariable(
-                    Variable.builder().setName("myEndpoint").setType(myEndpointType).build()))
+            .setArguments(myEndpointVarExpr)
             .setMethodName("setEndpoint")
             .build();
     MethodInvocationExpr buildMethodExpr =
         MethodInvocationExpr.builder()
-            .setExprReferenceExpr(credentialsMethodExpr)
+            .setExprReferenceExpr(endpointMethodExpr)
             .setReturnType(settingsType)
             .setMethodName("build")
             .build();
@@ -288,6 +321,11 @@ public class ServiceClientHeaderSampleComposer {
             .setVariableExpr(clientVarExpr.toBuilder().setIsDecl(true).build())
             .setValueExpr(createMethodExpr)
             .build();
+    Expr closeClientExpr =
+        MethodInvocationExpr.builder()
+            .setExprReferenceExpr(clientVarExpr)
+            .setMethodName("close")
+            .build();
     RegionTag regionTag =
         RegionTag.builder()
             .setServiceName(service.name())
@@ -296,7 +334,11 @@ public class ServiceClientHeaderSampleComposer {
             .build();
     List<Statement> sampleBody =
         Arrays.asList(
-            ExprStatement.withExpr(initSettingsVarExpr), ExprStatement.withExpr(initClientVarExpr));
+            ExprStatement.withExpr(initEndpointVarExpr),
+            ExprStatement.withExpr(initSettingsVarExpr),
+            ExprStatement.withExpr(initClientVarExpr),
+            CLIENT_LIFECYCLE_CLOSE_COMMENT,
+            ExprStatement.withExpr(closeClientExpr));
     return Sample.builder().setBody(sampleBody).setRegionTag(regionTag).build();
   }
 
@@ -324,7 +366,7 @@ public class ServiceClientHeaderSampleComposer {
             .setValueExpr(buildMethodExpr)
             .build();
 
-    // Initialized client with create() method.
+    // Initialize client with create() method.
     // e.g. EchoClient echoClient = EchoClient.create(echoSettings);
     VariableExpr clientVarExpr =
         VariableExpr.withVariable(
@@ -342,15 +384,33 @@ public class ServiceClientHeaderSampleComposer {
             .setVariableExpr(clientVarExpr.toBuilder().setIsDecl(true).build())
             .setValueExpr(createMethodExpr)
             .build();
+    Expr closeClientExpr =
+        MethodInvocationExpr.builder()
+            .setExprReferenceExpr(clientVarExpr)
+            .setMethodName("close")
+            .build();
+
+    String transportName = transportBuilderMethod;
+    if (transportName.startsWith("new")
+        && transportName.endsWith("Builder")
+        && transportName.length() > "newBuilder".length()) {
+      transportName =
+          transportName.substring("new".length(), transportName.length() - "Builder".length());
+    }
+    String overloadDisambiguation =
+        String.format("use%sTransport", JavaStyle.toUpperCamelCase(transportName));
 
     List<Statement> sampleBody =
         Arrays.asList(
-            ExprStatement.withExpr(initSettingsVarExpr), ExprStatement.withExpr(initClientVarExpr));
+            ExprStatement.withExpr(initSettingsVarExpr),
+            ExprStatement.withExpr(initClientVarExpr),
+            CLIENT_LIFECYCLE_CLOSE_COMMENT,
+            ExprStatement.withExpr(closeClientExpr));
     RegionTag regionTag =
         RegionTag.builder()
             .setServiceName(service.name())
             .setRpcName(rpcName)
-            .setOverloadDisambiguation("useHttpJsonTransport")
+            .setOverloadDisambiguation(overloadDisambiguation)
             .build();
     return Sample.builder().setBody(sampleBody).setRegionTag(regionTag).build();
   }

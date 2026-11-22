@@ -32,8 +32,26 @@ public class SettingsCommentComposer {
   private static final String BUILDER_CLASS_DOC_PATTERN = "Builder for %s.";
   private static final String CALL_SETTINGS_METHOD_DOC_PATTERN =
       "Returns the object with the settings used for calls to %s.";
+  private static final String LRO_INITIAL_CALL_SETTINGS_METHOD_DOC_PATTERN =
+      "Returns the object with the settings used for initial calls to %s.";
+  private static final String OPERATION_CALL_SETTINGS_METHOD_DOC_PATTERN =
+      "Returns the object with the polling and initial-call settings used for long-running calls"
+          + " to %s.";
   private static final String CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN =
       "Returns the builder for the settings used for calls to %s.";
+  private static final String LRO_INITIAL_CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN =
+      "Returns the builder for the settings used for initial calls to %s.";
+  private static final String OPERATION_CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN =
+      "Returns the builder for the polling and initial-call settings used for long-running calls"
+          + " to %s.";
+  private static final String CREATE_FROM_STUB_SETTINGS_METHOD_DOC_PATTERN =
+      "Constructs an instance of %s from the given stub settings.";
+  private static final String PROTECTED_CONSTRUCTOR_BUILDER_ARG_DOC_PATTERN =
+      "Constructs an instance of %s from the given builder.";
+  private static final String BUILD_METHOD_DOC_PATTERN =
+      "Builds and returns a new {@link %s} instance.";
+  private static final String CREATE_STUB_METHOD_DOC_PATTERN =
+      "Creates and returns a new {@link %s} instance using the configured transport.";
 
   // Class header patterns.
   private static final String CLASS_HEADER_SUMMARY_PATTERN =
@@ -41,9 +59,7 @@ public class SettingsCommentComposer {
   private static final String CLASS_HEADER_DEFAULT_ADDRESS_PORT_PATTERN =
       "The default service address (%s) and default port (%d) are used.";
   private static final String CLASS_HEADER_SAMPLE_CODE_PATTERN =
-      "For example, to set the"
-          + " [RetrySettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.retrying.RetrySettings)"
-          + " of %s:";
+      "<p> For example, to set the {@link com.google.api.gax.retrying.RetrySettings} of %s:";
 
   private static final String CLASS_HEADER_LRO_SAMPLE_CODE_PATTERN =
       "To configure the RetrySettings of a Long Running Operation method, create an"
@@ -51,9 +67,8 @@ public class SettingsCommentComposer {
           + " example, to configure the RetrySettings for %s:";
 
   private static final String CLASS_HEADER_SAMPLE_CODE_SUFFIX =
-      "Please refer to the [Client Side Retry"
-          + " Guide](https://docs.cloud.google.com/java/docs/client-retries) for additional support"
-          + " in setting retries.";
+      "<p> Please refer to the <a href=\"https://docs.cloud.google.com/java/docs/client-retries\">"
+          + "Client Side Retry Guide</a> for additional support in setting retries.";
 
   private static final String CLASS_HEADER_BUILDER_DESCRIPTION =
       "The builder of this class is recursive, so contained classes are themselves builders. When"
@@ -64,7 +79,8 @@ public class SettingsCommentComposer {
   private static final String CLASS_HEADER_DEFAULTS_CREDENTIALS_DESCRIPTION =
       "Credentials are acquired automatically through Application Default Credentials.";
   private static final String CLASS_HEADER_DEFAULTS_RETRIES_DESCRIPTION =
-      "Retries are configured for idempotent methods but not for non-idempotent methods.";
+      "Default retry and timeout settings are configured per RPC from the service's retry"
+          + " configuration.";
 
   public static final CommentStatement DEFAULT_SCOPES_COMMENT =
       toCommentStatement("The default scopes of the service.");
@@ -75,7 +91,14 @@ public class SettingsCommentComposer {
   public static final CommentStatement DEFAULT_SERVICE_NAME_METHOD_COMMENT =
       toCommentStatement("Returns the default service name.");
   public static final CommentStatement DEFAULT_SERVICE_ENDPOINT_METHOD_COMMENT =
-      toCommentStatement("Returns the default service endpoint.");
+      CommentStatement.withComment(
+          JavaDocComment.builder()
+              .addUnescapedComment(
+                  "Returns the default service endpoint. This value is static and does not"
+                      + " reflect universe domain or custom endpoint overrides; prefer {@link"
+                      + " #getEndpoint()} (and {@link #getUniverseDomain()}) on a configured"
+                      + " settings instance.")
+              .build());
   public static final CommentStatement DEFAULT_SERVICE_MTLS_ENDPOINT_METHOD_COMMENT =
       toCommentStatement("Returns the default mTLS service endpoint.");
   public static final CommentStatement DEFAULT_SERVICE_SCOPES_METHOD_COMMENT =
@@ -91,6 +114,16 @@ public class SettingsCommentComposer {
   public static final CommentStatement DEFAULT_TRANSPORT_PROVIDER_BUILDER_METHOD_COMMENT =
       toCommentStatement("Returns a builder for the default ChannelProvider for this service.");
 
+  public static final CommentStatement DEFAULT_TRANSPORT_CHANNEL_PROVIDER_METHOD_COMMENT =
+      toCommentStatement("Returns the default TransportChannelProvider for this service.");
+
+  public static final CommentStatement DEFAULT_API_CLIENT_HEADER_PROVIDER_BUILDER_METHOD_COMMENT =
+      toCommentStatement(
+          "Returns a builder for the default ApiClientHeaderProvider for this service.");
+
+  public static final CommentStatement GET_STUB_SETTINGS_BUILDER_METHOD_COMMENT =
+      toCommentStatement("Returns the underlying stub settings builder.");
+
   public static final CommentStatement NEW_BUILDER_METHOD_COMMENT =
       toCommentStatement("Returns a new builder for this class.");
 
@@ -102,9 +135,12 @@ public class SettingsCommentComposer {
               JavaDocComment.builder()
                   .addComment(
                       "Applies the given settings updater function to all of the unary API methods"
-                          + " in this service.")
-                  .addParagraph(
-                      "Note: This method does not support applying settings to streaming methods.")
+                          + " in this service, including unary, paged, batching, and long-running"
+                          + " operation initial-call settings.")
+                  .addUnescapedComment(
+                      "<p> Note: This method does not apply settings to streaming methods or"
+                          + " long-running operation polling settings (configured via {@code"
+                          + " <method>OperationSettings()}).")
                   .build())
           .stream()
           .map(c -> CommentStatement.withComment(c))
@@ -140,14 +176,76 @@ public class SettingsCommentComposer {
         isMethodInternal);
   }
 
+  public static CommentStatement createLroInitialCallSettingsGetterComment(
+      String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
+    return toCommentStatement(
+        String.format(LRO_INITIAL_CALL_SETTINGS_METHOD_DOC_PATTERN, javaMethodName),
+        isMethodDeprecated,
+        isMethodInternal);
+  }
+
+  public static CommentStatement createOperationCallSettingsGetterComment(
+      String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
+    return toCommentStatement(
+        String.format(OPERATION_CALL_SETTINGS_METHOD_DOC_PATTERN, javaMethodName),
+        isMethodDeprecated,
+        isMethodInternal);
+  }
+
   public static CommentStatement createBuilderClassComment(String outerClassName) {
     return toCommentStatement(String.format(BUILDER_CLASS_DOC_PATTERN, outerClassName));
+  }
+
+  public static CommentStatement createCreateFromStubSettingsComment(String settingsClassName) {
+    return toCommentStatement(
+        String.format(CREATE_FROM_STUB_SETTINGS_METHOD_DOC_PATTERN, settingsClassName));
+  }
+
+  public static CommentStatement createProtectedCtorBuilderArgComment(String settingsClassName) {
+    return toCommentStatement(
+        String.format(PROTECTED_CONSTRUCTOR_BUILDER_ARG_DOC_PATTERN, settingsClassName));
+  }
+
+  public static CommentStatement createBuildMethodComment(String settingsClassName) {
+    return CommentStatement.withComment(
+        JavaDocComment.builder()
+            .addUnescapedComment(String.format(BUILD_METHOD_DOC_PATTERN, settingsClassName))
+            .build());
+  }
+
+  public static CommentStatement createCreateStubMethodComment(String stubClassName) {
+    return CommentStatement.withComment(
+        JavaDocComment.builder()
+            .addUnescapedComment(String.format(CREATE_STUB_METHOD_DOC_PATTERN, stubClassName))
+            .build());
   }
 
   public static CommentStatement createCallSettingsBuilderGetterComment(
       String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
     String methodComment = String.format(CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN, javaMethodName);
     return toCommentStatement(methodComment, isMethodDeprecated, isMethodInternal);
+  }
+
+  public static CommentStatement createLroInitialCallSettingsBuilderGetterComment(
+      String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
+    String methodComment =
+        String.format(LRO_INITIAL_CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN, javaMethodName);
+    return toCommentStatement(methodComment, isMethodDeprecated, isMethodInternal);
+  }
+
+  public static CommentStatement createOperationCallSettingsBuilderGetterComment(
+      String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
+    String methodComment =
+        String.format(OPERATION_CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN, javaMethodName);
+    return toCommentStatement(methodComment, isMethodDeprecated, isMethodInternal);
+  }
+
+  public static CommentStatement createTransportApiClientHeaderProviderBuilderComment(
+      String transportName) {
+    return toCommentStatement(
+        String.format(
+            "Returns a builder for the default %s ApiClientHeaderProvider for this service.",
+            transportName));
   }
 
   public static List<CommentStatement> createClassHeaderComments(
@@ -185,12 +283,12 @@ public class SettingsCommentComposer {
     if (methodNameOpt.isPresent() && sampleCodeOpt.isPresent()) {
       javaDocCommentBuilder =
           javaDocCommentBuilder
-              .addParagraph(
+              .addUnescapedComment(
                   String.format(
                       CLASS_HEADER_SAMPLE_CODE_PATTERN,
                       JavaStyle.toLowerCamelCase(methodNameOpt.get())))
               .addSampleCode(sampleCodeOpt.get())
-              .addComment(CLASS_HEADER_SAMPLE_CODE_SUFFIX);
+              .addUnescapedComment(CLASS_HEADER_SAMPLE_CODE_SUFFIX);
     }
 
     if (lroMethodNameOpt.isPresent() && lroSampleCodeOpt.isPresent()) {

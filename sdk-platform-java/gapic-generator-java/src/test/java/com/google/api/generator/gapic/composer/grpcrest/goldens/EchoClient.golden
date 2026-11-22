@@ -135,7 +135,7 @@ import org.jspecify.annotations.Nullable;
  *      <ul>
  *           <li><p> waitAsync(WaitRequest request)
  *      </ul>
- *      <p>Methods that return long-running operations have "Async" method variants that return `OperationFuture`, which is used to track polling of the service.</p>
+ *      <p>Methods that return long-running operations have "Async" method variants that return {@link com.google.api.gax.longrunning.OperationFuture}, which is used to track polling of the service.</p>
  *      <ul>
  *           <li><p> waitAsync(Duration ttl)
  *           <li><p> waitAsync(Timestamp endTime)
@@ -236,8 +236,9 @@ import org.jspecify.annotations.Nullable;
  * <p>See the individual methods for example code.
  *
  * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * these names, generated resource name classes (ending in {@code Name}) provide static {@code of},
+ * {@code format}, {@code parse}, and {@code isParsableFrom} methods to construct, validate, and
+ * extract individual identifiers from resource names.
  *
  * <p>This class can be customized by passing in a custom instance of EchoSettings to create(). For
  * example:
@@ -250,11 +251,14 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * EchoSettings echoSettings =
  *     EchoSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * EchoClient echoClient = EchoClient.create(echoSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * echoClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -265,8 +269,11 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * EchoSettings echoSettings = EchoSettings.newBuilder().setEndpoint(myEndpoint).build();
  * EchoClient echoClient = EchoClient.create(echoSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * echoClient.close();
  * }</pre>
  *
  * <p>To use REST (HTTP1.1/JSON) transport (instead of gRPC) for sending and receiving requests over
@@ -280,6 +287,8 @@ import org.jspecify.annotations.Nullable;
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
  * EchoSettings echoSettings = EchoSettings.newHttpJsonBuilder().build();
  * EchoClient echoClient = EchoClient.create(echoSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * echoClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.
@@ -326,6 +335,11 @@ public class EchoClient implements BackgroundResource {
     this.httpJsonOperationsClient = OperationsClient.create(this.stub.getHttpJsonOperationsStub());
   }
 
+  /**
+   * Constructs an instance of EchoClient, using the given stub for making calls. This is protected
+   * so that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
   protected EchoClient(EchoStub stub) {
     this.settings = null;
     this.stub = stub;
@@ -334,25 +348,30 @@ public class EchoClient implements BackgroundResource {
     this.httpJsonOperationsClient = OperationsClient.create(this.stub.getHttpJsonOperationsStub());
   }
 
+  /**
+   * Returns the settings used to configure this client, or {@code null} if the client was
+   * constructed from a stub.
+   */
   public final @Nullable EchoSettings getSettings() {
     return settings;
   }
 
+  /** Returns the underlying stub used to make calls to the service. */
   public EchoStub getStub() {
     return stub;
   }
 
   /**
-   * Returns the OperationsClient that can be used to query the status of a long-running operation
-   * returned by another API method call.
+   * Returns the gRPC OperationsClient that can be used to query the status of a long-running
+   * operation returned by another API method call.
    */
   public final com.google.longrunning.OperationsClient getOperationsClient() {
     return operationsClient;
   }
 
   /**
-   * Returns the OperationsClient that can be used to query the status of a long-running operation
-   * returned by another API method call.
+   * Returns the HTTP/JSON OperationsClient that can be used to query the status of a long-running
+   * operation returned by another API method call.
    */
   @BetaApi
   public final OperationsClient getHttpJsonOperationsClient() {
@@ -398,7 +417,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(@Nullable ResourceName parent) {
@@ -423,7 +442,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param error
+   * @param error The error parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(Status error) {
@@ -447,7 +466,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(@Nullable FoobarName name) {
@@ -472,7 +491,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param content
+   * @param content The content parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(String content) {
@@ -496,7 +515,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(String name) {
@@ -520,7 +539,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(String parent) {
@@ -545,8 +564,8 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param content
-   * @param severity
+   * @param content The content parameter for the API call.
+   * @param severity The severity parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(String content, Severity severity) {
@@ -873,7 +892,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param ttl
+   * @param ttl The ttl parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final OperationFuture<WaitResponse, WaitMetadata> waitAsync(Duration ttl) {
@@ -897,7 +916,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param endTime
+   * @param endTime The endTime parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final OperationFuture<WaitResponse, WaitMetadata> waitAsync(Timestamp endTime) {
@@ -1236,8 +1255,8 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param case_
-   * @param updateMask
+   * @param case_ The case_ parameter for the API call.
+   * @param updateMask The updateMask parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Case updateCase(Case case_, FieldMask updateMask) {

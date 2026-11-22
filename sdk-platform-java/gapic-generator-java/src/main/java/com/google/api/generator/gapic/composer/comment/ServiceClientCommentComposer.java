@@ -38,12 +38,13 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public class ServiceClientCommentComposer {
   // Tokens.
-  private static final String EMPTY_STRING = "";
   private static final String API_EXCEPTION_TYPE_NAME = "com.google.api.gax.rpc.ApiException";
   private static final String EXCEPTION_CONDITION = "if the remote call fails";
   private static final String REQUEST_PARAM_NAME = "request";
   private static final String REQUEST_PARAM_DESCRIPTION =
       "The request object containing all of the parameters for the API call.";
+  private static final String PARAM_FALLBACK_DESCRIPTION_PATTERN =
+      "The %s parameter for the API call.";
   private static final String PAYLOAD_PARAM_NAME = "payload";
   private static final String PAYLOAD_PARAM_DESCRIPTION =
       "Supplies the payload data stream to upload. The stream is closed automatically when the"
@@ -59,10 +60,10 @@ public class ServiceClientCommentComposer {
   private static final String SERVICE_DESCRIPTION_SURFACE_CODA_STRING =
       "See the individual methods for example code.";
   private static final String SERVICE_DESCRIPTION_RESOURCE_NAMES_FORMATTING_STRING =
-      "Many parameters require resource names to be formatted in a particular way. To assist with"
-          + " these names, this class includes a format method for each type of name, and"
-          + " additionally a parse  method to extract the individual identifiers contained within"
-          + " names that are returned.";
+      "<p> Many parameters require resource names to be formatted in a particular way. To assist"
+          + " with these names, generated resource name classes (ending in {@code Name}) provide"
+          + " static {@code of}, {@code format}, {@code parse}, and {@code isParsableFrom} methods"
+          + " to construct, validate, and extract individual identifiers from resource names.";
   private static final String SERVICE_DESCRIPTION_CREDENTIALS_SUMMARY_STRING =
       "To customize credentials:";
   private static final String SERVICE_DESCRIPTION_ENDPOINT_SUMMARY_STRING =
@@ -96,7 +97,7 @@ public class ServiceClientCommentComposer {
 
   private static final String CREATE_METHOD_SETTINGS_ARG_PATTERN =
       "Constructs an instance of %s, using the given settings. The channels are"
-          + " created based  on the settings passed in, or defaults for any settings that are"
+          + " created based on the settings passed in, or defaults for any settings that are"
           + " not set.";
 
   private static final String PROTECTED_CONSTRUCTOR_SETTINGS_ARG_PATTERN =
@@ -104,11 +105,32 @@ public class ServiceClientCommentComposer {
           + " that it is easy to make a subclass, but otherwise, the static factory methods"
           + " should be preferred.";
 
+  private static final String PROTECTED_CONSTRUCTOR_STUB_ARG_PATTERN =
+      "Constructs an instance of %s, using the given stub for making calls. This is protected so"
+          + " that it is easy to make a subclass, but otherwise, the static factory methods"
+          + " should be preferred.";
+
   // Comments.
+  public static final CommentStatement GET_SETTINGS_METHOD_COMMENT =
+      CommentStatement.withComment(
+          JavaDocComment.builder()
+              .addUnescapedComment(
+                  "Returns the settings used to configure this client, or {@code null} if the"
+                      + " client was constructed from a stub.")
+              .build());
+
+  public static final CommentStatement GET_STUB_METHOD_COMMENT =
+      toSimpleComment("Returns the underlying stub used to make calls to the service.");
+
   public static final CommentStatement GET_OPERATIONS_CLIENT_METHOD_COMMENT =
       toSimpleComment(
-          "Returns the OperationsClient that can be used to query the status of a long-running"
-              + " operation returned by another API method call.");
+          "Returns the gRPC OperationsClient that can be used to query the status of a"
+              + " long-running operation returned by another API method call.");
+
+  public static final CommentStatement GET_HTTP_JSON_OPERATIONS_CLIENT_METHOD_COMMENT =
+      toSimpleComment(
+          "Returns the HTTP/JSON OperationsClient that can be used to query the status of a"
+              + " long-running operation returned by another API method call.");
 
   public static List<CommentStatement> createClassHeaderComments(
       Map<String, List<String>> methodVariantsForClientHeader,
@@ -152,7 +174,8 @@ public class ServiceClientCommentComposer {
     classHeaderJavadocBuilder.addParagraph(SERVICE_DESCRIPTION_SURFACE_CODA_STRING);
 
     // Formatting resource names.
-    classHeaderJavadocBuilder.addParagraph(SERVICE_DESCRIPTION_RESOURCE_NAMES_FORMATTING_STRING);
+    classHeaderJavadocBuilder.addUnescapedComment(
+        SERVICE_DESCRIPTION_RESOURCE_NAMES_FORMATTING_STRING);
 
     // Customization examples.
     classHeaderJavadocBuilder.addParagraph(
@@ -208,9 +231,12 @@ public class ServiceClientCommentComposer {
     } else {
       for (MethodArgument argument : methodArguments) {
         // TODO(miraleung): Remove the newline replacement when we support CommonMark.
+        String paramName = JavaStyle.toLowerCamelCase(argument.name());
         String description =
-            argument.field().hasDescription() ? argument.field().description() : EMPTY_STRING;
-        methodJavadocBuilder.addParam(JavaStyle.toLowerCamelCase(argument.name()), description);
+            argument.field().hasDescription() && !argument.field().description().trim().isEmpty()
+                ? argument.field().description()
+                : String.format(PARAM_FALLBACK_DESCRIPTION_PATTERN, paramName);
+        methodJavadocBuilder.addParam(paramName, description);
       }
     }
 
@@ -258,7 +284,8 @@ public class ServiceClientCommentComposer {
             + " object, which can be used to initiate calls to the service.</p>\n";
     String ASYNC_METHODS =
         "<p>Methods that return long-running operations have \"Async\" method variants that return"
-            + " `OperationFuture`, which is used to track polling of the service.</p>\n";
+            + " {@link com.google.api.gax.longrunning.OperationFuture}, which is used to track"
+            + " polling of the service.</p>\n";
 
     StringBuilder tableBuilder = new StringBuilder();
     tableBuilder
@@ -351,6 +378,10 @@ public class ServiceClientCommentComposer {
 
   public static CommentStatement createProtectedCtorSettingsArgComment(String serviceName) {
     return toSimpleComment(String.format(PROTECTED_CONSTRUCTOR_SETTINGS_ARG_PATTERN, serviceName));
+  }
+
+  public static CommentStatement createProtectedCtorStubArgComment(String serviceName) {
+    return toSimpleComment(String.format(PROTECTED_CONSTRUCTOR_STUB_ARG_PATTERN, serviceName));
   }
 
   public static CommentStatement createMethodSettingsArgComment(String serviceName) {

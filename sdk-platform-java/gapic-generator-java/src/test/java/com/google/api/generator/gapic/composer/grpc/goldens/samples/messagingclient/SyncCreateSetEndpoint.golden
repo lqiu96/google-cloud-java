@@ -19,7 +19,6 @@ package com.google.showcase.v1beta1.samples;
 // [START goldensample_generated_Messaging_Create_SetEndpoint_sync]
 import com.google.showcase.v1beta1.MessagingClient;
 import com.google.showcase.v1beta1.MessagingSettings;
-import com.google.showcase.v1beta1.myEndpoint;
 
 public class SyncCreateSetEndpoint {
 
@@ -33,9 +32,12 @@ public class SyncCreateSetEndpoint {
     // - It may require correct/in-range values for request initialization.
     // - It may require specifying regional endpoints when creating the service client as shown in
     // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+    String myEndpoint = "my-endpoint:443";
     MessagingSettings messagingSettings =
         MessagingSettings.newBuilder().setEndpoint(myEndpoint).build();
     MessagingClient messagingClient = MessagingClient.create(messagingSettings);
+    // Reuse the client across requests, and close it on application shutdown.
+    messagingClient.close();
   }
 }
 // [END goldensample_generated_Messaging_Create_SetEndpoint_sync]
