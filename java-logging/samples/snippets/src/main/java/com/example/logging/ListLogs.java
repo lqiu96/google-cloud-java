@@ -25,16 +25,16 @@ public class ListLogs {
 
   public static void main(String... args) throws Exception {
 
-    try (Logging logging = LoggingOptions.getDefaultInstance().getService()) {
-
+    // Instantiates a client (create once and reuse across requests; close on application shutdown)
+    Logging logging = LoggingOptions.getDefaultInstance().getService();
+    try {
       // List all log names
       Page<String> logNames = logging.listLogs();
-      while (logNames != null) {
-        for (String logName : logNames.iterateAll()) {
-          System.out.println(logName);
-        }
-        logNames = logNames.getNextPage();
+      for (String logName : logNames.iterateAll()) {
+        System.out.println(logName);
       }
+    } finally {
+      logging.close();
     }
   }
 }

@@ -1,6 +1,6 @@
 # Cloud Logging Client Libraries with Native Image
 
-This application uses the Google Cloud [Logging Client Libraries](https://github.com/googleapis/java-logging) and can be compiled with Native Image Native Image.
+This application uses the Google Cloud [Logging Client Libraries](https://github.com/googleapis/google-cloud-java/tree/main/java-logging) and can be compiled with Native Image.
 
 ## Setup Instructions
 
@@ -59,7 +59,7 @@ Navigate to this directory in a new terminal.
 
 3. The application will log a message to your local terminal and to Google Cloud Console.
 
-   Navigate to the [Cloud Console Logs Viewer](https://console.cloud.google.com/logs/viewer) to view you logs and find the newly generated log entry in Cloud Console:
+   Navigate to the [Cloud Console Logs Viewer](https://console.cloud.google.com/logs/viewer) to view your logs and find the newly generated log entry in Cloud Console:
     ```
     This is a log produced by Native Image.
     ```
