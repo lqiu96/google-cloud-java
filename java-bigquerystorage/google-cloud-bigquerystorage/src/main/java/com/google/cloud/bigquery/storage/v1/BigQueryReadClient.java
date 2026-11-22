@@ -528,14 +528,25 @@ public class BigQueryReadClient implements BackgroundResource {
     }
   }
 
+  /** Disables OpenTelemetry tracing for this client. */
   public void disableOpenTelemetryTracing() {
     settings.setEnableOpenTelemetryTracing(false, null);
   }
 
+  /**
+   * Enables OpenTelemetry tracing for this client using the global OpenTelemetry {@link
+   * TracerProvider}.
+   */
   public void enableDefaultOpenTelemetryTracing() {
     settings.setEnableOpenTelemetryTracing(true, null);
   }
 
+  /**
+   * Enables OpenTelemetry tracing for this client using the given {@link TracerProvider}.
+   *
+   * @param tracerProvider the {@link TracerProvider} to use, or {@code null} to use the global
+   *     default
+   */
   public void enableOpenTelemetryTracing(TracerProvider tracerProvider) {
     settings.setEnableOpenTelemetryTracing(true, tracerProvider);
   }

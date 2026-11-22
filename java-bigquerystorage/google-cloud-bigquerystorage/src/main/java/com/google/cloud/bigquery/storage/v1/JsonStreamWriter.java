@@ -176,9 +176,11 @@ public class JsonStreamWriter implements AutoCloseable {
    * reuse a stream, you should use Builder newBuilder( String streamOrTableName,
    * BigQueryWriteClient client) instead, so the created Writer will be based on a fresh schema.
    *
-   * @param streamOrTableName name of the stream that must follow
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+" or table name
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+"
+   * @param streamOrTableName name of the stream ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}} or {@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/_default}) or bare table name ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}}, which writes to the table's {@code
+   *     _default} stream)
    * @param tableSchema The schema of the table when the stream was created, which is passed back
    *     through {@code WriteStream}
    * @return Builder
@@ -197,8 +199,11 @@ public class JsonStreamWriter implements AutoCloseable {
    * reuse a stream, you should use Builder newBuilder( String streamOrTableName,
    * BigQueryWriteClient client) instead, so the created Writer will be based on a fresh schema.
    *
-   * @param streamOrTableName name of the stream that must follow
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+"
+   * @param streamOrTableName name of the stream ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}} or {@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/_default}) or bare table name ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}}, which writes to the table's {@code
+   *     _default} stream)
    * @param tableSchema The schema of the table when the stream was created, which is passed back
    *     through {@code WriteStream}
    * @param client
@@ -215,8 +220,11 @@ public class JsonStreamWriter implements AutoCloseable {
    * newBuilder that constructs a JsonStreamWriter builder with TableSchema being initialized by
    * StreamWriter by default.
    *
-   * @param streamOrTableName name of the stream that must follow
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+"
+   * @param streamOrTableName name of the stream ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}} or {@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/_default}) or bare table name ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}}, which writes to the table's {@code
+   *     _default} stream)
    * @param client BigQueryWriteClient
    * @return Builder
    */
@@ -350,7 +358,12 @@ public class JsonStreamWriter implements AutoCloseable {
       return this;
     }
 
-    /** This parameter is not used. It will be removed soon. */
+    /**
+     * This parameter is not used. It will be removed soon.
+     *
+     * @deprecated This method is a no-op and has no effect.
+     */
+    @Deprecated
     public Builder setReconnectAfter10M(boolean reconnectAfter10M) {
       return this;
     }
