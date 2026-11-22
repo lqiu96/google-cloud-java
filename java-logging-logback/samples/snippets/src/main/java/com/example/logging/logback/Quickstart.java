@@ -18,6 +18,8 @@ package com.example.logging.logback;
 
 // [START logging_logback_quickstart]
 
+import ch.qos.logback.classic.LoggerContext;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +27,16 @@ public class Quickstart {
   private static final Logger logger = LoggerFactory.getLogger(Quickstart.class);
 
   public static void main(String[] args) {
-    logger.info("Logging INFO with Logback");
-    logger.error("Logging ERROR with Logback");
+    try {
+      logger.info("Logging INFO with Logback");
+      logger.error("Logging ERROR with Logback");
+    } finally {
+      // Stop the Logback context before exit so buffered asynchronous entries are flushed.
+      ILoggerFactory factory = LoggerFactory.getILoggerFactory();
+      if (factory instanceof LoggerContext) {
+        ((LoggerContext) factory).stop();
+      }
+    }
   }
 }
 // [END logging_logback_quickstart]
