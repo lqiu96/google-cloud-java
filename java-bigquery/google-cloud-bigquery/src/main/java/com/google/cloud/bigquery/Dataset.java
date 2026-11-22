@@ -33,9 +33,10 @@ import java.util.Objects;
 /**
  * A Google BigQuery Dataset.
  *
- * <p>Objects of this class are immutable. Operations that modify the dataset like {@link #update}
- * return a new object. To get a {@code Dataset} object with the most recent information use {@link
- * #reload}. {@code Dataset} adds a layer of service-related functionality over {@link DatasetInfo}.
+ * <p>Objects of this class are immutable metadata snapshots. Calling {@link
+ * #reload(DatasetOption...)} or {@link #update(DatasetOption...)} does not modify this instance in
+ * place; always capture the returned {@code Dataset} object to observe the latest server state.
+ * {@code Dataset} adds a layer of service-related functionality over {@link DatasetInfo}.
  */
 public class Dataset extends DatasetInfo {
 
@@ -211,7 +212,10 @@ public class Dataset extends DatasetInfo {
 
   /**
    * Fetches current dataset's latest information. Returns {@code null} if the dataset does not
-   * exist.
+   * exist (HTTP 404), unless {@link BigQueryOptions#setThrowNotFound(boolean)} is enabled.
+   *
+   * <p>Because {@code Dataset} instances are immutable, this method does not update this object in
+   * place; capture the returned {@code Dataset} to read the refreshed metadata.
    *
    * <p>Example of reloading a dataset.
    *
@@ -224,7 +228,10 @@ public class Dataset extends DatasetInfo {
    *
    * @param options dataset options
    * @return a {@code Dataset} object with latest information or {@code null} if not found
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true} (in which case a synthesized exception
+   *     with {@link BigQueryException#getCode()} equal to {@code 404} and {@code null} {@link
+   *     BigQueryException#getReason()} and {@link BigQueryException#getError()} is thrown)
    */
   public Dataset reload(DatasetOption... options) {
     return bigquery.getDataset(getDatasetId().getDataset(), options);
@@ -232,7 +239,10 @@ public class Dataset extends DatasetInfo {
 
   /**
    * Updates the dataset's information with this dataset's information. Dataset's user-defined id
-   * cannot be changed. A new {@code Dataset} object is returned.
+   * cannot be changed.
+   *
+   * <p>Because {@code Dataset} instances are immutable, this method does not mutate this instance
+   * in place; capture the returned {@code Dataset} to observe the updated server state.
    *
    * <p>Example of updating a dataset.
    *
