@@ -78,18 +78,14 @@ public class LoadTableClustered {
 
       Job loadJob = bigquery.create(JobInfo.newBuilder(loadJobConfig).build());
 
-      // Load data from a GCS parquet file into the table
-      // Blocks until this load table job completes its execution, either failing or succeeding.
+      // Blocks until this load table job completes its execution.
+      // Throws BigQueryException if the job fails.
       Job job = loadJob.waitFor();
-
-      // Check for errors
-      if (job.isDone() && job.getStatus().getError() == null) {
-        System.out.println("Data successfully loaded into clustered table during load job");
-      } else {
-        System.out.println(
-            "BigQuery was unable to load into the table due to an error:"
-                + job.getStatus().getError());
+      if (job == null) {
+        System.out.println("Job not executed since it no longer exists.");
+        return;
       }
+      System.out.println("Data successfully loaded into clustered table during load job");
     } catch (BigQueryException | InterruptedException e) {
       System.out.println("Data not loaded into clustered table during load job \n" + e.toString());
     }

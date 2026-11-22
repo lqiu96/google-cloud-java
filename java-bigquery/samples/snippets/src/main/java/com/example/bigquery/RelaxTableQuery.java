@@ -64,15 +64,11 @@ public class RelaxTableQuery {
 
       Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).build());
 
+      // Blocks until this query job completes its execution.
+      // Throws BigQueryException if the job fails.
       queryJob = queryJob.waitFor();
-
-      // Check for errors
       if (queryJob == null) {
         throw new Exception("Job no longer exists");
-      } else if (queryJob.getStatus().getError() != null) {
-        // You can also look at queryJob.getStatus().getExecutionErrors() for all
-        // errors, not just the latest one.
-        throw new Exception(queryJob.getStatus().getError().toString());
       }
 
       // Get the results.

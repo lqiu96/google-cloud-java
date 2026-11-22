@@ -74,18 +74,16 @@ public class RelaxColumnLoadAppend {
               .build();
 
       // Create a load job and wait for it to complete.
+      // Throws BigQueryException if the job fails.
       Job job = bigquery.create(JobInfo.of(loadConfig));
       job = job.waitFor();
-      // Check the job's status for errors
-      if (job.isDone() && job.getStatus().getError() == null) {
-        System.out.println("Relax column append successfully loaded in a table");
-      } else {
-        System.out.println(
-            "BigQuery was unable to load into the table due to an error:"
-                + job.getStatus().getError());
+      if (job == null) {
+        System.out.println("Job not executed since it no longer exists.");
+        return;
       }
+      System.out.println("Relax column append successfully loaded in a table");
     } catch (BigQueryException | InterruptedException e) {
-      System.out.println("Column not added during load append \n" + e.toString());
+      System.out.println("Column not relaxed during load append \n" + e.toString());
     }
   }
 }

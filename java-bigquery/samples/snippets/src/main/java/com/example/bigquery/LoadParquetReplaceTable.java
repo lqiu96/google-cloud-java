@@ -65,16 +65,11 @@ public class LoadParquetReplaceTable {
       // Load the table
       Job job = bigquery.create(JobInfo.of(configuration));
 
-      // Load data from a GCS parquet file into the table
-      // Blocks until this load table job completes its execution, either failing or succeeding.
+      // Blocks until this load table job completes its execution.
+      // Throws BigQueryException if the job fails.
       Job completedJob = job.waitFor();
       if (completedJob == null) {
         System.out.println("Job not executed since it no longer exists.");
-        return;
-      } else if (completedJob.getStatus().getError() != null) {
-        System.out.println(
-            "BigQuery was unable to load into the table due to an error: \n"
-                + job.getStatus().getError());
         return;
       }
 
@@ -84,7 +79,7 @@ public class LoadParquetReplaceTable {
 
       System.out.println("GCS parquet overwrote existing table successfully.");
     } catch (BigQueryException | InterruptedException e) {
-      System.out.println("Table extraction job was interrupted. \n" + e.toString());
+      System.out.println("GCS Parquet was not loaded. \n" + e.toString());
     }
   }
 }

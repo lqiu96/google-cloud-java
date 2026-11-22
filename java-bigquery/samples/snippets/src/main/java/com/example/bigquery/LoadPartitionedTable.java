@@ -78,19 +78,11 @@ public class LoadPartitionedTable {
       JobId jobId = JobId.of(UUID.randomUUID().toString());
       Job loadJob = bigquery.create(JobInfo.newBuilder(loadJobConfig).setJobId(jobId).build());
 
-      // Load data from a GCS parquet file into the table
-      // Blocks until this load table job completes its execution, either failing or succeeding.
+      // Blocks until this load table job completes its execution.
+      // Throws BigQueryException if the job fails.
       Job completedJob = loadJob.waitFor();
-
-      // Check for errors
       if (completedJob == null) {
         throw new Exception("Job not executed since it no longer exists.");
-      } else if (completedJob.getStatus().getError() != null) {
-        // You can also look at queryJob.getStatus().getExecutionErrors() for all
-        // errors, not just the latest one.
-        throw new Exception(
-            "BigQuery was unable to load into the table due to an error: \n"
-                + loadJob.getStatus().getError());
       }
       System.out.println("Data successfully loaded into time partitioned table during load job");
     } catch (BigQueryException | InterruptedException e) {

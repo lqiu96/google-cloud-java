@@ -72,18 +72,18 @@ public class UndeleteTable {
                   TableId.of(datasetName, snapshotTableId))
               .build();
 
+      // Blocks until this copy job completes its execution.
+      // Throws BigQueryException if the job fails.
       Job job = bigquery.create(JobInfo.of(configuration));
       job = job.waitFor();
-      if (job.isDone() && job.getStatus().getError() == null) {
-        System.out.println("Undelete table recovered successfully.");
-      } else {
-        System.out.println(
-            "BigQuery was unable to copy the table due to an error: \n"
-                + job.getStatus().getError());
+      if (job == null) {
+        System.out.println("Job not executed since it no longer exists.");
         return;
       }
+      System.out.println("Undelete table recovered successfully.");
     } catch (BigQueryException | InterruptedException e) {
-      System.out.println("Table not found. \n" + e.toString());
+      System.out.println(
+          "BigQuery was unable to copy the table due to an error: \n" + e.toString());
     }
   }
 }
