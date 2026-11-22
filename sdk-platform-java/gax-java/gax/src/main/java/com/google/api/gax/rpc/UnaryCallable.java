@@ -49,7 +49,7 @@ import org.jspecify.annotations.Nullable;
  * <pre>{@code
  * RequestType request = RequestType.newBuilder().build();
  * UnaryCallable<RequestType, ResponseType> unaryCallable = api.doSomethingCallable();
- * ResponseType response = unaryCallable.call();
+ * ResponseType response = unaryCallable.call(request);
  * }</pre>
  *
  * <p>Asynchronous example:
@@ -57,7 +57,7 @@ import org.jspecify.annotations.Nullable;
  * <pre>{@code
  * RequestType request = RequestType.newBuilder().build();
  * UnaryCallable<RequestType, ResponseType> unaryCallable = api.doSomethingCallable();
- * ApiFuture<ResponseType> resultFuture = unaryCallable.futureCall();
+ * ApiFuture<ResponseType> resultFuture = unaryCallable.futureCall(request);
  * // do other work
  * // ...
  * ResponseType response = resultFuture.get();

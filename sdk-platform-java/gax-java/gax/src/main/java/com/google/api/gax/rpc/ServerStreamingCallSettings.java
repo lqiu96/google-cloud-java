@@ -230,14 +230,16 @@ public final class ServerStreamingCallSettings<RequestT, ResponseT>
     /**
      * Replaces the {@link RetrySettings} for the associated {@link ServerStreamingCallable}.
      *
-     * <p>When using the method, make sure that the {@link RetrySettings} are complete. For example,
-     * the following code will disable retries because the retry delay is not set:
+     * <p>When using this method, make sure that the {@link RetrySettings} are complete, as it
+     * replaces all existing retry settings (for example, omitting retry delays or per-RPC timeouts
+     * resets them to {@code Duration.ZERO}). To modify individual fields while preserving existing
+     * defaults, prefer {@link #retrySettings()}:
      *
      * <pre>{@code
-     * stubSettings.setRetrySettings(
-     *   RetrySettings.newBuilder()
-     *     .setTotalTimeout(Duration.ofSeconds(10)
-     * );
+     * callSettingsBuilder.setRetrySettings(
+     *     RetrySettings.newBuilder()
+     *         .setTotalTimeoutDuration(java.time.Duration.ofSeconds(10))
+     *         .build());
      * }</pre>
      *
      * @see #retrySettings()

@@ -84,7 +84,7 @@ public abstract class BidiStreamingCallable<RequestT, ResponseT> {
    *
    *   public void onReady(ClientStream<Integer> stream) {
    *     while (sourceDataIterator.hasNext()) {
-   *       if (stream.isReady()) {
+   *       if (stream.isSendReady()) {
    *         stream.send(sourceDataIterator.next());
    *       } else {
    *         // It's OK we haven't consumed the whole iterator;
@@ -93,7 +93,7 @@ public abstract class BidiStreamingCallable<RequestT, ResponseT> {
    *       }
    *     }
    *     // We ran out of things to send.
-   *     stream.close();
+   *     stream.closeSend();
    *   }
    * };
    *
@@ -117,10 +117,10 @@ public abstract class BidiStreamingCallable<RequestT, ResponseT> {
    * <p>This returns a live stream that must either be fully consumed or cancelled. Example usage:
    *
    * <pre>{@code
-   * BidiStream<String, String> stream = bidiStreamingCallable.call()
+   * BidiStream<String, String> stream = bidiStreamingCallable.call();
    * for (String s : stream) {
    *   if ("needle".equals(s)) {
-   *     // Cancelling the stream will cause `hasNext()` to return false on the next iteration,
+   *     // Cancelling the stream will cause hasNext() to return false on the next iteration,
    *     // naturally breaking the loop.
    *     stream.cancel();
    *   }
@@ -171,7 +171,7 @@ public abstract class BidiStreamingCallable<RequestT, ResponseT> {
    * ClientStream<Integer> clientStream = bidiStreamingCallable.splitCall(responseObserver);
    * clientStream.send(42);
    * clientStream.send(43);
-   * clientStream.close();
+   * clientStream.closeSend();
    * }</pre>
    */
   public ClientStream<RequestT> splitCall(ResponseObserver<ResponseT> responseObserver) {

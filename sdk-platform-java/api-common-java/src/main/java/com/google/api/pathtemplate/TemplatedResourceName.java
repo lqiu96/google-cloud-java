@@ -53,12 +53,12 @@ import javax.annotation.Nullable;
  *
  * <p>Usage examples:
  *
- * <pre>{@code
+ * <pre><code>
  * PathTemplate template = PathTemplate.create("shelves/*&#47;books/*");
  * TemplatedResourceName resourceName = TemplatedResourceName.create(template, "shelves/s1/books/b1");
  * assert resourceName.get("$1").equals("b1");
  * assert resourceName.parentName().toString().equals("shelves/s1/books");
- * }</pre>
+ * </code></pre>
  */
 public class TemplatedResourceName implements Map<String, String> {
 

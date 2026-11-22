@@ -52,11 +52,11 @@ import org.jspecify.annotations.Nullable;
  * while(true) {
  *    FlowControlEvent event = flowControlEventStats.getLastFlowControlEvent();
  *    if (event != null
- *         && event.getTimestampMs() > System.currentMillis() - TimeUnit.MINUTES.toMillis(5)
+ *         && event.getTimestampMs() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(5)
  *         && event.getThrottledTimeInMs() > TimeUnit.MINUTES.toMillis(1)) {
  *      flowController.increaseThresholds(elementSteps, byteSteps);
  *    }
- *    Thread.sleep(TimeUnit.MINUTE.toMillis(10));
+ *    Thread.sleep(TimeUnit.MINUTES.toMillis(10));
  * }
  * }</pre>
  */

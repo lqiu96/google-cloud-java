@@ -207,41 +207,41 @@ public interface ApiCallContext extends RetryingContext {
    * Code#DEADLINE_EXCEEDED} as one of its retryable codes (or without calling {@link
    * #withRetryableCodes(Set)} with a set that includes at least {@link Code#DEADLINE_EXCEEDED})
    * will effectively only set a single timeout that is equal to {@link
-   * RetrySettings#getInitialRpcTimeout()}. If this timeout is exceeded, the RPC will not be retried
-   * and will fail with {@link Code#DEADLINE_EXCEEDED}.
+   * RetrySettings#getInitialRpcTimeoutDuration()}. If this timeout is exceeded, the RPC will not be
+   * retried and will fail with {@link Code#DEADLINE_EXCEEDED}.
    *
    * <p>Example usage:
    *
    * <pre>{@code
    * ApiCallContext context = GrpcCallContext.createDefault()
    *   .withRetrySettings(RetrySettings.newBuilder()
-   *     .setInitialRetryDelay(Duration.ofMillis(10L))
-   *     .setInitialRpcTimeout(Duration.ofMillis(100L))
+   *     .setInitialRetryDelayDuration(java.time.Duration.ofMillis(10L))
+   *     .setInitialRpcTimeoutDuration(java.time.Duration.ofMillis(100L))
    *     .setMaxAttempts(10)
-   *     .setMaxRetryDelay(Duration.ofSeconds(10L))
-   *     .setMaxRpcTimeout(Duration.ofSeconds(30L))
+   *     .setMaxRetryDelayDuration(java.time.Duration.ofSeconds(10L))
+   *     .setMaxRpcTimeoutDuration(java.time.Duration.ofSeconds(30L))
    *     .setRetryDelayMultiplier(1.4)
    *     .setRpcTimeoutMultiplier(1.5)
-   *     .setTotalTimeout(Duration.ofMinutes(10L))
+   *     .setTotalTimeoutDuration(java.time.Duration.ofMinutes(10L))
    *     .build())
-   *   .withRetryableCodes(Sets.newSet(
+   *   .withRetryableCodes(EnumSet.of(
    *     StatusCode.Code.UNAVAILABLE,
    *     StatusCode.Code.DEADLINE_EXCEEDED));
    * }</pre>
    *
    * Setting a logical call timeout for the context can be done similarly with {@link
-   * RetrySettings.Builder#setLogicalTimeout(java.time.Duration timeout)}.
+   * RetrySettings.Builder#setLogicalTimeout(java.time.Duration)}.
    *
    * <p>Example usage:
    *
    * <pre>{@code
    * ApiCallContext context = GrpcCallContext.createDefault()
    *   .withRetrySettings(RetrySettings.newBuilder()
-   *     .setInitialRetryDelay(Duration.ofMillis(10L))
-   *     .setMaxRetryDelay(Duration.ofSeconds(10L))
+   *     .setInitialRetryDelayDuration(java.time.Duration.ofMillis(10L))
+   *     .setMaxRetryDelayDuration(java.time.Duration.ofSeconds(10L))
    *     .setRetryDelayMultiplier(1.4)
    *     .setMaxAttempts(10)
-   *     .setLogicalTimeout(Duration.ofSeconds(30L))
+   *     .setLogicalTimeout(java.time.Duration.ofSeconds(30L))
    *     .build());
    * }</pre>
    */

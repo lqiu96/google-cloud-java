@@ -44,32 +44,40 @@ import org.jspecify.annotations.NullMarked;
  * <pre>{@code
  * class ListDescriptor implements BatchingDescriptor<String, String, List<String>, List<String>> {
  *
- *   RequestBuilder<String, List<String>> newRequestBuilder(List<String> prototype) {
- *     return new RequestBuilder<String, List<String>>() {
+ *   @Override
+ *   public BatchingRequestBuilder<String, List<String>> newRequestBuilder(List<String> prototype) {
+ *     return new BatchingRequestBuilder<String, List<String>>() {
+ *       private final List<String> list = new ArrayList<>(prototype);
  *
- *       void add(String element) {
+ *       @Override
+ *       public void add(String element) {
  *         list.add(element);
  *       }
  *
- *       List<String> build() {
- *         return list.clone();
+ *       @Override
+ *       public List<String> build() {
+ *         return new ArrayList<>(list);
  *       }
  *     };
  *   }
  *
- *   void splitResponse(List<String> callableResponse, List<SettableApiFuture<String>> batch) {
+ *   @Override
+ *   public void splitResponse(
+ *       List<String> batchResponse, List<BatchEntry<String, String>> batch) {
  *     for (int i = 0; i < batchResponse.size(); i++) {
- *       batch.get(i).set(batchResponse.get(i);
+ *       batch.get(i).getResultFuture().set(batchResponse.get(i));
  *     }
  *   }
  *
- *   void splitException(Throwable throwable, List<SettableApiFuture<String>> batch) {
- *     for (SettableApiFuture<String> result : batch) {
- *       result.setException(throwable);
+ *   @Override
+ *   public void splitException(Throwable throwable, List<BatchEntry<String, String>> batch) {
+ *     for (BatchEntry<String, String> entry : batch) {
+ *       entry.getResultFuture().setException(throwable);
  *     }
  *   }
  *
- *   long countBytes(String element) {
+ *   @Override
+ *   public long countBytes(String element) {
  *     return element.length();
  *   }
  * }
