@@ -388,8 +388,8 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @return the credential defined by the credentialsStream.
@@ -408,8 +408,8 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @param transportFactory HTTP transport factory, creates the transport used to get access
@@ -442,8 +442,8 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@link <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param json a map from the JSON representing the credentials
    * @param transportFactory HTTP transport factory, creates the transport used to get access tokens
@@ -887,10 +887,10 @@ public class ImpersonatedCredentials extends GoogleCredentials
    *
    * @param targetAudience the audience field for the issued ID token
    * @param options credential specific options for the token. For example, an ID token for an
-   *     ImpersonatedCredentials can return the email address within the token claims if
-   *     "ImpersonatedCredentials.INCLUDE_EMAIL" is provided as a list option.<br>
-   *     Only one option value is supported: "ImpersonatedCredentials.INCLUDE_EMAIL" If no options
-   *     are set, the default excludes the "includeEmail" attribute in the API request.
+   *     ImpersonatedCredentials can return the email address within the token claims if {@link
+   *     IdTokenProvider.Option#INCLUDE_EMAIL} is provided as a list option.<br>
+   *     Only one option value is supported: {@link IdTokenProvider.Option#INCLUDE_EMAIL}. If no
+   *     options are set, the default excludes the "includeEmail" attribute in the API request.
    * @return IdToken object which includes the raw id_token, expiration, and audience
    * @throws IOException if the attempt to get an ID token failed
    */
@@ -987,8 +987,9 @@ public class ImpersonatedCredentials extends GoogleCredentials
     /**
      * @param sourceCredentials The source credentials to use for impersonation.
      * @param targetPrincipal The service account to impersonate.
-     * @deprecated Use {@link #Builder(ImpersonatedCredentials)} instead. This constructor will be
-     *     removed in a future release.
+     * @deprecated Use {@link ImpersonatedCredentials#newBuilder()} or {@link
+     *     ImpersonatedCredentials#toBuilder()} instead. This constructor will be removed in a
+     *     future release.
      */
     @Deprecated
     protected Builder(GoogleCredentials sourceCredentials, String targetPrincipal) {

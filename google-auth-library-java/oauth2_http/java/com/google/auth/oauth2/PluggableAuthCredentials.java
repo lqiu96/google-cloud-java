@@ -88,8 +88,8 @@ import org.jspecify.annotations.Nullable;
  * }
  * </pre>
  *
- * <p>The `expiration_time` field in the JSON response is only required for successful responses
- * when an output file was specified in the credential configuration.
+ * <p>The {@code expiration_time} field in the JSON response is only required for successful
+ * responses when an output file was specified in the credential configuration.
  *
  * <p>The auth libraries will populate certain environment variables that will be accessible by the
  * executable, such as: GOOGLE_EXTERNAL_ACCOUNT_AUDIENCE, GOOGLE_EXTERNAL_ACCOUNT_TOKEN_TYPE,

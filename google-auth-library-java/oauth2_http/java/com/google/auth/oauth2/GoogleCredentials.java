@@ -201,11 +201,11 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    * used without validation on your side.
    *
    * <p>If you know that you will be loading credential configurations of a specific type, it is
-   * recommended to use a credential-type-specific `fromStream()` method. This will ensure that an
-   * unexpected credential type with potential for malicious intent is not loaded unintentionally.
-   * You might still have to do validation for certain credential types. Please follow the
-   * recommendation for that method. For example, if you want to load only service accounts, you can
-   * use: <code>
+   * recommended to use a credential-type-specific {@code fromStream()} method. This will ensure
+   * that an unexpected credential type with potential for malicious intent is not loaded
+   * unintentionally. You might still have to do validation for certain credential types. Please
+   * follow the recommendation for that method. For example, if you want to load only service
+   * accounts, you can use: <code>
    *  GoogleCredentials credentials = ServiceAccountCredentials.fromStream(json);
    * </code>. See {@link ServiceAccountCredentials#fromStream(InputStream, HttpTransportFactory)}.
    *
@@ -216,8 +216,8 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    * <p>Regardless of the method used, it is always your responsibility to validate configurations
    * received from external sources.
    *
-   * <p>See the {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}
+   * <p>See the <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>
    * for more details.
    *
    * <p>Returns credentials defined by a JSON file stream.
@@ -268,11 +268,11 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    * used without validation on your side.
    *
    * <p>If you know that you will be loading credential configurations of a specific type, it is
-   * recommended to use a credential-type-specific `fromStream()` method. This will ensure that an
-   * unexpected credential type with potential for malicious intent is not loaded unintentionally.
-   * You might still have to do validation for certain credential types. Please follow the
-   * recommendation for that method. For example, if you want to load only service accounts, you can
-   * use: <code>
+   * recommended to use a credential-type-specific {@code fromStream()} method. This will ensure
+   * that an unexpected credential type with potential for malicious intent is not loaded
+   * unintentionally. You might still have to do validation for certain credential types. Please
+   * follow the recommendation for that method. For example, if you want to load only service
+   * accounts, you can use: <code>
    *  GoogleCredentials credentials = ServiceAccountCredentials.fromStream(json);
    * </code>. See {@link ServiceAccountCredentials#fromStream(InputStream, HttpTransportFactory)}.
    *
@@ -283,8 +283,8 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    * <p>Regardless of the method used, it is always your responsibility to validate configurations
    * received from external sources.
    *
-   * <p>See the {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}
+   * <p>See the <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>
    * for more details.
    *
    * <p>Returns credentials defined by a JSON file stream.
@@ -293,6 +293,8 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    * Console or a stored user credential using the format supported by the Cloud SDK.
    *
    * @param credentialsStream the stream with the credential definition.
+   * @param transportFactory HTTP transport factory, creates the transport used to get access
+   *     tokens.
    * @return the credential defined by the credentialsStream.
    * @throws IOException if the credential cannot be created from the stream.
    */
@@ -419,11 +421,9 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
   /**
    * Constructor with an explicit access token and quotaProjectId.
    *
-   * <p>Deprecated, please use the {@link GoogleCredentials#GoogleCredentials(Builder)} constructor
-   * whenever possible.
-   *
    * @param accessToken initial or temporary access token
    * @param quotaProjectId a quotaProjectId, a project id to be used for billing purposes
+   * @deprecated Use the {@link GoogleCredentials#GoogleCredentials(Builder)} constructor instead.
    */
   @Deprecated
   protected GoogleCredentials(@Nullable AccessToken accessToken, @Nullable String quotaProjectId) {
@@ -437,6 +437,7 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    * Constructor with explicit access token.
    *
    * @param accessToken initial or temporary access token
+   * @deprecated Use {@link #create(AccessToken)} or {@link #newBuilder()} instead.
    */
   @Deprecated
   public GoogleCredentials(AccessToken accessToken) {
@@ -467,10 +468,10 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
   /**
    * Constructor with explicit access token and refresh margins.
    *
-   * <p>Deprecated, please use the {@link GoogleCredentials#GoogleCredentials(Builder)} constructor
-   * whenever possible.
-   *
    * @param accessToken initial or temporary access token
+   * @param refreshMargin margin before expiration to trigger an asynchronous refresh
+   * @param expirationMargin margin before expiration to treat the token as expired
+   * @deprecated Use the {@link GoogleCredentials#GoogleCredentials(Builder)} constructor instead.
    */
   @Deprecated
   protected GoogleCredentials(
@@ -631,12 +632,12 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    *
    * Unknown field values (i.e. null) are not included in the mapping (e.g. ComputeCredentials may
    * not know the principal value until after a call to MDS is made and the field will be excluded
-   * if `getCredentialInfo` is called prior to retrieving that value). A new map of the fields is
-   * created on every time this method is called as fields may be updated throughout the Credential
-   * lifecycle. This mapping is intended to provide information about the Credential that is created
-   * via ADC. Some fields may not be known if a Credential is directly created (e.g.
-   * `ServiceAccountCredential.fromStream(InputStream)` may not know the source of the file stream).
-   * These fields are populated on a best effort basis.
+   * if {@code getCredentialInfo} is called prior to retrieving that value). A new map of the fields
+   * is created on every time this method is called as fields may be updated throughout the
+   * Credential lifecycle. This mapping is intended to provide information about the Credential that
+   * is created via ADC. Some fields may not be known if a Credential is directly created (e.g.
+   * {@code ServiceAccountCredentials.fromStream(InputStream)} may not know the source of the file
+   * stream). These fields are populated on a best effort basis.
    *
    * @return ImmutableMap of information regarding how the Credential was initialized
    */

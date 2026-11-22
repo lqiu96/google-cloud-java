@@ -279,8 +279,8 @@ public class AwsCredentials extends ExternalAccountCredentials {
     /**
      * Sets the AWS regional credential verification URL. If set, will override any credential
      * verification URL provided in the credential source. If not set, the credential verification
-     * URL will default to
-     * `https://sts.{region}.amazonaws.com?Action=GetCallerIdentity&amp;Version=2011-06-15`
+     * URL will default to {@code
+     * https://sts.{region}.amazonaws.com?Action=GetCallerIdentity&Version=2011-06-15}
      *
      * @param regionalCredentialVerificationUrlOverride the AWS credential verification url to set.
      * @return this {@code Builder} object

@@ -35,11 +35,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import org.jspecify.annotations.NullMarked;
 
-@FunctionalInterface
 /**
- * Provider for retrieving the subject tokens for {@Link IdentityPoolCredentials} to exchange for
+ * Provider for retrieving the subject tokens for {@link IdentityPoolCredentials} to exchange for
  * GCP access tokens.
  */
+@FunctionalInterface
 @NullMarked
 public interface IdentityPoolSubjectTokenSupplier extends Serializable {
 
@@ -48,7 +48,7 @@ public interface IdentityPoolSubjectTokenSupplier extends Serializable {
    *
    * @param context relevant context from the calling credential.
    * @return a valid subject token.
-   * @throws IOException
+   * @throws IOException if retrieving the subject token fails.
    */
   String getSubjectToken(ExternalAccountSupplierContext context) throws IOException;
 }

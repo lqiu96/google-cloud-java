@@ -144,8 +144,8 @@ public class GdchCredentials extends GoogleCredentials {
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @return the credential defined by the credentialsStream.
@@ -163,8 +163,8 @@ public class GdchCredentials extends GoogleCredentials {
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @param transportFactory HTTP transport factory, creates the transport used to get access
@@ -285,7 +285,7 @@ public class GdchCredentials extends GoogleCredentials {
   }
 
   /**
-   * This method is obsolete. Please use {@link #createWithGdchAudience(String)}} instead. Create a
+   * This method is obsolete. Please use {@link #createWithGdchAudience(String)} instead. Create a
    * copy of GDCH credentials with the specified audience.
    *
    * @param apiAudience The intended audience for GDCH credentials.
@@ -377,8 +377,9 @@ public class GdchCredentials extends GoogleCredentials {
    * Create a self-signed JWT for GDCH authentication flow.
    *
    * <p>The self-signed JWT is used to exchange access token from GDCH authentication
-   * (tokenServerUri), not for API call. It uses the serviceIdentityName as the `iss` and `sub`
-   * claim, and the tokenServerUri as the `aud` claim. The JWT is signed with the privateKey.
+   * (tokenServerUri), not for API call. It uses the serviceIdentityName as the {@code iss} and
+   * {@code sub} claim, and the tokenServerUri as the {@code aud} claim. The JWT is signed with the
+   * privateKey.
    */
   String createAssertion(JsonFactory jsonFactory, long currentTime) throws IOException {
     JsonWebSignature.Header header = new JsonWebSignature.Header();
@@ -407,8 +408,8 @@ public class GdchCredentials extends GoogleCredentials {
   /**
    * Get the issuer and subject value in the format GDCH token server required.
    *
-   * <p>This value is specific to GDCH and combined parameter used for both `iss` and `sub` fields
-   * in JWT claim.
+   * <p>This value is specific to GDCH and combined parameter used for both {@code iss} and {@code
+   * sub} fields in JWT claim.
    */
   @VisibleForTesting
   static String getIssuerSubjectValue(String projectId, String serviceIdentityName) {

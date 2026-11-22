@@ -241,17 +241,18 @@ public class IdentityPoolCredentialSource extends ExternalAccountCredentials.Cre
    * The source of the 3P credential.
    *
    * <p>If this is a file based 3P credential, the credentials file can be retrieved using the
-   * `file` key.
+   * {@code file} key.
    *
-   * <p>If this is URL-based 3p credential, the metadata server URL can be retrieved using the `url`
-   * key.
+   * <p>If this is URL-based 3p credential, the metadata server URL can be retrieved using the
+   * {@code url} key.
    *
    * <p>The third party credential can be provided in different formats, such as text or JSON. The
-   * format can be specified using the `format` header, which returns a map with keys `type` and
-   * `subject_token_field_name`. If the `type` is json, the `subject_token_field_name` must be
-   * provided. If no format is provided, we expect the token to be in the raw text format.
+   * format can be specified using the {@code format} field, which returns a map with keys {@code
+   * type} and {@code subject_token_field_name}. If the {@code type} is json, the {@code
+   * subject_token_field_name} must be provided. If no format is provided, we expect the token to be
+   * in the raw text format.
    *
-   * <p>Optional headers can be present, and should be keyed by `headers`.
+   * <p>Optional headers can be present, and should be keyed by {@code headers}.
    */
   @SuppressWarnings("unchecked")
   public IdentityPoolCredentialSource(Map<String, Object> credentialSourceMap) {
