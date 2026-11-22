@@ -33,9 +33,10 @@ import java.util.Objects;
 /**
  * A Google BigQuery Dataset.
  *
- * <p>Objects of this class are immutable. Operations that modify the dataset like {@link #update}
- * return a new object. To get a {@code Dataset} object with the most recent information use {@link
- * #reload}. {@code Dataset} adds a layer of service-related functionality over {@link DatasetInfo}.
+ * <p>Objects of this class are immutable metadata snapshots. Calling {@link
+ * #reload(DatasetOption...)} or {@link #update(DatasetOption...)} does not modify this instance in
+ * place; always capture the returned {@code Dataset} object to observe the latest server state.
+ * {@code Dataset} adds a layer of service-related functionality over {@link DatasetInfo}.
  */
 public class Dataset extends DatasetInfo {
 
@@ -127,6 +128,13 @@ public class Dataset extends DatasetInfo {
       return this;
     }
 
+    /**
+     * Sets the labels applied to this dataset.
+     *
+     * <p>When used with {@link Dataset#update(DatasetOption...)}, map individual keys to {@code
+     * null} to remove those keys, or pass {@code null} to remove all labels; passing an empty map
+     * leaves existing labels unchanged.
+     */
     @Override
     public Builder setLabels(Map<String, String> labels) {
       infoBuilder.setLabels(labels);
@@ -211,7 +219,10 @@ public class Dataset extends DatasetInfo {
 
   /**
    * Fetches current dataset's latest information. Returns {@code null} if the dataset does not
-   * exist.
+   * exist (HTTP 404), unless {@link BigQueryOptions#setThrowNotFound(boolean)} is enabled.
+   *
+   * <p>Because {@code Dataset} instances are immutable, this method does not update this object in
+   * place; capture the returned {@code Dataset} to read the refreshed metadata.
    *
    * <p>Example of reloading a dataset.
    *
@@ -224,7 +235,8 @@ public class Dataset extends DatasetInfo {
    *
    * @param options dataset options
    * @return a {@code Dataset} object with latest information or {@code null} if not found
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   public Dataset reload(DatasetOption... options) {
     return bigquery.getDataset(getDatasetId().getDataset(), options);
@@ -232,7 +244,17 @@ public class Dataset extends DatasetInfo {
 
   /**
    * Updates the dataset's information with this dataset's information. Dataset's user-defined id
-   * cannot be changed. A new {@code Dataset} object is returned.
+   * cannot be changed.
+   *
+   * <p>Uses HTTP {@code PATCH} (partial update). Because {@code Dataset} instances are immutable,
+   * this method does not mutate this instance in place; capture the returned {@code Dataset} to
+   * observe the updated server state.
+   *
+   * <p>{@link DatasetOption#fields(BigQuery.DatasetField...)} controls only the response projection
+   * and does not act as a write field mask (use {@link
+   * DatasetOption#updateMode(BigQuery.DatasetUpdateMode)} to scope metadata versus ACL writes). To
+   * clear individual labels, map their keys to {@code null} via {@link Builder#setLabels(Map)} (or
+   * pass {@code null} to remove all labels; an empty map leaves existing labels unchanged).
    *
    * <p>Example of updating a dataset.
    *
@@ -297,7 +319,7 @@ public class Dataset extends DatasetInfo {
    * <p>Example of getting a table in the dataset.
    *
    * <pre>{@code
-   * String tableName = “my_table”;
+   * String tableName = "my_table";
    * Table table = dataset.get(tableName);
    * }</pre>
    *
@@ -321,8 +343,8 @@ public class Dataset extends DatasetInfo {
    * <p>Example of creating a table in the dataset with schema and time partitioning.
    *
    * <pre>{@code
-   * String tableName = “my_table”;
-   * String fieldName = “my_field”;
+   * String tableName = "my_table";
+   * String fieldName = "my_field";
    * Schema schema = Schema.of(Field.of(fieldName, LegacySQLTypeName.STRING));
    * StandardTableDefinition definition = StandardTableDefinition.newBuilder()
    *     .setSchema(schema)

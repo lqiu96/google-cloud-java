@@ -32,9 +32,12 @@ import java.util.Objects;
 /**
  * A Google BigQuery Table.
  *
- * <p>Objects of this class are immutable. Operations that modify the table like {@link #update}
- * return a new object. To get a {@code Table} object with the most recent information use {@link
- * #reload}. {@code Table} adds a layer of service-related functionality over {@link TableInfo}.
+ * <p>Objects of this class are immutable metadata snapshots. Calling {@link
+ * #reload(TableOption...)} or {@link #update(TableOption...)} does not modify this instance in
+ * place; always capture the returned {@code Table} object to observe the latest server state.
+ * {@link #update(TableOption...)} modifies table metadata and schema rather than row contents (use
+ * SQL DML, load jobs, or streaming inserts to modify rows). {@code Table} adds a layer of
+ * service-related functionality over {@link TableInfo}.
  */
 public class Table extends TableInfo {
 
@@ -186,6 +189,13 @@ public class Table extends TableInfo {
       return this;
     }
 
+    /**
+     * Sets the labels applied to this table.
+     *
+     * <p>When used with {@link Table#update(TableOption...)}, map individual keys to {@code null}
+     * to remove those keys, or pass {@code null} to remove all labels; passing an empty map leaves
+     * existing labels unchanged.
+     */
     @Override
     public Builder setLabels(Map<String, String> labels) {
       infoBuilder.setLabels(labels);
@@ -256,7 +266,11 @@ public class Table extends TableInfo {
   }
 
   /**
-   * Fetches current table's latest information. Returns {@code null} if the table does not exist.
+   * Fetches current table's latest information. Returns {@code null} if the table does not exist
+   * (HTTP 404), unless {@link BigQueryOptions#setThrowNotFound(boolean)} is enabled.
+   *
+   * <p>Because {@code Table} instances are immutable, this method does not update this object in
+   * place; capture the returned {@code Table} to read the refreshed metadata.
    *
    * <p>Example of fetching the table's latest information, specifying particular table fields to
    * get.
@@ -272,15 +286,26 @@ public class Table extends TableInfo {
    *
    * @param options table options
    * @return a {@code Table} object with latest information or {@code null} if not found
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   public Table reload(TableOption... options) {
     return bigquery.getTable(getTableId(), options);
   }
 
   /**
-   * Updates the table's information with this table's information. Dataset's and table's
-   * user-defined ids cannot be changed. A new {@code Table} object is returned.
+   * Updates the table's metadata and schema with this table's information. Dataset's and table's
+   * user-defined ids cannot be changed.
+   *
+   * <p>This method modifies table metadata and schema (such as description, expiration, labels, or
+   * schema columns) rather than row contents using HTTP {@code PATCH} (partial update). Because
+   * {@code Table} instances are immutable, this method does not mutate this instance in place;
+   * capture the returned {@code Table} to observe the updated server state.
+   *
+   * <p>{@link TableOption#fields(BigQuery.TableField...)} controls only the response projection and
+   * does not act as a write field mask. To clear individual labels, map their keys to {@code null}
+   * via {@link Builder#setLabels(Map)} (or pass {@code null} to remove all labels; an empty map
+   * leaves existing labels unchanged).
    *
    * <p>Example of updating the table's information.
    *
@@ -288,7 +313,7 @@ public class Table extends TableInfo {
    * Table updatedTable = table.toBuilder().setDescription("new description").build().update();
    * }</pre>
    *
-   * @param options dataset options
+   * @param options table options
    * @return a {@code Table} object with updated information
    * @throws BigQueryException upon failure
    */
@@ -320,6 +345,12 @@ public class Table extends TableInfo {
   /**
    * Insert rows into the table.
    *
+   * <p>Row-level insertion failures do not throw {@link BigQueryException}. Always check {@link
+   * InsertAllResponse#hasErrors()} and {@link InsertAllResponse#getInsertErrors()}. By default
+   * ({@code skipInvalidRows == false}), a single invalid row aborts the entire batch. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success">Success
+   * HTTP response codes</a>.
+   *
    * <p>Streaming inserts reside temporarily in the streaming buffer, which has different
    * availability characteristics than managed storage. Certain operations do not interact with the
    * streaming buffer, such as {@link #list(TableDataListOption...)} and {@link #copy(TableId,
@@ -341,11 +372,15 @@ public class Table extends TableInfo {
    * rows.add(RowToInsert.of(rowId1, row1));
    * rows.add(RowToInsert.of(rowId2, row2));
    * InsertAllResponse response = table.insert(rows);
-   * // do something with response
+   * // Row-level insert failures return HTTP 200 without throwing, so always check hasErrors()
+   * if (response.hasErrors()) {
+   *   // inspect response.getInsertErrors()
+   * }
    * }</pre>
    *
    * @param rows rows to be inserted
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon a request-level or transport failure (row-level insertion errors
+   *     are returned on {@link InsertAllResponse} instead)
    */
   public InsertAllResponse insert(Iterable<InsertAllRequest.RowToInsert> rows)
       throws BigQueryException {
@@ -354,6 +389,11 @@ public class Table extends TableInfo {
 
   /**
    * Insert rows into the table.
+   *
+   * <p>Row-level insertion failures do not throw {@link BigQueryException}. Always check {@link
+   * InsertAllResponse#hasErrors()} and {@link InsertAllResponse#getInsertErrors()}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success">Success
+   * HTTP response codes</a>.
    *
    * <p>Streaming inserts reside temporarily in the streaming buffer, which has different
    * availability characteristics than managed storage. Certain operations do not interact with the
@@ -376,16 +416,20 @@ public class Table extends TableInfo {
    * rows.add(RowToInsert.of(rowId1, row1));
    * rows.add(RowToInsert.of(rowId2, row2));
    * InsertAllResponse response = table.insert(rows, true, true);
-   * // do something with response
+   * // Row-level insert failures return HTTP 200 without throwing, so always check hasErrors()
+   * if (response.hasErrors()) {
+   *   // inspect response.getInsertErrors()
+   * }
    * }</pre>
    *
    * @param rows rows to be inserted
-   * @param skipInvalidRows whether to insert all valid rows, even if invalid rows exist. If not set
-   *     the entire insert operation will fail if rows to be inserted contain an invalid row
+   * @param skipInvalidRows whether to insert all valid rows, even if invalid rows exist. When
+   *     {@code false}, a single invalid row aborts the entire insert request
    * @param ignoreUnknownValues whether to accept rows that contain values that do not match the
-   *     schema. The unknown values are ignored. If not set, rows with unknown values are considered
-   *     to be invalid
-   * @throws BigQueryException upon failure
+   *     schema. When {@code true}, unknown values are ignored. When {@code false}, rows with
+   *     unknown values are treated as invalid
+   * @throws BigQueryException upon a request-level or transport failure (row-level insertion errors
+   *     are returned on {@link InsertAllResponse} instead)
    */
   public InsertAllResponse insert(
       Iterable<InsertAllRequest.RowToInsert> rows,
@@ -401,7 +445,15 @@ public class Table extends TableInfo {
   }
 
   /**
-   * Returns the paginated list rows in this table.
+   * Returns the paginated list of rows in this table.
+   *
+   * <p>Because the underlying {@code tabledata.list} API does not return table schema metadata, the
+   * returned {@link TableResult} has {@code getSchema() == null} (supporting positional {@link
+   * FieldValueList#get(int)} lookup only) and {@code getJobId() == null}. Pass a {@link Schema} to
+   * {@link #list(Schema, TableDataListOption...)} (for example, {@code
+   * getDefinition().getSchema()}) when by-name lookup via {@link FieldValueList#get(String)} is
+   * needed. Use {@link TableResult#iterateAll()} to read all pages or {@link
+   * TableResult#getValues()} for the current page only.
    *
    * <p>Example of listing rows in the table.
    *
@@ -422,7 +474,13 @@ public class Table extends TableInfo {
   }
 
   /**
-   * Returns the paginated list rows in this table.
+   * Returns the paginated list of rows in this table with an attached {@link Schema}.
+   *
+   * <p>When {@code schema} is non-null, it is attached to each returned {@link FieldValueList} so
+   * fields can be accessed by name via {@link FieldValueList#get(String)}. {@link
+   * TableResult#getJobId()} is {@code null} for table-data reads. Use {@link
+   * TableResult#iterateAll()} to read all pages or {@link TableResult#getValues()} for the current
+   * page only.
    *
    * <p>Example of listing rows in the table given a schema.
    *
@@ -435,6 +493,7 @@ public class Table extends TableInfo {
    * }
    * }</pre>
    *
+   * @param schema the table schema to attach to returned rows, or {@code null}
    * @param options table data list options
    * @throws BigQueryException upon failure
    */
@@ -454,13 +513,15 @@ public class Table extends TableInfo {
    * Job job = table.copy(datasetName, tableName);
    * // Wait for the job to complete.
    * try {
-   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelay(Duration.ofSeconds(1)),
-   *       RetryOption.totalTimeout(Duration.ofMinutes(3)));
-   *   if (completedJob != null && completedJob.getStatus().getError() == null) {
-   *     // Job completed successfully
+   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelayDuration(Duration.ofSeconds(1)),
+   *       RetryOption.totalTimeoutDuration(Duration.ofMinutes(3)));
+   *   if (completedJob == null) {
+   *     // Job no longer exists
    *   } else {
-   *     // Handle error case
+   *     // Job completed successfully
    *   }
+   * } catch (BigQueryException e) {
+   *   // Handle error case
    * } catch (InterruptedException e) {
    *   // Handle interrupted wait
    * }
@@ -490,13 +551,15 @@ public class Table extends TableInfo {
    * Job job = table.copy(destinationId, options);
    * // Wait for the job to complete.
    * try {
-   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelay(Duration.ofSeconds(1)),
-   *       RetryOption.totalTimeout(Duration.ofMinutes(3)));
-   *   if (completedJob != null && completedJob.getStatus().getError() == null) {
-   *     // Job completed successfully.
+   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelayDuration(Duration.ofSeconds(1)),
+   *       RetryOption.totalTimeoutDuration(Duration.ofMinutes(3)));
+   *   if (completedJob == null) {
+   *     // Job no longer exists.
    *   } else {
-   *     // Handle error case.
+   *     // Job completed successfully.
    *   }
+   * } catch (BigQueryException e) {
+   *   // Handle error case.
    * } catch (InterruptedException e) {
    *   // Handle interrupted wait
    * }
@@ -523,13 +586,15 @@ public class Table extends TableInfo {
    * Job job = table.extract(format, gcsUrl);
    * // Wait for the job to complete
    * try {
-   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelay(Duration.ofSeconds(1)),
-   *       RetryOption.totalTimeout(Duration.ofMinutes(3)));
-   *   if (completedJob != null && completedJob.getStatus().getError() == null) {
-   *     // Job completed successfully
+   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelayDuration(Duration.ofSeconds(1)),
+   *       RetryOption.totalTimeoutDuration(Duration.ofMinutes(3)));
+   *   if (completedJob == null) {
+   *     // Job no longer exists
    *   } else {
-   *     // Handle error case
+   *     // Job completed successfully
    *   }
+   * } catch (BigQueryException e) {
+   *   // Handle error case
    * } catch (InterruptedException e) {
    *   // Handle interrupted wait
    * }
@@ -562,13 +627,15 @@ public class Table extends TableInfo {
    * Job job = table.extract(format, destinationUris);
    * // Wait for the job to complete
    * try {
-   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelay(Duration.ofSeconds(1)),
-   *       RetryOption.totalTimeout(Duration.ofMinutes(3)));
-   *   if (completedJob != null && completedJob.getStatus().getError() == null) {
-   *     // Job completed successfully
+   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelayDuration(Duration.ofSeconds(1)),
+   *       RetryOption.totalTimeoutDuration(Duration.ofMinutes(3)));
+   *   if (completedJob == null) {
+   *     // Job no longer exists
    *   } else {
-   *     // Handle error case
+   *     // Job completed successfully
    *   }
+   * } catch (BigQueryException e) {
+   *   // Handle error case
    * } catch (InterruptedException e) {
    *   // Handle interrupted wait
    * }
@@ -598,13 +665,15 @@ public class Table extends TableInfo {
    * Job job = table.load(FormatOptions.csv(), sourceUri);
    * // Wait for the job to complete
    * try {
-   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelay(Duration.ofSeconds(1)),
-   *             RetryOption.totalTimeout(Duration.ofMinutes(3)));
-   *   if (completedJob != null && completedJob.getStatus().getError() == null) {
-   *     // Job completed successfully
+   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelayDuration(Duration.ofSeconds(1)),
+   *       RetryOption.totalTimeoutDuration(Duration.ofMinutes(3)));
+   *   if (completedJob == null) {
+   *     // Job no longer exists
    *   } else {
-   *     // Handle error case
+   *     // Job completed successfully
    *   }
+   * } catch (BigQueryException e) {
+   *   // Handle error case
    * } catch (InterruptedException e) {
    *   // Handle interrupted wait
    * }
@@ -636,19 +705,21 @@ public class Table extends TableInfo {
    * Job job = table.load(FormatOptions.csv(), sourceUris);
    * // Wait for the job to complete
    * try {
-   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelay(Duration.ofSeconds(1)),
-   *       RetryOption.totalTimeout(Duration.ofMinutes(3)));
-   *   if (completedJob != null && completedJob.getStatus().getError() == null) {
-   *     // Job completed successfully
+   *   Job completedJob = job.waitFor(RetryOption.initialRetryDelayDuration(Duration.ofSeconds(1)),
+   *       RetryOption.totalTimeoutDuration(Duration.ofMinutes(3)));
+   *   if (completedJob == null) {
+   *     // Job no longer exists
    *   } else {
-   *     // Handle error case
+   *     // Job completed successfully
    *   }
+   * } catch (BigQueryException e) {
+   *   // Handle error case
    * } catch (InterruptedException e) {
    *   // Handle interrupted wait
    * }
    * }</pre>
    *
-   * @param format the format of the exported data
+   * @param format the format of the data to load
    * @param sourceUris the fully-qualified Google Cloud Storage URIs (e.g. gs://bucket/path) from
    *     which to load the data
    * @param options job options

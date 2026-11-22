@@ -31,6 +31,18 @@ import com.google.common.collect.ImmutableSet;
 import io.opentelemetry.api.trace.Tracer;
 import java.util.Set;
 
+/**
+ * Configuration options for creating a {@link BigQuery} client.
+ *
+ * <p>Configure overall retry bounds (such as maximum attempts, retry delays, and total timeout) via
+ * {@link Builder#setRetrySettings(com.google.api.gax.retrying.RetrySettings)}. Configure
+ * per-attempt HTTP connect and read timeouts via {@link
+ * Builder#setTransportOptions(TransportOptions)} with {@link HttpTransportOptions} (by default,
+ * {@link #getDefaultHttpTransportOptions()} sets a 60-second read timeout).
+ *
+ * <p>For message-based retries on job creation and query job status polling, see {@link
+ * BigQueryRetryConfig}.
+ */
 public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
 
   private static final String API_SHORT_NAME = "BigQuery";
@@ -85,6 +97,12 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
       super(options);
     }
 
+    /**
+     * Sets the HTTP transport options, including per-attempt connect and read timeouts.
+     *
+     * <p>BigQuery supports only {@link HttpTransportOptions}. Passing any other {@link
+     * TransportOptions} implementation throws {@link IllegalArgumentException}.
+     */
     @Override
     public Builder setTransportOptions(TransportOptions transportOptions) {
       if (!(transportOptions instanceof HttpTransportOptions)) {
@@ -94,6 +112,24 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
       return super.setTransportOptions(transportOptions);
     }
 
+    /**
+     * Sets the client-wide default geographic processing location (for example, {@code "US"},
+     * {@code "EU"}, or {@code "asia-northeast1"}) used by job and query operations when {@link
+     * JobId} does not specify a location (such as {@link BigQuery#query(QueryJobConfiguration,
+     * BigQuery.JobOption...)}, {@link BigQuery#create(JobInfo, BigQuery.JobOption...)} with an
+     * auto-generated job ID, {@link BigQuery#getJob(JobId, BigQuery.JobOption...)}, and {@link
+     * BigQuery#cancel(JobId)}).
+     *
+     * <p>Use with caution: this default applies across requests made with this client, even when a
+     * query references tables in another region, which can cause queries against datasets in a
+     * different location to fail with a not-found error. When working across multiple regions, omit
+     * this client-wide setting and specify the location per request via {@link
+     * JobId.Builder#setLocation(String)} (or let BigQuery infer the location from referenced
+     * datasets).
+     *
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">
+     *     Specify locations</a>
+     */
     public Builder setLocation(String location) {
       this.location = location;
       return this;
@@ -158,6 +194,15 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
       return this;
     }
 
+    /**
+     * Sets a custom {@link ResultRetryAlgorithm} to determine which exceptions or responses are
+     * retried on eligible RPCs.
+     *
+     * <p>If not set, {@code BigQueryOptions} uses the default BigQuery retry handler, which retries
+     * transient network exceptions and retryable errors (see {@link
+     * BigQueryException#isRetryable()}). Supplying a custom algorithm replaces that default
+     * behavior.
+     */
     public Builder setResultRetryAlgorithm(ResultRetryAlgorithm<?> resultRetryAlgorithm) {
       this.resultRetryAlgorithm = resultRetryAlgorithm;
       return this;
@@ -211,6 +256,7 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     }
   }
 
+  /** Returns the default {@link HttpTransportOptions} with a 60-second read timeout. */
   public static HttpTransportOptions getDefaultHttpTransportOptions() {
     return HttpTransportOptions.newBuilder().setReadTimeout(DEFAULT_READ_API_TIME_OUT).build();
   }
@@ -224,6 +270,11 @@ public class BigQueryOptions extends ServiceOptions<BigQuery, BigQueryOptions> {
     return (HttpBigQueryRpc) getRpc();
   }
 
+  /**
+   * Returns the client-wide default geographic processing location used by job and query operations
+   * when no location is specified on {@link JobId}, or {@code null} if unset. See {@link
+   * Builder#setLocation(String)}.
+   */
   public String getLocation() {
     return location;
   }

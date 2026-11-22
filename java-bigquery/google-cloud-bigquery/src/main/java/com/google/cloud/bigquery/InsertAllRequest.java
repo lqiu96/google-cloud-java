@@ -31,13 +31,24 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Google Cloud BigQuery insert all request. This class can be used to stream data into BigQuery one
- * record at a time without needing to run a load job. This approach enables querying data without
- * the delay of running a load job. There are several important trade-offs to consider before
- * choosing an approach.
+ * Google Cloud BigQuery insert all request using the Storage Write API (REST) ({@code
+ * tabledata.insertAll}). This class streams rows into BigQuery without running a load job, making
+ * them immediately available for GoogleSQL queries.
  *
- * @see <a href="https://cloud.google.com/bigquery/streaming-data-into-bigquery">Streaming Data into
- *     BigQuery</a>
+ * <p>Streamed rows reside temporarily in the streaming buffer, where recently inserted rows may
+ * temporarily have {@code NULL} for {@code _PARTITIONTIME} on ingestion-time partitioned tables and
+ * may not be immediately available for table copy or {@link BigQuery#listTableData} operations (see
+ * <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataavailability">Stream data
+ * availability</a>).
+ *
+ * <p>For new streaming workloads that need lower cost, higher throughput, or exactly-once delivery
+ * semantics, use the BigQuery Storage Write API (gRPC) in {@code
+ * com.google.cloud:google-cloud-bigquerystorage} (see <a
+ * href="https://docs.cloud.google.com/bigquery/docs/write-api-grpc">Introduction to the BigQuery
+ * Storage Write API (gRPC)</a>).
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest">Use the Storage Write
+ *     API (REST)</a>
  */
 public final class InsertAllRequest implements Serializable {
 
@@ -50,8 +61,14 @@ public final class InsertAllRequest implements Serializable {
   private final String templateSuffix;
 
   /**
-   * A Google Big Query row to be inserted into a table. Each {@code RowToInsert} has an associated
-   * id used by BigQuery to detect duplicate insertion requests on a best-effort basis.
+   * A Google BigQuery row to be inserted into a table. Each {@code RowToInsert} may specify an
+   * associated insert ID used by BigQuery to detect duplicate insertion requests on a best-effort
+   * basis.
+   *
+   * <p>This client does not automatically generate insert IDs for rows. Automatic client retries in
+   * {@link BigQuery#insertAll(InsertAllRequest)} are enabled only when every row in the request has
+   * a non-null insert ID. If any row omits an insert ID, automatic retries are disabled for the
+   * entire request to prevent duplicate rows.
    *
    * <p>To ensure proper serialization of numeric data, it is recommended to supply values using a
    * string-typed representation. Additionally, data for fields of {@link LegacySQLTypeName#BYTES}
@@ -69,11 +86,13 @@ public final class InsertAllRequest implements Serializable {
    * rowContent.put("bytesFieldName", "DQ4KDQ==");
    * rowContent.put("recordFieldName", recordContent);
    * rowContent.put("numericFieldName", "1298930929292.129593272");
-   * RowToInsert row = new RowToInsert("rowId", rowContent);
+   * RowToInsert row = RowToInsert.of("rowId", rowContent);
    * }</pre>
    *
-   * @see <a href ="https://cloud.google.com/bigquery/streaming-data-into-bigquery#dataconsistency">
-   *     Data Consistency</a>
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataconsistency">Best
+   *     effort de-duplication</a>
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-failure">
+   *     Failure HTTP response codes</a>
    */
   public static class RowToInsert implements Serializable {
 
@@ -197,7 +216,7 @@ public final class InsertAllRequest implements Serializable {
      * <p>Example usage of adding a row with associated id:
      *
      * <pre>{@code
-     * InsertAllRequest.Builder builder = InsertAllRequest.builder(tableId);
+     * InsertAllRequest.Builder builder = InsertAllRequest.newBuilder(tableId);
      * List<Long> repeatedFieldValue = Arrays.asList(1L, 2L);
      * Map<String, Object> recordContent = new HashMap<String, Object>();
      * recordContent.put("subfieldName1", "value");
@@ -216,7 +235,12 @@ public final class InsertAllRequest implements Serializable {
     }
 
     /**
-     * Adds a row to be inserted without an associated id.
+     * Adds a row to be inserted without an associated insert ID.
+     *
+     * <p>This client does not automatically generate insert IDs. Omitting an insert ID on any row
+     * disables automatic client retries for the entire {@link BigQuery#insertAll(InsertAllRequest)}
+     * request to prevent duplicate rows. Use {@link #addRow(String, Map)} to supply insert IDs when
+     * automatic retries or best-effort deduplication are needed.
      *
      * <p>To ensure proper serialization of numeric data, it is recommended to supply values using a
      * string-typed representation. Additionally, data for fields of type {@link
@@ -225,7 +249,7 @@ public final class InsertAllRequest implements Serializable {
      * <p>Example usage of adding a row without an associated id:
      *
      * <pre>{@code
-     * InsertAllRequest.Builder builder = InsertAllRequest.builder(tableId);
+     * InsertAllRequest.Builder builder = InsertAllRequest.newBuilder(tableId);
      * List<Long> repeatedFieldValue = Arrays.asList(1L, 2L);
      * Map<String, Object> recordContent = new HashMap<String, Object>();
      * recordContent.put("subfieldName1", "value");
@@ -244,8 +268,10 @@ public final class InsertAllRequest implements Serializable {
     }
 
     /**
-     * Sets whether to insert all valid rows of a request, even if invalid rows exist. If not set
-     * the entire insert request will fail if it contains an invalid row.
+     * Sets whether to insert all valid rows of a request, even if invalid rows exist. Defaults to
+     * {@code false}: if not set or set to {@code false}, a single invalid row aborts the entire
+     * insert request and reports {@code "stopped"} errors for the remaining rows in {@link
+     * InsertAllResponse#getInsertErrors()}.
      */
     public Builder setSkipInvalidRows(boolean skipInvalidRows) {
       this.skipInvalidRows = skipInvalidRows;
@@ -253,8 +279,9 @@ public final class InsertAllRequest implements Serializable {
     }
 
     /**
-     * Sets whether to accept rows that contain values that do not match the schema. The unknown
-     * values are ignored. If not set, rows with unknown values are considered to be invalid.
+     * Sets whether to accept rows that contain values that do not match the schema. When {@code
+     * true}, unknown values are ignored. Defaults to {@code false}: if not set or set to {@code
+     * false}, rows with unknown values are treated as invalid.
      */
     public Builder setIgnoreUnknownValues(boolean ignoreUnknownValues) {
       this.ignoreUnknownValues = ignoreUnknownValues;
@@ -277,8 +304,7 @@ public final class InsertAllRequest implements Serializable {
      * }
      * }</pre>
      *
-     * @see <a
-     *     href="https://cloud.google.com/bigquery/streaming-data-into-bigquery#template-tables">
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#template-tables">
      *     Template Tables</a>
      */
     public Builder setTemplateSuffix(String templateSuffix) {
@@ -311,16 +337,19 @@ public final class InsertAllRequest implements Serializable {
   }
 
   /**
-   * Returns whether to accept rows that contain values that do not match the schema. The unknown
-   * values are ignored. If not set, rows with unknown values are considered to be invalid.
+   * Returns whether to accept rows that contain values that do not match the schema. When {@code
+   * true}, unknown values are ignored. Defaults to {@code false} (when {@code null} or {@code
+   * false}, rows with unknown values are treated as invalid).
    */
   public Boolean ignoreUnknownValues() {
     return ignoreUnknownValues;
   }
 
   /**
-   * Returns whether to insert all valid rows of a request, even if invalid rows exist. If not set
-   * the entire insert request will fail if it contains an invalid row.
+   * Returns whether to insert all valid rows of a request, even if invalid rows exist. Defaults to
+   * {@code false} (when {@code null} or {@code false}, a single invalid row aborts the entire
+   * insert request and reports {@code "stopped"} errors for the remaining rows in {@link
+   * InsertAllResponse#getInsertErrors()}).
    */
   public Boolean skipInvalidRows() {
     return skipInvalidRows;
@@ -342,7 +371,7 @@ public final class InsertAllRequest implements Serializable {
    * }
    * }</pre>
    *
-   * @see <a href="https://cloud.google.com/bigquery/streaming-data-into-bigquery#template-tables">
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#template-tables">
    *     Template Tables</a>
    */
   public String getTemplateSuffix() {

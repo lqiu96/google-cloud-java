@@ -36,9 +36,21 @@ import org.apache.arrow.vector.util.JsonStringArrayList;
 import org.apache.arrow.vector.util.Text;
 
 /**
- * An implementation of BigQueryResult.
+ * An implementation of {@link BigQueryResult}.
  *
- * <p>This class and the ResultSet it returns is not thread-safe.
+ * <p>This class and the {@link ResultSet} returned by {@link #getResultSet()} are not thread-safe.
+ * The returned {@link ResultSet} is forward-only, read-only, and provides only partial JDBC
+ * compliance: unimplemented operations (such as {@code getMetaData}, {@code findColumn}, {@code
+ * getByte}/{@code getShort}/{@code getFloat}, and scrollable, stream, or updatable APIs) throw
+ * {@link SQLFeatureNotSupportedException} or {@link RuntimeException}.
+ *
+ * <p>Closing the owning {@link Connection} releases local buffers and background fetchers without
+ * sending a server-side {@code jobs.cancel} RPC. For production high-throughput reads, prefer the
+ * BigQuery Storage Read API ({@code google-cloud-bigquerystorage} / {@code BigQueryReadClient})
+ * directly.
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/reference/storage">BigQuery Storage
+ *     Read API</a>
  */
 public class BigQueryResultImpl<T> implements BigQueryResult<T> {
 
@@ -108,6 +120,13 @@ public class BigQueryResultImpl<T> implements BigQueryResult<T> {
     return totalRows;
   }
 
+  /**
+   * Returns the underlying forward-only, read-only {@link ResultSet} for this query result.
+   *
+   * <p>The returned {@link ResultSet} is not thread-safe and provides only partial JDBC compliance;
+   * unsupported JDBC operations throw {@link SQLFeatureNotSupportedException} or {@link
+   * RuntimeException}.
+   */
   @Override
   public ResultSet getResultSet() {
     return underlyingResultSet;

@@ -32,11 +32,18 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Google Cloud BigQuery insert all response. Objects of this class possibly contain errors for an
- * {@link InsertAllRequest}. If a row failed to be inserted, the non-empty list of errors associated
- * to that row's index can be obtained with {@link InsertAllResponse#getErrorsFor(long)}. {@link
- * InsertAllResponse#getInsertErrors()} can be used to return all errors caused by a {@link
- * InsertAllRequest} as a map.
+ * Google Cloud BigQuery insert all response. Objects of this class possibly contain row-level
+ * errors for an {@link InsertAllRequest}.
+ *
+ * <p>{@link BigQuery#insertAll(InsertAllRequest)} and {@link Table#insert(Iterable)} return an
+ * {@code InsertAllResponse} without throwing {@link BigQueryException} even when some or all rows
+ * fail to insert. Always check {@link #hasErrors()} after streaming rows. If a row failed to be
+ * inserted, the non-empty list of errors associated with that row's 0-based index in the request
+ * can be obtained with {@link #getErrorsFor(long)}, or all row errors can be retrieved via {@link
+ * #getInsertErrors()}.
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success">
+ *     Success HTTP response codes</a>
  */
 public class InsertAllResponse implements Serializable {
 
@@ -52,8 +59,13 @@ public class InsertAllResponse implements Serializable {
   }
 
   /**
-   * Returns all insertion errors as a map whose keys are indexes of rows that failed to insert.
-   * Each failed row index is associated with a non-empty list of {@link BigQueryError}.
+   * Returns all insertion errors as a map whose keys are 0-based indexes of rows in the request
+   * that failed to insert. Each failed row index is associated with a non-empty list of {@link
+   * BigQueryError}.
+   *
+   * <p>When {@link InsertAllRequest#skipInvalidRows()} is {@code false} (the default) and any row
+   * fails validation, no rows in the batch are inserted and the remaining valid rows appear in this
+   * map with a {@code "stopped"} error reason.
    */
   public Map<Long, List<BigQueryError>> getInsertErrors() {
     return insertErrors;
@@ -65,8 +77,8 @@ public class InsertAllResponse implements Serializable {
   }
 
   /**
-   * Returns {@code true} if no row insertion failed, {@code false} otherwise. If {@code false}
-   * {@link #getInsertErrors()} returns an empty map.
+   * Returns {@code true} if one or more row insertions failed, {@code false} otherwise. If {@code
+   * false}, {@link #getInsertErrors()} returns an empty map.
    */
   public boolean hasErrors() {
     return !insertErrors.isEmpty();

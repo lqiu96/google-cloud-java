@@ -34,6 +34,21 @@ import java.util.Objects;
 /**
  * Google BigQuery Table schema field. A table field has a name, a type, a mode and possibly a
  * description.
+ *
+ * <p>{@link #getType()} always returns a {@link LegacySQLTypeName} even when the field is
+ * constructed with a {@link StandardSQLTypeName} or returned by a Standard SQL query (for example,
+ * {@code INT64} is reported as {@link LegacySQLTypeName#INTEGER} and {@code STRUCT} as {@link
+ * LegacySQLTypeName#RECORD}). Call {@link LegacySQLTypeName#getStandardType()} to obtain the
+ * corresponding {@link StandardSQLTypeName}.
+ *
+ * <p>To define an {@code ARRAY} column, set the element type together with {@link Mode#REPEATED}
+ * (for example, {@code Field.newBuilder("tags",
+ * StandardSQLTypeName.STRING).setMode(Field.Mode.REPEATED).build()}). Do not pass {@link
+ * StandardSQLTypeName#ARRAY} as the field type, because it has no {@link LegacySQLTypeName}
+ * equivalent and causes {@link Builder#build()} to throw {@link NullPointerException}.
+ *
+ * <p>{@link #getMode()} returns {@code null} when no mode was explicitly set; BigQuery treats an
+ * omitted mode as {@link Mode#NULLABLE}.
  */
 public final class Field implements Serializable {
 
@@ -70,8 +85,8 @@ public final class Field implements Serializable {
 
   /**
    * Mode for a BigQuery Table field. {@link Mode#NULLABLE} fields can be set to {@code null},
-   * {@link Mode#REQUIRED} fields must be provided. {@link Mode#REPEATED} fields can contain more
-   * than one value.
+   * {@link Mode#REQUIRED} fields must be provided, and {@link Mode#REPEATED} fields represent
+   * BigQuery {@code ARRAY} columns (paired with the element type on {@link Field}).
    */
   public enum Mode {
     NULLABLE,
@@ -132,7 +147,8 @@ public final class Field implements Serializable {
      * @throws IllegalArgumentException if {@code type == LegacySQLTypeName.RECORD &&
      *     subFields.length == 0} or if {@code type != LegacySQLTypeName.RECORD && subFields.length
      *     != 0}
-     * @see <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
+     * @see <a
+     *     href="https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
      *     Types</a>
      */
     public Builder setType(LegacySQLTypeName type, Field... subFields) {
@@ -142,13 +158,19 @@ public final class Field implements Serializable {
     /**
      * Sets the type of the field.
      *
+     * <p>Do not pass {@link StandardSQLTypeName#ARRAY}; it maps to {@code null} via {@link
+     * LegacySQLTypeName#legacySQLTypeName(StandardSQLTypeName)} and causes {@link #build()} to
+     * throw {@link NullPointerException}. To define an {@code ARRAY} field, pass the element type
+     * here and call {@link #setMode(Mode)} with {@link Mode#REPEATED}.
+     *
      * @param type BigQuery data type
      * @param subFields nested schema fields in case if {@code type} is {@link
      *     StandardSQLTypeName#STRUCT}, empty otherwise
      * @throws IllegalArgumentException if {@code type == StandardSQLTypeName.STRUCT &&
      *     subFields.length == 0} or if {@code type != StandardSQLTypeName.STRUCT &&
      *     subFields.length != 0}
-     * @see <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
+     * @see <a
+     *     href="https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
      *     Types</a>
      */
     public Builder setType(StandardSQLTypeName type, Field... subFields) {
@@ -166,7 +188,8 @@ public final class Field implements Serializable {
      * @throws IllegalArgumentException if {@code type == LegacySQLTypeName.RECORD && (subFields ==
      *     null || subFields.isEmpty())} or if {@code type != LegacySQLTypeName.RECORD && subFields
      *     != null}
-     * @see <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
+     * @see <a
+     *     href="https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
      *     Types</a>
      */
     public Builder setType(LegacySQLTypeName type, FieldList subFields) {
@@ -190,13 +213,19 @@ public final class Field implements Serializable {
     /**
      * Sets the type of the field.
      *
+     * <p>Do not pass {@link StandardSQLTypeName#ARRAY}; it maps to {@code null} via {@link
+     * LegacySQLTypeName#legacySQLTypeName(StandardSQLTypeName)} and causes {@link #build()} to
+     * throw {@link NullPointerException}. To define an {@code ARRAY} field, pass the element type
+     * here and call {@link #setMode(Mode)} with {@link Mode#REPEATED}.
+     *
      * @param type BigQuery data type
      * @param subFields nested schema fields in case if {@code type} is {@link
-     *     StandardSQLTypeName#STRUCT}, empty otherwise
-     * @throws IllegalArgumentException if {@code type == StandardSQLTypeName.STRUCT &&
-     *     subFields.length == 0} or if {@code type != StandardSQLTypeName.STRUCT &&
-     *     subFields.length != 0}
-     * @see <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
+     *     StandardSQLTypeName#STRUCT}, {@code null} otherwise
+     * @throws IllegalArgumentException if {@code type == StandardSQLTypeName.STRUCT && (subFields
+     *     == null || subFields.isEmpty())} or if {@code type != StandardSQLTypeName.STRUCT &&
+     *     subFields != null}
+     * @see <a
+     *     href="https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
      *     Types</a>
      */
     public Builder setType(StandardSQLTypeName type, FieldList subFields) {
@@ -247,8 +276,8 @@ public final class Field implements Serializable {
 
     /**
      * Precision can be used to constrain the maximum number of total digits allowed for NUMERIC or
-     * BIGNUMERIC types. It is invalid to set values for Precision for types other than // NUMERIC
-     * or BIGNUMERIC. For NUMERIC type, acceptable values for Precision must be: 1 ≤ (Precision -
+     * BIGNUMERIC types. It is invalid to set values for Precision for types other than NUMERIC or
+     * BIGNUMERIC. For NUMERIC type, acceptable values for Precision must be: 1 ≤ (Precision -
      * Scale) ≤ 29. Values for Scale must be: 0 ≤ Scale ≤ 9. For BIGNUMERIC type, acceptable values
      * for Precision must be: 1 ≤ (Precision - Scale) ≤ 38. Values for Scale must be: 0 ≤ Scale ≤
      * 38.
@@ -303,9 +332,10 @@ public final class Field implements Serializable {
      * Optional. Field collation can be set only when the type of field is STRING. The following
      * values are supported:
      *
-     * <p>* 'und:ci': undetermined locale, case insensitive. * '': empty string. Default to
-     * case-sensitive behavior. (-- A wrapper is used here because it is possible to set the value
-     * to the empty string. --)
+     * <ul>
+     *   <li>{@code 'und:ci'}: undetermined locale, case insensitive.
+     *   <li>{@code ''}: empty string. Default to case-sensitive behavior.
+     * </ul>
      */
     public Builder setCollation(String collation) {
       this.collation = collation;
@@ -346,16 +376,22 @@ public final class Field implements Serializable {
   }
 
   /**
-   * Returns the field type.
+   * Returns the field type as a {@link LegacySQLTypeName}, even when the field was constructed with
+   * a {@link StandardSQLTypeName} or returned by a Standard SQL query. Use {@link
+   * LegacySQLTypeName#getStandardType()} to convert to {@link StandardSQLTypeName}.
    *
-   * @see <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
+   * @see <a
+   *     href="https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/data-types">Data
    *     Types</a>
    */
   public LegacySQLTypeName getType() {
     return type;
   }
 
-  /** Returns the field mode. By default {@link Mode#NULLABLE} is used. */
+  /**
+   * Returns the field mode, or {@code null} if no mode was explicitly set. BigQuery defaults an
+   * omitted mode to {@link Mode#NULLABLE}, so callers should treat {@code null} as nullable.
+   */
   public Mode getMode() {
     return mode != null ? Mode.valueOf(mode) : null;
   }
@@ -466,7 +502,11 @@ public final class Field implements Serializable {
     return newBuilder(name, type, subFields).build();
   }
 
-  /** Returns a Field object with given name and type. */
+  /**
+   * Returns a Field object with given name and type. To create an {@code ARRAY} field, use {@link
+   * #newBuilder(String, StandardSQLTypeName, Field...)} with the element type and {@link
+   * Builder#setMode(Mode) setMode(Mode.REPEATED)} rather than {@link StandardSQLTypeName#ARRAY}.
+   */
   public static Field of(String name, StandardSQLTypeName type, Field... subFields) {
     checkArgument(!isNullOrEmpty(name), "Provided name is null or empty");
     return newBuilder(name, type, subFields).build();
@@ -478,7 +518,11 @@ public final class Field implements Serializable {
     return newBuilder(name, type, subFields).build();
   }
 
-  /** Returns a Field object with given name and type. */
+  /**
+   * Returns a Field object with given name and type. To create an {@code ARRAY} field, use {@link
+   * #newBuilder(String, StandardSQLTypeName, FieldList)} with the element type and {@link
+   * Builder#setMode(Mode) setMode(Mode.REPEATED)} rather than {@link StandardSQLTypeName#ARRAY}.
+   */
   public static Field of(String name, StandardSQLTypeName type, FieldList subFields) {
     checkArgument(!isNullOrEmpty(name), "Provided name is null or empty");
     return newBuilder(name, type, subFields).build();
@@ -489,7 +533,10 @@ public final class Field implements Serializable {
     return new Builder().setName(name).setType(type, subFields);
   }
 
-  /** Returns a builder for a Field object with given name and type. */
+  /**
+   * Returns a builder for a Field object with given name and type. For {@code ARRAY} fields, pass
+   * the element type and set {@link Mode#REPEATED} rather than {@link StandardSQLTypeName#ARRAY}.
+   */
   public static Builder newBuilder(String name, StandardSQLTypeName type, Field... subFields) {
     return new Builder().setName(name).setType(type, subFields);
   }
@@ -499,7 +546,10 @@ public final class Field implements Serializable {
     return new Builder().setName(name).setType(type, subFields);
   }
 
-  /** Returns a builder for a Field object with given name and type. */
+  /**
+   * Returns a builder for a Field object with given name and type. For {@code ARRAY} fields, pass
+   * the element type and set {@link Mode#REPEATED} rather than {@link StandardSQLTypeName#ARRAY}.
+   */
   public static Builder newBuilder(String name, StandardSQLTypeName type, FieldList subFields) {
     return new Builder().setName(name).setType(type, subFields);
   }

@@ -86,8 +86,8 @@ public final class QueryJobConfiguration extends JobConfiguration {
   public enum Priority {
     /**
      * Query is executed as soon as possible and count towards the <a
-     * href="https://cloud.google.com/bigquery/quota-policy">concurrent rate limit and the daily
-     * rate limit</a>.
+     * href="https://docs.cloud.google.com/bigquery/quotas#query_jobs">concurrent rate limit and the
+     * daily rate limit</a>.
      */
     INTERACTIVE,
 
@@ -307,10 +307,13 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Adds a positional query parameter to the list of query parameters. See {@link
-     * #setPositionalParameters(Iterable)} for more details on the input requirements.
+     * Adds a positional query parameter to bind to the next {@code ?} placeholder in the SQL query.
+     * Requires GoogleSQL ({@link #setUseLegacySql(Boolean)} set to {@code false}, the default).
      *
-     * <p>A positional parameter cannot be added after named parameters have been added.
+     * <p>Positional parameters cannot be mixed with named parameters in the same query. See {@link
+     * #setPositionalParameters(Iterable)}.
+     *
+     * @throws IllegalStateException if named parameters have already been added
      */
     public Builder addPositionalParameter(QueryParameterValue value) {
       checkNotNull(value);
@@ -333,16 +336,17 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Sets the query parameters to a list of positional query parameters to use in the query.
+     * Sets the positional query parameters to use in the query, bound in order to {@code ?}
+     * placeholders in the SQL text.
      *
-     * <p>The set of query parameters must either be all positional or all named parameters.
-     * Positional parameters are denoted in the query with a question mark (?).
+     * <p>Query parameters must be either all positional or all named (cannot be mixed), and require
+     * GoogleSQL ({@code useLegacySql} set to {@code false}, the default). Pass {@code null} or an
+     * empty iterable to clear positional parameters before setting named parameters.
      *
-     * <p>Additionally, useLegacySql must be set to false; query parameters cannot be used with
-     * legacy SQL.
-     *
-     * <p>The values parameter can be set to null to clear out the positional parameters so that
-     * named parameters can be used instead.
+     * @throws IllegalStateException if {@code values} is non-empty and named parameters are already
+     *     set
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/parameterized-queries">Running
+     *     parameterized queries</a>
      */
     public Builder setPositionalParameters(Iterable<QueryParameterValue> values) {
       if (values == null || Iterables.isEmpty(values)) {
@@ -358,10 +362,16 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Adds a named query parameter to the set of query parameters. See {@link
-     * #setNamedParameters(Map)} for more details on the input requirements.
+     * Adds a named query parameter to the query. Omit the leading {@code @} prefix in {@code name}
+     * (for example, pass {@code "myParam"} to bind {@code @myParam} in the SQL text). Requires
+     * GoogleSQL ({@link #setUseLegacySql(Boolean)} set to {@code false}, the default).
      *
-     * <p>A named parameter cannot be added after positional parameters have been added.
+     * <p>Named parameters cannot be mixed with positional parameters in the same query. See {@link
+     * #setNamedParameters(Map)}.
+     *
+     * @param name parameter name without the leading {@code @} prefix
+     * @param value typed parameter value
+     * @throws IllegalStateException if positional parameters have already been added
      */
     public Builder addNamedParameter(String name, QueryParameterValue value) {
       checkNotNull(value);
@@ -374,16 +384,17 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Sets the query parameters to a set of named query parameters to use in the query.
+     * Sets the named query parameters to use in the query. Map keys must omit the leading {@code @}
+     * prefix used in SQL (for example, key {@code "myParam"} binds {@code @myParam} in the query).
      *
-     * <p>The set of query parameters must either be all positional or all named parameters. Named
-     * parameters are denoted using an @ prefix, e.g. @myParam for a parameter named "myParam".
+     * <p>Query parameters must be either all named or all positional (cannot be mixed), and require
+     * GoogleSQL ({@code useLegacySql} set to {@code false}, the default). Pass {@code null} or an
+     * empty map to clear named parameters before setting positional parameters.
      *
-     * <p>Additionally, useLegacySql must be set to false; query parameters cannot be used with
-     * legacy SQL.
-     *
-     * <p>The values parameter can be set to null to clear out the named parameters so that
-     * positional parameters can be used instead.
+     * @throws IllegalStateException if {@code values} is non-empty and positional parameters are
+     *     already set
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/parameterized-queries">Running
+     *     parameterized queries</a>
      */
     public Builder setNamedParameters(Map<String, QueryParameterValue> values) {
       if (values == null || values.isEmpty()) {
@@ -454,7 +465,7 @@ public final class QueryJobConfiguration extends JobConfiguration {
      * Sets whether the job is allowed to create tables.
      *
      * @see <a
-     *     href="https://cloud.google.com/bigquery/docs/reference/v2/jobs#configuration.query.createDisposition">
+     *     href="https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#JobConfigurationQuery.FIELDS.create_disposition">
      *     Create Disposition</a>
      */
     public Builder setCreateDisposition(CreateDisposition createDisposition) {
@@ -466,7 +477,7 @@ public final class QueryJobConfiguration extends JobConfiguration {
      * Sets the action that should occur if the destination table already exists.
      *
      * @see <a
-     *     href="https://cloud.google.com/bigquery/docs/reference/v2/jobs#configuration.query.writeDisposition">
+     *     href="https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#JobConfigurationQuery.FIELDS.write_disposition">
      *     Write Disposition</a>
      */
     public Builder setWriteDisposition(WriteDisposition writeDisposition) {
@@ -515,7 +526,8 @@ public final class QueryJobConfiguration extends JobConfiguration {
      * query is allowed to create large results at a slight cost in performance. If {@code true}
      * {@link Builder#setDestinationTable(TableId)} must be provided.
      *
-     * @see <a href="https://cloud.google.com/bigquery/querying-data#largequeryresults">Returning
+     * @see <a
+     *     href="https://docs.cloud.google.com/bigquery/docs/writing-results#large-results">Returning
      *     Large Query Results</a>
      */
     public Builder setAllowLargeResults(Boolean allowLargeResults) {
@@ -528,7 +540,7 @@ public final class QueryJobConfiguration extends JobConfiguration {
      * cache that will be flushed whenever tables in the query are modified. Moreover, the query
      * cache is only available when {@link Builder#setDestinationTable(TableId)} is not set.
      *
-     * @see <a href="https://cloud.google.com/bigquery/querying-data#querycaching">Query Caching</a>
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/cached-results">Query Caching</a>
      */
     public Builder setUseQueryCache(Boolean useQueryCache) {
       this.useQueryCache = useQueryCache;
@@ -540,7 +552,8 @@ public final class QueryJobConfiguration extends JobConfiguration {
      * Builder#setAllowLargeResults(Boolean)} must be {@code true}. By default results are
      * flattened.
      *
-     * @see <a href="https://cloud.google.com/bigquery/docs/data#flatten">Flatten</a>
+     * @see <a
+     *     href="https://docs.cloud.google.com/bigquery/docs/legacy-nested-repeated#flatten">Flatten</a>
      */
     public Builder setFlattenResults(Boolean flattenResults) {
       this.flattenResults = flattenResults;
@@ -548,9 +561,21 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Sets whether the job has to be dry run or not. If set, the job is not executed. A valid query
-     * will return a mostly empty response with some processing statistics, while an invalid query
-     * will return the same error it would if it wasn't a dry run.
+     * Sets whether the job is a dry run. When {@code true}, the query is validated without
+     * executing or billing, and processing statistics (such as estimated bytes processed) are
+     * returned on {@link Job#getStatistics()} (cast to {@link JobStatistics.QueryStatistics}).
+     *
+     * <p>Dry-run queries must be submitted via {@link BigQuery#create(JobInfo,
+     * BigQuery.JobOption...)} rather than {@link BigQuery#query(QueryJobConfiguration,
+     * BigQuery.JobOption...)} or {@link BigQuery#queryWithTimeout(QueryJobConfiguration, JobId,
+     * Long, BigQuery.JobOption...)}, which throw {@link UnsupportedOperationException}. Because no
+     * server job is created, calling polling or result methods (such as {@link
+     * Job#waitFor(com.google.cloud.RetryOption...)}, {@link Job#reload(BigQuery.JobOption...)}, or
+     * {@link Job#getQueryResults(BigQuery.QueryResultsOption...)}) on the returned {@link Job} also
+     * throws {@link UnsupportedOperationException}.
+     *
+     * @see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry
+     *     runs</a>
      */
     public Builder setDryRun(Boolean dryRun) {
       this.dryRun = dryRun;
@@ -558,16 +583,16 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Sets whether to use BigQuery's legacy SQL dialect for this query. By default this property is
-     * set to {@code false}. If set to {@code false}, the query will use BigQuery's <a
-     * href="https://cloud.google.com/bigquery/sql-reference/">Standard SQL</a>. When set to {@code
-     * false}, the values of {@link #setAllowLargeResults(Boolean)} and {@link
-     * #setFlattenResults(Boolean)} are ignored; query will be run as if {@link
-     * #setAllowLargeResults(Boolean)} is {@code true} and {@link #setFlattenResults(Boolean)} is
-     * {@code false}.
+     * Sets whether to use BigQuery's legacy SQL dialect for this query. Defaults to {@code false},
+     * which uses BigQuery's <a
+     * href="https://docs.cloud.google.com/bigquery/docs/introduction-sql">GoogleSQL (Standard
+     * SQL)</a> dialect. When {@code false}, {@link #setAllowLargeResults(Boolean)} and {@link
+     * #setFlattenResults(Boolean)} are ignored (queries run as if large results are allowed and
+     * results are unflattened), and query parameters are supported.
      *
-     * <p>If set to {@code null} or {@code true}, legacy SQL dialect is used. This property is
-     * experimental and might be subject to change.
+     * <p>Passing {@code null} omits {@code useLegacySql} from the API request, causing the BigQuery
+     * REST API to default to legacy SQL ({@code true}). Pass {@code false} (or leave the builder
+     * default unchanged) to use GoogleSQL.
      */
     public Builder setUseLegacySql(Boolean useLegacySql) {
       this.useLegacySql = useLegacySql;
@@ -687,8 +712,17 @@ public final class QueryJobConfiguration extends JobConfiguration {
     }
 
     /**
-     * Provides different options on job creation. If not specified the job creation mode is assumed
-     * to be {@link JobCreationMode#JOB_CREATION_REQUIRED}.
+     * Sets the job creation mode for queries executed via the fast {@code jobs.query} path. If not
+     * specified, {@link BigQuery#query(QueryJobConfiguration, BigQuery.JobOption...)} inherits
+     * {@link BigQueryOptions#getDefaultJobCreationMode()} (which defaults to {@link
+     * JobCreationMode#JOB_CREATION_MODE_UNSPECIFIED}, treated by the server as {@link
+     * JobCreationMode#JOB_CREATION_REQUIRED}). When set to {@link
+     * JobCreationMode#JOB_CREATION_OPTIONAL}, BigQuery may run the query statelessly without
+     * creating a job, so {@link TableResult#getJobId()} can be {@code null}.
+     *
+     * @see <a
+     *     href="https://docs.cloud.google.com/bigquery/docs/running-queries#optional-job-creation">
+     *     Optional job creation</a>
      */
     public Builder setJobCreationMode(JobCreationMode jobCreationMode) {
       this.jobCreationMode = jobCreationMode;
@@ -802,7 +836,8 @@ public final class QueryJobConfiguration extends JobConfiguration {
    * query is allowed to create large results at a slight cost in performance. the query is allowed
    * to create large results at a slight cost in performance.
    *
-   * @see <a href="https://cloud.google.com/bigquery/querying-data#largequeryresults">Returning
+   * @see <a
+   *     href="https://docs.cloud.google.com/bigquery/docs/writing-results#large-results">Returning
    *     Large Query Results</a>
    */
   public Boolean allowLargeResults() {
@@ -812,7 +847,8 @@ public final class QueryJobConfiguration extends JobConfiguration {
   /**
    * Returns whether to create a new session.
    *
-   * @see <a href="https://cloud.google.com/bigquery/docs/sessions-create">Create Sessions</a>
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/sessions#create-session">Create
+   *     Sessions</a>
    */
   public Boolean createSession() {
     return createSession;
@@ -822,7 +858,7 @@ public final class QueryJobConfiguration extends JobConfiguration {
    * Returns whether the job is allowed to create new tables.
    *
    * @see <a
-   *     href="https://cloud.google.com/bigquery/docs/reference/v2/jobs#configuration.query.createDisposition">
+   *     href="https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#JobConfigurationQuery.FIELDS.create_disposition">
    *     Create Disposition</a>
    */
   public CreateDisposition getCreateDisposition() {
@@ -853,7 +889,8 @@ public final class QueryJobConfiguration extends JobConfiguration {
    * Returns whether nested and repeated fields should be flattened. If set to {@code false} {@link
    * Builder#setAllowLargeResults(Boolean)} must be {@code true}.
    *
-   * @see <a href="https://cloud.google.com/bigquery/docs/data#flatten">Flatten</a>
+   * @see <a
+   *     href="https://docs.cloud.google.com/bigquery/docs/legacy-nested-repeated#flatten">Flatten</a>
    */
   public Boolean flattenResults() {
     return flattenResults;
@@ -894,7 +931,7 @@ public final class QueryJobConfiguration extends JobConfiguration {
    * cache that will be flushed whenever tables in the query are modified. Moreover, the query cache
    * is only available when {@link Builder#setDestinationTable(TableId)} is not set.
    *
-   * @see <a href="https://cloud.google.com/bigquery/querying-data#querycaching">Query Caching</a>
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/cached-results">Query Caching</a>
    */
   public Boolean useQueryCache() {
     return useQueryCache;
@@ -913,7 +950,7 @@ public final class QueryJobConfiguration extends JobConfiguration {
    * Returns the action that should occur if the destination table already exists.
    *
    * @see <a
-   *     href="https://cloud.google.com/bigquery/docs/reference/v2/jobs#configuration.query.writeDisposition">
+   *     href="https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job#JobConfigurationQuery.FIELDS.write_disposition">
    *     Write Disposition</a>
    */
   public WriteDisposition getWriteDisposition() {
@@ -921,22 +958,23 @@ public final class QueryJobConfiguration extends JobConfiguration {
   }
 
   /**
-   * Returns whether the job has to be dry run or not. If set, the job is not executed. A valid
-   * query will return a mostly empty response with some processing statistics, while an invalid
-   * query will return the same error it would if it wasn't a dry run.
+   * Returns whether the job is a dry run. When {@code true}, the query must be submitted via {@link
+   * BigQuery#create(JobInfo, BigQuery.JobOption...)} (not {@link
+   * BigQuery#query(QueryJobConfiguration, BigQuery.JobOption...)}) and statistics are returned
+   * directly on {@link Job#getStatistics()}.
+   *
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry runs</a>
    */
   public Boolean dryRun() {
     return dryRun;
   }
 
   /**
-   * Returns whether to use BigQuery's legacy SQL dialect for this query. By default this property
-   * is set to {@code false}. If set to {@code false}, the query will use BigQuery's <a
-   * href="https://cloud.google.com/bigquery/sql-reference/">Standard SQL</a>. When set to {@code
-   * false}, the values of {@link #allowLargeResults()} and {@link #flattenResults()} are ignored;
-   * query will be run as if {@link #allowLargeResults()} is {@code true} and {@link
-   * #flattenResults()} is {@code false}. If set to {@code null} or {@code true}, legacy SQL dialect
-   * is used. This property is experimental and might be subject to change.
+   * Returns whether to use BigQuery's legacy SQL dialect for this query. Defaults to {@code false}
+   * (<a href="https://docs.cloud.google.com/bigquery/docs/introduction-sql">GoogleSQL / Standard
+   * SQL</a>). When {@code false}, {@link #allowLargeResults()} and {@link #flattenResults()} are
+   * ignored. When {@code null}, {@code useLegacySql} is omitted from the API request and the
+   * BigQuery REST API defaults to legacy SQL ({@code true}).
    */
   public Boolean useLegacySql() {
     return useLegacySql;
@@ -1238,8 +1276,8 @@ public final class QueryJobConfiguration extends JobConfiguration {
   }
 
   /**
-   * Returns a BigQuery Copy Job for the given the query to be run. Job's id is chosen by the
-   * service.
+   * Returns a BigQuery Query Job configuration for the given query to be run. Job's id is chosen by
+   * the service.
    */
   public static QueryJobConfiguration of(String query) {
     return newBuilder(query).build();

@@ -23,11 +23,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A type used in legacy SQL contexts. NOTE: some contexts use a mix of types; for example, for
- * queries that use standard SQL, the return types are the legacy SQL types.
+ * A type used in legacy SQL contexts and BigQuery table/result schemas.
+ *
+ * <p>Even for Standard SQL tables and queries, {@link Field#getType()} always returns a {@code
+ * LegacySQLTypeName} (for example, {@link #INTEGER} for {@code INT64}, {@link #FLOAT} for {@code
+ * FLOAT64}, {@link #BOOLEAN} for {@code BOOL}, and {@link #RECORD} for {@code STRUCT}). Call {@link
+ * #getStandardType()} to obtain the equivalent {@link StandardSQLTypeName}. There is no {@code
+ * ARRAY} constant here; array columns in schemas are represented by the element type paired with
+ * {@link Field.Mode#REPEATED}.
  *
  * @see <a
- *     href="https://cloud.google.com/bigquery/data-types">https://cloud.google.com/bigquery/data-types</a>
+ *     href="https://docs.cloud.google.com/bigquery/docs/data-types">https://docs.cloud.google.com/bigquery/docs/data-types</a>
  */
 public final class LegacySQLTypeName extends StringEnumValue {
   private static final long serialVersionUID = 1421040468991161123L;
@@ -138,7 +144,13 @@ public final class LegacySQLTypeName extends StringEnumValue {
     return equivalent;
   }
 
-  /** Converts StandardSQLTypeName to LegacySQLTypeName */
+  /**
+   * Converts a {@link StandardSQLTypeName} to its equivalent {@code LegacySQLTypeName}.
+   *
+   * <p>Returns {@code null} for {@link StandardSQLTypeName#ARRAY}, because BigQuery table schemas
+   * represent arrays using {@link Field.Mode#REPEATED} with the element type rather than an array
+   * type name.
+   */
   public static LegacySQLTypeName legacySQLTypeName(StandardSQLTypeName type) {
     return standardToLegacyMap.get(type);
   }

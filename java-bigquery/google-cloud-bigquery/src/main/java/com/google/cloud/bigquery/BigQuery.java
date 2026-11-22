@@ -38,14 +38,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * An interface for Google Cloud BigQuery.
  *
- * @see <a href="https://cloud.google.com/bigquery/what-is-bigquery">Google Cloud BigQuery</a>
+ * <p>Provides synchronous operations to manage BigQuery resources ({@link Dataset}, {@link Table},
+ * {@link Model}, {@link Routine}), run SQL queries ({@link #query(QueryJobConfiguration,
+ * JobOption...)}), submit and monitor asynchronous {@link Job}s, and ingest data ({@link #writer},
+ * {@link #insertAll}).
+ *
+ * <p>Typically, create one {@code BigQuery} instance per application via {@link
+ * BigQueryOptions#getService()} and reuse it across threads. Call {@link #close()} on application
+ * shutdown to release cached background resources (such as Storage Read API clients used for query
+ * streaming). Operations on {@code BigQuery} are thread-safe, except for stateful helpers returned
+ * by this client such as {@link Connection} and {@link TableDataWriteChannel}.
+ *
+ * @see <a href="https://docs.cloud.google.com/bigquery/docs/introduction">Google Cloud BigQuery</a>
  */
 public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
 
   /**
    * Fields of a BigQuery Dataset resource.
    *
-   * @see <a href= "https://cloud.google.com/bigquery/docs/reference/v2/datasets#resource">Dataset
+   * @see <a href=
+   *     "https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/datasets#resource:-dataset">Dataset
    *     Resource</a>
    */
   enum DatasetField implements FieldSelector {
@@ -116,7 +128,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Fields of a BigQuery Table resource.
    *
-   * @see <a href= "https://cloud.google.com/bigquery/docs/reference/v2/tables#resource">Table
+   * @see <a href=
+   *     "https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/tables#resource:-table">Table
    *     Resource</a>
    */
   enum TableField implements FieldSelector {
@@ -160,9 +173,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Metadata of a BigQuery Table.
    *
-   * @see <a href=
-   *     "https://cloud.google.com/bigquery/docs/reference/rest/v2/tables/get#tablemetadataview">Table
-   *     Resource</a>
+   * @see <a
+   *     href="https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/tables/get#tablemetadataview">TableMetadataView</a>
    */
   enum TableMetadataView {
     BASIC,
@@ -174,7 +186,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Fields of a BigQuery Model resource.
    *
-   * @see <a href= "https://cloud.google.com/bigquery/docs/reference/v2/models#resource">Model
+   * @see <a href=
+   *     "https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/models#Model">Model
    *     Resource</a>
    */
   enum ModelField implements FieldSelector {
@@ -209,7 +222,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Fields of a BigQuery Routine resource.
    *
-   * @see <a href= "https://cloud.google.com/bigquery/docs/reference/v2/routines#resource">Routine
+   * @see <a href=
+   *     "https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/routines#resource:-routine">Routine
    *     Resource</a>
    */
   enum RoutineField implements FieldSelector {
@@ -242,8 +256,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Fields of a BigQuery Job resource.
    *
-   * @see <a href= "https://cloud.google.com/bigquery/docs/reference/v2/jobs#resource">Job Resource
-   *     </a>
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/Job">Job
+   *     Resource</a>
    */
   enum JobField implements FieldSelector {
     CONFIGURATION("configuration"),
@@ -281,7 +295,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
 
     /**
      * Returns an option to specify a label filter. @see <a href=
-     * "https://cloud.google.com/bigquery/docs/adding-using-labels#filtering_datasets_using_labels">Filtering
+     * "https://docs.cloud.google.com/bigquery/docs/filtering-labels#filtering_datasets_using_labels">Filtering
      * using labels</a>
      *
      * @param labelFilter In the form "labels.key:value"
@@ -351,11 +365,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
      * for conditional access policy binding in datasets must specify version 3. Datasets with no
      * conditional role bindings in access policy may specify any valid value or leave the field
      * unset. This field will be mapped to <a
-     * href="https://cloud.google.com/iam/docs/policies#versions">IAM Policy version</a> and will be
-     * used to fetch the policy from IAM. If unset or if 0 or 1 the value is used for a dataset with
-     * conditional bindings, access entry with condition will have role string appended by
-     * 'withcond' string followed by a hash value. Please refer to <a
-     * href="https://cloud.google.com/iam/docs/troubleshooting-withcond">Troubleshooting
+     * href="https://docs.cloud.google.com/iam/docs/allow-policies#versions">IAM Policy version</a>
+     * and will be used to fetch the policy from IAM. If unset or if 0 or 1 the value is used for a
+     * dataset with conditional bindings, access entry with condition will have role string appended
+     * by 'withcond' string followed by a hash value. Please refer to <a
+     * href="https://docs.cloud.google.com/iam/docs/troubleshooting-withcond">Troubleshooting
      * withcond</a> for more details.
      */
     public static DatasetOption accessPolicyVersion(Integer accessPolicyVersion) {
@@ -397,7 +411,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
     }
   }
 
-  /** Class for specifying table list options. */
+  /** Class for specifying model list options. */
   class ModelListOption extends Option {
 
     private static final long serialVersionUID = 8660294969063322498L;
@@ -528,7 +542,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
     }
   }
 
-  /** Class for specifying table get, create and update options. */
+  /** Class for specifying routine get, create and update options. */
   class RoutineOption extends Option {
 
     private static final long serialVersionUID = -1723870122095226772L;
@@ -538,8 +552,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
     }
 
     /**
-     * Returns an option to specify the routines's fields to be returned by the RPC call. If this
-     * option is not provided all model's fields are returned. {@code RoutineOption.fields} can be
+     * Returns an option to specify the routine's fields to be returned by the RPC call. If this
+     * option is not provided all routine's fields are returned. {@code RoutineOption.fields} can be
      * used to specify only the fields of interest.
      */
     public static RoutineOption fields(RoutineField... fields) {
@@ -634,7 +648,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
 
     /**
      * Returns an option to specify the job's fields to be returned by the RPC call. If this option
-     * is not provided all job's fields are returned. {@code JobOption.fields()} can be used to
+     * is not provided all job's fields are returned. {@code JobListOption.fields()} can be used to
      * specify only the fields of interest. {@link Job#getJobId()}, {@link JobStatus#getState()},
      * {@link JobStatus#getError()} as well as type-specific configuration (e.g. {@link
      * QueryJobConfiguration#getQuery()} for Query Jobs) are always returned, even if not specified.
@@ -647,7 +661,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
     }
   }
 
-  /** Class for specifying table get and create options. */
+  /** Class for specifying job get, create, and query options. */
   class JobOption extends Option {
 
     private static final long serialVersionUID = -3111736712316353664L;
@@ -837,6 +851,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Creates a new job.
    *
+   * <p>Job execution is asynchronous, and a failed job's {@link JobId} is terminal. If a job fails
+   * with a transient error, resubmit the work as a new job with a new {@link JobId} rather than
+   * polling the failed job again or reusing its {@link JobId}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a> for guidance on retryable job errors.
+   *
    * <p>Example of loading a newline-delimited-json file with textual fields from GCS to a table.
    *
    * <pre>{@code
@@ -880,9 +901,19 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Job create(JobInfo jobInfo, JobOption... options);
 
   /**
-   * Creates a new BigQuery query connection used for executing queries (not the same as BigQuery
-   * connection properties). It uses the BigQuery Storage Read API for high throughput queries by
-   * default.
+   * Creates a new {@code @BetaApi} BigQuery query connection used for executing queries (not a
+   * standard {@code java.sql.Connection} and not the same as BigQuery connection properties). It
+   * uses the BigQuery Storage Read API for high throughput queries by default.
+   *
+   * <p>The returned {@link Connection} is single-use, stateful, not thread-safe, and does not
+   * implement {@link AutoCloseable}. Call {@link Connection#close()} when done to release local
+   * buffers, background threads, and any local Storage Read API client; {@code close()} does not
+   * send a server-side {@code jobs.cancel} RPC (use {@link #cancel(JobId)} to cancel a running
+   * job). The returned {@link java.sql.ResultSet} is forward-only, read-only, and provides only
+   * partial JDBC compliance (unsupported JDBC operations throw {@link
+   * java.sql.SQLFeatureNotSupportedException} or {@link RuntimeException}). For production
+   * high-throughput reads, prefer the BigQuery Storage Read API ({@code
+   * google-cloud-bigquerystorage} / {@code BigQueryReadClient}) directly.
    *
    * <p>Example of creating a query connection.
    *
@@ -896,18 +927,31 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Connection connection = bigquery.createConnection(connectionSettings);
    * }</pre>
    *
+   * @param connectionSettings settings for the query connection
    * @throws BigQueryException upon failure
-   * @param connectionSettings
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/reference/storage">BigQuery Storage
+   *     Read API</a>
    */
   @BetaApi
   Connection createConnection(@NonNull ConnectionSettings connectionSettings);
 
   /**
-   * Creates a new BigQuery query connection used for executing queries (not the same as BigQuery
+   * Creates a new {@code @BetaApi} BigQuery query connection with default {@link
+   * ConnectionSettings} (not a standard {@code java.sql.Connection} and not the same as BigQuery
    * connection properties). It uses the BigQuery Storage Read API for high throughput queries by
    * default. This overloaded method creates a Connection with default ConnectionSettings for query
    * execution where default values are set for numBufferedRows (20000), useReadApi (true),
    * useLegacySql (false).
+   *
+   * <p>The returned {@link Connection} is single-use, stateful, not thread-safe, and does not
+   * implement {@link AutoCloseable}. Call {@link Connection#close()} when done to release local
+   * buffers, background threads, and any local Storage Read API client; {@code close()} does not
+   * send a server-side {@code jobs.cancel} RPC (use {@link #cancel(JobId)} to cancel a running
+   * job). The returned {@link java.sql.ResultSet} is forward-only, read-only, and provides only
+   * partial JDBC compliance (unsupported JDBC operations throw {@link
+   * java.sql.SQLFeatureNotSupportedException} or {@link RuntimeException}). For production
+   * high-throughput reads, prefer the BigQuery Storage Read API ({@code
+   * google-cloud-bigquerystorage} / {@code BigQueryReadClient}) directly.
    *
    * <p>Example of creating a query connection.
    *
@@ -916,12 +960,19 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * }</pre>
    *
    * @throws BigQueryException upon failure
+   * @see <a href="https://docs.cloud.google.com/bigquery/docs/reference/storage">BigQuery Storage
+   *     Read API</a>
    */
   @BetaApi
   Connection createConnection();
 
   /**
    * Returns the requested dataset or {@code null} if not found.
+   *
+   * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
+   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Dataset} is an
+   * immutable snapshot; capture the return value of {@link Dataset#reload(DatasetOption...)} or
+   * {@link Dataset#update(DatasetOption...)} to observe changes.
    *
    * <p>Example of getting a dataset.
    *
@@ -930,12 +981,20 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Dataset dataset = bigquery.getDataset(datasetName);
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Dataset}, or {@code null} if not found (unless {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true})
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Dataset getDataset(String datasetId, DatasetOption... options);
 
   /**
    * Returns the requested dataset or {@code null} if not found.
+   *
+   * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
+   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Dataset} is an
+   * immutable snapshot; capture the return value of {@link Dataset#reload(DatasetOption...)} or
+   * {@link Dataset#update(DatasetOption...)} to observe changes.
    *
    * <p>Example of getting a dataset.
    *
@@ -946,14 +1005,23 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Dataset dataset = bigquery.getDataset(datasetId);
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Dataset}, or {@code null} if not found (unless {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true})
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Dataset getDataset(DatasetId datasetId, DatasetOption... options);
 
   /**
-   * Lists the project's datasets. This method returns partial information on each dataset: ({@link
-   * Dataset#getDatasetId()}, {@link Dataset#getFriendlyName()} and {@link
-   * Dataset#getGeneratedId()}). To get complete information use {@link #getDataset}.
+   * Lists the project's datasets.
+   *
+   * <p>This method returns partial metadata on each {@link Dataset} ({@link
+   * Dataset#getDatasetId()}, {@link Dataset#getFriendlyName()}, {@link Dataset#getGeneratedId()},
+   * {@link Dataset#getLocation()}, and {@link Dataset#getLabels()}); fields such as {@link
+   * Dataset#getDescription()} and {@link Dataset#getAcl()} are not populated. To fetch complete
+   * metadata, call {@link #getDataset(DatasetId, DatasetOption...)} or {@link
+   * Dataset#reload(DatasetOption...)}. Hidden datasets are omitted unless {@link
+   * DatasetListOption#all()} is passed.
    *
    * <p>Example of listing datasets, specifying the page size.
    *
@@ -979,9 +1047,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Page<Project> listProjects(ProjectListOption... options);
 
   /**
-   * Lists the datasets in the provided project. This method returns partial information on each
-   * dataset: ({@link Dataset#getDatasetId()}, {@link Dataset#getFriendlyName()} and {@link
-   * Dataset#getGeneratedId()}). To get complete information use either {@link #getDataset}.
+   * Lists the datasets in the provided project.
+   *
+   * <p>This method returns partial metadata on each {@link Dataset} ({@link
+   * Dataset#getDatasetId()}, {@link Dataset#getFriendlyName()}, {@link Dataset#getGeneratedId()},
+   * {@link Dataset#getLocation()}, and {@link Dataset#getLabels()}); fields such as {@link
+   * Dataset#getDescription()} and {@link Dataset#getAcl()} are not populated. To fetch complete
+   * metadata, call {@link #getDataset(DatasetId, DatasetOption...)} or {@link
+   * Dataset#reload(DatasetOption...)}. Hidden datasets are omitted unless {@link
+   * DatasetListOption#all()} is passed.
    *
    * <p>Example of listing datasets in a project, specifying the page size.
    *
@@ -1083,7 +1157,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * <pre>{@code
    * String projectId = "my_project_id";
    * String datasetName = "my_dataset_name";
-   * String tableName = "my_model_name";
+   * String modelName = "my_model_name";
    * ModelId modelId = ModelId.of(projectId, datasetName, modelName);
    * boolean deleted = bigquery.delete(modelId);
    * if (deleted) {
@@ -1106,8 +1180,8 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * <pre>{@code
    * String projectId = "my_project_id";
    * String datasetId = "my_dataset_id";
-   * String routineId = "my_routine_id";
-   * RoutineId routineId = RoutineId.of(projectId, datasetId, routineId);
+   * String routineName = "my_routine_id";
+   * RoutineId routineId = RoutineId.of(projectId, datasetId, routineName);
    * boolean deleted = bigquery.delete(routineId);
    * if (deleted) {
    *   // the routine was deleted
@@ -1130,30 +1204,38 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   boolean delete(JobId jobId);
 
   /**
-   * Updates dataset information.
+   * Updates dataset information using HTTP {@code PATCH} (partial update; omitted fields are
+   * preserved on the server).
+   *
+   * <p>{@link DatasetOption#fields(DatasetField...)} controls only which fields are returned in the
+   * response and does not act as a write field mask (use {@link
+   * DatasetOption#updateMode(DatasetUpdateMode)} to scope metadata versus ACL writes). To clear
+   * individual labels, map those keys to {@code null} via {@link
+   * DatasetInfo.Builder#setLabels(java.util.Map)}, or pass {@code null} to remove all labels; an
+   * empty map leaves existing labels unchanged.
    *
    * <p>Example of updating a dataset by changing its description.
-   * <!--SNIPPET
-   * bigquery_update_table_description-->
    *
    * <pre>{@code
-   * // String datasetName = "my_dataset_name";
-   * // String tableName = "my_table_name";
-   * // String newDescription = "new_description";
-   *
-   * Table beforeTable = bigquery.getTable(datasetName, tableName);
-   * TableInfo tableInfo = beforeTable.toBuilder().setDescription(newDescription).build();
-   * Table afterTable = bigquery.update(tableInfo);
+   * String datasetName = "my_dataset_name";
+   * String newDescription = "new_description";
+   * Dataset beforeDataset = bigquery.getDataset(datasetName);
+   * DatasetInfo datasetInfo = beforeDataset.toBuilder().setDescription(newDescription).build();
+   * Dataset afterDataset = bigquery.update(datasetInfo);
    * }</pre>
-   *
-   * <!--SNIPPET bigquery_update_table_description-->
    *
    * @throws BigQueryException upon failure
    */
   Dataset update(DatasetInfo datasetInfo, DatasetOption... options);
 
   /**
-   * Updates table information.
+   * Updates table metadata and schema using HTTP {@code PATCH} (partial update; omitted fields are
+   * preserved on the server, and row contents are not modified).
+   *
+   * <p>{@link TableOption#fields(TableField...)} controls only which fields are returned in the
+   * response and does not act as a write field mask. To clear individual labels, map those keys to
+   * {@code null} via {@link TableInfo.Builder#setLabels(java.util.Map)}, or pass {@code null} to
+   * remove all labels; an empty map leaves existing labels unchanged.
    *
    * <p>Example of updating a table by changing its description.
    *
@@ -1184,7 +1266,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Table update(TableInfo tableInfo, TableOption... options);
 
   /**
-   * Updates model information.
+   * Updates model information using HTTP {@code PATCH} (partial update; omitted fields are
+   * preserved on the server).
+   *
+   * <p>{@link ModelOption#fields(ModelField...)} controls only which fields are returned in the
+   * response and does not act as a write field mask. To clear individual labels, map those keys to
+   * {@code null} via {@link ModelInfo.Builder#setLabels(java.util.Map)}, or pass {@code null} to
+   * remove all labels; an empty map leaves existing labels unchanged.
    *
    * <p>Example of updating a model by changing its description.
    *
@@ -1215,7 +1303,14 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Model update(ModelInfo modelInfo, ModelOption... options);
 
   /**
-   * Updates routine information.
+   * Updates routine information using HTTP {@code PUT} (full resource replacement).
+   *
+   * <p>Unlike {@link #update(DatasetInfo, DatasetOption...)}, {@link #update(TableInfo,
+   * TableOption...)}, and {@link #update(ModelInfo, ModelOption...)} (which use HTTP {@code
+   * PATCH}), this method replaces the entire routine resource. Populate all required and desired
+   * fields on {@code routineInfo} (typically starting from {@link Routine#toBuilder()}), because
+   * omitted mutable fields are cleared or rejected. {@link RoutineOption#fields(RoutineField...)}
+   * controls only the response projection and does not act as a write field mask.
    *
    * @throws BigQueryException upon failure
    */
@@ -1223,6 +1318,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
 
   /**
    * Returns the requested table or {@code null} if not found.
+   *
+   * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
+   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Table} is an
+   * immutable metadata snapshot; capture the return value of {@link Table#reload(TableOption...)}
+   * or {@link Table#update(TableOption...)} to observe changes.
    *
    * <p>Example of getting a table.
    *
@@ -1232,12 +1332,20 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Table table = bigquery.getTable(datasetName, tableName);
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Table}, or {@code null} if not found (unless {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true})
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Table getTable(String datasetId, String tableId, TableOption... options);
 
   /**
    * Returns the requested table or {@code null} if not found.
+   *
+   * <p>By default, an HTTP 404 response returns {@code null} instead of throwing unless {@link
+   * BigQueryOptions#setThrowNotFound(boolean)} is enabled. The returned {@link Table} is an
+   * immutable metadata snapshot; capture the return value of {@link Table#reload(TableOption...)}
+   * or {@link Table#update(TableOption...)} to observe changes.
    *
    * <p>Example of getting a table.
    *
@@ -1249,7 +1357,10 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Table table = bigquery.getTable(tableId);
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Table}, or {@code null} if not found (unless {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true})
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Table getTable(TableId tableId, TableOption... options);
 
@@ -1269,7 +1380,7 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * String projectId = "my_project_id";
    * String datasetName = "my_dataset_name";
    * String modelName = "my_model_name";
-   * ModelId modelId = ModelId.of(projectId, datasetName, tableName);
+   * ModelId modelId = ModelId.of(projectId, datasetName, modelName);
    * Model model = bigquery.getModel(modelId);
    * }</pre>
    *
@@ -1298,10 +1409,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Page<Routine> listRoutines(DatasetId datasetId, RoutineListOption... options);
 
   /**
-   * Lists the tables in the dataset. This method returns partial information on each table: ({@link
-   * Table#getTableId()}, {@link Table#getFriendlyName()}, {@link Table#getGeneratedId()} and type,
-   * which is part of {@link Table#getDefinition()}). To get complete information use either {@link
-   * #getTable}.
+   * Lists the tables in the dataset.
+   *
+   * <p>This method returns partial metadata on each {@link Table} ({@link Table#getTableId()},
+   * {@link Table#getFriendlyName()}, {@link Table#getGeneratedId()}, {@link
+   * Table#getCreationTime()}, {@link Table#getLabels()}, and basic {@link Table#getDefinition()}
+   * attributes such as type, partitioning, and clustering); fields such as schema ({@link
+   * TableDefinition#getSchema()}), {@link Table#getDescription()}, {@link Table#getNumRows()}, and
+   * {@link Table#getNumBytes()} are not populated. To fetch complete metadata, call {@link
+   * #getTable(TableId, TableOption...)} or {@link Table#reload(TableOption...)}.
    *
    * <p>Example of listing the tables in a dataset, specifying the page size.
    *
@@ -1318,10 +1434,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   Page<Table> listTables(String datasetId, TableListOption... options);
 
   /**
-   * Lists the tables in the dataset. This method returns partial information on each table: ({@link
-   * Table#getTableId()}, {@link Table#getFriendlyName()}, {@link Table#getGeneratedId()} and type,
-   * which is part of {@link Table#getDefinition()}). To get complete information use either {@link
-   * #getTable}.
+   * Lists the tables in the dataset.
+   *
+   * <p>This method returns partial metadata on each {@link Table} ({@link Table#getTableId()},
+   * {@link Table#getFriendlyName()}, {@link Table#getGeneratedId()}, {@link
+   * Table#getCreationTime()}, {@link Table#getLabels()}, and basic {@link Table#getDefinition()}
+   * attributes such as type, partitioning, and clustering); fields such as schema ({@link
+   * TableDefinition#getSchema()}), {@link Table#getDescription()}, {@link Table#getNumRows()}, and
+   * {@link Table#getNumBytes()} are not populated. To fetch complete metadata, call {@link
+   * #getTable(TableId, TableOption...)} or {@link Table#reload(TableOption...)}.
    *
    * <p>Example of listing the tables in a dataset.
    *
@@ -1352,12 +1473,44 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   List<String> listPartitions(TableId tableId);
 
   /**
-   * Sends an insert all request.
+   * Sends an insert all request using the BigQuery Storage Write API (REST) ({@code
+   * tabledata.insertAll}).
    *
-   * <p>Example of inserting rows into a table without running a load job. To prevent duplicate
-   * rows, this method does not perform automatic retries unless insert IDs are provided. Transient
-   * service errors (such as UNAVAILABLE) may be thrown and should be handled by the caller when
-   * insert IDs are not provided.
+   * <p>Row-level insertion failures do not throw {@link BigQueryException}: BigQuery returns an
+   * HTTP 200 response populated with per-row errors, so callers must check {@link
+   * InsertAllResponse#hasErrors()} and inspect {@link InsertAllResponse#getInsertErrors()}. By
+   * default ({@link InsertAllRequest#skipInvalidRows()} is {@code false}), a single invalid row
+   * aborts the entire batch and reports {@code "stopped"} errors on the remaining rows. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-success">Success
+   * HTTP response codes</a> and <a
+   * href="https://docs.cloud.google.com/bigquery/docs/reference/rest/v2/tabledata/insertAll">
+   * tabledata.insertAll</a>.
+   *
+   * <p>This client does not automatically generate insert IDs for rows. To prevent duplicate rows,
+   * automatic client retries run only when every row in the request specifies a non-null insert ID
+   * (via {@link InsertAllRequest.RowToInsert#of(String, Map)} or {@link
+   * InsertAllRequest.Builder#addRow(String, Map)}). If any row omits an insert ID, automatic
+   * retries are disabled for the entire request and transient RPC errors are thrown directly to the
+   * caller. BigQuery uses insert IDs for best-effort deduplication (see <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataconsistency">Best effort
+   * de-duplication</a> and <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#streaming-failure">Failure
+   * HTTP response codes</a>).
+   *
+   * <p>Streamed rows are immediately available for GoogleSQL queries, but rows in the streaming
+   * buffer temporarily have {@code NULL} for {@code _PARTITIONTIME} on ingestion-time partitioned
+   * tables and may not be immediately available for table copy or {@link #listTableData}
+   * operations. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-rest#dataavailability">Stream data
+   * availability</a>.
+   *
+   * <p>For new streaming workloads that need lower cost, higher throughput, or exactly-once
+   * delivery semantics, use the BigQuery Storage Write API (gRPC) in {@code
+   * com.google.cloud:google-cloud-bigquerystorage}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/write-api-grpc">Introduction to the BigQuery
+   * Storage Write API (gRPC)</a>.
+   *
+   * <p>Example of inserting rows into a table without running a load job.
    *
    * <pre>{@code
    * String datasetName = "my_dataset_name";
@@ -1377,19 +1530,27 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    *     // builder
    *     .build());
    * if (response.hasErrors()) {
-   *   // If any of the insertions failed, this lets you inspect the errors
+   *   // Row-level insert failures return HTTP 200 without throwing, so inspect per-row errors here
    *   for (Entry<Long, List<BigQueryError>> entry : response.getInsertErrors().entrySet()) {
    *     // inspect row error
    *   }
    * }
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon a request-level or transport failure (row-level insertion errors
+   *     are returned on {@link InsertAllResponse} instead)
    */
   InsertAllResponse insertAll(InsertAllRequest request);
 
   /**
    * Lists the table's rows.
+   *
+   * <p>Because the underlying {@code tabledata.list} API does not return table schema metadata, the
+   * returned {@link TableResult} has {@code getSchema() == null} (supporting positional {@link
+   * FieldValueList#get(int)} lookup only) and {@code getJobId() == null}. Pass a {@link Schema} to
+   * {@link #listTableData(String, String, Schema, TableDataListOption...)} when by-name lookup via
+   * {@link FieldValueList#get(String)} is needed. Use {@link TableResult#iterateAll()} to read all
+   * pages or {@link TableResult#getValues()} for the current page only.
    *
    * <p>Example of listing table rows, specifying the page size.
    *
@@ -1412,6 +1573,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   /**
    * Lists the table's rows.
    *
+   * <p>Because the underlying {@code tabledata.list} API does not return table schema metadata, the
+   * returned {@link TableResult} has {@code getSchema() == null} (supporting positional {@link
+   * FieldValueList#get(int)} lookup only) and {@code getJobId() == null}. Pass a {@link Schema} to
+   * {@link #listTableData(TableId, Schema, TableDataListOption...)} when by-name lookup via {@link
+   * FieldValueList#get(String)} is needed. Use {@link TableResult#iterateAll()} to read all pages
+   * or {@link TableResult#getValues()} for the current page only.
+   *
    * <p>Example of listing table rows, specifying the page size.
    *
    * <pre>{@code
@@ -1432,8 +1600,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   TableResult listTableData(TableId tableId, TableDataListOption... options);
 
   /**
-   * Lists the table's rows. If the {@code schema} is not {@code null}, it is available to the
-   * {@link FieldValueList} iterated over.
+   * Lists the table's rows. If {@code schema} is not {@code null}, it is attached to each returned
+   * {@link FieldValueList}, enabling by-name lookup via {@link FieldValueList#get(String)}.
+   *
+   * <p>{@link TableResult#getJobId()} is {@code null} for table-data reads. Use {@link
+   * TableResult#iterateAll()} to read all pages automatically, or pair {@link
+   * TableResult#getValues()} with {@link TableResult#hasNextPage()} and {@link
+   * TableResult#getNextPage()} for manual pagination.
    *
    * <p>Example of listing table rows with schema.
    *
@@ -1454,8 +1627,13 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
       String datasetId, String tableId, Schema schema, TableDataListOption... options);
 
   /**
-   * Lists the table's rows. If the {@code schema} is not {@code null}, it is available to the
-   * {@link FieldValueList} iterated over.
+   * Lists the table's rows. If {@code schema} is not {@code null}, it is attached to each returned
+   * {@link FieldValueList}, enabling by-name lookup via {@link FieldValueList#get(String)}.
+   *
+   * <p>{@link TableResult#getJobId()} is {@code null} for table-data reads. Use {@link
+   * TableResult#iterateAll()} to read all pages automatically, or pair {@link
+   * TableResult#getValues()} with {@link TableResult#hasNextPage()} and {@link
+   * TableResult#getNextPage()} for manual pagination.
    *
    * <p>Example of listing table rows with schema.
    *
@@ -1474,8 +1652,15 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   TableResult listTableData(TableId tableId, Schema schema, TableDataListOption... options);
 
   /**
-   * Returns the requested job or {@code null} if not found. If the location of the job is not "US"
-   * or "EU", {@link #getJob(JobId, JobOption...)} must be used instead.
+   * Returns the requested job or {@code null} if not found. If the location of the job is not
+   * {@code "US"} or {@code "EU"} (and no matching default location is set via {@link
+   * BigQueryOptions.Builder#setLocation(String)}), use {@link #getJob(JobId, JobOption...)} with a
+   * {@link JobId} that specifies the job's location; otherwise BigQuery reports the job as not
+   * found and this method returns {@code null}.
+   *
+   * <p>Unlike {@link Job#reload(JobOption...)} and {@link Job#waitFor(RetryOption...)}, this method
+   * returns the {@link Job} even when {@link JobStatus#getError()} is non-null, allowing callers to
+   * inspect job errors without catching {@link BigQueryException}.
    *
    * <p>Example of getting a job.
    *
@@ -1487,13 +1672,27 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * }
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Job} (an immutable snapshot; capture {@link
+   *     Job#reload(JobOption...)} or {@link Job#waitFor(RetryOption...)} return values to observe
+   *     updates), or {@code null} on HTTP 404 unless {@link
+   *     BigQueryOptions#setThrowNotFound(boolean)} is enabled
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Job getJob(String jobId, JobOption... options);
 
   /**
-   * Returns the requested job or {@code null} if not found. If the location of the job is not "US"
-   * or "EU", the {@code jobId} must specify the job location.
+   * Returns the requested job or {@code null} if not found. If the location of the job is not
+   * {@code "US"} or {@code "EU"}, {@code jobId} must specify the job's location via {@link
+   * JobId.Builder#setLocation(String)} (unless a matching default is set on {@link
+   * BigQueryOptions}); otherwise BigQuery reports the job as not found and this method returns
+   * {@code null}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
+   *
+   * <p>Unlike {@link Job#reload(JobOption...)} and {@link Job#waitFor(RetryOption...)}, this method
+   * returns the {@link Job} even when {@link JobStatus#getError()} is non-null, allowing callers to
+   * inspect job errors without catching {@link BigQueryException}.
    *
    * <p>Example of getting a job.
    *
@@ -1506,12 +1705,24 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * }
    * }</pre>
    *
-   * @throws BigQueryException upon failure
+   * @return the requested {@link Job} (an immutable snapshot; capture {@link
+   *     Job#reload(JobOption...)} or {@link Job#waitFor(RetryOption...)} return values to observe
+   *     updates), or {@code null} on HTTP 404 unless {@link
+   *     BigQueryOptions#setThrowNotFound(boolean)} is enabled
+   * @throws BigQueryException upon failure, or if not found and {@link
+   *     BigQueryOptions#getThrowNotFound()} is {@code true}
    */
   Job getJob(JobId jobId, JobOption... options);
 
   /**
-   * Lists the jobs.
+   * Lists the jobs in the configured project.
+   *
+   * <p>By default, only jobs submitted by the calling user are returned; pass {@link
+   * JobListOption#allUsers()} to list jobs for all users in the project. The client requests full
+   * job projection ({@code projection=full}) by default unless narrowed with {@link
+   * JobListOption#fields(JobField...)}, which limits the returned fields (always retaining job
+   * reference, configuration, state, and error result; {@link JobField#SELF_LINK} and {@link
+   * JobField#ETAG} cannot be selected when listing jobs).
    *
    * <p>Example of listing jobs, specifying the page size.
    *
@@ -1530,7 +1741,10 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Sends a job cancel request. This call will return immediately. The job status can then be
    * checked by using {@link #getJob}.
    *
-   * <p>If the location of the job is not "US" or "EU", {@link #cancel(JobId)} must be used instead.
+   * <p>If the location of the job is not {@code "US"} or {@code "EU"} (and no matching default
+   * location is set via {@link BigQueryOptions.Builder#setLocation(String)}), use {@link
+   * #cancel(JobId)} with a {@link JobId} that specifies the job's location; otherwise BigQuery
+   * reports the job as not found and this method returns {@code false}.
    *
    * <p>Example of cancelling a job.
    *
@@ -1554,8 +1768,12 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * Sends a job cancel request. This call will return immediately. The job status can then be
    * checked using {@link #getJob}.
    *
-   * <p>If the location of the job is not "US" or "EU", the {@code jobId} must specify the job
-   * location.
+   * <p>If the location of the job is not {@code "US"} or {@code "EU"}, {@code jobId} must specify
+   * the job's location via {@link JobId.Builder#setLocation(String)} (unless a matching default is
+   * set on {@link BigQueryOptions}); otherwise BigQuery reports the job as not found and this
+   * method returns {@code false}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
    *
    * <p>Example of cancelling a job.
    *
@@ -1577,13 +1795,42 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   boolean cancel(JobId jobId);
 
   /**
-   * Runs the query associated with the request, using an internally-generated random JobId.
+   * Runs the query associated with the request and returns its {@link TableResult}.
    *
-   * <p>If the location of the job is not "US" or "EU", {@link #query(QueryJobConfiguration, JobId,
-   * JobOption...)} must be used instead.
+   * <p>When {@code configuration} uses only options supported by the BigQuery {@code jobs.query}
+   * API, this method uses the single-RPC fast query path; if {@link
+   * QueryJobConfiguration.JobCreationMode#JOB_CREATION_OPTIONAL} is configured (on {@code
+   * configuration} or via {@link
+   * BigQueryOptions#setDefaultJobCreationMode(QueryJobConfiguration.JobCreationMode)}), BigQuery
+   * may execute the query statelessly without creating a job (in which case {@link
+   * TableResult#getJobId()} returns {@code null}). Configurations using job-only options (such as a
+   * destination table, partitioning or clustering, external table definitions, or {@link
+   * QueryJobConfiguration.Priority#BATCH}) automatically fall back to creating a query job via
+   * {@link #create(JobInfo, JobOption...)}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/running-queries#optional-job-creation">
+   * Optional job creation</a>.
    *
-   * <p>This method cannot be used in conjuction with {@link QueryJobConfiguration#dryRun()}
-   * queries. Since dry-run queries are not actually executed, there's no way to retrieve results.
+   * <p>When no default location is configured on {@link BigQueryOptions}, BigQuery infers the
+   * processing location from referenced datasets when possible. To run a query explicitly in a
+   * specific region (for example, outside {@code "US"} or {@code "EU"}, or when no dataset is
+   * referenced), use {@link #query(QueryJobConfiguration, JobId, JobOption...)} with a {@link
+   * JobId} specifying {@link JobId.Builder#setLocation(String)}. If {@link
+   * BigQueryOptions#getLocation()} is set, it applies across queries on this client and can fail
+   * when querying tables in another region. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
+   *
+   * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
+   * queries and throws {@link UnsupportedOperationException} if {@code dryRun} is {@code true}. To
+   * validate a query and obtain processing statistics, call {@link #create(JobInfo, JobOption...)}
+   * instead (see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry
+   * runs</a>).
+   *
+   * <p>Transient query job failures are not re-executed automatically on the same job. To retry a
+   * failed query, invoke this method again so a new job is submitted. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a>.
    *
    * <p>Example of running a query.
    *
@@ -1601,40 +1848,54 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * }
    * }</pre>
    *
-   * This method supports query-related preview features via environmental variables (enabled by
-   * setting the {@code QUERY_PREVIEW_ENABLED} environment variable to "TRUE"). Specifically, this
-   * method supports:
-   *
-   * <ul>
-   *   <li><b>Stateless queries</b>: query execution without corresponding job metadata
-   * </ul>
-   *
-   * The behaviour of these preview features is controlled by the bigquery service as well
-   *
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
+   * @throws UnsupportedOperationException if {@link QueryJobConfiguration#dryRun()} is {@code true}
    */
   TableResult query(QueryJobConfiguration configuration, JobOption... options)
       throws InterruptedException, JobException;
 
   /**
-   * Runs the query associated with the request, using the given JobId.
+   * Runs the query associated with the request, using the given {@link JobId}, and returns its
+   * {@link TableResult}.
    *
-   * <p>If the location of the job is not "US" or "EU", the {@code jobId} must specify the job
-   * location.
+   * <p>Supplying a {@code jobId} with a non-null job name ({@link JobId#getJob()}) forces the
+   * job-creating path ({@link #create(JobInfo, JobOption...)}) rather than the fast {@code
+   * jobs.query} path. Passing a {@code jobId} that sets only a location or project (leaving {@link
+   * JobId#getJob()} unset) still allows the fast query path when {@code configuration} supports it.
+   *
+   * <p>When {@code jobId} specifies a location via {@link JobId.Builder#setLocation(String)}, the
+   * query runs in that location (taking precedence over {@link BigQueryOptions#getLocation()}) and
+   * must match the region of any referenced tables. For jobs outside {@code "US"} or {@code "EU"},
+   * specifying the location on {@code jobId} ensures subsequent lookups (such as {@link
+   * #getJob(JobId, JobOption...)}) succeed. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
    *
    * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
-   * queries. Since dry-run queries are not actually executed, there's no way to retrieve results.
+   * queries and throws {@link UnsupportedOperationException} if {@code dryRun} is {@code true}. To
+   * validate a query and obtain processing statistics, call {@link #create(JobInfo, JobOption...)}
+   * instead (see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry
+   * runs</a>).
+   *
+   * <p>A failed {@code jobId} is terminal and cannot be reused to re-execute the query. Generate a
+   * new {@link JobId} when retrying a transient failure. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a>.
    *
    * <p>See {@link #query(QueryJobConfiguration, JobOption...)} for examples on populating a {@link
    * QueryJobConfiguration}.
    *
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
+   * @throws UnsupportedOperationException if {@link QueryJobConfiguration#dryRun()} is {@code true}
    */
   TableResult query(QueryJobConfiguration configuration, JobId jobId, JobOption... options)
       throws InterruptedException, JobException;
@@ -1661,10 +1922,11 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * @param configuration the query configuration
    * @param options query options
    * @return an {@link ArrowQueryResult} streaming Arrow vectors
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
    */
   @BetaApi
   default ArrowQueryResult queryArrow(QueryJobConfiguration configuration, JobOption... options)
@@ -1691,14 +1953,21 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * --add-opens=java.base/java.nio=org.apache.arrow.memory.core,ALL-UNNAMED
    * }</pre>
    *
+   * <p>A failed {@code jobId} is terminal and cannot be reused to re-execute the query. Generate a
+   * new {@link JobId} when retrying a transient failure. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a>.
+   *
    * @param configuration the query configuration
    * @param jobId the job ID to use
    * @param options query options
    * @return an {@link ArrowQueryResult} streaming Arrow vectors
-   * @throws BigQueryException upon failure
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
    */
   @BetaApi
   default ArrowQueryResult queryArrow(
@@ -1708,22 +1977,51 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   }
 
   /**
-   * Starts the query associated with the request, using the given JobId. It returns either
-   * TableResult for quick queries or Job object for long-running queries.
+   * Starts the query associated with the request, using the given {@link JobId}, and returns either
+   * a {@link TableResult} or a {@link Job}.
    *
-   * <p>If the location of the job is not "US" or "EU", the {@code jobId} must specify the job
-   * location.
+   * <p>When the query uses the fast {@code jobs.query} path and completes within {@code timeoutMs}
+   * with a result schema (or when {@link QueryResultsFormat#ARROW} is configured), this method
+   * returns a {@link TableResult}. Otherwise (when the query does not finish within {@code
+   * timeoutMs}, returns no schema, or falls back to {@link #create(JobInfo, JobOption...)} because
+   * {@code jobId} specifies a job name or {@code configuration} uses options unsupported by {@code
+   * jobs.query}), this method returns a {@link Job}. Callers must check the return type with {@code
+   * instanceof} (for example, calling {@link Job#getQueryResults(QueryResultsOption...)} when a
+   * {@link Job} is returned). {@code timeoutMs} configures the server wait timeout on the fast
+   * query path (using the server default when {@code null}) and is not applied on the fallback
+   * job-creation path.
+   *
+   * <p>When {@code jobId} specifies a location via {@link JobId.Builder#setLocation(String)}, the
+   * query runs in that location (taking precedence over {@link BigQueryOptions#getLocation()}) and
+   * must match the region of any referenced tables. For jobs outside {@code "US"} or {@code "EU"},
+   * specifying the location on {@code jobId} ensures subsequent lookups (such as {@link
+   * #getJob(JobId, JobOption...)}) succeed. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a>.
    *
    * <p>This method cannot be used in conjunction with {@link QueryJobConfiguration#dryRun()}
-   * queries. Since dry-run queries are not actually executed, there's no way to retrieve results.
+   * queries and throws {@link UnsupportedOperationException} if {@code dryRun} is {@code true}. To
+   * validate a query and obtain processing statistics, call {@link #create(JobInfo, JobOption...)}
+   * instead (see <a href="https://docs.cloud.google.com/bigquery/docs/running-queries#dry-run">Dry
+   * runs</a>).
+   *
+   * <p>A failed {@code jobId} is terminal and cannot be reused to re-execute the query. Generate a
+   * new {@link JobId} when retrying a transient failure. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/managing-jobs#repeat_jobs">Repeating jobs</a>
+   * and <a href="https://docs.cloud.google.com/bigquery/docs/errors">BigQuery API HTTP status and
+   * error codes</a>.
    *
    * <p>See {@link #query(QueryJobConfiguration, JobOption...)} for examples on populating a {@link
    * QueryJobConfiguration}.
    *
-   * @throws BigQueryException upon failure
+   * @return a {@link TableResult} if the fast query path completed with results, or a {@link Job}
+   *     otherwise
+   * @throws BigQueryException upon failure, including when the job completes with an error
    * @throws InterruptedException if the current thread gets interrupted while waiting for the query
    *     to complete
-   * @throws JobException if the job completes unsuccessfully
+   * @throws JobException declared for backwards compatibility only and never thrown by current
+   *     client implementations (job failures throw {@link BigQueryException} instead)
+   * @throws UnsupportedOperationException if {@link QueryJobConfiguration#dryRun()} is {@code true}
    */
   Object queryWithTimeout(
       QueryJobConfiguration configuration, JobId jobId, Long timeoutMs, JobOption... options)
@@ -1738,9 +2036,25 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   QueryResponse getQueryResults(JobId jobId, QueryResultsOption... options);
 
   /**
-   * Returns a channel to write data to be inserted into a BigQuery table. Data format and other
-   * options can be configured using the {@link WriteChannelConfiguration} parameter. If the job is
-   * not in "US" or "EU", {@link #writer(JobId, WriteChannelConfiguration)} must be used instead.
+   * Returns a channel to upload data into a BigQuery table using a load job. Data format and other
+   * options can be configured using the {@link WriteChannelConfiguration} parameter.
+   *
+   * <p>The returned {@link TableDataWriteChannel} is not thread-safe. The upload is finalized only
+   * when {@link TableDataWriteChannel#close()} completes, and {@link
+   * TableDataWriteChannel#getJob()} returns {@code null} until the channel is closed or if no bytes
+   * were written. Check that {@code getJob()} is non-null before calling {@link
+   * Job#waitFor(RetryOption...)}.
+   *
+   * <p>This overload creates an auto-generated {@link JobId} without a location (it does not apply
+   * {@link BigQueryOptions#getLocation()}). When location is omitted on {@link JobId}, BigQuery
+   * infers the job location from the destination dataset and populates it on the {@link Job}
+   * returned by {@link TableDataWriteChannel#getJob()}. To supply a custom {@link JobId} (for
+   * example, to look up the job later via {@link #getJob(JobId, JobOption...)}), use {@link
+   * #writer(JobId, WriteChannelConfiguration)} and set the matching location on {@link JobId} for
+   * datasets outside {@code "US"} and {@code "EU"}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a> and <a href="https://docs.cloud.google.com/bigquery/docs/batch-loading-data">
+   * Batch load data</a>.
    *
    * <p>Example of creating a channel with which to write to a table.
    *
@@ -1752,20 +2066,22 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * WriteChannelConfiguration writeChannelConfiguration = WriteChannelConfiguration.newBuilder(tableId)
    *     .setFormatOptions(FormatOptions.csv()).build();
    * TableDataWriteChannel writer = bigquery.writer(writeChannelConfiguration);
-   * // Write data to writer
+   * // Close the channel to finalize the upload and create the load job
    * try {
    *   writer.write(ByteBuffer.wrap(csvData.getBytes(Charsets.UTF_8)));
    * } finally {
    *   writer.close();
    * }
-   * // Get load job
+   * // getJob() returns null before close() or when no bytes were written
    * Job job = writer.getJob();
-   * job = job.waitFor();
-   * LoadStatistics stats = job.getStatistics();
-   * return stats.getOutputRows();
+   * if (job != null) {
+   *   job = job.waitFor();
+   *   LoadStatistics stats = job.getStatistics();
+   *   return stats.getOutputRows();
+   * }
    * }</pre>
    *
-   * <p>Example of writing a local file to a table.
+   * <p>Example of writing a local file to a table in a specific location.
    *
    * <pre>{@code
    * String datasetName = "my_dataset_name";
@@ -1778,15 +2094,17 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * // The location must be specified; other fields can be auto-detected.
    * JobId jobId = JobId.newBuilder().setLocation(location).build();
    * TableDataWriteChannel writer = bigquery.writer(jobId, writeChannelConfiguration);
-   * // Write data to writer
+   * // Closing the OutputStream closes the underlying channel and finalizes the upload
    * try (OutputStream stream = Channels.newOutputStream(writer)) {
    *   Files.copy(csvPath, stream);
    * }
-   * // Get load job
+   * // getJob() returns null before close() or when the file was empty (0 bytes written)
    * Job job = writer.getJob();
-   * job = job.waitFor();
-   * LoadStatistics stats = job.getStatistics();
-   * return stats.getOutputRows();
+   * if (job != null) {
+   *   job = job.waitFor();
+   *   LoadStatistics stats = job.getStatistics();
+   *   return stats.getOutputRows();
+   * }
    * }</pre>
    *
    * @throws BigQueryException upon failure
@@ -1794,9 +2112,21 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
   TableDataWriteChannel writer(WriteChannelConfiguration writeChannelConfiguration);
 
   /**
-   * Returns a channel to write data to be inserted into a BigQuery table. Data format and other
-   * options can be configured using the {@link WriteChannelConfiguration} parameter. If the job is
-   * not in "US" or "EU", the {@code jobId} must contain the location of the job.
+   * Returns a channel to upload data into a BigQuery table using a load job. Data format and other
+   * options can be configured using the {@link WriteChannelConfiguration} parameter. When location
+   * is omitted on {@code jobId}, BigQuery infers the job location from the destination dataset and
+   * populates it on {@link TableDataWriteChannel#getJob()}. If you look up the job later using your
+   * own {@code jobId} (via {@link #getJob(JobId, JobOption...)}) for a dataset outside {@code "US"}
+   * or {@code "EU"}, set the matching location on {@code jobId} so the lookup succeeds.
+   *
+   * <p>The returned {@link TableDataWriteChannel} is not thread-safe. The upload is finalized only
+   * when {@link TableDataWriteChannel#close()} completes, and {@link
+   * TableDataWriteChannel#getJob()} returns {@code null} until the channel is closed or if no bytes
+   * were written. Check that {@code getJob()} is non-null before calling {@link
+   * Job#waitFor(RetryOption...)}. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/locations#specify_locations">Specify
+   * locations</a> and <a href="https://docs.cloud.google.com/bigquery/docs/batch-loading-data">
+   * Batch load data</a>.
    *
    * <p>Example of creating a channel with which to write to a table.
    *
@@ -1811,18 +2141,22 @@ public interface BigQuery extends Service<BigQueryOptions>, AutoCloseable {
    * // The location must be specified; other fields can be auto-detected.
    * JobId jobId = JobId.newBuilder().setLocation(location).build();
    * TableDataWriteChannel writer = bigquery.writer(jobId, writeChannelConfiguration);
-   * // Write data to writer
+   * // Close the channel to finalize the upload and create the load job
    * try {
    *   writer.write(ByteBuffer.wrap(csvData.getBytes(Charsets.UTF_8)));
    * } finally {
    *   writer.close();
    * }
-   * // Get load job
+   * // getJob() returns null before close() or when no bytes were written
    * Job job = writer.getJob();
-   * job = job.waitFor();
-   * LoadStatistics stats = job.getStatistics();
-   * return stats.getOutputRows();
+   * if (job != null) {
+   *   job = job.waitFor();
+   *   LoadStatistics stats = job.getStatistics();
+   *   return stats.getOutputRows();
+   * }
    * }</pre>
+   *
+   * @throws BigQueryException upon failure
    */
   TableDataWriteChannel writer(JobId jobId, WriteChannelConfiguration writeChannelConfiguration);
 
