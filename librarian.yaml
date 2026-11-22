@@ -760,14 +760,14 @@ libraries:
       - google-cloud-bigquerystorage/src/test/proto/test.proto
     java:
       api_id_override: bigquerystorage.googleapis.com
-      api_description_override: is an API for reading data stored in BigQuery. This API provides direct, high-throughput read access to existing BigQuery tables, supports parallel access with automatic liquid sharding, and allows fine-grained control over what data is returned.
-      client_documentation_override: https://cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/history
+      api_description_override: provides high-throughput gRPC APIs for reading data from and writing data to BigQuery. The Storage Read API provides direct, parallel read access to BigQuery tables with automatic liquid sharding and column/row filtering, and the Storage Write API provides high-throughput streaming and batch data ingestion with exactly-once delivery semantics.
+      client_documentation_override: https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/overview
       codeowner_team: '@googleapis/bigquery-team'
       issue_tracker_override: https://issuetracker.google.com/savedsearches/559654
       released_version: 3.39.0
       library_type_override: GAPIC_COMBO
       name_pretty_override: BigQuery Storage
-      product_documentation_override: https://cloud.google.com/bigquery/docs/reference/storage/
+      product_documentation_override: https://docs.cloud.google.com/bigquery/docs/reference/storage
       recommended_package: com.google.cloud.bigquery.storage.v1
       transport_override: grpc
   - name: bigtable

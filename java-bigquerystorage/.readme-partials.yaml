@@ -1,9 +1,17 @@
 custom_content: |
   ## OpenTelemetry support
-  The client supports emitting metrics to OpenTelemetry. This is disabled by default. It can be enabled by calling
-  ```
+  The Storage Write API writers (`StreamWriter` and `JsonStreamWriter`) support emitting metrics to OpenTelemetry, and `BigQueryReadClient` supports OpenTelemetry tracing. Both are disabled by default.
+
+  To enable write metrics, call:
+  ```java
+  StreamWriter.Builder.setEnableOpenTelemetry(true)
+  // or
   JsonStreamWriter.Builder.setEnableOpenTelemetry(true)
   ```
+  To enable Read API tracing, call `BigQueryReadSettings.Builder.setEnableOpenTelemetryTracing(true)`.
+
+  > **Note:** Register your OpenTelemetry SDK with `GlobalOpenTelemetry.set(...)` (or via the OpenTelemetry Java agent) **before** constructing the first writer, because the library latches `GlobalOpenTelemetry.get()` once on first initialization.
+
   The following metric attributes are supported.
   | Key             | Value                                                                                                                              |
   |-----------------|------------------------------------------------------------------------------------------------------------------------------------|
@@ -27,4 +35,4 @@ custom_content: |
   | `network_response_latency`   | Histogram           | Reports time taken in milliseconds for a response to arrive once a message has been sent over the network.       |
   ### Exporting OpenTelemetry metrics
   An exporter or collector must be installed by the application in order for [OpenTelemetry metrics to be captured](https://opentelemetry.io/docs/concepts/components/#exporters).
-  The [sample application](https://github.com/googleapis/java-bigquerystorage/blob/main/samples/snippets/src/test/java/com/example/bigquerystorage/ExportOpenTelemetryIT.java) uses [Google Monitoring Metrics Exporter](https://github.com/GoogleCloudPlatform/opentelemetry-operations-java/tree/main/exporters/metrics) to export metrics to a Google Cloud project.
+  The [sample application](https://github.com/googleapis/google-cloud-java/blob/main/java-bigquerystorage/samples/snippets/src/test/java/com/example/bigquerystorage/ExportOpenTelemetryIT.java) uses [Google Monitoring Metrics Exporter](https://github.com/GoogleCloudPlatform/opentelemetry-operations-java/tree/main/exporters/metrics) to export metrics to a Google Cloud project.
