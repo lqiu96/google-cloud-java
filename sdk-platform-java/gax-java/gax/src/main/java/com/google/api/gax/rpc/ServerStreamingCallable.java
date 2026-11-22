@@ -59,9 +59,9 @@ public abstract class ServerStreamingCallable<RequestT, ResponseT> {
    * <p>Example usage:
    *
    * <pre>{@code
-   * StreamingCallable<String> streamingCallable = // ..
+   * ServerStreamingCallable<RequestType, String> streamingCallable = ...;
    * String theResult = streamingCallable.first().call(request);
-   * ApiFuture<String> theResult = streamingCallable.first().futureCall(request);
+   * ApiFuture<String> futureResult = streamingCallable.first().futureCall(request);
    * }</pre>
    *
    * @return The {@link UnaryCallable}.
@@ -77,9 +77,9 @@ public abstract class ServerStreamingCallable<RequestT, ResponseT> {
    * <p>Example usage:
    *
    * <pre>{@code
-   * StreamingCallable<String> streamingCallable = // ..
+   * ServerStreamingCallable<RequestType, String> streamingCallable = ...;
    * List<String> theResult = streamingCallable.all().call(request);
-   * ApiFuture<List<String>> theResult = streamingCallable.all().futureCall(request);
+   * ApiFuture<List<String>> futureResult = streamingCallable.all().futureCall(request);
    * }</pre>
    *
    * @return The {@link UnaryCallable}.
@@ -89,22 +89,20 @@ public abstract class ServerStreamingCallable<RequestT, ResponseT> {
   }
 
   /**
-   * Conduct a iteration server streaming call.
+   * Conduct an iterative server streaming call.
    *
    * <p>This returns a live stream that must either be fully consumed or cancelled. Example usage:
    *
    * <pre>{@code
-   * StreamingCallable<String> streamingCallable = // ..
-   * ServerStream stream = streamingCallable.call(request)
+   * ServerStreamingCallable<RequestType, String> streamingCallable = ...;
+   * ServerStream<String> stream = streamingCallable.call(request);
    * for (String s : stream) {
    *   if ("needle".equals(s)) {
-   *     // Cancelling the stream will cause `hasNext()` to return false on the next iteration,
+   *     // Cancelling the stream will cause hasNext() to return false on the next iteration,
    *     // naturally breaking the loop.
    *     stream.cancel();
    *   }
    * }
-   * List<String> theResult = streamingCallable.all().call(request);
-   * ApiFuture<List<String>> theResult = streamingCallable.all().futureCall(request);
    * }</pre>
    *
    * @param request request

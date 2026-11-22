@@ -50,7 +50,7 @@ import org.jspecify.annotations.NullMarked;
  * see:
  *
  * <pre>{@code
- * BidiStream<Item> stream = ...;
+ * BidiStream<String, Item> stream = ...;
  *
  * for (Item item : stream) {
  *   System.out.println(item.id());
@@ -59,7 +59,7 @@ import org.jspecify.annotations.NullMarked;
  *
  *   // Allow for early termination
  *   if (item.id().equals("needle")) {
- *     // Cancelling the stream will cause `hasNext()` to return false on the next iteration,
+ *     // Cancelling the stream will cause hasNext() to return false on the next iteration,
  *     // naturally breaking the loop.
  *     stream.cancel();
  *   }

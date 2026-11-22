@@ -55,7 +55,7 @@ import org.jspecify.annotations.Nullable;
  *   transportChannelProvider = transportChannelProvider.withHeaders(headers);
  * }
  * // optional: set executor for TransportChannel
- * transportChannelProvider.withExecutor(executor);
+ * transportChannelProvider = transportChannelProvider.withExecutor(executor);
  * TransportChannel transportChannel = transportChannelProvider.getTransportChannel();
  * </code></pre>
  */
