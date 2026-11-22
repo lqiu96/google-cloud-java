@@ -42,11 +42,11 @@ import java.util.Objects;
 
 /**
  * A Cloud Logging log entry. All log entries are represented via objects of this class. Log entries
- * can have different type of payloads: an UTF-8 string (see {@link Payload.StringPayload}), a JSON
- * object (see {@link Payload.JsonPayload}, or a protobuf object (see {@link Payload.ProtoPayload}).
- * Entries can also store additional information about the operation or the HTTP request that
- * generated the log (see {@link LogEntry#getOperation()} and {@link LogEntry#getHttpRequest()},
- * respectively).
+ * can have different types of payloads: a UTF-8 string (see {@link Payload.StringPayload}), a JSON
+ * object (see {@link Payload.JsonPayload}), or a protobuf object (see {@link
+ * Payload.ProtoPayload}). Entries can also store additional information about the operation or the
+ * HTTP request that generated the log (see {@link LogEntry#getOperation()} and {@link
+ * LogEntry#getHttpRequest()}, respectively).
  *
  * @see <a href="https://cloud.google.com/logging/docs/view/logs_index">Log Entries and Logs</a>
  */
@@ -168,7 +168,7 @@ public class LogEntry implements Serializable {
      * Logging service will set the time at which the log entry is received.
      *
      * @deprecated This method is no longer recommended to setup the receive time timestamp.
-     *     <p>Use {@link setReceiveTimestamp(Instant)} instead.
+     *     <p>Use {@link #setReceiveTimestamp(Instant)} instead.
      */
     @CanIgnoreReturnValue
     @Deprecated
@@ -251,7 +251,8 @@ public class LogEntry implements Serializable {
 
     /**
      * Sets the resource name of the trace associated with the log entry, if any. If it contains a
-     * relative resource name, the name is assumed to be relative to `//tracing.googleapis.com`.
+     * relative resource name, the name is assumed to be relative to {@code
+     * //tracing.googleapis.com}.
      */
     @CanIgnoreReturnValue
     public Builder setTrace(String trace) {
@@ -261,7 +262,8 @@ public class LogEntry implements Serializable {
 
     /**
      * Sets the resource name of the trace associated with the log entry, if any. If it contains a
-     * relative resource name, the name is assumed to be relative to `//tracing.googleapis.com`.
+     * relative resource name, the name is assumed to be relative to {@code
+     * //tracing.googleapis.com}.
      */
     @CanIgnoreReturnValue
     public Builder setTrace(Object trace) {
@@ -298,8 +300,8 @@ public class LogEntry implements Serializable {
     }
 
     /**
-     * Sets the payload for this log entry. The log entry payload can be provided as an UTF-8 string
-     * (see {@link Payload.StringPayload}), a JSON object (see {@link Payload.JsonPayload}, or a
+     * Sets the payload for this log entry. The log entry payload can be provided as a UTF-8 string
+     * (see {@link Payload.StringPayload}), a JSON object (see {@link Payload.JsonPayload}), or a
      * protobuf object (see {@link Payload.ProtoPayload}).
      *
      * @see <a href="https://cloud.google.com/logging/docs/view/logs_index">Log Entries and Logs</a>
@@ -365,7 +367,7 @@ public class LogEntry implements Serializable {
    * Returns the time at which the event described by the log entry occurred, in milliseconds.
    *
    * @deprecated This method is no longer recommended to get the entry timestamp.
-   *     <p>Use {@link getInstantTimestamp()} instead.
+   *     <p>Use {@link #getInstantTimestamp()} instead.
    * @return timestamp in milliseconds
    */
   @Deprecated
@@ -386,7 +388,7 @@ public class LogEntry implements Serializable {
    * Returns the time the log entry was received by Cloud Logging, in milliseconds.
    *
    * @deprecated This method is no longer recommended to get the received time timestamp.
-   *     <p>Use {@link getInstantReceiveTimestamp()} instead.
+   *     <p>Use {@link #getInstantReceiveTimestamp()} instead.
    * @return timestamp in milliseconds
    */
   @Deprecated
@@ -395,7 +397,7 @@ public class LogEntry implements Serializable {
   }
 
   /**
-   * Returns the time the log entry was received by Cloud Logging, in milliseconds.
+   * Returns the time the log entry was received by Cloud Logging.
    *
    * @return timestamp as {@link Instant}
    */
@@ -436,7 +438,7 @@ public class LogEntry implements Serializable {
 
   /**
    * Returns the resource name of the trace associated with the log entry, if any. If it contains a
-   * relative resource name, the name is assumed to be relative to `//tracing.googleapis.com`.
+   * relative resource name, the name is assumed to be relative to {@code //tracing.googleapis.com}.
    */
   public String getTrace() {
     // For backwards compatibility return null when trace not set instead of "null".
@@ -463,9 +465,9 @@ public class LogEntry implements Serializable {
   }
 
   /**
-   * Returns the payload for this log entry. The log entry payload can be an UTF-8 string (see
-   * {@link Payload.StringPayload}), a JSON object (see {@link Payload.JsonPayload}, or a protobuf
-   * object (see {@link Payload.ProtoPayload}).
+   * Returns the payload for this log entry. The log entry payload can be a UTF-8 string (see {@link
+   * Payload.StringPayload}), a JSON object (see {@link Payload.JsonPayload}), or a protobuf object
+   * (see {@link Payload.ProtoPayload}).
    *
    * @see <a href="https://cloud.google.com/logging/docs/view/logs_index">Log Entries and Logs</a>
    */
