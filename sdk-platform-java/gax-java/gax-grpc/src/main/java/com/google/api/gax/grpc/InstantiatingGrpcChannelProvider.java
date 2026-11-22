@@ -118,15 +118,13 @@ public final class InstantiatingGrpcChannelProvider implements TransportChannelP
 
   // The public portion of the mTLS MDS root certificate is stored for performing
   // cert verification when establishing an mTLS connection with the MDS. See
-  // {@link <a
-  // href="https://cloud.google.com/compute/docs/metadata/overview#https-mds-root-certs">this</a>
-  // for more information.}
+  // https://docs.cloud.google.com/compute/docs/metadata/overview#https-mds-root-certs
+  // for more information.
   private static final String MTLS_MDS_ROOT_PATH = "/run/google-mds-mtls/root.crt";
   // The mTLS MDS credentials are formatted as the concatenation of a PEM-encoded certificate chain
   // followed by a PEM-encoded private key. See
-  // {@link <a
-  // href="https://cloud.google.com/compute/docs/metadata/overview#https-mds-client-certs">this</a>
-  // for more information.}
+  // https://docs.cloud.google.com/compute/docs/metadata/overview#https-mds-client-certs
+  // for more information.
   private static final String MTLS_MDS_CERT_CHAIN_AND_KEY_PATH = "/run/google-mds-mtls/client.key";
 
   static final long DIRECT_PATH_KEEP_ALIVE_TIME_SECONDS = 3600;
@@ -344,7 +342,7 @@ public final class InstantiatingGrpcChannelProvider implements TransportChannelP
    *
    * <p>The value of {@code mtlsEndpoint} must be of the form {@code host:port}.
    *
-   * @param mtlsEndpoint The mtTLS endpoint to connect to
+   * @param mtlsEndpoint The mTLS endpoint to connect to
    * @return A new {@link InstantiatingGrpcChannelProvider} with the specified mTLS endpoint
    *     configured
    */
@@ -358,7 +356,7 @@ public final class InstantiatingGrpcChannelProvider implements TransportChannelP
   /**
    * Specify whether or not to use S2A.
    *
-   * @param useS2A
+   * @param useS2A whether to use S2A for establishing mTLS connections
    * @return A new {@link InstantiatingGrpcChannelProvider} with useS2A set.
    */
   @Override
@@ -648,15 +646,15 @@ public final class InstantiatingGrpcChannelProvider implements TransportChannelP
 
   /**
    * This method creates {@link TlsChannelCredentials} to be used by the client to establish an mTLS
-   * connection to S2A. Returns null if any of {@param trustBundle}, {@param privateKey} or {@param
+   * connection to S2A. Returns null if any of {@code trustBundle}, {@code privateKey} or {@code
    * certChain} are missing.
    *
-   * @param trustBundle the trust bundle to be used to establish the client -> S2A mTLS connection
-   * @param privateKey the client's private key to be used to establish the client -> S2A mtls
+   * @param trustBundle the trust bundle to be used to establish the client-to-S2A mTLS connection
+   * @param privateKey the client's private key to be used to establish the client-to-S2A mTLS
    *     connection
-   * @param certChain the client's cert chain to be used to establish the client -> S2A mtls
+   * @param certChain the client's cert chain to be used to establish the client-to-S2A mTLS
    *     connection
-   * @return {@link ChannelCredentials} to use to create an mtls connection between client and S2A
+   * @return {@link ChannelCredentials} to use to create an mTLS connection between client and S2A
    * @throws IOException on error
    */
   @VisibleForTesting
@@ -673,7 +671,7 @@ public final class InstantiatingGrpcChannelProvider implements TransportChannelP
 
   /**
    * This method creates {@link ChannelCredentials} to be used by client to establish a plaintext
-   * connection to S2A. if {@param plaintextAddress} is not present, returns null.
+   * connection to S2A. If {@code plaintextAddress} is not present, returns null.
    *
    * @param plaintextAddress the address to reach S2A which accepts plaintext connections
    * @return {@link ChannelCredentials} to use to create a plaintext connection between client and
@@ -687,15 +685,15 @@ public final class InstantiatingGrpcChannelProvider implements TransportChannelP
   }
 
   /**
-   * This method creates gRPC {@link ChannelCredentials} configured to use S2A to estbalish a mTLS
-   * connection. First, the address of S2A is discovered by using the {@link S2A} utility to learn
-   * the {@code mtlsAddress} to reach S2A and the {@code plaintextAddress} to reach S2A. Prefer to
-   * use the {@code mtlsAddress} address to reach S2A if it is non-empty and the MTLS-MDS
-   * credentials can successfully be discovered and used to create {@link TlsChannelCredentials}. If
-   * there is any failure using mTLS-to-S2A, fallback to using a plaintext connection to S2A using
-   * the {@code plaintextAddress}. If {@code plaintextAddress} is not available, this function
-   * returns null; in this case S2A will not be used, and a TLS connection to the service will be
-   * established.
+   * This method creates gRPC {@link ChannelCredentials} configured to use S2A to establish an mTLS
+   * connection. First, the address of S2A is discovered by using the {@link SecureSessionAgent}
+   * utility to learn the {@code mtlsAddress} to reach S2A and the {@code plaintextAddress} to reach
+   * S2A. Prefer to use the {@code mtlsAddress} address to reach S2A if it is non-empty and the
+   * MTLS-MDS credentials can successfully be discovered and used to create {@link
+   * TlsChannelCredentials}. If there is any failure using mTLS-to-S2A, fallback to using a
+   * plaintext connection to S2A using the {@code plaintextAddress}. If {@code plaintextAddress} is
+   * not available, this function returns null; in this case S2A will not be used, and a TLS
+   * connection to the service will be established.
    *
    * @return {@link ChannelCredentials} configured to use S2A to create mTLS connection.
    */

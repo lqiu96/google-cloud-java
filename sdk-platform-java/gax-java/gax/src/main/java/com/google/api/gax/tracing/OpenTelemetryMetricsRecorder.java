@@ -44,13 +44,13 @@ import java.util.Map;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * OpenTelemetry implementation of recording metrics. This implementation collections the
- * measurements related to the lifecyle of an RPC.
+ * OpenTelemetry implementation of recording metrics. This implementation collects the measurements
+ * related to the lifecycle of an RPC.
  *
- * <p>For the Otel implementation, an attempt is a single RPC invocation and an operation is the
+ * <p>For the OTel implementation, an attempt is a single RPC invocation and an operation is the
  * collection of all the attempts made before a response is returned (either as a success or an
- * error). A single call (i.e. `EchoClient.echo()`) should have an operation_count of 1 and may have
- * an attempt_count of 1+ (depending on the retry configurations).
+ * error). A single call (e.g., {@code EchoClient.echo()}) should have an operation_count of 1 and
+ * may have an attempt_count of 1+ (depending on the retry configurations).
  */
 @NullMarked
 @BetaApi

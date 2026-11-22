@@ -87,17 +87,17 @@ public abstract class EndpointContext {
   }
 
   /**
-   * ServiceName is host URI for Google Cloud Services. It follows the format of
-   * `{ServiceName}.googleapis.com`. For example, speech.googleapis.com would have a ServiceName of
+   * ServiceName is host URI for Google Cloud Services. It follows the format of {@code
+   * {ServiceName}.googleapis.com}. For example, speech.googleapis.com would have a ServiceName of
    * speech and cloudasset.googleapis.com would have a ServiceName of cloudasset.
    */
   public abstract @Nullable String serviceName();
 
   /**
-   * Universe Domain is the domain for Google Cloud Services. It follows the format of
-   * `{ServiceName}.{UniverseDomain}`. For example, speech.googleapis.com would have a Universe
-   * Domain value of `googleapis.com` and cloudasset.test.com would have a Universe Domain of
-   * `test.com`. If this value is not set, this will default to `googleapis.com`.
+   * Universe Domain is the domain for Google Cloud Services. It follows the format of {@code
+   * {ServiceName}.{UniverseDomain}}. For example, speech.googleapis.com would have a Universe
+   * Domain value of {@code googleapis.com} and cloudasset.test.com would have a Universe Domain of
+   * {@code test.com}. If this value is not set, this will default to {@code googleapis.com}.
    */
   public abstract @Nullable String universeDomain();
 
@@ -200,17 +200,17 @@ public abstract class EndpointContext {
   @AutoValue.Builder
   public abstract static class Builder {
     /**
-     * ServiceName is host URI for Google Cloud Services. It follows the format of
-     * `{ServiceName}.googleapis.com`. For example, speech.googleapis.com would have a ServiceName
-     * of speech and cloudasset.googleapis.com would have a ServiceName of cloudasset.
+     * ServiceName is host URI for Google Cloud Services. It follows the format of {@code
+     * {ServiceName}.googleapis.com}. For example, speech.googleapis.com would have a ServiceName of
+     * speech and cloudasset.googleapis.com would have a ServiceName of cloudasset.
      */
     public abstract Builder setServiceName(String serviceName);
 
     /**
-     * Universe Domain is the domain for Google Cloud Services. It follows the format of
-     * `{ServiceName}.{UniverseDomain}`. For example, speech.googleapis.com would have a Universe
-     * Domain value of `googleapis.com` and cloudasset.test.com would have a Universe Domain of
-     * `test.com`. If this value is not set, this will default to `googleapis.com`.
+     * Universe Domain is the domain for Google Cloud Services. It follows the format of {@code
+     * {ServiceName}.{UniverseDomain}}. For example, speech.googleapis.com would have a Universe
+     * Domain value of {@code googleapis.com} and cloudasset.test.com would have a Universe Domain
+     * of {@code test.com}. If this value is not set, this will default to {@code googleapis.com}.
      */
     public abstract Builder setUniverseDomain(String universeDomain);
 

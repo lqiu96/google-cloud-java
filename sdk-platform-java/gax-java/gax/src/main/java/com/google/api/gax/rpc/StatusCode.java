@@ -35,9 +35,8 @@ import org.jspecify.annotations.NullMarked;
 /**
  * Transport-specific status code.
  *
- * <p>The status codes are modeled after the status codes in grpc. For more information about grpc
- * status codes, see
- * https://github.com/grpc/grpc-java/blob/master/core/src/main/java/io/grpc/Status.java
+ * <p>The status codes are modeled after the status codes in gRPC. For more information about gRPC
+ * status codes, see <a href="https://grpc.io/docs/guides/status-codes/">gRPC status codes</a>.
  */
 @NullMarked
 @InternalExtensionOnly
