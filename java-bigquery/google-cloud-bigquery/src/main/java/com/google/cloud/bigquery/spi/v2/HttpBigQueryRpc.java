@@ -35,6 +35,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.core.InternalApi;
 import com.google.api.core.InternalExtensionOnly;
+import com.google.api.gax.rpc.UnauthenticatedException;
 import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.bigquery.model.Dataset;
 import com.google.api.services.bigquery.model.DatasetList;
@@ -117,34 +118,50 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public HttpBigQueryRpc(BigQueryOptions options) {
     HttpTransportOptions transportOptions = (HttpTransportOptions) options.getTransportOptions();
     HttpTransport transport = transportOptions.getHttpTransportFactory().create();
-    HttpRequestInitializer initializer = transportOptions.getHttpRequestInitializer(options);
+    HttpRequestInitializer initializer =
+        wrapWithExceptionTranslation(transportOptions.getHttpRequestInitializer(options));
     this.options = options;
-    this.urlDomain = new GenericUrl(options.getResolvedApiaryHost("bigquery")).getHost();
 
     if (options.isOpenTelemetryTracingEnabled() && options.getOpenTelemetryTracer() != null) {
       initializer =
           new HttpTracingRequestInitializer(initializer, options.getOpenTelemetryTracer());
     }
 
-    bigquery =
+    Bigquery.Builder bigqueryBuilder =
         new Bigquery.Builder(transport, new GsonFactory(), initializer)
-            .setRootUrl(options.getResolvedApiaryHost("bigquery"))
             .setApplicationName(options.getApplicationName())
-            .build();
+            .setUniverseDomain(options.getResolvedUniverseDomain());
+    // Only override rootUrl when the caller set a host explicitly; otherwise let Apiary resolve
+    // the endpoint from universeDomain (and preserve mTLS routing on the default universe).
+    if (options.hasExplicitHost()) {
+      bigqueryBuilder.setRootUrl(options.getHost());
+    }
+    bigquery = bigqueryBuilder.build();
+    this.urlDomain = new GenericUrl(bigquery.getRootUrl()).getHost();
+  }
+
+  /**
+   * Translates GAX {@link UnauthenticatedException} from {@link HttpTransportOptions} into a
+   * non-retryable {@link BigQueryException} (HTTP 401). Kept in {@code java-bigquery} for backwards
+   * compatibility with callers expecting {@link BigQueryException} from both {@link
+   * com.google.cloud.bigquery.BigQuery} and direct {@link BigQueryRpc} invocations.
+   */
+  private static HttpRequestInitializer wrapWithExceptionTranslation(
+      HttpRequestInitializer delegate) {
+    if (delegate == null) {
+      return null;
+    }
+    return request -> {
+      try {
+        delegate.initialize(request);
+      } catch (UnauthenticatedException ex) {
+        throw new BigQueryException(HTTP_UNAUTHORIZED, ex.getMessage(), ex);
+      }
+    };
   }
 
   private static BigQueryException translate(IOException exception) {
     return new BigQueryException(exception);
-  }
-
-  private void validateRPC() throws BigQueryException, IOException {
-    if (!this.options.hasValidUniverseDomain()) {
-      String errorMessage =
-          String.format(
-              "The configured universe domain %s does not match the universe domain found in the credentials %s. If you haven't configured the universe domain explicitly, `googleapis.com` is the default.",
-              this.options.getUniverseDomain(), this.options.getCredentials().getUniverseDomain());
-      throw new BigQueryException(HTTP_UNAUTHORIZED, errorMessage);
-    }
   }
 
   @Override
@@ -163,7 +180,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Dataset getDatasetSkipExceptionTranslation(
       String projectId, String datasetId, Map<Option, ?> options) throws IOException {
-    validateRPC();
     Bigquery.Datasets.Get bqGetRequest =
         bigquery
             .datasets()
@@ -217,7 +233,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Tuple<String, Iterable<Dataset>> listDatasetsSkipExceptionTranslation(
       String projectId, Map<Option, ?> options) throws IOException {
-    validateRPC();
     Bigquery.Datasets.List datasetsListRequest =
         bigquery
             .datasets()
@@ -267,7 +282,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @Override
   public Tuple<String, Iterable<ProjectList.Projects>> listProjects(Map<Option, ?> options) {
     try {
-      validateRPC();
       Bigquery.Projects.List request = bigquery.projects().list();
       Long maxResults = Option.MAX_RESULTS.getLong(options);
       if (maxResults != null) {
@@ -319,7 +333,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Dataset createSkipExceptionTranslation(Dataset dataset, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     Bigquery.Datasets.Insert bqCreateRequest =
         bigquery
             .datasets()
@@ -370,7 +383,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Table createSkipExceptionTranslation(Table table, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     // unset the type, as it is output only
     table.setType(null);
     TableReference reference = table.getTableReference();
@@ -424,7 +436,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Routine createSkipExceptionTranslation(Routine routine, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     RoutineReference reference = routine.getRoutineReference();
     Bigquery.Routines.Insert bqCreateRequest =
         bigquery
@@ -476,7 +487,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
 
   @InternalApi("internal to java-bigquery")
   public Job createSkipExceptionTranslation(Job job, Map<Option, ?> options) throws IOException {
-    validateRPC();
     String projectId =
         job.getJobReference() != null
             ? job.getJobReference().getProjectId()
@@ -529,7 +539,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
 
   @InternalApi("internal to java-bigquery")
   public Job createJobForQuerySkipExceptionTranslation(Job job) throws IOException {
-    validateRPC();
     String projectId =
         job.getJobReference() != null
             ? job.getJobReference().getProjectId()
@@ -583,7 +592,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public boolean deleteDatasetSkipExceptionTranslation(
       String projectId, String datasetId, Map<Option, ?> options) throws IOException {
-    validateRPC();
     Bigquery.Datasets.Delete bqDeleteRequest =
         bigquery
             .datasets()
@@ -629,7 +637,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Dataset patchSkipExceptionTranslation(Dataset dataset, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     DatasetReference reference = dataset.getDatasetReference();
     Bigquery.Datasets.Patch bqPatchRequest =
         bigquery
@@ -684,7 +691,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Table patchSkipExceptionTranslation(Table table, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     // unset the type, as it is output only
     table.setType(null);
     TableReference reference = table.getTableReference();
@@ -746,7 +752,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public Table getTableSkipExceptionTranslation(
       String projectId, String datasetId, String tableId, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     Bigquery.Tables.Get bqGetRequest =
         bigquery
             .tables()
@@ -806,7 +811,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Tuple<String, Iterable<Table>> listTablesSkipExceptionTranslation(
       String projectId, String datasetId, Map<Option, ?> options) throws IOException {
-    validateRPC();
     Bigquery.Tables.List tableListRequest =
         bigquery
             .tables()
@@ -885,7 +889,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public boolean deleteTableSkipExceptionTranslation(
       String projectId, String datasetId, String tableId) throws IOException {
-    validateRPC();
     Bigquery.Tables.Delete bqDeleteRequest =
         bigquery.tables().delete(projectId, datasetId, tableId);
 
@@ -929,7 +932,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Model patchSkipExceptionTranslation(Model model, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     // unset the type, as it is output only
     ModelReference reference = model.getModelReference();
     Bigquery.Models.Patch bqPatchRequest =
@@ -990,7 +992,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public Model getModelSkipExceptionTranslation(
       String projectId, String datasetId, String modelId, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     Bigquery.Models.Get bqGetRequest =
         bigquery
             .models()
@@ -1043,7 +1044,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Tuple<String, Iterable<Model>> listModelsSkipExceptionTranslation(
       String projectId, String datasetId, Map<Option, ?> options) throws IOException {
-    validateRPC();
     Bigquery.Models.List modelListRequest =
         bigquery
             .models()
@@ -1106,7 +1106,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public boolean deleteModelSkipExceptionTranslation(
       String projectId, String datasetId, String modelId) throws IOException {
-    validateRPC();
     Bigquery.Models.Delete bqDeleteRequest =
         bigquery.models().delete(projectId, datasetId, modelId);
 
@@ -1150,7 +1149,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Routine updateSkipExceptionTranslation(Routine routine, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     RoutineReference reference = routine.getRoutineReference();
     Bigquery.Routines.Update bqUpdateRequest =
         bigquery
@@ -1213,7 +1211,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public Routine getRoutineSkipExceptionTranslation(
       String projectId, String datasetId, String routineId, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     Bigquery.Routines.Get bqGetRequest =
         bigquery
             .routines()
@@ -1266,7 +1263,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Tuple<String, Iterable<Routine>> listRoutinesSkipExceptionTranslation(
       String projectId, String datasetId, Map<Option, ?> options) throws IOException {
-    validateRPC();
     Bigquery.Routines.List routineListRequest =
         bigquery
             .routines()
@@ -1328,7 +1324,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public boolean deleteRoutineSkipExceptionTranslation(
       String projectId, String datasetId, String routineId) throws IOException {
-    validateRPC();
     Bigquery.Routines.Delete bqDeleteRequest =
         bigquery.routines().delete(projectId, datasetId, routineId);
 
@@ -1374,7 +1369,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public TableDataInsertAllResponse insertAllSkipExceptionTranslation(
       String projectId, String datasetId, String tableId, TableDataInsertAllRequest request)
       throws IOException {
-    validateRPC();
     Bigquery.Tabledata.InsertAll insertAllRequest =
         bigquery
             .tabledata()
@@ -1420,7 +1414,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public TableDataList listTableDataSkipExceptionTranslation(
       String projectId, String datasetId, String tableId, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     DataFormatOptions formatOptions = this.options.getDataFormatOptions();
     TimestampFormatOptions timestampFormat = formatOptions.timestampFormatOptions();
     Bigquery.Tabledata.List bqListRequest =
@@ -1493,7 +1486,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
       Integer maxResultPerPage,
       String pageToken)
       throws IOException {
-    validateRPC();
     Bigquery.Tabledata.List bqListRequest =
         bigquery
             .tabledata()
@@ -1548,7 +1540,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Job getJobSkipExceptionTranslation(
       String projectId, String jobId, String location, Map<Option, ?> options) throws IOException {
-    validateRPC();
     Bigquery.Jobs.Get bqGetRequest =
         bigquery
             .jobs()
@@ -1604,7 +1595,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Job getQueryJobSkipExceptionTranslation(String projectId, String jobId, String location)
       throws IOException {
-    validateRPC();
     Bigquery.Jobs.Get bqGetRequest =
         bigquery.jobs().get(projectId, jobId).setPrettyPrint(false).setLocation(location);
 
@@ -1651,7 +1641,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Tuple<String, Iterable<Job>> listJobsSkipExceptionTranslation(
       String projectId, Map<Option, ?> options) throws IOException {
-    validateRPC();
     Bigquery.Jobs.List listJobsRequest =
         bigquery
             .jobs()
@@ -1745,7 +1734,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public boolean cancelSkipExceptionTranslation(String projectId, String jobId, String location)
       throws IOException {
-    validateRPC();
     Bigquery.Jobs.Cancel bqCancelRequest =
         bigquery.jobs().cancel(projectId, jobId).setLocation(location).setPrettyPrint(false);
 
@@ -1787,7 +1775,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public boolean deleteJobSkipExceptionTranslation(
       String projectId, String jobName, String location) throws IOException {
-    validateRPC();
     Bigquery.Jobs.Delete bqDeleteRequest =
         bigquery.jobs().delete(projectId, jobName).setLocation(location).setPrettyPrint(false);
 
@@ -1830,7 +1817,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public GetQueryResultsResponse getQueryResultsSkipExceptionTranslation(
       String projectId, String jobId, String location, Map<Option, ?> options) throws IOException {
-    validateRPC();
     Bigquery.Jobs.GetQueryResults queryRequest =
         bigquery
             .jobs()
@@ -1888,7 +1874,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public GetQueryResultsResponse getQueryResultsWithRowLimitSkipExceptionTranslation(
       String projectId, String jobId, String location, Integer maxResultPerPage, Long timeoutMs)
       throws IOException {
-    validateRPC();
     Bigquery.Jobs.GetQueryResults queryRequest =
         bigquery
             .jobs()
@@ -1938,7 +1923,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public QueryResponse queryRpcSkipExceptionTranslation(String projectId, QueryRequest content)
       throws IOException {
-    validateRPC();
     Bigquery.Jobs.Query queryRequest = bigquery.jobs().query(projectId, content);
     queryRequest
         .getRequestHeaders()
@@ -1975,12 +1959,7 @@ public class HttpBigQueryRpc implements BigQueryRpc {
 
   @InternalApi("internal to java-bigquery")
   public String openSkipExceptionTranslation(Job loadJob) throws IOException {
-    validateRPC();
-    String builder = options.getResolvedApiaryHost("bigquery");
-    if (!builder.endsWith("/")) {
-      builder += "/";
-    }
-    builder += BASE_RESUMABLE_URI + options.getProjectId() + "/jobs";
+    String builder = bigquery.getRootUrl() + BASE_RESUMABLE_URI + options.getProjectId() + "/jobs";
     GenericUrl url = new GenericUrl(builder);
     url.set("uploadType", "resumable");
     JsonFactory jsonFactory = bigquery.getJsonFactory();
@@ -2012,7 +1991,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   public Job writeSkipExceptionTranslation(
       String uploadId, byte[] toWrite, int toWriteOffset, long destOffset, int length, boolean last)
       throws IOException {
-    validateRPC();
     if (length == 0) {
       return null;
     }
@@ -2066,7 +2044,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Policy getIamPolicySkipExceptionTranslation(String resourceId, Map<Option, ?> options)
       throws IOException {
-    validateRPC();
     GetIamPolicyRequest policyRequest = new GetIamPolicyRequest();
     if (null != Option.REQUESTED_POLICY_VERSION.getLong(options)) {
       policyRequest =
@@ -2110,7 +2087,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
   @InternalApi("internal to java-bigquery")
   public Policy setIamPolicySkipExceptionTranslation(
       String resourceId, Policy policy, Map<Option, ?> options) throws IOException {
-    validateRPC();
     SetIamPolicyRequest policyRequest = new SetIamPolicyRequest().setPolicy(policy);
     Bigquery.Tables.SetIamPolicy bqSetRequest =
         bigquery.tables().setIamPolicy(resourceId, policyRequest).setPrettyPrint(false);
@@ -2147,7 +2123,6 @@ public class HttpBigQueryRpc implements BigQueryRpc {
 
   public TestIamPermissionsResponse testIamPermissionsSkipExceptionTranslation(
       String resourceId, List<String> permissions, Map<Option, ?> options) throws IOException {
-    validateRPC();
     TestIamPermissionsRequest permissionsRequest =
         new TestIamPermissionsRequest().setPermissions(permissions);
     Bigquery.Tables.TestIamPermissions bqTestRequest =
