@@ -36,9 +36,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.threeten.bp.Duration;
 
 public class JsonWriterStreamCdc {
 
@@ -117,10 +117,10 @@ public class JsonWriterStreamCdc {
     // * RESOURCE_EXHAUSTED
     RetrySettings retrySettings =
         RetrySettings.newBuilder()
-            .setInitialRetryDelay(Duration.ofMillis(500))
+            .setInitialRetryDelayDuration(Duration.ofMillis(500))
             .setRetryDelayMultiplier(1.1)
             .setMaxAttempts(5)
-            .setMaxRetryDelay(Duration.ofMinutes(1))
+            .setMaxRetryDelayDuration(Duration.ofMinutes(1))
             .build();
     // To use the UPSERT functionality, the table schema needs to be padded with an additional
     // column "_change_type".
@@ -205,16 +205,13 @@ public class JsonWriterStreamCdc {
 
     public void onSuccess(AppendRowsResponse response) {
       synchronized (lock) {
-        if (response.hasError()) {
-          System.out.format("Error: %s\n", response.getError());
-        } else {
-          ++batchCount;
-          System.out.format("Wrote batch %d\n", batchCount);
-        }
+        ++batchCount;
+        System.out.format("Wrote batch %d\n", batchCount);
       }
     }
 
     public void onFailure(Throwable throwable) {
+      // Server-side in-stream errors and RPC errors are delivered to onFailure.
       System.out.format("Error: %s\n", throwable.toString());
     }
   }

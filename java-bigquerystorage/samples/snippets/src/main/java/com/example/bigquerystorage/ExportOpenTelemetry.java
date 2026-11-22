@@ -41,14 +41,15 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.concurrent.GuardedBy;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.threeten.bp.Duration;
 
 public class ExportOpenTelemetry {
 
@@ -92,7 +93,7 @@ public class ExportOpenTelemetry {
 
     // Write two batches of fake data to the stream, each with 10 JSON records.  Data may be
     // batched up to the maximum request size:
-    // https://cloud.google.com/bigquery/quotas#write-api-limits
+    // https://docs.cloud.google.com/bigquery/quotas#write-api-limits
     for (int i = 0; i < 2; i++) {
       JSONArray jsonArr = new JSONArray();
       for (int j = 0; j < 10; j++) {
@@ -144,6 +145,7 @@ public class ExportOpenTelemetry {
     private static final int MAX_RECREATE_COUNT = 3;
 
     private BigQueryWriteClient client;
+    private ScheduledExecutorService executor;
 
     // Track the number of in-flight requests to wait for all responses before shutting down.
     private final Phaser inflightRequestCount = new Phaser(1);
@@ -164,22 +166,22 @@ public class ExportOpenTelemetry {
       // * RESOURCE_EXHAUSTED
       RetrySettings retrySettings =
           RetrySettings.newBuilder()
-              .setInitialRetryDelay(Duration.ofMillis(500))
+              .setInitialRetryDelayDuration(Duration.ofMillis(500))
               .setRetryDelayMultiplier(1.1)
               .setMaxAttempts(5)
-              .setMaxRetryDelay(Duration.ofMinutes(1))
+              .setMaxRetryDelayDuration(Duration.ofMinutes(1))
               .build();
 
       // Use the JSON stream writer to send records in JSON format. Specify the table name to write
       // to the default stream.
       // For more information about JsonStreamWriter, see:
-      // https://googleapis.dev/java/google-cloud-bigquerystorage/latest/com/google/cloud/bigquery/storage/v1/JsonStreamWriter.html
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.JsonStreamWriter
       return JsonStreamWriter.newBuilder(tableName, client)
-          .setExecutorProvider(FixedExecutorProvider.create(Executors.newScheduledThreadPool(10)))
+          .setExecutorProvider(FixedExecutorProvider.create(executor))
           .setChannelProvider(
               BigQueryWriteSettings.defaultGrpcTransportProviderBuilder()
-                  .setKeepAliveTime(org.threeten.bp.Duration.ofMinutes(1))
-                  .setKeepAliveTimeout(org.threeten.bp.Duration.ofMinutes(1))
+                  .setKeepAliveTimeDuration(Duration.ofMinutes(1))
+                  .setKeepAliveTimeoutDuration(Duration.ofMinutes(1))
                   .setKeepAliveWithoutCalls(true)
                   .setChannelsPerCpu(2)
                   .build())
@@ -198,6 +200,7 @@ public class ExportOpenTelemetry {
       // Initialize client without settings, internally within stream writer a new client will be
       // created with full settings.
       client = BigQueryWriteClient.create();
+      executor = Executors.newScheduledThreadPool(10);
 
       streamWriter = createStreamWriter(parentTable.toString());
     }
@@ -218,11 +221,11 @@ public class ExportOpenTelemetry {
       }
       // Append asynchronously for increased throughput.
       ApiFuture<AppendRowsResponse> future = streamWriter.append(appendContext.data);
+      // Increase the count of in-flight requests before registering the callback so a synchronous
+      // completion cannot deregister before registration.
+      inflightRequestCount.register();
       ApiFutures.addCallback(
           future, new AppendCompleteCallback(this, appendContext), MoreExecutors.directExecutor());
-
-      // Increase the count of in-flight requests.
-      inflightRequestCount.register();
     }
 
     public void cleanup() {
@@ -232,6 +235,9 @@ public class ExportOpenTelemetry {
       client.close();
       // Close the connection to the server.
       streamWriter.close();
+      if (executor != null) {
+        executor.shutdown();
+      }
 
       // Verify that no error occurred in the stream.
       synchronized (this.lock) {

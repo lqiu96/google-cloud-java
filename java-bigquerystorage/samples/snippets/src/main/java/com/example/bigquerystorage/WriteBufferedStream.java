@@ -31,10 +31,10 @@ import com.google.cloud.bigquery.storage.v1.WriteStream;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Int64Value;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.threeten.bp.Duration;
 
 public class WriteBufferedStream {
 
@@ -53,7 +53,7 @@ public class WriteBufferedStream {
     try (BigQueryWriteClient client = BigQueryWriteClient.create()) {
       // Initialize a write stream for the specified table.
       // For more information on WriteStream.Type, see:
-      // https://googleapis.dev/java/google-cloud-bigquerystorage/latest/com/google/cloud/bigquery/storage/v1/WriteStream.Type.html
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.WriteStream.Type
       WriteStream stream = WriteStream.newBuilder().setType(WriteStream.Type.BUFFERED).build();
       TableName parentTable = TableName.of(projectId, datasetName, tableName);
       CreateWriteStreamRequest createWriteStreamRequest =
@@ -70,15 +70,15 @@ public class WriteBufferedStream {
       // * RESOURCE_EXHAUSTED
       RetrySettings retrySettings =
           RetrySettings.newBuilder()
-              .setInitialRetryDelay(Duration.ofMillis(500))
+              .setInitialRetryDelayDuration(Duration.ofMillis(500))
               .setRetryDelayMultiplier(1.1)
               .setMaxAttempts(5)
-              .setMaxRetryDelay(Duration.ofMinutes(1))
+              .setMaxRetryDelayDuration(Duration.ofMinutes(1))
               .build();
 
       // Use the JSON stream writer to send records in JSON format.
       // For more information about JsonStreamWriter, see:
-      // https://cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.JsonStreamWriter
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.JsonStreamWriter
       try (JsonStreamWriter writer =
           JsonStreamWriter.newBuilder(writeStream.getName(), writeStream.getTableSchema())
               .setRetrySettings(retrySettings)
