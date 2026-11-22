@@ -65,9 +65,9 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>See the individual methods for example code.
  *
- * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * <p>Many parameters require resource names to be formatted in a particular way. Use the generated
+ * resource-name helper classes (such as {@link ProjectName}, {@link TableName}, and {@link
+ * ReadStreamName}) to format and parse resource names.
  *
  * <p>This class can be customized by passing in a custom instance of BigQueryReadSettings to
  * create(). For example:
@@ -168,8 +168,12 @@ public class BigQueryReadClient implements BackgroundResource {
    * limits are enforced based on the number of pre-filtered rows, so some filters can lead to
    * lopsided assignments.
    *
-   * <p>Read sessions automatically expire 24 hours after they are created and do not require manual
-   * clean-up by the caller.
+   * <p>Read sessions automatically expire 6 hours after they are created and do not require manual
+   * clean-up by the caller. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/reference/storage/rpc/google.cloud.bigquery.storage.v1#google.cloud.bigquery.storage.v1.BigQueryRead.CreateReadSession">CreateReadSession
+   * RPC reference</a> and <a
+   * href="https://docs.cloud.google.com/bigquery/docs/reference/storage#create_a_session">Create a
+   * session</a>.
    *
    * <p>Sample code:
    *
@@ -220,8 +224,12 @@ public class BigQueryReadClient implements BackgroundResource {
    * limits are enforced based on the number of pre-filtered rows, so some filters can lead to
    * lopsided assignments.
    *
-   * <p>Read sessions automatically expire 24 hours after they are created and do not require manual
-   * clean-up by the caller.
+   * <p>Read sessions automatically expire 6 hours after they are created and do not require manual
+   * clean-up by the caller. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/reference/storage/rpc/google.cloud.bigquery.storage.v1#google.cloud.bigquery.storage.v1.BigQueryRead.CreateReadSession">CreateReadSession
+   * RPC reference</a> and <a
+   * href="https://docs.cloud.google.com/bigquery/docs/reference/storage#create_a_session">Create a
+   * session</a>.
    *
    * <p>Sample code:
    *
@@ -279,8 +287,12 @@ public class BigQueryReadClient implements BackgroundResource {
    * limits are enforced based on the number of pre-filtered rows, so some filters can lead to
    * lopsided assignments.
    *
-   * <p>Read sessions automatically expire 24 hours after they are created and do not require manual
-   * clean-up by the caller.
+   * <p>Read sessions automatically expire 6 hours after they are created and do not require manual
+   * clean-up by the caller. See <a
+   * href="https://docs.cloud.google.com/bigquery/docs/reference/storage/rpc/google.cloud.bigquery.storage.v1#google.cloud.bigquery.storage.v1.BigQueryRead.CreateReadSession">CreateReadSession
+   * RPC reference</a> and <a
+   * href="https://docs.cloud.google.com/bigquery/docs/reference/storage#create_a_session">Create a
+   * session</a>.
    *
    * <p>Sample code:
    *
@@ -314,8 +326,10 @@ public class BigQueryReadClient implements BackgroundResource {
 
   /**
    * Reads rows from the stream in the format prescribed by the ReadSession. Each response contains
-   * one or more table rows, up to a maximum of 100 MiB per response; read requests which attempt to
-   * read individual rows larger than 100 MiB will fail.
+   * one or more table rows, up to a maximum of 128 MB per response; read requests which attempt to
+   * read individual rows larger than 128 MB will fail. See the <a
+   * href="https://docs.cloud.google.com/bigquery/docs/reference/storage/rpc/google.cloud.bigquery.storage.v1#google.cloud.bigquery.storage.v1.BigQueryRead.ReadRows">ReadRows
+   * RPC reference</a>.
    *
    * <p>Each request also returns a set of stream statistics reflecting the current state of the
    * stream.

@@ -145,10 +145,12 @@ public final class Exceptions {
   }
 
   /**
-   * Converts a c.g.rpc.Status into a StorageException, if possible. Examines the embedded
-   * StorageError, and potentially returns a {@link StreamFinalizedException} or {@link
-   * SchemaMismatchedException} (both derive from StorageException). If there is no StorageError, or
-   * the StorageError is a different error it will return NULL.
+   * Converts a {@link com.google.rpc.Status} into a {@link StorageException}, if possible. Examines
+   * the embedded {@link StorageError}, and returns a {@link StreamFinalizedException}, {@link
+   * StreamNotFound}, {@link SchemaMismatchedException}, {@link OffsetOutOfRange}, or {@link
+   * OffsetAlreadyExists} (all derive from {@link StorageException}). If there is no {@code
+   * StorageError}, or the {@code StorageError} code is not mapped, this method returns {@code
+   * null}.
    */
   @Nullable
   public static StorageException toStorageException(
@@ -211,10 +213,12 @@ public final class Exceptions {
   }
 
   /**
-   * Converts a Throwable into a StorageException, if possible. Examines the embedded error message,
-   * and potentially returns a {@link StreamFinalizedException} or {@link SchemaMismatchedException}
-   * (both derive from StorageException). If there is no StorageError, or the StorageError is a
-   * different error it will return NULL.
+   * Converts a {@link Throwable} into a {@link StorageException}, if possible. Examines the
+   * embedded {@link StorageError}, and returns a {@link StreamFinalizedException}, {@link
+   * StreamNotFound}, {@link SchemaMismatchedException}, {@link OffsetOutOfRange}, or {@link
+   * OffsetAlreadyExists} (all derive from {@link StorageException}). If there is no {@code
+   * StorageError}, or the {@code StorageError} code is not mapped, this method returns {@code
+   * null}.
    */
   @Nullable
   public static StorageException toStorageException(Throwable exception) {
@@ -344,9 +348,10 @@ public final class Exceptions {
   }
 
   /**
-   * If FlowController.LimitExceededBehavior is set to Block and inflight limit is exceeded, this
-   * exception will be thrown. If it is just a spike, you may retry the request. Otherwise, you can
-   * increase the inflight limit or create more StreamWriter to handle your traffic.
+   * If {@code FlowController.LimitExceededBehavior} is set to {@code ThrowException} and the
+   * inflight limit is exceeded, this exception will be thrown. If it is just a spike, you may retry
+   * the request. Otherwise, you can increase the inflight limit or create more {@link StreamWriter}
+   * instances to handle your traffic.
    */
   public static class InflightLimitExceededException extends StatusRuntimeException {
     private final long currentLimit;

@@ -496,14 +496,11 @@ public class StreamWriter implements AutoCloseable {
    * ApiFuture<AppendRowsResponse> future = writer.append(rows, 0);
    * ApiFutures.addCallback(future, new ApiFutureCallback<AppendRowsResponse>() {
    *   public void onSuccess(AppendRowsResponse response) {
-   *     if (!response.hasError()) {
-   *       System.out.println("written with offset: " + response.getAppendResult().getOffset());
-   *     } else {
-   *       System.out.println("received an in stream error: " + response.getError().toString());
-   *     }
+   *     System.out.println("written with offset: " + response.getAppendResult().getOffset());
    *   }
    *
    *   public void onFailure(Throwable t) {
+   *     // Server-side in-stream errors and RPC errors are delivered to onFailure.
    *     System.out.println("failed to write: " + t);
    *   }
    * }, MoreExecutors.directExecutor());
@@ -530,14 +527,11 @@ public class StreamWriter implements AutoCloseable {
    * ApiFuture<AppendRowsResponse> future = writer.append(recordBatch, 0);
    * ApiFutures.addCallback(future, new ApiFutureCallback<AppendRowsResponse>() {
    *   public void onSuccess(AppendRowsResponse response) {
-   *     if (!response.hasError()) {
-   *       System.out.println("written with offset: " + response.getAppendResult().getOffset());
-   *     } else {
-   *       System.out.println("received an in stream error: " + response.getError().toString());
-   *     }
+   *     System.out.println("written with offset: " + response.getAppendResult().getOffset());
    *   }
    *
    *   public void onFailure(Throwable t) {
+   *     // Server-side in-stream errors and RPC errors are delivered to onFailure.
    *     System.out.println("failed to write: " + t);
    *   }
    * }, MoreExecutors.directExecutor());
@@ -775,10 +769,9 @@ public class StreamWriter implements AutoCloseable {
   }
 
   /**
-   * Sets the maximum time a request is allowed to be waiting in request waiting queue. Under very
-   * low chance, it's possible for append request to be waiting indefintely for request callback
-   * when Google networking SDK does not detect the networking breakage. The default timeout is 15
-   * minutes. We are investigating the root cause for callback not triggered by networking SDK.
+   * Sets the maximum time a request is allowed to wait in the request waiting queue. Under rare
+   * conditions, an append request may wait indefinitely for a callback when the underlying network
+   * layer does not detect a broken connection. The default timeout is 5 minutes.
    */
   public static void setMaxRequestCallbackWaitTime(Duration waitTime) {
     ConnectionWorker.MAXIMUM_REQUEST_CALLBACK_WAIT_TIME = waitTime;

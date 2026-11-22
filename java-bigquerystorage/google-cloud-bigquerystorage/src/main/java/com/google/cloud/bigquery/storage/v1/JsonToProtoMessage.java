@@ -247,8 +247,8 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
    * share the same table schema.
    *
    * @param protoSchema
-   * @param tableSchema bigquery table schema is needed for type conversion of DATETIME, TIME,
-   *     NUMERIC, BIGNUMERIC
+   * @param tableSchema bigquery table schema is needed for type conversion of DATE, DATETIME, TIME,
+   *     TIMESTAMP, NUMERIC, BIGNUMERIC, and RANGE
    * @param json
    * @throws IllegalArgumentException when JSON data is not compatible with proto descriptor.
    */
@@ -270,8 +270,8 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
    * share the same table schema.
    *
    * @param protoSchema
-   * @param tableSchema bigquery table schema is needed for type conversion of DATETIME, TIME,
-   *     NUMERIC, BIGNUMERIC
+   * @param tableSchema bigquery table schema is needed for type conversion of DATE, DATETIME, TIME,
+   *     TIMESTAMP, NUMERIC, BIGNUMERIC, and RANGE
    * @param json
    * @param ignoreUnknownFields allows unknown fields in JSON input to be ignored.
    * @throws IllegalArgumentException when JSON data is not compatible with proto descriptor.
@@ -291,8 +291,8 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
    * Converts Json array to list of protocol buffer messages given the protocol buffer descriptor.
    *
    * @param protoSchema
-   * @param tableSchema bigquery table schema is needed for type conversion of DATETIME, TIME,
-   *     NUMERIC, BIGNUMERIC
+   * @param tableSchema bigquery table schema is needed for type conversion of DATE, DATETIME, TIME,
+   *     TIMESTAMP, NUMERIC, BIGNUMERIC, and RANGE
    * @param jsonArray
    * @param ignoreUnknownFields allows unknown fields in JSON input to be ignored.
    * @throws IllegalArgumentException when JSON data is not compatible with proto descriptor.
