@@ -42,17 +42,17 @@ libraryDependencies += "com.google.cloud" % "google-cloud-logging-logback" % "0.
 
 ## Authentication
 
-See the [Authentication][authentication] section in the base directory's README.
+See [Authenticate with client libraries][authentication] for authentication options.
 
 ## Authorization
 
-The client application making API calls must be granted [authorization scopes][auth-scopes] required for the desired Cloud Logging Logback Appender APIs, and the authenticated principal must have the [IAM role(s)][predefined-iam-roles] required to access GCP resources using the Cloud Logging Logback Appender API calls.
+The client application making API calls must be granted [authorization scopes][auth-scopes] required for the desired Cloud Logging APIs, and the authenticated principal must have the [IAM role(s)][predefined-iam-roles] required to access Google Cloud resources using the Cloud Logging API.
 
 ## Getting Started
 
 ### Prerequisites
 
-You will need a [Google Cloud Platform Console][developer-console] project with the Cloud Logging Logback Appender [API enabled][enable-api].
+You will need a [Google Cloud Platform Console][developer-console] project with the Cloud Logging [API enabled][enable-api].
 
 [Follow these instructions][create-project] to get your project set up. You will also need to set up the local development environment by
 [installing the Google Cloud Command Line Interface][cloud-cli] and running the following commands in command line:
@@ -66,7 +66,7 @@ to add `google-cloud-logging-logback` as a dependency in your code.
 ## About Cloud Logging Logback Appender
 
 
-[Cloud Logging Logback Appender][product-docs] 
+[Cloud Logging Logback Appender][product-docs] integrates [Logback](https://logback.qos.ch/) with Google Cloud Logging so Java applications using SLF4J and Logback can emit log entries to Cloud Logging or as structured JSON to `stdout`.
 
 See the [Cloud Logging Logback Appender client library docs][javadocs] to learn how to
 use this Cloud Logging Logback Appender Client Library.
@@ -74,8 +74,7 @@ use this Cloud Logging Logback Appender Client Library.
 
 ### Usage
 Add the appender to your [Logback configuration](https://logback.qos.ch/manual/configuration.html) `logback.xml`.
-See [Logback filters](https://logback.qos.ch/manual/filters.html#thresholdFilter) for information on filtering log output and
- [encoders](https://logback.qos.ch/manual/encoders.html) for information on formatting.
+See [Logback filters](https://logback.qos.ch/manual/filters.html#thresholdFilter) for information on filtering log output. Note that `LoggingAppender` emits entries as Cloud Logging `JsonPayload` objects and does not support Logback `<encoder>` or `<layout>` elements.
 
 
 ```xml
@@ -115,13 +114,13 @@ See [Logback filters](https://logback.qos.ch/manual/filters.html#thresholdFilter
     <enhancer>com.example.enhancers.AnotherEnhancer</enhancer>
 
     <!-- Optional: specifies if a batch's valid entries should be written even if some other entry failed due to an error. Defaults to true 
-    See [partial_success](https://cloud.google.com/logging/docs/reference/v2/rest/v2/entries/write#body.request_body.FIELDS.partial_success) for more info -->
+    See https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/entries/write#body.request_body.FIELDS.partial_success for more info -->
     <partialSuccess>true</partialSuccess>
 
-    <!-- Optional: In the asynchronous mode the call(s) to Logging API takes place asynchronously and few calls to `write()` 
+    <!-- Optional: In the asynchronous mode the call(s) to Logging API takes place asynchronously and few calls to write() 
     method may be batched together to compose a single call to Logging API. In order to control the batching settings, 
-    the `logbackBatchingSettings` section can be used as shown below.
-    See [BatchingSettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings) 
+    the logbackBatchingSettings section can be used as shown below.
+    See https://docs.cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings 
     for more info regarding parameters shown below -->
     <logbackBatchingSettings>
       <elementCountThreshold>100</elementCountThreshold>
@@ -174,12 +173,12 @@ to combine multiple `write()` calls into a single, more efficient request to the
      <limitExceededBehavior>Ignore</limitExceededBehavior>
    </logbackBatchingSettings> 
 ```
-Here are some explanations for [BatchingSettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings):
+Here are some explanations for [BatchingSettings](https://docs.cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings):
 * `elementCountThreshold`: Triggers a `writeLogEntries` request when the number of batched log entries exceeds this threshold.
 * `requestByteThreshold`: Triggers a `writeLogEntries` request when the total size of batched log entries (in bytes) exceeds this threshold.
 * `delayThreshold`: Triggers a `writeLogEntries` request when the threshold in milliseconds has passed since the first log entry created the batch.
 
-Batching also supports [FlowControl](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.FlowControlSettings), which can be used to 
+Batching also supports [FlowControl](https://docs.cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.FlowControlSettings), which can be used to 
 prevent the batching implementation from accumulating messages without limit, resulting eventually in an OutOfMemory exception. These settings in the configuration controls 
 flow control behavior:
 
@@ -187,18 +186,16 @@ flow control behavior:
 * `maxOutstandingRequestBytes`: When the total size of outstanding `writeLogEntries` requests exceeds this threshold, flow control will be initiated.
 * `limitExceededBehavior`: This value defines what action the appender should take when the configured limits (like `maxOutstandingRequestBytes` or `maxOutstandingElementCount`) are exceeded.
 
-For more information about batching configurations, see [BatchingSettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings).
+For more information about batching configurations, see [BatchingSettings](https://docs.cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings).
 
 ### Populate log entries with metadata
 
 The library provides multiple ways to enrich log entries with additional information.
 You can select one or more ways to customize log entries that will be written into Cloud Logging.
 
-* Manually update a log entry using [`LoggingEnhancer`]
-(https://github.com/googleapis/java-logging/blob/main/google-cloud-logging/src/main/java/com/google/cloud/logging/.
-* Use [`ILoggingEvent`](https://logback.qos.ch/apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html) to update a log entry with [`LoggingEventEnhancer`]
-(https://github.com/googleapis/java-logging-logback/blob/main/src/main/java/com/google/cloud/logging/logback/LoggingEventEnhancer.java).
-* Enable [auto-population](https://github.com/googleapis/java-logging#auto-population-of-log-entrys-metadata) of the `LogEntry` metadata using the `autoPopulateMetadata` configuration flag.
+* Manually update a log entry using [`LoggingEnhancer`](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/google-cloud-logging/src/main/java/com/google/cloud/logging/LoggingEnhancer.java).
+* Use [`ILoggingEvent`](https://logback.qos.ch/apidocs/ch.qos.logback.classic/ch/qos/logback/classic/spi/ILoggingEvent.html) to update a log entry with [`LoggingEventEnhancer`](https://github.com/googleapis/google-cloud-java/blob/main/java-logging-logback/src/main/java/com/google/cloud/logging/logback/LoggingEventEnhancer.java).
+* Enable [auto-population](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/README.md#auto-population-of-log-entrys-metadata) of the `LogEntry` metadata using the `autoPopulateMetadata` configuration flag.
 
 #### Optimize log ingestion
 
@@ -207,30 +204,30 @@ Multiple calls may be aggregated before being sent to improve use of API quota a
 You can set the `writeSynchronicity` configuration flag to `SYNC` if they want to ingest log entries synchronously.
 Note that configuring synchronous ingestion will probably result in performance penalties to your applications.
 If you plan to deploy your application in one of Google Cloud managed environments (e.g. Cloud Run, Cloud Function or App Engine),
-you can leverage the support provided by the implicit logging agent and the [structured logging](https://cloud.google.com/logging/docs/structured-logging) feature.
+you can leverage the support provided by the implicit logging agent and the [structured logging](https://docs.cloud.google.com/logging/docs/structured-logging) feature.
 To use it, set the `redirectToStdout` configuration flag to `true`.
 This flag instructs the appender to print the log entries to `stdout` instead of ingesting them using Logging API.
-The log entries are printed using the [structured logging Json format](https://cloud.google.com/logging/docs/structured-logging#special-payload-fields).
+The log entries are printed using the [structured logging Json format](https://docs.cloud.google.com/logging/docs/structured-logging#special-payload-fields).
 In result, the logging agent will be responsible for ingesting the logs to Logging API.
 Note that using the structured logging Json format you cannot control the log name where the logs will be ingested.
 The logs will be ingested into the project that hosts the environment where your application is running.
 The configuration `logDestinationProjectId` will be ignored.
 
 ### Recommended way to ingest logs in Google Cloud managed environments
-If your application is running on Google Cloud Environments such as Google Kubernetes Engine, App Engine flexible environment, and Cloud Run functions, it is recommended to use [logging agent](https://cloud.google.com/logging/docs/agent)
+If your application is running on Google Cloud Environments such as Google Kubernetes Engine, App Engine flexible environment, and Cloud Run functions, it is recommended to use [logging agent](https://docs.cloud.google.com/logging/docs/agent)
 to send application logs to Cloud Logging. Logging agents send data written to a file, such as `stdout` or a file, as logs to Cloud Logging. Using logging agents and relying on logging files such as `stdout` and `stderr` will
 ensure that application crashes don't break sending logs to your project. It will also reduce complex coding to explicitly handle buffering and retries using client libraries. For a detailed comparison of logging agents and
-client libraries, see [Choosing an agent or client libraries](https://cloud.google.com/logging/docs/agent-or-library#choosing).
+client libraries, see [Choosing an agent or client libraries](https://docs.cloud.google.com/stackdriver/docs/instrumentation/choose-approach).
 
 
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/googleapis/java-logging-logback/tree/main/samples) directory.
+Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-java/tree/main/java-logging-logback/samples) directory.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-| Quickstart | [source code](https://github.com/googleapis/java-logging-logback/blob/main/samples/snippets/src/main/java/com/example/logging/logback/Quickstart.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-logging-logback&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/logback/Quickstart.java) |
-| Example Enhancer | [source code](https://github.com/googleapis/java-logging-logback/blob/main/samples/snippets/src/main/java/com/example/logging/logback/enhancers/ExampleEnhancer.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/java-logging-logback&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/logback/enhancers/ExampleEnhancer.java) |
+| Quickstart | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging-logback/samples/snippets/src/main/java/com/example/logging/logback/Quickstart.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging-logback/samples/snippets/src/main/java/com/example/logging/logback/Quickstart.java) |
+| Example Enhancer | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging-logback/samples/snippets/src/main/java/com/example/logging/logback/enhancers/ExampleEnhancer.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging-logback/samples/snippets/src/main/java/com/example/logging/logback/enhancers/ExampleEnhancer.java) |
 
 
 
@@ -285,7 +282,7 @@ and on [google-cloud-java][g-c-j].
 ## Versioning
 
 
-This library follows [Semantic Versioning](http://semver.org/).
+This library follows [Semantic Versioning](https://semver.org/).
 
 
 It is currently in major version zero (``0.y.z``), which means that anything may change at any time
@@ -310,29 +307,29 @@ Apache 2.0 - See [LICENSE][license] for more information.
 
 Java is a registered trademark of Oracle and/or its affiliates.
 
-[product-docs]: https://cloud.google.com/logging/docs/setup/java#logback_appender_for
-[javadocs]: https://cloud.google.com/java/docs/reference/google-cloud-logging-logback/latest/history
+[product-docs]: https://docs.cloud.google.com/logging/docs/setup/java#logback_appender
+[javadocs]: https://docs.cloud.google.com/java/docs/reference/google-cloud-logging-logback/latest/overview
 [stability-image]: https://img.shields.io/badge/stability-preview-yellow
 [maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-logging-logback.svg
-[maven-version-link]: https://central.sonatype.com/artifact/com.google.cloud/google-cloud-logging-logback/0.131.11-alpha
-[authentication]: https://github.com/googleapis/google-cloud-java#authentication
+[maven-version-link]: https://central.sonatype.com/artifact/com.google.cloud/google-cloud-logging-logback/0.152.0-alpha
+[authentication]: https://docs.cloud.google.com/docs/authentication/client-libraries
 [auth-scopes]: https://developers.google.com/identity/protocols/oauth2/scopes
-[predefined-iam-roles]: https://cloud.google.com/iam/docs/understanding-roles#predefined_roles
-[iam-policy]: https://cloud.google.com/iam/docs/overview#cloud-iam-policy
-[developer-console]: https://console.developers.google.com/
-[create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
+[predefined-iam-roles]: https://docs.cloud.google.com/iam/docs/roles-overview#predefined
+[iam-policy]: https://docs.cloud.google.com/iam/docs/overview#cloud-iam-policy
+[developer-console]: https://console.cloud.google.com/
+[create-project]: https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-cli]: https://cloud.google.com/cli
-[troubleshooting]: https://github.com/googleapis/google-cloud-java/blob/main/TROUBLESHOOTING.md
-[contributing]: https://github.com/googleapis/java-logging-logback/blob/main/CONTRIBUTING.md
-[code-of-conduct]: https://github.com/googleapis/java-logging-logback/blob/main/CODE_OF_CONDUCT.md#contributor-code-of-conduct
-[license]: https://github.com/googleapis/java-logging-logback/blob/main/LICENSE
+[troubleshooting]: https://docs.cloud.google.com/java/docs/troubleshooting
+[contributing]: https://github.com/googleapis/google-cloud-java/blob/main/CONTRIBUTING.md
+[code-of-conduct]: https://github.com/googleapis/google-cloud-java/blob/main/CODE_OF_CONDUCT.md#contributor-code-of-conduct
+[license]: https://github.com/googleapis/google-cloud-java/blob/main/LICENSE
 
 [enable-api]: https://console.cloud.google.com/flows/enableapi?apiid=logging.googleapis.com
 [libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 
 [semver]: https://semver.org/
-[cloudlibs]: https://cloud.google.com/apis/docs/client-libraries-explained
-[apilibs]: https://cloud.google.com/apis/docs/client-libraries-explained#google_api_client_libraries
+[cloudlibs]: https://docs.cloud.google.com/apis/docs/client-libraries-explained
+[apilibs]: https://docs.cloud.google.com/apis/docs/client-libraries-explained#api-client-lib
 [oracle]: https://www.oracle.com/java/technologies/java-se-support-roadmap.html
-[g-c-j]: http://github.com/googleapis/google-cloud-java
+[g-c-j]: https://github.com/googleapis/google-cloud-java
