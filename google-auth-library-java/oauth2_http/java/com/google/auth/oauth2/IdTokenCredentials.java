@@ -41,67 +41,88 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
- * IdTokenCredentials provides a Google Issued OpenIdConnect token. <br>
- * Use an ID token to access services that require presenting an ID token for authentication such as
- * Cloud Functions or Cloud Run.<br>
- * The following Credential subclasses support IDTokens: ServiceAccountCredentials,
- * ComputeEngineCredentials, ImpersonatedCredentials.
+ * IdTokenCredentials provides a Google-issued OpenID Connect (OIDC) ID token.
  *
- * <p>For more information see <br>
- * Usage:<br>
+ * <p>Use an ID token to access services that require presenting an ID token for authentication,
+ * such as Cloud Functions or Cloud Run. The following credential subclasses support ID tokens:
+ * {@link ServiceAccountCredentials}, {@link ComputeEngineCredentials}, and {@link
+ * ImpersonatedCredentials}.
  *
- * <pre>
+ * <p>For more information, see <a
+ * href="https://docs.cloud.google.com/docs/authentication/get-id-token">Get an ID token</a>.
+ *
+ * <p>Usage:
+ *
+ * <pre>{@code
  * String credPath = "/path/to/svc_account.json";
  * String targetAudience = "https://example.com";
  *
  * // For Application Default Credentials (as ServiceAccountCredentials)
  * // export GOOGLE_APPLICATION_CREDENTIALS=/path/to/svc.json
  * GoogleCredentials adcCreds = GoogleCredentials.getApplicationDefault();
- * if (!adcCreds instanceof IdTokenProvider) {
- *   // handle error message
+ * if (!(adcCreds instanceof IdTokenProvider)) {
+ *   throw new IllegalStateException("Credentials do not support ID tokens.");
  * }
  *
- * IdTokenCredentials tokenCredential = IdTokenCredentials.newBuilder()
- *     .setIdTokenProvider(adcCreds)
- *     .setTargetAudience(targetAudience).build();
+ * IdTokenCredentials tokenCredential =
+ *     IdTokenCredentials.newBuilder()
+ *         .setIdTokenProvider((IdTokenProvider) adcCreds)
+ *         .setTargetAudience(targetAudience)
+ *         .build();
  *
- * // for ServiceAccountCredentials
- * ServiceAccountCredentials saCreds = ServiceAccountCredentials.fromStream(new FileInputStream(credPath));
- * saCreds = (ServiceAccountCredentials) saCreds.createScoped(Arrays.asList("https://www.googleapis.com/auth/iam"));
- * IdTokenCredentials tokenCredential = IdTokenCredentials.newBuilder()
- *     .setIdTokenProvider(saCreds)
- *     .setTargetAudience(targetAudience).build();
+ * // For ServiceAccountCredentials
+ * ServiceAccountCredentials saCreds =
+ *     ServiceAccountCredentials.fromStream(new FileInputStream(credPath));
+ * saCreds =
+ *     (ServiceAccountCredentials)
+ *         saCreds.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+ * IdTokenCredentials saTokenCredential =
+ *     IdTokenCredentials.newBuilder()
+ *         .setIdTokenProvider(saCreds)
+ *         .setTargetAudience(targetAudience)
+ *         .build();
  *
- * // for ComputeEngineCredentials
- * ComputeEngineCredentials caCreds = ComputeEngineCredentials.create();
- * IdTokenCredentials tokenCredential = IdTokenCredentials.newBuilder()
- *     .setIdTokenProvider(caCreds)
- *     .setTargetAudience(targetAudience)
- *     .setOptions(Arrays.asList(ComputeEngineCredentials.ID_TOKEN_FORMAT_FULL))
- *     .build();
+ * // For ComputeEngineCredentials
+ * ComputeEngineCredentials ceCreds = ComputeEngineCredentials.create();
+ * IdTokenCredentials ceTokenCredential =
+ *     IdTokenCredentials.newBuilder()
+ *         .setIdTokenProvider(ceCreds)
+ *         .setTargetAudience(targetAudience)
+ *         .setOptions(Arrays.asList(IdTokenProvider.Option.FORMAT_FULL))
+ *         .build();
  *
- * // for ImpersonatedCredentials
- * ImpersonatedCredentials imCreds = ImpersonatedCredentials.create(saCreds,
- *     "impersonated-account@project.iam.gserviceaccount.com", null,
- *     Arrays.asList("https://www.googleapis.com/auth/cloud-platform"), 300);
- * IdTokenCredentials tokenCredential = IdTokenCredentials.newBuilder()
- *     .setIdTokenProvider(imCreds)
- *     .setTargetAudience(targetAudience)
- *     .setOptions(Arrays.asList(ImpersonatedCredentials.INCLUDE_EMAIL))
- *     .build();
+ * // For ImpersonatedCredentials
+ * ImpersonatedCredentials imCreds =
+ *     ImpersonatedCredentials.create(
+ *         saCreds,
+ *         "impersonated-account@project.iam.gserviceaccount.com",
+ *         null,
+ *         Arrays.asList("https://www.googleapis.com/auth/cloud-platform"),
+ *         300);
+ * IdTokenCredentials imTokenCredential =
+ *     IdTokenCredentials.newBuilder()
+ *         .setIdTokenProvider(imCreds)
+ *         .setTargetAudience(targetAudience)
+ *         .setOptions(Arrays.asList(IdTokenProvider.Option.INCLUDE_EMAIL))
+ *         .build();
  *
- * // Use the IdTokenCredential in an authorized transport
+ * // Use the IdTokenCredentials in an authorized transport
  * GenericUrl genericUrl = new GenericUrl("https://example.com");
  * HttpCredentialsAdapter adapter = new HttpCredentialsAdapter(tokenCredential);
  * HttpTransport transport = new NetHttpTransport();
  * HttpRequest request = transport.createRequestFactory(adapter).buildGetRequest(genericUrl);
  * HttpResponse response = request.execute();
  *
- * // Print the token, expiration and the audience
- * System.out.println(tokenCredential.getIdToken().getTokenValue());
- * System.out.println(tokenCredential.getIdToken().getJsonWebSignature().getPayload().getAudienceAsList());
- * System.out.println(tokenCredential.getIdToken().getJsonWebSignature().getPayload().getExpirationTimeSeconds());
- * </pre>
+ * // Print the token value, expiration, and parsed payload claims
+ * tokenCredential.refreshIfExpired();
+ * IdToken idToken = tokenCredential.getIdToken();
+ * System.out.println(idToken.getTokenValue());
+ * System.out.println(idToken.getExpirationTime());
+ * JsonWebSignature jws =
+ *     JsonWebSignature.parse(GsonFactory.getDefaultInstance(), idToken.getTokenValue());
+ * System.out.println(jws.getPayload().getAudienceAsList());
+ * System.out.println(jws.getPayload().getExpirationTimeSeconds());
+ * }</pre>
  */
 @NullMarked
 public class IdTokenCredentials extends OAuth2Credentials {

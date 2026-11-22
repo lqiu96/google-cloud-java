@@ -44,7 +44,7 @@ import org.jspecify.annotations.Nullable;
  * <p>To create and customize claims, use the builder:
  *
  * <pre><code>
- * Claims claims = Claims.newBuilder()
+ * JwtClaims claims = JwtClaims.newBuilder()
  *     .setAudience("https://example.com/some-audience")
  *     .setIssuer("some-issuer@example.com")
  *     .setSubject("some-subject@example.com")
@@ -77,7 +77,7 @@ public abstract class JwtClaims implements Serializable {
   }
 
   /**
-   * Returns a new Claims instance with overridden fields.
+   * Returns a new {@link JwtClaims} instance with overridden fields.
    *
    * <p>Any non-null field will overwrite the value from the original claims instance.
    *
@@ -100,8 +100,9 @@ public abstract class JwtClaims implements Serializable {
   /**
    * Returns whether or not this set of claims is complete.
    *
-   * <p>Audience, issuer, and subject are required to be set in order to use the claim set for a JWT
-   * token. An incomplete Claims instance is useful for overriding claims when using {@link
+   * <p>Audience (or a non-empty {@code scope} additional claim), issuer, and subject are required
+   * to be set in order to use the claim set for a JWT token. An incomplete {@link JwtClaims}
+   * instance is useful for overriding claims when using {@link
    * ServiceAccountJwtAccessCredentials#jwtWithClaims(JwtClaims)} or {@link
    * JwtCredentials#jwtWithClaims(JwtClaims)}.
    *
