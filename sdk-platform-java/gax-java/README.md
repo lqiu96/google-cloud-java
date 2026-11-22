@@ -1,7 +1,7 @@
 Google API Extensions for Java
 ==============================
 
-- [API Documentation](https://cloud.google.com/java/docs/reference/gax/latest/overview.html)
+- [API Documentation](https://docs.cloud.google.com/java/docs/reference/gax/latest/overview)
 
 Google API Extensions for Java (GAX Java) is a library which aids in the
 development of client libraries for server APIs, based on [gRPC](https://grpc.io)
@@ -18,18 +18,19 @@ a high risk of diamond dependency problems, because google-cloud-java uses beta 
 library which can change in breaking ways between versions. See [VERSIONING](#versioning) for
 more information.
 
-> For new and existing Developers/ Contributors:
-> 
-> In December 2022, gax-java's build tool has been migrated from gradle to maven. 
-> Gradle related files are no longer being maintained and will be eventually removed.
-> 
-> The artifact coordinates in Maven Central (`{{ group_id }}:{{ artifact_id }}`) remain the same.
+> For contributors: `gax-java` builds with Maven (with Bazel support). See
+> [DEVELOPMENT.md](./DEVELOPMENT.md) for build instructions. The published Maven Central
+> artifacts are `com.google.api:gax`, `com.google.api:gax-grpc`, and `com.google.api:gax-httpjson`.
 
 Quickstart
 ----------
 
+Most applications should manage GAX versions through `com.google.cloud:libraries-bom` rather than
+declaring direct GAX versions.
+
 [//]: # ({x-version-update-start:gax:released})
-If you are using Maven, add this to your pom.xml file
+If you are using Maven, add the core artifact and your transport artifact (`gax-grpc` and/or
+`gax-httpjson`) to your `pom.xml` file:
 ```xml
 <dependency>
   <groupId>com.google.api</groupId>
@@ -41,24 +42,34 @@ If you are using Maven, add this to your pom.xml file
   <artifactId>gax-grpc</artifactId>
   <version>2.91.0</version>
 </dependency>
+<!-- Optional: for REST (HTTP/JSON) transport -->
+<dependency>
+  <groupId>com.google.api</groupId>
+  <artifactId>gax-httpjson</artifactId>
+  <version>2.91.0</version>
+</dependency>
 ```
 
-If you are using Gradle, add this to your dependencies
+If you are using Gradle, add this to your dependencies:
 
 ```Groovy
-compile 'com.google.api:gax:2.91.0',
-  'com.google.api:gax-grpc:2.91.0'
+implementation 'com.google.api:gax:2.91.0'
+implementation 'com.google.api:gax-grpc:2.91.0'
+// Optional: for REST (HTTP/JSON) transport
+implementation 'com.google.api:gax-httpjson:2.91.0'
 ```
 
-If you are using SBT, add this to your dependencies
+If you are using SBT, add this to your dependencies:
 
 ```Scala
 libraryDependencies += "com.google.api" % "gax" % "2.91.0"
 libraryDependencies += "com.google.api" % "gax-grpc" % "2.91.0"
+// Optional: for REST (HTTP/JSON) transport
+libraryDependencies += "com.google.api" % "gax-httpjson" % "2.91.0"
 ```
 [//]: # ({x-version-update-end})
 
-To find the latest version, see https://search.maven.org/artifact/com.google.api/gax.
+To find the latest version, see https://central.sonatype.com/artifact/com.google.api/gax.
 
 Java Versions
 -------------
@@ -68,9 +79,9 @@ Java 8 or above is required for using this library.
 To build this project, JDK 11 or above is required.
 The build produces Java bytecode targeted for Java 8.
 
-The project uses Gradle to build while it also provides Bazel build.
+The project uses Maven to build and also provides a Bazel build.
 
-If you build this project in Bazel, it requires Bazel 4 and basic UNIX commands
+If you build this project with Bazel, it requires Bazel and basic UNIX commands
 (e.g., `cat`).
 
 Contributing
@@ -83,7 +94,7 @@ See the [CONTRIBUTING] documentation for more information on how to get started.
 Versioning
 ----------
 
-This library follows [Semantic Versioning](http://semver.org/), but with some
+This library follows [Semantic Versioning](https://semver.org/), but with some
 additional qualifications:
 
 1. Components marked with `@BetaApi` are considered to be "0.x" features inside
@@ -133,54 +144,65 @@ or `@InternalExtensionOnly` won't break between minor releases. Anything marked
   considered stable.
 - **Testing** - There are no plans to consider any code in the testlib jar to be stable.
 
-Repository Structure
---------------------
+Module Structure
+----------------
 
-This repository contains the following java packages.
+This module contains the following Java packages:
 
 ### gax
 
 Transport-independent part of GAX for Java.
 The term "transport" in this context usually means the distinction between gRPC or REST.
 Basically all logic, which does not depend explicitly on gRPC or REST goes to this package.
-The examples of such transport-agnostic logic, which is in this package:
-retries, pagination, batching, utilities and core logic.
+Examples of such transport-agnostic logic include retries, pagination, batching, tracing,
+utilities, and core RPC abstractions.
 
-- `com.google.api.gax.batching` - Contains general-purpose batching logic.
-- `com.google.api.gax.core` - Contains core interfaces and classes that are not
-  specific to grpc and could be used in other contexts.
-- `com.google.api.gax.longrunning` - Contains classes related to long running
-  operations.
+- `com.google.api.gax.batching` - Contains general-purpose batching and flow control logic.
+- `com.google.api.gax.core` - Contains core interfaces and classes such as credentials providers,
+  executor providers, and `BackgroundResource`.
+- `com.google.api.gax.logging` - Contains structured logging utilities.
+- `com.google.api.gax.longrunning` - Contains classes related to long-running operations.
+- `com.google.api.gax.nativeimage` - Contains GraalVM Native Image support helpers.
 - `com.google.api.gax.paging` - Contains classes related to list calls that return
   results in pages.
+- `com.google.api.gax.resumable` - Contains resumable upload session interfaces.
 - `com.google.api.gax.retrying` - Contains classes related to retrying API calls.
-- `com.google.api.gax.rpc` - Contains classes related to making RPC calls.
+- `com.google.api.gax.rpc` - Contains classes related to making RPC calls, settings, and call contexts.
+- `com.google.api.gax.rpc.internal` - Internal RPC helper utilities.
+- `com.google.api.gax.rpc.mtls` - Contains mTLS / Certificate-Based Access helpers.
+- `com.google.api.gax.tracing` - Contains tracing and metrics instrumentation (`ApiTracer`,
+  OpenTelemetry, and metrics factories).
+- `com.google.api.gax.util` - Contains internal time-conversion utilities.
 
 ### gax-grpc
 
-This depends on gax module from the above, and has all the gRPC-specific logic,
-which could not go to the gax module because of this dependency on gRPC.
-Basically it has gRPC-specific implementations of the interfaces and abstract classes defined in gax.
+This depends on the `gax` module above and provides gRPC-specific implementations of the
+interfaces and abstract classes defined in `gax`.
 
 - `com.google.api.gax.grpc` - Contains classes that provide functionality on top
-  of gRPC calls.
+  of gRPC calls, channel pooling, and DirectPath.
+- `com.google.api.gax.grpc.nativeimage` - Contains GraalVM Native Image support helpers for gRPC.
 - `com.google.longrunning` - Contains the mix-in client for long-running operations
-  which is implemented by a number of Google APIs.
+  implemented by a number of Google APIs over gRPC.
+- `com.google.longrunning.stub` - Contains the gRPC stub classes for long-running operations.
 
 ### gax-httpjson
 
-This module is very similar to gax-grpc, but depends on REST-specific implementation.
-It enables the generated libraries to communicate with the backend services based on HTTP
-1.1 protocol.
+This module depends on `gax` and provides REST-specific implementations enabling generated
+libraries to communicate with backend services over HTTP/JSON.
 
 - `com.google.api.gax.httpjson` - Contains classes that provide functionality on
-  top of http/json calls.
+  top of HTTP/JSON calls.
+- `com.google.api.gax.httpjson.longrunning` - Contains the mix-in client for long-running
+  operations over HTTP/JSON.
+- `com.google.api.gax.httpjson.longrunning.stub` - Contains the HTTP/JSON stub classes for
+  long-running operations.
 
 License
 -------
 
-BSD - See [LICENSE] for more information.
+BSD 3-Clause - See [LICENSE] for more information.
 
 [CONTRIBUTING]: https://github.com/googleapis/google-cloud-java/blob/main/CONTRIBUTING.md
-[LICENSE]: https://github.com/googleapis/google-cloud-java/blob/main/LICENSE
+[LICENSE]: ./LICENSE
 

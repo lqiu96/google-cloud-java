@@ -1,9 +1,7 @@
 API Common for Java
 ==============================
 
-[![Build Status](https://travis-ci.org/googleapis/api-common-java.svg?branch=main)](https://travis-ci.org/googleapis/api-common-java)
-
-- [Documentation](https://googleapis.dev/java/api-common/latest/index.html)
+- [Documentation](https://docs.cloud.google.com/java/docs/reference/api-common/latest/overview)
 
 API Common for Java is a library for foundational types relating to Google
 APIs. It currently contains the following packages:
@@ -26,23 +24,23 @@ The project uses Maven to build.
 Versioning
 ----------
 
-This library follows [Semantic Versioning](http://semver.org/), but with some
+This library follows [Semantic Versioning](https://semver.org/), but with some
 additional qualifications:
 
 1. Components marked with `@BetaApi` are considered to be "0.x" features inside
-   a "1.x" library. This means they can change between minor and patch releases
+   a "1.x+" library. This means they can change between minor and patch releases
    in incompatible ways. These features should not be used by any library "B"
    that itself has consumers, unless the components of library B that use
    `@BetaApi` features are also marked with `@BetaApi`. Features marked as
-   `@BetaApi` are on a path to eventually become "1.x" features with the marker
+   `@BetaApi` are on a path to eventually become stable features with the marker
    removed.
 1. Components marked with `@InternalApi` are technically public, but are only
    public for technical reasons, because of the limitations of Java's access
    modifiers. For the purposes of semver, they should be considered private.
 
-This library is currently in major version one (``1.y.z``), which means that
+This library is currently in major version two (``2.y.z``), which means that
 any public API not specifically marked as `@BetaApi` or `@InternalApi` can be considered
-stable. They will not change without incrementing the major version to 2.x or later,
+stable. They will not change without incrementing the major version to 3.x or later,
 and probably not then.
 
 License
@@ -65,6 +63,5 @@ mvn fmt:format
 mvn test
 ```
 
-[CONTRIBUTING]: https://github.com/googleapis/google-cloud-java/blob/main/CONTRIBUTING.md
-[LICENSE]: https://github.com/googleapis/google-cloud-java/blob/main/LICENSE
+[LICENSE]: ./LICENSE
 
