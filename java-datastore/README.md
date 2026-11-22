@@ -67,7 +67,7 @@ libraryDependencies += "com.google.cloud" % "google-cloud-datastore" % "3.10.0"
 
 ## Authentication
 
-See the [Authentication][authentication] section in the base directory's README.
+See [Authenticate with client libraries][authentication] for authentication options.
 
 ## Authorization
 
@@ -91,7 +91,11 @@ to add `google-cloud-datastore` as a dependency in your code.
 ## About Cloud Datastore
 
 
-[Cloud Datastore][product-docs] is a fully managed, schemaless database for\nstoring non-relational data. Cloud Datastore automatically scales with\nyour users and supports ACID transactions, high availability of reads and\nwrites, strong consistency for reads and ancestor queries, and eventual\nconsistency for all other queries.
+[Cloud Datastore][product-docs] (Firestore in Datastore mode) is a fully managed,
+schemaless database for storing non-relational data. Cloud Datastore automatically
+scales with your users and supports ACID transactions, high availability of reads
+and writes, and strong consistency by default for reads and queries (with optional
+eventual consistency or stale reads via `ReadOption`).
 
 See the [Cloud Datastore client library docs][javadocs] to learn how to
 use this Cloud Datastore Client Library.
@@ -104,7 +108,7 @@ See the [Datastore client library docs][datastore-client-lib-docs] to learn how 
 with the Cloud Datastore using this Client Library.
 
 #### Creating an authorized service object
-To make authenticated requests to Google Cloud Datastore, you must create a service object with credentials. You can then make API calls by calling methods on the Datastore service object. The simplest way to authenticate is to use [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials). These credentials are automatically inferred from your environment, so you only need the following code to create your service object:
+To make authenticated requests to Google Cloud Datastore, you must create a service object with credentials. You can then make API calls by calling methods on the Datastore service object. The simplest way to authenticate is to use [Application Default Credentials](https://docs.cloud.google.com/docs/authentication/application-default-credentials). These credentials are automatically inferred from your environment, so you only need the following code to create your service object:
 
 ```java
 import com.google.cloud.datastore.Datastore;
@@ -113,7 +117,7 @@ import com.google.cloud.datastore.DatastoreOptions;
 Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 ```
 
-For other authentication options, see the [Authentication](https://github.com/googleapis/google-cloud-java#authentication) page.
+For other authentication options, see the [Authentication](https://docs.cloud.google.com/docs/authentication/client-libraries) page.
 
 #### Storing data
 Objects in Datastore are known as entities. Entities are grouped by "kind" and have keys for easy access. In this code snippet, we will create a new entity representing a person and store that data by the person's email.  First, add the following imports at the top of your file:
@@ -148,7 +152,7 @@ In addition to retrieving entities by their keys, you can perform queries to ret
 the values of their properties. A typical query includes an entity kind, filters to select entities
 with matching values, and sort orders to sequence the results. `google-cloud-datastore` supports two
 types of queries: `StructuredQuery` (that allows you to construct query elements) and `GqlQuery`
-(which operates using [GQL syntax](https://cloud.google.com/datastore/docs/apis/gql/gql_reference))
+(which operates using [GQL syntax](https://docs.cloud.google.com/datastore/docs/reference/gql_reference))
 in string format. In this tutorial, we will use a simple `StructuredQuery`.
 
 Suppose that you've added more people to Datastore, and now you want to find all people whose favorite food is pizza. Import the following:
@@ -174,77 +178,73 @@ while (results.hasNext()) {
 }
 ```
 
-Cloud Datastore relies on indexing to run queries. Indexing is turned on by default for most types of properties. To read more about indexing, see the [Cloud Datastore Index Configuration documentation](https://cloud.google.com/datastore/docs/tools/indexconfig).
+Cloud Datastore relies on indexing to run queries. Indexing is turned on by default for most types of properties. To read more about indexing, see the [Cloud Datastore Index Configuration documentation](https://docs.cloud.google.com/datastore/docs/tools/indexconfig).
 
 #### Updating data
 Another thing you'll probably want to do is update your data. The following snippet shows how to update a Datastore entity if it exists.
 
 ```java
+import com.google.cloud.Timestamp;
+
 KeyFactory keyFactory = datastore.newKeyFactory().setKind("keyKind");
 Key key = keyFactory.newKey("keyName");
 Entity entity = datastore.get(key);
 if (entity != null) {
   System.out.println("Updating access_time for " + entity.getString("name"));
   entity = Entity.newBuilder(entity)
-      .set("access_time", DateTime.now())
+      .set("access_time", Timestamp.now())
       .build();
   datastore.update(entity);
 }
 ```
 
-The complete source code can be found at
-[UpdateEntity.java](https://github.com/googleapis/google-cloud-java/blob/2c1850d4f82f3fbd7b4a50582384c008085aa1a8/google-cloud-examples/src/main/java/com/google/cloud/examples/datastore/snippets/UpdateEntity.java).
+For a complete example of creating, updating, deleting, and querying entities, see
+[TaskList.java](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/google/datastore/snippets/TaskList.java).
 
 #### Complete source code
 
-In
-[AddEntitiesAndRunQuery.java](https://github.com/googleapis/google-cloud-java/blob/2c1850d4f82f3fbd7b4a50582384c008085aa1a8/google-cloud-examples/src/main/java/com/google/cloud/examples/datastore/snippets/AddEntitiesAndRunQuery.java)
-we put together all the code to store data and run queries into one program. The program assumes that you are
-running on Compute Engine or from your own desktop. To run the example on App Engine, simply move
-the code from the main method to your application's servlet class and change the print statements to
-display on your webpage.
+See [QuickstartSample.java](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/QuickstartSample.java)
+and the other runnable samples in the [`samples/`](https://github.com/googleapis/google-cloud-java/tree/main/java-datastore/samples) directory.
 
 gRPC Java Datastore Client User Guide
 -------
-The [Java Datastore client](https://github.com/googleapis/java-datastore) now offers gRPC as a transport layer option with experimental support. Using [gRPC connection pooling](https://grpc.io/docs/guides/performance/) enables distributing RPCs over multiple connections which may improve performance.
-
-#### Installation Instructions
-To use this feature, please upgrade your Java-datastore SDK to version v2.28.0 or a newer release. You can find the latest versions [here](https://github.com/googleapis/java-datastore/releases).
+Starting in `google-cloud-datastore` 3.x, the [Java Datastore client](https://github.com/googleapis/google-cloud-java/tree/main/java-datastore) uses gRPC as its default transport layer (with HTTP/JSON still available as an option). Using [gRPC connection pooling](https://grpc.io/docs/guides/performance/) enables distributing RPCs over multiple connections which may improve performance. See the [Java gRPC client guide](https://docs.cloud.google.com/datastore/docs/java-client-grpc) for details.
 
 #### How to Use
-To opt-in to the gRPC transport behavior, simply add the below line of code (`setTransportOptions`) to your Datastore client instantiation.
+By default, `DatastoreOptions` uses gRPC transport without needing to call `setTransportOptions`:
+
+Example:
+```java
+// Defaults to gRPC transport in 3.x
+DatastoreOptions datastoreOptions =
+    DatastoreOptions.newBuilder()
+        .setProjectId("my-project")
+        .setDatabaseId("my-database")
+        .build();
+
+// Or explicitly configure GrpcTransportOptions
+DatastoreOptions explicitGrpcOptions =
+    DatastoreOptions.newBuilder()
+        .setProjectId("my-project")
+        .setDatabaseId("my-database")
+        .setTransportOptions((TransportOptions) GrpcTransportOptions.newBuilder().build())
+        .build();
+```
+
+To opt into HTTP/JSON transport instead of gRPC, explicitly configure `HttpTransportOptions` via `setTransportOptions`:
 
 Example:
 ```java
 DatastoreOptions datastoreOptions =
-     DatastoreOptions.newBuilder()
-             .setProjectId("my-project")
-             .setDatabaseId("my-database")
-             .setTransportOptions(GrpcTransportOptions.newBuilder().build())
-             .build();
+    DatastoreOptions.newBuilder()
+        .setProjectId("my-project")
+        .setDatabaseId("my-database")
+        .setTransportOptions(
+            HttpTransportOptions.newBuilder()
+                .setConnectTimeout(1000)
+                .build())
+        .build();
 ```
-Setting the transport options explicitly to `GrpcTransportOptions` will signal the client to use gRPC instead of HTTP when making calls to the server.
-
-To revert back to the existing stable behavior and transport, simply remove the transport options line or replace it with `HttpTransportOptions`. Please note this will require an application rebuild and restart.
-Example:
-```java
-// will default to existing HTTP transport behavior
-DatastoreOptions datastoreOptions = DatastoreOptions.newBuilder()
-    .setProjectId("my-project")
-    .setDatabaseId("my-database")
-    .build();
-
-// will also default to existing HTTP transport behavior
-DatastoreOptions datastoreOptions =
-            DatastoreOptions.newBuilder()
-              .setProjectId("my-project")
-              .setDatabaseId("my-database")
-              .setTransportOptions(HttpTransportOptions.newBuilder()
-              .setConnectTimeout(1000)
-              .build()).build();
-```
-
-Note: client instantiations that already use `setTransportOptions` with `HttpTransportOptions` will continue to have the same behavior. Only transports that are explicitly set to gRPC will change.
 
 #### Verify Datastore Transport Options Type
 To verify which type of TransportOptions you have successfully configured, you can use the below lines of code to compare transport options type:
@@ -253,14 +253,13 @@ To verify which type of TransportOptions you have successfully configured, you c
 boolean isGRPC = datastore.getOptions().getTransportOptions() instanceof GrpcTransportOptions;
 
 // checks if using HTTP transport options
-boolean isHTTP = datastore.getOptions().getTransportOptions() instanceof HTTPTransportOptions;
+boolean isHTTP = datastore.getOptions().getTransportOptions() instanceof HttpTransportOptions;
 ```
 
-#### New Features
-There are new gRPC specific features available to use in this update.
+#### gRPC Features
 
 ##### Connection Pool
-A connection pool, also known as a channel pool, is a cache of database connections that are shared and reused to improve connection latency and performance. With this update, now you will be able to configure the channel pool to improve application performance. This section guides you in determining the optimal connection pool size and configuring it within the Java datastore client.
+A connection pool, also known as a channel pool, is a cache of database connections that are shared and reused to improve connection latency and performance. You can configure the channel pool size on the gRPC transport to optimize application performance. This section guides you in determining the optimal connection pool size and configuring it within the Java Datastore client.
 To customize the number of channels your client uses, you can update the channel provider in the DatastoreOptions.
 ###### Determine the best connection pool size
 The default connection pool size is right for most applications, and in most cases there's no need to change it.
@@ -294,24 +293,26 @@ It is also important to monitor your traffic after making changes and adjust the
 
 ###### Set the pool size
 The following code sample demonstrates how to configure the channel pool in the client libraries using `DatastoreOptions`.
-See [ChannelPoolSettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.grpc.ChannelPoolSettings) and [Performance Best Practices](https://grpc.io/docs/guides/performance/) for more information on channel pools and best practices for performance.
+See [ChannelPoolSettings](https://docs.cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.grpc.ChannelPoolSettings) and [Performance Best Practices](https://grpc.io/docs/guides/performance/) for more information on channel pools and best practices for performance.
 
 Code Example
 ```java
 InstantiatingGrpcChannelProvider channelProvider =
-      DatastoreSettings.defaultGrpcTransportProviderBuilder()
-              .setChannelPoolSettings(
-                     ChannelPoolSettings.builder()
-                              .setInitialChannelCount(MIN_VAL)
-                              .setMaxChannelCount(MAX_VAL)
-                              .build())
-              .build();
+    DatastoreSettings.defaultGrpcTransportProviderBuilder()
+        .setChannelPoolSettings(
+            ChannelPoolSettings.builder()
+                .setMinChannelCount(10)
+                .setInitialChannelCount(10)
+                .setMaxChannelCount(50)
+                .build())
+        .build();
 
-DatastoreOptions options = DatastoreOptions.newBuilder()
-                          .setProjectId("my-project")
-                          .setChannelProvider(channelProvider)
-                          .setTransportOptions(GrpcTransportOptions.newBuilder().build())
-                          .build();
+DatastoreOptions options =
+    DatastoreOptions.newBuilder()
+        .setProjectId("my-project")
+        .setChannelProvider(channelProvider)
+        .setTransportOptions((TransportOptions) GrpcTransportOptions.newBuilder().build())
+        .build();
 ```
 Testing
 -------
@@ -322,9 +323,9 @@ This library has tools to help write tests for code that uses the Datastore.
 
 You can test against a temporary local Datastore by following these steps:
 
-1. [Install Cloud SDK and start the emulator](https://cloud.google.com/datastore/docs/tools/datastore-emulator)
+1. [Install Cloud SDK and start the emulator](https://docs.cloud.google.com/datastore/docs/tools/datastore-emulator)
 
-To determine which host/port the emulator is running on:
+2. To determine which host/port the emulator is running on:
 
 ```
 $ gcloud beta emulators datastore env-init
@@ -350,47 +351,44 @@ Example Applications
 --------------------
 - [`Bookshelf`](https://github.com/GoogleCloudPlatform/getting-started-java/tree/main/bookshelf) - An App Engine app that manages a virtual bookshelf.
   - This app uses `google-cloud` to interface with Cloud Datastore and Cloud Storage. It also uses Cloud SQL, another Google Cloud Platform service.
-- [`Flexible Environment/Datastore example`](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/flexible/datastore) - A simple app that uses Cloud Datastore to list the last 10 IP addresses that visited your site.
-- [`SparkDemo`](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/flexible/sparkjava) - An example of using `google-cloud-datastore` from within the SparkJava and App Engine Flexible Environment frameworks.
-  - Read about how it works on the example's [README page](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/flexible/sparkjava#how-does-it-work).
 
 
 
 
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-java/tree/main/samples) directory.
+Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-java/tree/main/java-datastore/samples) directory.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-| Configure Connection Pool | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/ConfigureConnectionPool.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/ConfigureConnectionPool.java) |
-| Datastore Metrics Sample | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/DatastoreMetricsSample.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/DatastoreMetricsSample.java) |
-| Quickstart Sample | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/QuickstartSample.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/QuickstartSample.java) |
-| Avg Aggregation On Kind | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationOnKind.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationOnKind.java) |
-| Avg Aggregation With Limit | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithLimit.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithLimit.java) |
-| Avg Aggregation With Order By | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithOrderBy.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithOrderBy.java) |
-| Avg Aggregation With Property Filter | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithPropertyFilter.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithPropertyFilter.java) |
-| Count Aggregation In Transaction | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationInTransaction.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationInTransaction.java) |
-| Count Aggregation On Kind | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationOnKind.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationOnKind.java) |
-| Count Aggregation With Gql Query | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithGqlQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithGqlQuery.java) |
-| Count Aggregation With Limit | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithLimit.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithLimit.java) |
-| Count Aggregation With Order By | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithOrderBy.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithOrderBy.java) |
-| Count Aggregation With Property Filter | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithPropertyFilter.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithPropertyFilter.java) |
-| Count Aggregation With Stale Read | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithStaleRead.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithStaleRead.java) |
-| Multiple Aggregations In Gql Query | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/MultipleAggregationsInGqlQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/MultipleAggregationsInGqlQuery.java) |
-| Multiple Aggregations In Structured Query | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/MultipleAggregationsInStructuredQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/MultipleAggregationsInStructuredQuery.java) |
-| Sum Aggregation On Kind | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationOnKind.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationOnKind.java) |
-| Sum Aggregation With Limit | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithLimit.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithLimit.java) |
-| Sum Aggregation With Order By | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithOrderBy.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithOrderBy.java) |
-| Sum Aggregation With Property Filter | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithPropertyFilter.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithPropertyFilter.java) |
-| Queries with indexing considerations | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/filters/IndexingConsiderationQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/filters/IndexingConsiderationQuery.java) |
-| Create a union between two filters | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/filters/OrFilterQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/filters/OrFilterQuery.java) |
-| Queries with order fileds | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/filters/OrderFieldsQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/filters/OrderFieldsQuery.java) |
-| Query Profile Explain | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplain.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplain.java) |
-| Query Profile Explain Aggregation | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAggregation.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAggregation.java) |
-| Query Profile Explain Analyze | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAnalyze.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAnalyze.java) |
-| Query Profile Explain Analyze Aggregation | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAnalyzeAggregation.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAnalyzeAggregation.java) |
-| Task List | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/google/datastore/snippets/TaskList.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/google/datastore/snippets/TaskList.java) |
+| Configure Connection Pool | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/ConfigureConnectionPool.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/ConfigureConnectionPool.java) |
+| Datastore Metrics Sample | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/DatastoreMetricsSample.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/DatastoreMetricsSample.java) |
+| Quickstart Sample | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/QuickstartSample.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/QuickstartSample.java) |
+| Avg Aggregation On Kind | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationOnKind.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationOnKind.java) |
+| Avg Aggregation With Limit | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithLimit.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithLimit.java) |
+| Avg Aggregation With Order By | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithOrderBy.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithOrderBy.java) |
+| Avg Aggregation With Property Filter | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithPropertyFilter.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/AvgAggregationWithPropertyFilter.java) |
+| Count Aggregation In Transaction | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationInTransaction.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationInTransaction.java) |
+| Count Aggregation On Kind | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationOnKind.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationOnKind.java) |
+| Count Aggregation With Gql Query | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithGqlQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithGqlQuery.java) |
+| Count Aggregation With Limit | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithLimit.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithLimit.java) |
+| Count Aggregation With Order By | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithOrderBy.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithOrderBy.java) |
+| Count Aggregation With Property Filter | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithPropertyFilter.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithPropertyFilter.java) |
+| Count Aggregation With Stale Read | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithStaleRead.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/CountAggregationWithStaleRead.java) |
+| Multiple Aggregations In Gql Query | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/MultipleAggregationsInGqlQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/MultipleAggregationsInGqlQuery.java) |
+| Multiple Aggregations In Structured Query | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/MultipleAggregationsInStructuredQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/MultipleAggregationsInStructuredQuery.java) |
+| Sum Aggregation On Kind | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationOnKind.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationOnKind.java) |
+| Sum Aggregation With Limit | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithLimit.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithLimit.java) |
+| Sum Aggregation With Order By | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithOrderBy.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithOrderBy.java) |
+| Sum Aggregation With Property Filter | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithPropertyFilter.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/aggregation/SumAggregationWithPropertyFilter.java) |
+| Queries with indexing considerations | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/filters/IndexingConsiderationQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/filters/IndexingConsiderationQuery.java) |
+| Create a union between two filters | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/filters/OrFilterQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/filters/OrFilterQuery.java) |
+| Queries with order fields | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/filters/OrderFieldsQuery.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/filters/OrderFieldsQuery.java) |
+| Query Profile Explain | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplain.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplain.java) |
+| Query Profile Explain Aggregation | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAggregation.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAggregation.java) |
+| Query Profile Explain Analyze | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAnalyze.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAnalyze.java) |
+| Query Profile Explain Analyze Aggregation | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAnalyzeAggregation.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/example/datastore/queryprofile/QueryProfileExplainAnalyzeAggregation.java) |
+| Task List | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-datastore/samples/snippets/src/main/java/com/google/datastore/snippets/TaskList.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-datastore/samples/snippets/src/main/java/com/google/datastore/snippets/TaskList.java) |
 
 
 
@@ -447,7 +445,7 @@ the individual GitHub repository `github.com/GoogleAPIs/java-SERVICENAME`
 and on [google-cloud-java][g-c-j].
 
 ## Versioning
-This library follows [Semantic Versioning](http://semver.org/).
+This library follows [Semantic Versioning](https://semver.org/).
 
 
 
@@ -469,29 +467,31 @@ Apache 2.0 - See [LICENSE][license] for more information.
 
 Java is a registered trademark of Oracle and/or its affiliates.
 
-[product-docs]: https://cloud.google.com/datastore
-[javadocs]: https://cloud.google.com/java/docs/reference/google-cloud-datastore/latest/history
+[product-docs]: https://docs.cloud.google.com/datastore/docs
+[javadocs]: https://docs.cloud.google.com/java/docs/reference/google-cloud-datastore/latest/overview
+[cloud-datastore-activation]: https://docs.cloud.google.com/datastore/docs/activate
+[datastore-client-lib-docs]: https://docs.cloud.google.com/datastore/docs/reference/libraries
 [stability-image]: https://img.shields.io/badge/stability-stable-green
 [maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-datastore.svg
 [maven-version-link]: https://central.sonatype.com/artifact/com.google.cloud/google-cloud-datastore/3.10.0
-[authentication]: https://github.com/googleapis/google-cloud-java#authentication
+[authentication]: https://docs.cloud.google.com/docs/authentication/client-libraries
 [auth-scopes]: https://developers.google.com/identity/protocols/oauth2/scopes
-[predefined-iam-roles]: https://cloud.google.com/iam/docs/understanding-roles#predefined_roles
-[iam-policy]: https://cloud.google.com/iam/docs/overview#cloud-iam-policy
-[developer-console]: https://console.developers.google.com/
-[create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
+[predefined-iam-roles]: https://docs.cloud.google.com/iam/docs/roles-overview#predefined
+[iam-policy]: https://docs.cloud.google.com/iam/docs/overview#cloud-iam-policy
+[developer-console]: https://console.cloud.google.com/
+[create-project]: https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-cli]: https://cloud.google.com/cli
-[troubleshooting]: https://github.com/googleapis/google-cloud-java/blob/main/TROUBLESHOOTING.md
+[troubleshooting]: https://docs.cloud.google.com/java/docs/troubleshooting
 [contributing]: https://github.com/googleapis/google-cloud-java/blob/main/CONTRIBUTING.md
 [code-of-conduct]: https://github.com/googleapis/google-cloud-java/blob/main/CODE_OF_CONDUCT.md#contributor-code-of-conduct
 [license]: https://github.com/googleapis/google-cloud-java/blob/main/LICENSE
-[enable-billing]: https://cloud.google.com/apis/docs/getting-started#enabling_billing
+[enable-billing]: https://docs.cloud.google.com/apis/docs/getting-started#enabling_billing
 [enable-api]: https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com
 [libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 
 [semver]: https://semver.org/
-[cloudlibs]: https://cloud.google.com/apis/docs/client-libraries-explained
-[apilibs]: https://cloud.google.com/apis/docs/client-libraries-explained#google_api_client_libraries
+[cloudlibs]: https://docs.cloud.google.com/apis/docs/client-libraries-explained
+[apilibs]: https://docs.cloud.google.com/apis/docs/client-libraries-explained#api-client-lib
 [oracle]: https://www.oracle.com/java/technologies/java-se-support-roadmap.html
-[g-c-j]: http://github.com/googleapis/google-cloud-java
+[g-c-j]: https://github.com/googleapis/google-cloud-java
