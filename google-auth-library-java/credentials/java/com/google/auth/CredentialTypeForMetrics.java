@@ -42,8 +42,6 @@ import org.jspecify.annotations.NullMarked;
  * <p>Credentials with type {@code CredentialTypeForMetrics.DO_NOT_SEND} is default value for
  * credential implementations that do not set type specifically. It is not expected to send metrics.
  *
- * <p>
- *
  * @see #getLabel()
  */
 @NullMarked

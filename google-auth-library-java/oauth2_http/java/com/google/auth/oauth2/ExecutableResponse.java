@@ -109,8 +109,8 @@ class ExecutableResponse {
   }
 
   /**
-   * Returns the version of the executable output. Only version `1` is currently supported. This is
-   * useful for future changes to the expected output format.
+   * Returns the version of the executable output. Only version {@code 1} is currently supported.
+   * This is useful for future changes to the expected output format.
    *
    * @return The version of the JSON output.
    */
@@ -125,7 +125,7 @@ class ExecutableResponse {
    * operation. When this is false, the response should contain an additional error code and
    * message.
    *
-   * @return Whether the `success` field in the executable response is true.
+   * @return Whether the {@code success} field in the executable response is true.
    */
   boolean isSuccessful() {
     return this.success;

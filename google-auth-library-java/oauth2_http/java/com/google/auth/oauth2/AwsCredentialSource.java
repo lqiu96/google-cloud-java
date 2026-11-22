@@ -50,18 +50,18 @@ public class AwsCredentialSource extends ExternalAccountCredentials.CredentialSo
   final @Nullable String imdsv2SessionTokenUrl;
 
   /**
-   * The source of the AWS credential. The credential source map must contain the
-   * `regional_cred_verification_url` field.
+   * The source of the AWS credential. The credential source map must contain the {@code
+   * regional_cred_verification_url} field.
    *
-   * <p>The `regional_cred_verification_url` is the regional GetCallerIdentity action URL, used to
-   * determine the account ID and its roles.
+   * <p>The {@code regional_cred_verification_url} is the regional GetCallerIdentity action URL,
+   * used to determine the account ID and its roles.
    *
-   * <p>The `environment_id` is the environment identifier, in the format “aws${version}”. This
-   * indicates whether breaking changes were introduced to the underlying AWS implementation.
+   * <p>The {@code environment_id} is the environment identifier, in the format “aws${version}”.
+   * This indicates whether breaking changes were introduced to the underlying AWS implementation.
    *
-   * <p>The `region_url` identifies the targeted region. Optional.
+   * <p>The {@code region_url} identifies the targeted region. Optional.
    *
-   * <p>The `url` locates the metadata server used to retrieve the AWS credentials. Optional.
+   * <p>The {@code url} locates the metadata server used to retrieve the AWS credentials. Optional.
    */
   public AwsCredentialSource(Map<String, Object> credentialSourceMap) {
     super(credentialSourceMap);

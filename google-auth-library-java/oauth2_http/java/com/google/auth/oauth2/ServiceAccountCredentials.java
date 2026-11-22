@@ -458,8 +458,8 @@ public class ServiceAccountCredentials extends GoogleCredentials
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @return the credential defined by the credentialsStream.
@@ -478,8 +478,8 @@ public class ServiceAccountCredentials extends GoogleCredentials
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @param transportFactory HTTP transport factory, creates the transport used to get access
@@ -651,7 +651,7 @@ public class ServiceAccountCredentials extends GoogleCredentials
    * <p>This flow works as follows:
    *
    * <ol>
-   *   <li>Create a self-signed jwt with `https://www.googleapis.com/auth/iam` as the scope.
+   *   <li>Create a self-signed jwt with {@code https://www.googleapis.com/auth/iam} as the scope.
    *   <li>Use the self-signed jwt as the access token, and make a POST request to IAM
    *       generateIdToken endpoint.
    *   <li>If the request is successfully, it will return {"token":"the ID token"}. Extract the ID

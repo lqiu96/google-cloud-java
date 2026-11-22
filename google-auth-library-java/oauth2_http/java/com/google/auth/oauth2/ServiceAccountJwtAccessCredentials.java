@@ -126,6 +126,7 @@ public class ServiceAccountJwtAccessCredentials extends Credentials
    * @param privateKey RSA private key object for the service account.
    * @param privateKeyId Private key identifier for the service account. May be null.
    * @param defaultAudience Audience to use if not provided by transport. May be null.
+   * @param quotaProjectId Quota project ID for billing and quota purposes. May be null.
    * @param universeDomain universe domain in the format some-domain.xyz. By default, sets it to
    *     googleapis.com
    */
@@ -570,8 +571,8 @@ public class ServiceAccountJwtAccessCredentials extends Credentials
       return this;
     }
 
-    @CanIgnoreReturnValue
     /** Sets the universe domain (example, googleapis.com). */
+    @CanIgnoreReturnValue
     public Builder setUniverseDomain(String universeDomain) {
       this.universeDomain = universeDomain;
       return this;
