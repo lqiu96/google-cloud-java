@@ -35,8 +35,9 @@ import java.util.logging.Logger;
 
 /**
  * Converts a BQ table schema to protobuf descriptor. All field names will be converted to lowercase
- * when constructing the protobuf descriptor. The mapping between field types and field modes are
- * shown in the ImmutableMaps below.
+ * when constructing the protobuf descriptor. BigQuery {@code NULLABLE}, {@code REPEATED}, and
+ * {@code REQUIRED} modes map to protobuf {@code OPTIONAL}, {@code REPEATED}, and {@code REQUIRED}
+ * labels, and BigQuery field types map to their corresponding protobuf wire types.
  */
 public class BQTableSchemaToProtoDescriptor {
 
@@ -71,10 +72,12 @@ public class BQTableSchemaToProtoDescriptor {
               .build();
 
   /**
-   * Converts TableFieldSchema to a Descriptors.Descriptor object.
+   * Converts a {@link TableSchema} to a {@link Descriptors.Descriptor} object.
    *
-   * @param BQTableSchema
-   * @throws Descriptors.DescriptorValidationException
+   * @param BQTableSchema the BigQuery table schema to convert
+   * @return the generated protobuf {@link Descriptor}
+   * @throws Descriptors.DescriptorValidationException if the generated protobuf descriptor is
+   *     invalid
    */
   public static Descriptor convertBQTableSchemaToProtoDescriptor(TableSchema BQTableSchema)
       throws Descriptors.DescriptorValidationException {
@@ -84,13 +87,14 @@ public class BQTableSchemaToProtoDescriptor {
   }
 
   /**
-   * Converts a TableFieldSchema to a Descriptors.Descriptor object.
+   * Converts a {@link TableSchema} to a {@link Descriptors.Descriptor} object.
    *
-   * @param BQTableSchema
+   * @param BQTableSchema the BigQuery table schema to convert
    * @param scope Keeps track of current scope to prevent repeated naming while constructing
    *     descriptor.
    * @param dependencyMap Stores already constructed descriptors to prevent reconstruction
-   * @throws Descriptors.DescriptorValidationException
+   * @throws Descriptors.DescriptorValidationException if the generated protobuf descriptor is
+   *     invalid
    */
   private static Descriptor convertBQTableSchemaToProtoDescriptorImpl(
       TableSchema BQTableSchema,

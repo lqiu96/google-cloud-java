@@ -24,8 +24,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.api.core.ObsoleteApi;
 
 /**
- * Ported from ZetaSQL CivilTimeEncoder Original code can be found at:
- * https://github.com/google/zetasql/blob/master/java/com/google/zetasql/CivilTimeEncoder.java
+ * Ported from GoogleSQL (formerly ZetaSQL) CivilTimeEncoder. Original code can be found at:
+ * https://github.com/google/googlesql/blob/master/java/com/google/googlesql/CivilTimeEncoder.java
  * Encoder for TIME and DATETIME values, according to civil_time encoding.
  *
  * <p>The valid range and number of bits required by each date/time field is as the following:
@@ -101,7 +101,7 @@ public final class CivilTimeEncoder {
   }
 
   /**
-   * Decodes {@code bitFieldTimeSeconds} as a {@link LocalTime} with seconds precision.
+   * Decodes {@code bitFieldTimeSeconds} as a {@link java.time.LocalTime} with seconds precision.
    *
    * <p>Encoding is as the following:
    *
@@ -111,7 +111,7 @@ public final class CivilTimeEncoder {
    *                    | H ||  M ||  S |
    * </pre>
    *
-   * @see #encodePacked32TimeSeconds(LocalTime)
+   * @see #encodePacked32TimeSeconds(java.time.LocalTime)
    */
   @SuppressWarnings("GoodTime-ApiWithNumericTimeUnit")
   private static java.time.LocalTime decodePacked32TimeSeconds(int bitFieldTimeSeconds) {
@@ -147,8 +147,7 @@ public final class CivilTimeEncoder {
    *                                | H ||  M ||  S ||-------micros-----|
    * </pre>
    *
-   * @see #decodePacked64TimeMicros(long)
-   * @see #encodePacked64TimeMicros(LocalTime)
+   * @see #decodePacked64TimeMicrosLocalTime(long)
    */
   @SuppressWarnings("GoodTime")
   public static long encodePacked64TimeMicrosLocalTime(java.time.LocalTime time) {
@@ -175,7 +174,7 @@ public final class CivilTimeEncoder {
    *                                | H ||  M ||  S ||-------micros-----|
    * </pre>
    *
-   * @see #encodePacked64TimeMicros(LocalTime)
+   * @see #encodePacked64TimeMicrosLocalTime(java.time.LocalTime)
    */
   @SuppressWarnings("GoodTime-ApiWithNumericTimeUnit")
   public static java.time.LocalTime decodePacked64TimeMicrosLocalTime(long bitFieldTimeMicros) {
@@ -214,17 +213,18 @@ public final class CivilTimeEncoder {
   }
 
   /**
-   * Decodes {@code bitFieldDatetimeSeconds} as a {@link LocalDateTime} with seconds precision.
+   * Decodes {@code bitFieldDatetimeSeconds} as a {@link java.time.LocalDateTime} with seconds
+   * precision.
    *
    * <p>Encoding is as the following:
    *
    * <pre>
    *        6         5         4         3         2         1
-   * MSB 3210987654321098765432109876543210987654321098765432109876543210 LSBa
+   * MSB 3210987654321098765432109876543210987654321098765432109876543210 LSB
    *                             |--- year ---||m || D || H ||  M ||  S |
    * </pre>
    *
-   * @see #encodePacked64DatetimeSeconds(LocalDateTime)
+   * @see #encodePacked64DatetimeSeconds(java.time.LocalDateTime)
    */
   @SuppressWarnings("GoodTime-ApiWithNumericTimeUnit")
   private static java.time.LocalDateTime decodePacked64DatetimeSeconds(
@@ -272,7 +272,7 @@ public final class CivilTimeEncoder {
    *         |--- year ---||m || D || H ||  M ||  S ||-------micros-----|
    * </pre>
    *
-   * @see #decodePacked64DatetimeMicros(long)
+   * @see #decodePacked64DatetimeMicrosLocalDateTime(long)
    */
   @SuppressWarnings({"GoodTime-ApiWithNumericTimeUnit", "JavaLocalDateTimeGetNano"})
   public static long encodePacked64DatetimeMicrosLocalDateTime(java.time.LocalDateTime dateTime) {
@@ -304,7 +304,7 @@ public final class CivilTimeEncoder {
    *         |--- year ---||m || D || H ||  M ||  S ||-------micros-----|
    * </pre>
    *
-   * @see #encodePacked64DatetimeMicros(LocalDateTime)
+   * @see #encodePacked64DatetimeMicrosLocalDateTime(java.time.LocalDateTime)
    */
   @SuppressWarnings("GoodTime-ApiWithNumericTimeUnit")
   public static java.time.LocalDateTime decodePacked64DatetimeMicrosLocalDateTime(

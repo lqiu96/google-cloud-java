@@ -116,7 +116,7 @@ public class BigQueryReadClient implements BackgroundResource {
 
   /**
    * Constructs an instance of BigQueryReadClient, using the given stub for making calls. This is
-   * for advanced usage - prefer to use BigQueryReadSettings}.
+   * for advanced usage - prefer to use {@link BigQueryReadSettings}.
    */
   @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public static final BigQueryReadClient create(EnhancedBigQueryReadStub stub) {
@@ -182,8 +182,8 @@ public class BigQueryReadClient implements BackgroundResource {
    * }
    * </code></pre>
    *
-   * @param parent Required. The request project that owns the session, in the form of
-   *     `projects/{project_id}`.
+   * @param parent Required. The request project that owns the session, in the form of {@code
+   *     projects/{project_id}}.
    * @param readSession Required. Session to be created.
    * @param maxStreamCount Max initial number of streams. If unset or zero, the server will provide
    *     a value of streams so as to produce reasonable throughput. Must be non-negative. The number
@@ -353,16 +353,16 @@ public class BigQueryReadClient implements BackgroundResource {
   }
 
   /**
-   * Splits a given `ReadStream` into two `ReadStream` objects. These `ReadStream` objects are
-   * referred to as the primary and the residual streams of the split. The original `ReadStream` can
-   * still be read from in the same manner as before. Both of the returned `ReadStream` objects can
-   * also be read from, and the rows returned by both child streams will be the same as the rows
-   * read from the original stream.
+   * Splits a given {@code ReadStream} into two {@code ReadStream} objects. These {@code ReadStream}
+   * objects are referred to as the primary and the residual streams of the split. The original
+   * {@code ReadStream} can still be read from in the same manner as before. Both of the returned
+   * {@code ReadStream} objects can also be read from, and the rows returned by both child streams
+   * will be the same as the rows read from the original stream.
    *
-   * <p>Moreover, the two child streams will be allocated back-to-back in the original `ReadStream`.
-   * Concretely, it is guaranteed that for streams original, primary, and residual, that
-   * original[0-j] = primary[0-j] and original[j-n] = residual[0-m] once the streams have been read
-   * to completion.
+   * <p>Moreover, the two child streams will be allocated back-to-back in the original {@code
+   * ReadStream}. Concretely, it is guaranteed that for streams original, primary, and residual,
+   * that original[0-j] = primary[0-j] and original[j-n] = residual[0-m] once the streams have been
+   * read to completion.
    *
    * <p>Sample code:
    *
@@ -397,16 +397,16 @@ public class BigQueryReadClient implements BackgroundResource {
   }
 
   /**
-   * Splits a given `ReadStream` into two `ReadStream` objects. These `ReadStream` objects are
-   * referred to as the primary and the residual streams of the split. The original `ReadStream` can
-   * still be read from in the same manner as before. Both of the returned `ReadStream` objects can
-   * also be read from, and the rows returned by both child streams will be the same as the rows
-   * read from the original stream.
+   * Splits a given {@code ReadStream} into two {@code ReadStream} objects. These {@code ReadStream}
+   * objects are referred to as the primary and the residual streams of the split. The original
+   * {@code ReadStream} can still be read from in the same manner as before. Both of the returned
+   * {@code ReadStream} objects can also be read from, and the rows returned by both child streams
+   * will be the same as the rows read from the original stream.
    *
-   * <p>Moreover, the two child streams will be allocated back-to-back in the original `ReadStream`.
-   * Concretely, it is guaranteed that for streams original, primary, and residual, that
-   * original[0-j] = primary[0-j] and original[j-n] = residual[0-m] once the streams have been read
-   * to completion.
+   * <p>Moreover, the two child streams will be allocated back-to-back in the original {@code
+   * ReadStream}. Concretely, it is guaranteed that for streams original, primary, and residual,
+   * that original[0-j] = primary[0-j] and original[j-n] = residual[0-m] once the streams have been
+   * read to completion.
    *
    * <p>Sample code:
    *

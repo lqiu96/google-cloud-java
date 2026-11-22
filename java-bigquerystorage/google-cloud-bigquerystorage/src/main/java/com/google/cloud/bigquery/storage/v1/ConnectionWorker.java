@@ -64,13 +64,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
-/**
- * A BigQuery Stream Writer that can be used to write data into BigQuery Table.
- *
- * <p>TODO: Support batching.
- *
- * <p>TODO: support updated schema
- */
+/** A BigQuery Stream Writer that can be used to write data into BigQuery Table. */
 class ConnectionWorker implements AutoCloseable {
 
   private static final Logger log = Logger.getLogger(StreamWriter.class.getName());
