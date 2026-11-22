@@ -245,7 +245,7 @@ import org.jspecify.annotations.Nullable;
  *      <ul>
  *           <li><p> searchBlurbsAsync(SearchBlurbsRequest request)
  *      </ul>
- *      <p>Methods that return long-running operations have "Async" method variants that return `OperationFuture`, which is used to track polling of the service.</p>
+ *      <p>Methods that return long-running operations have "Async" method variants that return {@link com.google.api.gax.longrunning.OperationFuture}, which is used to track polling of the service.</p>
  *      <ul>
  *           <li><p> searchBlurbsAsync(String query)
  *      </ul>
@@ -291,8 +291,9 @@ import org.jspecify.annotations.Nullable;
  * <p>See the individual methods for example code.
  *
  * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * these names, generated resource name classes (ending in {@code Name}) provide static {@code of},
+ * {@code format}, {@code parse}, and {@code isParsableFrom} methods to construct, validate, and
+ * extract individual identifiers from resource names.
  *
  * <p>This class can be customized by passing in a custom instance of MessagingSettings to create().
  * For example:
@@ -305,11 +306,14 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * MessagingSettings messagingSettings =
  *     MessagingSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * MessagingClient messagingClient = MessagingClient.create(messagingSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * messagingClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -320,9 +324,12 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * MessagingSettings messagingSettings =
  *     MessagingSettings.newBuilder().setEndpoint(myEndpoint).build();
  * MessagingClient messagingClient = MessagingClient.create(messagingSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * messagingClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.
@@ -366,23 +373,33 @@ public class MessagingClient implements BackgroundResource {
     this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 
+  /**
+   * Constructs an instance of MessagingClient, using the given stub for making calls. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
   protected MessagingClient(MessagingStub stub) {
     this.settings = null;
     this.stub = stub;
     this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 
+  /**
+   * Returns the settings used to configure this client, or {@code null} if the client was
+   * constructed from a stub.
+   */
   public final @Nullable MessagingSettings getSettings() {
     return settings;
   }
 
+  /** Returns the underlying stub used to make calls to the service. */
   public MessagingStub getStub() {
     return stub;
   }
 
   /**
-   * Returns the OperationsClient that can be used to query the status of a long-running operation
-   * returned by another API method call.
+   * Returns the gRPC OperationsClient that can be used to query the status of a long-running
+   * operation returned by another API method call.
    */
   public final OperationsClient getOperationsClient() {
     return operationsClient;
@@ -405,8 +422,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param displayName
-   * @param description
+   * @param displayName The displayName parameter for the API call.
+   * @param description The description parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Room createRoom(String displayName, String description) {
@@ -481,7 +498,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Room getRoom(@Nullable RoomName name) {
@@ -506,7 +523,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Room getRoom(String name) {
@@ -624,7 +641,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteRoom(@Nullable RoomName name) {
@@ -649,7 +666,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteRoom(String name) {
@@ -813,8 +830,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param image
+   * @param parent The parent parameter for the API call.
+   * @param image The image parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(@Nullable ProfileName parent, ByteString image) {
@@ -843,8 +860,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param text
+   * @param parent The parent parameter for the API call.
+   * @param text The text parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(@Nullable ProfileName parent, String text) {
@@ -873,8 +890,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param image
+   * @param parent The parent parameter for the API call.
+   * @param image The image parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(@Nullable RoomName parent, ByteString image) {
@@ -903,8 +920,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param text
+   * @param parent The parent parameter for the API call.
+   * @param text The text parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(@Nullable RoomName parent, String text) {
@@ -933,8 +950,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param image
+   * @param parent The parent parameter for the API call.
+   * @param image The image parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(String parent, ByteString image) {
@@ -963,8 +980,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param text
+   * @param parent The parent parameter for the API call.
+   * @param text The text parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(String parent, String text) {
@@ -1045,7 +1062,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb getBlurb(@Nullable BlurbName name) {
@@ -1071,7 +1088,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb getBlurb(String name) {
@@ -1193,7 +1210,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteBlurb(@Nullable BlurbName name) {
@@ -1219,7 +1236,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteBlurb(String name) {
@@ -1296,7 +1313,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListBlurbsPagedResponse listBlurbs(@Nullable ProfileName parent) {
@@ -1323,7 +1340,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListBlurbsPagedResponse listBlurbs(@Nullable RoomName parent) {
@@ -1350,7 +1367,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListBlurbsPagedResponse listBlurbs(String parent) {
@@ -1469,7 +1486,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param query
+   * @param query The query parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final OperationFuture<SearchBlurbsResponse, SearchBlurbsMetadata> searchBlurbsAsync(

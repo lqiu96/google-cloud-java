@@ -39,15 +39,14 @@ import org.jspecify.annotations.Nullable;
  * <ul>
  *   <li>The default service address (localhost) and default port (7469) are used.
  *   <li>Credentials are acquired automatically through Application Default Credentials.
- *   <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ *   <li>Default retry and timeout settings are configured per RPC from the service's retry
+ *       configuration.
  * </ul>
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders. When
  * build() is called, the tree of builders is called to create the complete settings object.
  *
- * <p>For example, to set the
- * [RetrySettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.retrying.RetrySettings)
- * of craftEvilPlan:
+ * <p>For example, to set the {@link com.google.api.gax.retrying.RetrySettings} of craftEvilPlan:
  *
  * <pre>{@code
  * // This snippet has been automatically generated and should be regarded as a code template only.
@@ -75,9 +74,8 @@ import org.jspecify.annotations.Nullable;
  * WickedStubSettings wickedSettings = wickedSettingsBuilder.build();
  * }</pre>
  *
- * Please refer to the [Client Side Retry
- * Guide](https://docs.cloud.google.com/java/docs/client-retries) for additional support in setting
- * retries.
+ * <p>Please refer to the <a href="https://docs.cloud.google.com/java/docs/client-retries">Client
+ * Side Retry Guide</a> for additional support in setting retries.
  */
 @NullMarked
 @BetaApi
@@ -107,6 +105,7 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
     return persuadeEvilPlanSettings;
   }
 
+  /** Creates and returns a new {@link WickedStub} instance using the configured transport. */
   public WickedStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -123,7 +122,11 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
     return InstantiatingExecutorProvider.newBuilder();
   }
 
-  /** Returns the default service endpoint. */
+  /**
+   * Returns the default service endpoint. This value is static and does not reflect universe domain
+   * or custom endpoint overrides; prefer {@link #getEndpoint()} (and {@link #getUniverseDomain()})
+   * on a configured settings instance.
+   */
   @ObsoleteApi("Use getEndpoint() instead")
   public static String getDefaultEndpoint() {
     return "localhost:7469";
@@ -152,10 +155,12 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default gRPC ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultGrpcApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(WickedStubSettings.class))
@@ -163,6 +168,7 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
             GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return WickedStubSettings.defaultGrpcApiClientHeaderProviderBuilder();
   }
@@ -274,9 +280,11 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
     }
 
     /**
-     * Applies the given settings updater function to all of the unary API methods in this service.
+     * Applies the given settings updater function to all of the unary API methods in this service,
+     * including unary, paged, batching, and long-running operation initial-call settings.
      *
-     * <p>Note: This method does not support applying settings to streaming methods.
+     * <p>Note: This method does not apply settings to streaming methods or long-running operation
+     * polling settings (configured via {@code <method>OperationSettings()}).
      */
     public Builder applyToAllUnaryMethods(
         ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) {
@@ -303,6 +311,7 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
       return persuadeEvilPlanSettings;
     }
 
+    /** Builds and returns a new {@link WickedStubSettings} instance. */
     @Override
     public WickedStubSettings build() throws IOException {
       return new WickedStubSettings(this);

@@ -19,7 +19,6 @@ package com.google.testdata.v1.samples;
 // [START goldensample_generated_DeprecatedService_Create_SetEndpoint_sync]
 import com.google.testdata.v1.DeprecatedServiceClient;
 import com.google.testdata.v1.DeprecatedServiceSettings;
-import com.google.testdata.v1.myEndpoint;
 
 public class SyncCreateSetEndpoint {
 
@@ -33,10 +32,13 @@ public class SyncCreateSetEndpoint {
     // - It may require correct/in-range values for request initialization.
     // - It may require specifying regional endpoints when creating the service client as shown in
     // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+    String myEndpoint = "my-endpoint:443";
     DeprecatedServiceSettings deprecatedServiceSettings =
         DeprecatedServiceSettings.newBuilder().setEndpoint(myEndpoint).build();
     DeprecatedServiceClient deprecatedServiceClient =
         DeprecatedServiceClient.create(deprecatedServiceSettings);
+    // Reuse the client across requests, and close it on application shutdown.
+    deprecatedServiceClient.close();
   }
 }
 // [END goldensample_generated_DeprecatedService_Create_SetEndpoint_sync]

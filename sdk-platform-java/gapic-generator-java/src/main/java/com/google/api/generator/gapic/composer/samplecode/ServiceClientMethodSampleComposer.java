@@ -59,7 +59,7 @@ public class ServiceClientMethodSampleComposer {
     List<Statement> bodyStatements = new ArrayList<>();
 
     RegionTag regionTag =
-        RegionTag.builder().setServiceName(service.name()).setRpcName("emtpy").build();
+        RegionTag.builder().setServiceName(service.name()).setRpcName("empty").build();
 
     List<Statement> body =
         Arrays.asList(

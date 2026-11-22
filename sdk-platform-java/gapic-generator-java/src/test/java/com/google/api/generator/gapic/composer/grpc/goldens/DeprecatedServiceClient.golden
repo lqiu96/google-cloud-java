@@ -72,8 +72,9 @@ import org.jspecify.annotations.Nullable;
  * <p>See the individual methods for example code.
  *
  * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * these names, generated resource name classes (ending in {@code Name}) provide static {@code of},
+ * {@code format}, {@code parse}, and {@code isParsableFrom} methods to construct, validate, and
+ * extract individual identifiers from resource names.
  *
  * <p>This class can be customized by passing in a custom instance of DeprecatedServiceSettings to
  * create(). For example:
@@ -86,12 +87,15 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * DeprecatedServiceSettings deprecatedServiceSettings =
  *     DeprecatedServiceSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * DeprecatedServiceClient deprecatedServiceClient =
  *     DeprecatedServiceClient.create(deprecatedServiceSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * deprecatedServiceClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -102,10 +106,13 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * DeprecatedServiceSettings deprecatedServiceSettings =
  *     DeprecatedServiceSettings.newBuilder().setEndpoint(myEndpoint).build();
  * DeprecatedServiceClient deprecatedServiceClient =
  *     DeprecatedServiceClient.create(deprecatedServiceSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * deprecatedServiceClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.
@@ -151,15 +158,25 @@ public class DeprecatedServiceClient implements BackgroundResource {
     this.stub = ((DeprecatedServiceStubSettings) settings.getStubSettings()).createStub();
   }
 
+  /**
+   * Constructs an instance of DeprecatedServiceClient, using the given stub for making calls. This
+   * is protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
   protected DeprecatedServiceClient(DeprecatedServiceStub stub) {
     this.settings = null;
     this.stub = stub;
   }
 
+  /**
+   * Returns the settings used to configure this client, or {@code null} if the client was
+   * constructed from a stub.
+   */
   public final @Nullable DeprecatedServiceSettings getSettings() {
     return settings;
   }
 
+  /** Returns the underlying stub used to make calls to the service. */
   public DeprecatedServiceStub getStub() {
     return stub;
   }

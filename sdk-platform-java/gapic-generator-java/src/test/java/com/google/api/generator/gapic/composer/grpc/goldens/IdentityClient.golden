@@ -141,8 +141,9 @@ import org.jspecify.annotations.Nullable;
  * <p>See the individual methods for example code.
  *
  * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * these names, generated resource name classes (ending in {@code Name}) provide static {@code of},
+ * {@code format}, {@code parse}, and {@code isParsableFrom} methods to construct, validate, and
+ * extract individual identifiers from resource names.
  *
  * <p>This class can be customized by passing in a custom instance of IdentitySettings to create().
  * For example:
@@ -155,11 +156,14 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * IdentitySettings identitySettings =
  *     IdentitySettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * IdentityClient identityClient = IdentityClient.create(identitySettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * identityClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -170,9 +174,12 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * IdentitySettings identitySettings =
  *     IdentitySettings.newBuilder().setEndpoint(myEndpoint).build();
  * IdentityClient identityClient = IdentityClient.create(identitySettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * identityClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.
@@ -214,15 +221,25 @@ public class IdentityClient implements BackgroundResource {
     this.stub = ((IdentityStubSettings) settings.getStubSettings()).createStub();
   }
 
+  /**
+   * Constructs an instance of IdentityClient, using the given stub for making calls. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
   protected IdentityClient(IdentityStub stub) {
     this.settings = null;
     this.stub = stub;
   }
 
+  /**
+   * Returns the settings used to configure this client, or {@code null} if the client was
+   * constructed from a stub.
+   */
   public final @Nullable IdentitySettings getSettings() {
     return settings;
   }
 
+  /** Returns the underlying stub used to make calls to the service. */
   public IdentityStub getStub() {
     return stub;
   }
@@ -245,9 +262,9 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param displayName
-   * @param email
+   * @param parent The parent parameter for the API call.
+   * @param displayName The displayName parameter for the API call.
+   * @param email The email parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User createUser(String parent, String displayName, String email) {
@@ -283,13 +300,13 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param displayName
-   * @param email
-   * @param age
-   * @param nickname
-   * @param enableNotifications
-   * @param heightFeet
+   * @param parent The parent parameter for the API call.
+   * @param displayName The displayName parameter for the API call.
+   * @param email The email parameter for the API call.
+   * @param age The age parameter for the API call.
+   * @param nickname The nickname parameter for the API call.
+   * @param enableNotifications The enableNotifications parameter for the API call.
+   * @param heightFeet The heightFeet parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User createUser(
@@ -352,16 +369,16 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param displayName
-   * @param email
-   * @param hobbyName
-   * @param songName
-   * @param weeklyFrequency
-   * @param companyName
-   * @param title
-   * @param subject
-   * @param artistName
+   * @param parent The parent parameter for the API call.
+   * @param displayName The displayName parameter for the API call.
+   * @param email The email parameter for the API call.
+   * @param hobbyName The hobbyName parameter for the API call.
+   * @param songName The songName parameter for the API call.
+   * @param weeklyFrequency The weeklyFrequency parameter for the API call.
+   * @param companyName The companyName parameter for the API call.
+   * @param title The title parameter for the API call.
+   * @param subject The subject parameter for the API call.
+   * @param artistName The artistName parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User createUser(
@@ -475,7 +492,7 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User getUser(@Nullable UserName name) {
@@ -500,7 +517,7 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User getUser(String name) {
@@ -618,7 +635,7 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteUser(@Nullable UserName name) {
@@ -643,7 +660,7 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteUser(String name) {

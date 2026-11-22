@@ -486,6 +486,9 @@ public abstract class AbstractServiceClientClassComposer implements ClassCompose
     }
     methods.add(
         MethodDefinition.constructorBuilder()
+            .setHeaderCommentStatements(
+                ServiceClientCommentComposer.createProtectedCtorStubArgComment(
+                    ClassNames.getServiceClientClassName(service)))
             .setScope(ScopeNode.PROTECTED)
             .setReturnType(thisClassType)
             .setArguments(stubVarExpr.toBuilder().setIsDecl(true).build())
@@ -579,14 +582,24 @@ public abstract class AbstractServiceClientClassComposer implements ClassCompose
               MethodDefinition.Builder methodBuilder = MethodDefinition.builder();
               List<AnnotationNode> annotations = getOperationsClientMethod.get(methodName);
               if (annotations != null) {
-                methodBuilder =
-                    methodBuilder.setHeaderCommentStatements(
-                        ServiceClientCommentComposer.GET_OPERATIONS_CLIENT_METHOD_COMMENT);
+                CommentStatement opsComment =
+                    methodName.equals("getHttpJsonOperationsClient")
+                        ? ServiceClientCommentComposer
+                            .GET_HTTP_JSON_OPERATIONS_CLIENT_METHOD_COMMENT
+                        : ServiceClientCommentComposer.GET_OPERATIONS_CLIENT_METHOD_COMMENT;
+                methodBuilder = methodBuilder.setHeaderCommentStatements(opsComment);
                 methodBuilder.setAnnotations(annotations);
               }
               if (methodName.equals("getSettings")) {
+                methodBuilder =
+                    methodBuilder.setHeaderCommentStatements(
+                        ServiceClientCommentComposer.GET_SETTINGS_METHOD_COMMENT);
                 methodReturnType =
                     TypeNode.withReference(methodReturnType.reference().copyAndSetNullable(true));
+              } else if (methodName.equals("getStub")) {
+                methodBuilder =
+                    methodBuilder.setHeaderCommentStatements(
+                        ServiceClientCommentComposer.GET_STUB_METHOD_COMMENT);
               }
               return methodBuilder
                   .setScope(ScopeNode.PUBLIC)

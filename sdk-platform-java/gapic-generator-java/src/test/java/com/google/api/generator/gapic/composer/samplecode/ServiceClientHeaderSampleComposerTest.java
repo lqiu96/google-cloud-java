@@ -445,11 +445,14 @@ class ServiceClientHeaderSampleComposerTest {
                 clientType, settingsType, TEST_SERVICE));
     String expected =
         LineFormatter.lines(
+            "GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();\n",
             "EchoSettings echoSettings =\n",
             "    EchoSettings.newBuilder()\n",
             "        .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))\n",
             "        .build();\n",
-            "EchoClient echoClient = EchoClient.create(echoSettings);");
+            "EchoClient echoClient = EchoClient.create(echoSettings);\n",
+            "// Reuse the client across requests, and close it on application shutdown.\n",
+            "echoClient.close();");
     Assert.assertEquals(expected, results);
   }
 
@@ -474,10 +477,46 @@ class ServiceClientHeaderSampleComposerTest {
                 clientType, settingsType, TEST_SERVICE));
     String expected =
         LineFormatter.lines(
-            "EchoSettings echoSettings ="
-                + " EchoSettings.newBuilder().setEndpoint(myEndpoint).build();\n",
-            "EchoClient echoClient = EchoClient.create(echoSettings);");
+            "String myEndpoint = \"my-endpoint:443\";\n",
+            "EchoSettings echoSettings = EchoSettings.newBuilder().setEndpoint(myEndpoint).build();\n",
+            "EchoClient echoClient = EchoClient.create(echoSettings);\n",
+            "// Reuse the client across requests, and close it on application shutdown.\n",
+            "echoClient.close();");
     Assert.assertEquals(expected, results);
+  }
+
+  /*Testing composeTransportSample*/
+  @Test
+  void composeTransportSample() {
+    TypeNode clientType =
+        TypeNode.withReference(
+            VaporReference.builder()
+                .setName("EchoClient")
+                .setPakkage(SHOWCASE_PACKAGE_NAME)
+                .build());
+    TypeNode settingsType =
+        TypeNode.withReference(
+            VaporReference.builder()
+                .setName("EchoSettings")
+                .setPakkage(SHOWCASE_PACKAGE_NAME)
+                .build());
+    Sample httpJsonSample =
+        ServiceClientHeaderSampleComposer.composeTransportSample(
+            clientType, settingsType, "newHttpJsonBuilder", TEST_SERVICE);
+    Assert.assertEquals(
+        "UseHttpJsonTransport", httpJsonSample.regionTag().overloadDisambiguation());
+    String expectedHttpJson =
+        LineFormatter.lines(
+            "EchoSettings echoSettings = EchoSettings.newHttpJsonBuilder().build();\n",
+            "EchoClient echoClient = EchoClient.create(echoSettings);\n",
+            "// Reuse the client across requests, and close it on application shutdown.\n",
+            "echoClient.close();");
+    Assert.assertEquals(expectedHttpJson, writeStatements(httpJsonSample));
+
+    Sample grpcSample =
+        ServiceClientHeaderSampleComposer.composeTransportSample(
+            clientType, settingsType, "newGrpcBuilder", TEST_SERVICE);
+    Assert.assertEquals("UseGrpcTransport", grpcSample.regionTag().overloadDisambiguation());
   }
 
   /*Testing composeShowcaseMethodSample*/

@@ -64,8 +64,9 @@ import org.jspecify.annotations.Nullable;
  * <p>See the individual methods for example code.
  *
  * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * these names, generated resource name classes (ending in {@code Name}) provide static {@code of},
+ * {@code format}, {@code parse}, and {@code isParsableFrom} methods to construct, validate, and
+ * extract individual identifiers from resource names.
  *
  * <p>This class can be customized by passing in a custom instance of BookshopSettings to create().
  * For example:
@@ -78,11 +79,14 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * BookshopSettings bookshopSettings =
  *     BookshopSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * BookshopClient bookshopClient = BookshopClient.create(bookshopSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * bookshopClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -93,9 +97,12 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * BookshopSettings bookshopSettings =
  *     BookshopSettings.newBuilder().setEndpoint(myEndpoint).build();
  * BookshopClient bookshopClient = BookshopClient.create(bookshopSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * bookshopClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.
@@ -137,15 +144,25 @@ public class BookshopClient implements BackgroundResource {
     this.stub = ((BookshopStubSettings) settings.getStubSettings()).createStub();
   }
 
+  /**
+   * Constructs an instance of BookshopClient, using the given stub for making calls. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
   protected BookshopClient(BookshopStub stub) {
     this.settings = null;
     this.stub = stub;
   }
 
+  /**
+   * Returns the settings used to configure this client, or {@code null} if the client was
+   * constructed from a stub.
+   */
   public final @Nullable BookshopSettings getSettings() {
     return settings;
   }
 
+  /** Returns the underlying stub used to make calls to the service. */
   public BookshopStub getStub() {
     return stub;
   }
@@ -167,8 +184,8 @@ public class BookshopClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param booksCount
-   * @param books
+   * @param booksCount The booksCount parameter for the API call.
+   * @param books The books parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book getBook(int booksCount, List<Book> books) {
@@ -194,8 +211,8 @@ public class BookshopClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param booksList
-   * @param books
+   * @param booksList The booksList parameter for the API call.
+   * @param books The books parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book getBook(String booksList, List<Book> books) {

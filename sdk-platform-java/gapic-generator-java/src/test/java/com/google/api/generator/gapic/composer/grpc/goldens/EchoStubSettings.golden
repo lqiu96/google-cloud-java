@@ -66,15 +66,14 @@ import org.jspecify.annotations.Nullable;
  * <ul>
  *   <li>The default service address (localhost) and default port (7469) are used.
  *   <li>Credentials are acquired automatically through Application Default Credentials.
- *   <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ *   <li>Default retry and timeout settings are configured per RPC from the service's retry
+ *       configuration.
  * </ul>
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders. When
  * build() is called, the tree of builders is called to create the complete settings object.
  *
- * <p>For example, to set the
- * [RetrySettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.retrying.RetrySettings)
- * of echo:
+ * <p>For example, to set the {@link com.google.api.gax.retrying.RetrySettings} of echo:
  *
  * <pre>{@code
  * // This snippet has been automatically generated and should be regarded as a code template only.
@@ -102,9 +101,8 @@ import org.jspecify.annotations.Nullable;
  * EchoStubSettings echoSettings = echoSettingsBuilder.build();
  * }</pre>
  *
- * Please refer to the [Client Side Retry
- * Guide](https://docs.cloud.google.com/java/docs/client-retries) for additional support in setting
- * retries.
+ * <p>Please refer to the <a href="https://docs.cloud.google.com/java/docs/client-retries">Client
+ * Side Retry Guide</a> for additional support in setting retries.
  *
  * <p>To configure the RetrySettings of a Long Running Operation method, create an
  * OperationTimedPollAlgorithm object and update the RPC's polling algorithm. For example, to
@@ -297,12 +295,15 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
     return simplePagedExpandSettings;
   }
 
-  /** Returns the object with the settings used for calls to wait. */
+  /** Returns the object with the settings used for initial calls to wait. */
   public UnaryCallSettings<WaitRequest, Operation> waitSettings() {
     return waitSettings;
   }
 
-  /** Returns the object with the settings used for calls to wait. */
+  /**
+   * Returns the object with the polling and initial-call settings used for long-running calls to
+   * wait.
+   */
   public OperationCallSettings<WaitRequest, WaitResponse, WaitMetadata> waitOperationSettings() {
     return waitOperationSettings;
   }
@@ -323,6 +324,7 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
     return pagedExpandLegacySettings;
   }
 
+  /** Creates and returns a new {@link EchoStub} instance using the configured transport. */
   public EchoStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -339,7 +341,11 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
     return InstantiatingExecutorProvider.newBuilder();
   }
 
-  /** Returns the default service endpoint. */
+  /**
+   * Returns the default service endpoint. This value is static and does not reflect universe domain
+   * or custom endpoint overrides; prefer {@link #getEndpoint()} (and {@link #getUniverseDomain()})
+   * on a configured settings instance.
+   */
   @ObsoleteApi("Use getEndpoint() instead")
   public static String getDefaultEndpoint() {
     return "localhost:7469";
@@ -368,10 +374,12 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(EchoStubSettings.class))
@@ -622,9 +630,11 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
     }
 
     /**
-     * Applies the given settings updater function to all of the unary API methods in this service.
+     * Applies the given settings updater function to all of the unary API methods in this service,
+     * including unary, paged, batching, and long-running operation initial-call settings.
      *
-     * <p>Note: This method does not support applying settings to streaming methods.
+     * <p>Note: This method does not apply settings to streaming methods or long-running operation
+     * polling settings (configured via {@code <method>OperationSettings()}).
      */
     public Builder applyToAllUnaryMethods(
         ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) {
@@ -675,12 +685,15 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
       return simplePagedExpandSettings;
     }
 
-    /** Returns the builder for the settings used for calls to wait. */
+    /** Returns the builder for the settings used for initial calls to wait. */
     public UnaryCallSettings.Builder<WaitRequest, Operation> waitSettings() {
       return waitSettings;
     }
 
-    /** Returns the builder for the settings used for calls to wait. */
+    /**
+     * Returns the builder for the polling and initial-call settings used for long-running calls to
+     * wait.
+     */
     public OperationCallSettings.Builder<WaitRequest, WaitResponse, WaitMetadata>
         waitOperationSettings() {
       return waitOperationSettings;
@@ -702,6 +715,7 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
       return pagedExpandLegacySettings;
     }
 
+    /** Builds and returns a new {@link EchoStubSettings} instance. */
     @Override
     public EchoStubSettings build() throws IOException {
       return new EchoStubSettings(this);

@@ -793,7 +793,7 @@ public class ServiceClientCallableMethodSampleComposer {
 
     // For-loop on bidi stream variable.
     // e.g. for (EchoResponse response : bidiStream) {
-    //        // Do something when reveive a response.
+    //        // Do something when a response is received.
     //      }
     ForStatement forStatement =
         ForStatement.builder()

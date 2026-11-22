@@ -141,6 +141,8 @@ public class ServiceStubSettingsClassComposer extends AbstractServiceStubSetting
     }
     methodDefinitions.add(
         MethodDefinition.builder()
+            .setHeaderCommentStatements(
+                SettingsCommentComposer.DEFAULT_API_CLIENT_HEADER_PROVIDER_BUILDER_METHOD_COMMENT)
             .setScope(ScopeNode.PUBLIC)
             .setIsStatic(true)
             .setReturnType(returnType)
@@ -168,6 +170,8 @@ public class ServiceStubSettingsClassComposer extends AbstractServiceStubSetting
             .setReturnType(returnType)
             .build();
     return MethodDefinition.builder()
+        .setHeaderCommentStatements(
+            SettingsCommentComposer.DEFAULT_TRANSPORT_CHANNEL_PROVIDER_METHOD_COMMENT)
         .setScope(ScopeNode.PUBLIC)
         .setIsStatic(true)
         .setReturnType(returnType)
