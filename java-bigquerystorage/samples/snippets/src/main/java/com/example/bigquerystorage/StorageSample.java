@@ -80,9 +80,9 @@ public class StorageSample {
     // Sets your Google Cloud Platform project ID.
     // String projectId = "YOUR_PROJECT_ID";
     String projectId = args[0];
-    Integer snapshotMillis = null;
+    Long snapshotMillis = null;
     if (args.length > 1) {
-      snapshotMillis = Integer.parseInt(args[1]);
+      snapshotMillis = Long.parseLong(args[1]);
     }
 
     try (BigQueryReadClient client = BigQueryReadClient.create()) {

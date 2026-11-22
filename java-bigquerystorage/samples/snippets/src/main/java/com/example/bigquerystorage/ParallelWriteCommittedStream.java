@@ -37,12 +37,12 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Message;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 import org.json.JSONObject;
-import org.threeten.bp.Duration;
 
 public class ParallelWriteCommittedStream {
 
@@ -135,7 +135,7 @@ public class ParallelWriteCommittedStream {
     LOG.info("Creating a new stream");
     // Initialize a write stream for the specified table.
     // For more information on WriteStream.Type, see:
-    // https://googleapis.dev/java/google-cloud-bigquerystorage/latest/com/google/cloud/bigquery/storage/v1/WriteStream.Type.html
+    // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.WriteStream.Type
     WriteStream stream = WriteStream.newBuilder().setType(WriteStream.Type.COMMITTED).build();
     TableName parentTable = TableName.of(projectId, datasetName, tableName);
     CreateWriteStreamRequest createWriteStreamRequest =
@@ -165,10 +165,10 @@ public class ParallelWriteCommittedStream {
     // * RESOURCE_EXHAUSTED
     RetrySettings retrySettings =
         RetrySettings.newBuilder()
-            .setInitialRetryDelay(Duration.ofMillis(500))
+            .setInitialRetryDelayDuration(Duration.ofMillis(500))
             .setRetryDelayMultiplier(1.1)
             .setMaxAttempts(5)
-            .setMaxRetryDelay(Duration.ofMinutes(1))
+            .setMaxRetryDelayDuration(Duration.ofMinutes(1))
             .build();
     Descriptor descriptor =
         BQTableSchemaToProtoDescriptor.convertBQTableSchemaToProtoDescriptor(
@@ -250,11 +250,7 @@ public class ParallelWriteCommittedStream {
     public void onSuccess(@Nullable AppendRowsResponse response) {
       synchronized (parent) {
         parent.inflightCount--;
-        if (!response.hasError()) {
-          parent.successCount++;
-        } else {
-          parent.failureCount++;
-        }
+        parent.successCount++;
         long nowMillis = System.currentTimeMillis();
         if (nowMillis >= parent.lastMetricsTimeMillis + METRICS_GAP.toMillis()) {
           long successCountInIteration = parent.successCount - parent.lastMetricsSuccessCount;
