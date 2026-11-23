@@ -93,7 +93,7 @@ import org.jspecify.annotations.Nullable;
  * ServiceAccountCredentials sourceCredentials = ServiceAccountCredentials
  *     .fromStream(new FileInputStream(credPath));
  * sourceCredentials = (ServiceAccountCredentials) sourceCredentials
- *     .createScoped(Arrays.asList("https://www.googleapis.com/auth/iam"));
+ *     .createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
  *
  * ImpersonatedCredentials targetCredentials = ImpersonatedCredentials.create(sourceCredentials,
  *     "impersonated-account@project.iam.gserviceaccount.com", null,
