@@ -53,7 +53,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Implements the OAuth 2.0 token exchange based on <a
- * href="https://tools.ietf.org/html/rfc8693">RFC 8693</a>.
+ * href="https://datatracker.ietf.org/doc/html/rfc8693">RFC 8693</a>.
  *
  * <p>This class handles the process of exchanging one type of token for another using the Security
  * Token Service (STS). It constructs and sends the token exchange request to the STS endpoint and

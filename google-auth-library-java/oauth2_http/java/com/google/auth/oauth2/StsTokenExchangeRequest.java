@@ -40,7 +40,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Represents an OAuth 2.0 token exchange request, as defined in <a
- * href="https://tools.ietf.org/html/rfc8693#section-2.1">RFC 8693, Section 2.1</a>.
+ * href="https://datatracker.ietf.org/doc/html/rfc8693#section-2.1">RFC 8693, Section 2.1</a>.
  *
  * <p>This class encapsulates the parameters necessary for making a token exchange request to Google
  * Security Token Service (STS). It includes the subject token, subject token type, optional

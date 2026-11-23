@@ -489,8 +489,8 @@ public class ComputeEngineCredentials extends GoogleCredentials
    *
    * @param targetAudience the aud: field the IdToken should include
    * @param options list of Credential specific options for the token. For example, an IDToken for a
-   *     ComputeEngineCredential could have the full formatted claims returned if
-   *     IdTokenProvider.Option.FORMAT_FULL) is provided as a list option. Valid option values are:
+   *     ComputeEngineCredential could have the full formatted claims returned if {@link
+   *     IdTokenProvider.Option#FORMAT_FULL} is provided as a list option. Valid option values are:
    *     <br>
    *     IdTokenProvider.Option.FORMAT_FULL<br>
    *     IdTokenProvider.Option.LICENSES_TRUE<br>
@@ -873,7 +873,7 @@ public class ComputeEngineCredentials extends GoogleCredentials
    * @return signed bytes
    * @throws SigningException if the attempt to sign the provided bytes failed
    * @see <a
-   *     href="https://cloud.google.com/iam/credentials/reference/rest/v1/projects.serviceAccounts/signBlob">Blob
+   *     href="https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob">Blob
    *     Signing</a>
    */
   @Override

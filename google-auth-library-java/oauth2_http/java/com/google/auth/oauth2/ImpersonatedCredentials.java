@@ -93,7 +93,7 @@ import org.jspecify.annotations.Nullable;
  * ServiceAccountCredentials sourceCredentials = ServiceAccountCredentials
  *     .fromStream(new FileInputStream(credPath));
  * sourceCredentials = (ServiceAccountCredentials) sourceCredentials
- *     .createScoped(Arrays.asList("https://www.googleapis.com/auth/iam"));
+ *     .createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
  *
  * ImpersonatedCredentials targetCredentials = ImpersonatedCredentials.create(sourceCredentials,
  *     "impersonated-account@project.iam.gserviceaccount.com", null,
@@ -143,7 +143,7 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @param scopes scopes to request during the authorization grant
    * @param lifetime number of seconds the delegated credential should be valid. By default this
    *     value should be at most 3600. However, you can follow <a
-   *     href='https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth'>these
+   *     href="https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct">these
    *     instructions</a> to set up the service account and extend the maximum lifetime to 43200 (12
    *     hours). If the given lifetime is 0, default value 3600 will be used instead when creating
    *     the credentials.
@@ -182,7 +182,7 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @param scopes scopes to request during the authorization grant
    * @param lifetime number of seconds the delegated credential should be valid. By default this
    *     value should be at most 3600. However, you can follow <a
-   *     href='https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth'>these
+   *     href="https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct">these
    *     instructions</a> to set up the service account and extend the maximum lifetime to 43200 (12
    *     hours). If the given lifetime is 0, default value 3600 will be used instead when creating
    *     the credentials.
@@ -229,7 +229,7 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @param scopes scopes to request during the authorization grant
    * @param lifetime number of seconds the delegated credential should be valid. By default this
    *     value should be at most 3600. However, you can follow <a
-   *     href='https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth'>these
+   *     href="https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct">these
    *     instructions</a> to set up the service account and extend the maximum lifetime to 43200 (12
    *     hours). If the given lifetime is 0, default value 3600 will be used instead when creating
    *     the credentials.
@@ -280,12 +280,10 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @param scopes scopes to request during the authorization grant
    * @param lifetime number of seconds the delegated credential should be valid. By default this
    *     value should be at most 3600. However, you can follow <a
-   *     href='https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth'>these
+   *     href="https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct">these
    *     instructions</a> to set up the service account and extend the maximum lifetime to 43200 (12
-   *     hours).
-   *     https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth
-   *     If the given lifetime is 0, default value 3600 will be used instead when creating the
-   *     credentials.
+   *     hours). If the given lifetime is 0, default value 3600 will be used instead when creating
+   *     the credentials.
    * @return new credentials
    */
   public static ImpersonatedCredentials create(
@@ -360,7 +358,7 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @return signed bytes
    * @throws SigningException if the attempt to sign the provided bytes failed
    * @see <a
-   *     href="https://cloud.google.com/iam/credentials/reference/rest/v1/projects.serviceAccounts/signBlob">Blob
+   *     href="https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob">Blob
    *     Signing</a>
    */
   @Override
@@ -388,8 +386,8 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @return the credential defined by the credentialsStream.
@@ -408,8 +406,8 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @param transportFactory HTTP transport factory, creates the transport used to get access
@@ -442,8 +440,8 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@link <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param json a map from the JSON representing the credentials
    * @param transportFactory HTTP transport factory, creates the transport used to get access tokens
@@ -887,10 +885,10 @@ public class ImpersonatedCredentials extends GoogleCredentials
    *
    * @param targetAudience the audience field for the issued ID token
    * @param options credential specific options for the token. For example, an ID token for an
-   *     ImpersonatedCredentials can return the email address within the token claims if
-   *     "ImpersonatedCredentials.INCLUDE_EMAIL" is provided as a list option.<br>
-   *     Only one option value is supported: "ImpersonatedCredentials.INCLUDE_EMAIL" If no options
-   *     are set, the default excludes the "includeEmail" attribute in the API request.
+   *     ImpersonatedCredentials can return the email address within the token claims if {@link
+   *     IdTokenProvider.Option#INCLUDE_EMAIL} is provided as a list option.<br>
+   *     Only one option value is supported: {@link IdTokenProvider.Option#INCLUDE_EMAIL}. If no
+   *     options are set, the default excludes the "includeEmail" attribute in the API request.
    * @return IdToken object which includes the raw id_token, expiration, and audience
    * @throws IOException if the attempt to get an ID token failed
    */
@@ -987,8 +985,9 @@ public class ImpersonatedCredentials extends GoogleCredentials
     /**
      * @param sourceCredentials The source credentials to use for impersonation.
      * @param targetPrincipal The service account to impersonate.
-     * @deprecated Use {@link #Builder(ImpersonatedCredentials)} instead. This constructor will be
-     *     removed in a future release.
+     * @deprecated Use {@link ImpersonatedCredentials#newBuilder()} or {@link
+     *     ImpersonatedCredentials#toBuilder()} instead. This constructor will be removed in a
+     *     future release.
      */
     @Deprecated
     protected Builder(GoogleCredentials sourceCredentials, String targetPrincipal) {

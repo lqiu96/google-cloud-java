@@ -88,15 +88,17 @@ import org.jspecify.annotations.Nullable;
  * }
  * </pre>
  *
- * <p>The `expiration_time` field in the JSON response is only required for successful responses
- * when an output file was specified in the credential configuration.
+ * <p>The {@code expiration_time} field in the JSON response is only required for successful
+ * responses when an output file was specified in the credential configuration.
  *
  * <p>The auth libraries will populate certain environment variables that will be accessible by the
  * executable, such as: GOOGLE_EXTERNAL_ACCOUNT_AUDIENCE, GOOGLE_EXTERNAL_ACCOUNT_TOKEN_TYPE,
  * GOOGLE_EXTERNAL_ACCOUNT_INTERACTIVE, GOOGLE_EXTERNAL_ACCOUNT_IMPERSONATED_EMAIL, and
  * GOOGLE_EXTERNAL_ACCOUNT_OUTPUT_FILE.
  *
- * <p>Please see this repositories README for a complete executable request/response specification.
+ * <p>See <a
+ * href="https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-other-providers#executable-sourced-credentials">Executable-sourced
+ * credentials</a> for the complete executable request and response specification.
  */
 @NullMarked
 public class PluggableAuthCredentials extends ExternalAccountCredentials {

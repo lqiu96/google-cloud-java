@@ -132,11 +132,11 @@ public class SecureSessionAgent {
    * populated with empty addresses.
    *
    * <p>Users are expected to try to fetch the mTLS-S2A address first (via {@link
-   * getMtlsS2AAddress}). If it is empty or they have some problem loading the mTLS-MDS credentials,
-   * they should then fallback to fetching the plaintext-S2A address (via {@link
-   * getPlaintextS2AAddress}). If the plaintext-S2A address is empty it means that an error occurred
-   * when talking to the MDS / processing the response or that S2A is not running in the
-   * environment; in either case this indicates S2A shouldn't be used.
+   * SecureSessionAgentConfig#getMtlsAddress()}). If it is empty or they have some problem loading
+   * the mTLS-MDS credentials, they should then fallback to fetching the plaintext-S2A address (via
+   * {@link SecureSessionAgentConfig#getPlaintextAddress()}). If the plaintext-S2A address is empty
+   * it means that an error occurred when talking to the MDS / processing the response or that S2A
+   * is not running in the environment; in either case this indicates S2A shouldn't be used.
    *
    * @return the {@link SecureSessionAgentConfig}.
    */

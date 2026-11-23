@@ -41,8 +41,8 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Encapsulates the standard OAuth error response. See
- * https://tools.ietf.org/html/rfc6749#section-5.2.
+ * Encapsulates the standard OAuth error response. See <a
+ * href="https://datatracker.ietf.org/doc/html/rfc6749#section-5.2">RFC 6749 Section 5.2</a>.
  */
 @NullMarked
 class OAuthException extends GoogleAuthException {

@@ -47,8 +47,9 @@ import org.jspecify.annotations.Nullable;
  * Defines an upper bound of permissions available for a GCP credential via {@link
  * AccessBoundaryRule}s.
  *
- * <p>See <a href='https://cloud.google.com/iam/docs/downscoping-short-lived-credentials'>for more
- * information.</a>
+ * <p>See <a
+ * href="https://docs.cloud.google.com/iam/docs/downscoping-short-lived-credentials">Downscoping
+ * with Credential Access Boundaries</a> for more information.
  */
 @NullMarked
 public final class CredentialAccessBoundary implements Serializable {
@@ -394,8 +395,8 @@ public final class CredentialAccessBoundary implements Serializable {
          * format.
          *
          * <p>This expression specifies the Cloud Storage object where permissions are available.
-         * See <a href='https://cloud.google.com/iam/docs/conditions-overview#cel'>for more
-         * information.</a>
+         * See <a href="https://docs.cloud.google.com/iam/docs/conditions-overview#cel">IAM
+         * Conditions Overview</a> for more information.
          *
          * @param expression the expression to set
          * @return this {@code Builder} object

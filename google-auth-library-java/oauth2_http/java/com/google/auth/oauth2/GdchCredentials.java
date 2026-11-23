@@ -82,6 +82,12 @@ import java.util.Objects;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * OAuth2 credentials for Google Distributed Cloud Hosted (GDCH) service accounts.
+ *
+ * <p>Exchanges a locally signed ES256 JWT assertion with the configured GDCH token server to obtain
+ * short-lived access tokens for a target API audience.
+ */
 @NullMarked
 public class GdchCredentials extends GoogleCredentials {
   private static final LoggerProvider LOGGER_PROVIDER =
@@ -90,13 +96,11 @@ public class GdchCredentials extends GoogleCredentials {
 
   /**
    * The expected format version for GDCH credential profiles. Version "1" indicates the initial and
-   * currently supported JSON format for these credentials. See go/gdch-python-auth-lib for more
-   * info.
+   * currently supported JSON format for these credentials.
    */
   @VisibleForTesting static final String SUPPORTED_JSON_FORMAT_VERSION = "1";
 
   // Custom URN used by GDCH to identify service account tokens in token exchange requests.
-  // See go/gdch-python-auth-lib for more information.
   private static final String SERVICE_ACCOUNT_TOKEN_TYPE =
       "urn:k8s:params:oauth:token-type:serviceaccount";
 
@@ -137,15 +141,14 @@ public class GdchCredentials extends GoogleCredentials {
   }
 
   /**
-   * Returns credentials defined by a GdchCredentials key file in JSON format from the Google
-   * Developers Console.
+   * Returns credentials defined by a GDCH service account key file in JSON format.
    *
    * <p>Important: If you accept a credential configuration (credential JSON/File/Stream) from an
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @return the credential defined by the credentialsStream.
@@ -156,15 +159,14 @@ public class GdchCredentials extends GoogleCredentials {
   }
 
   /**
-   * Returns credentials defined by a GdchCredentials key file in JSON format from the Google
-   * Developers Console.
+   * Returns credentials defined by a GDCH service account key file in JSON format.
    *
    * <p>Important: If you accept a credential configuration (credential JSON/File/Stream) from an
    * external source for authentication to Google Cloud Platform, you must validate it before
    * providing it to any Google API or library. Providing an unvalidated credential configuration to
    * Google APIs can compromise the security of your systems and data. For more information, refer
-   * to {@see <a
-   * href="https://cloud.google.com/docs/authentication/external/externally-sourced-credentials">documentation</a>}.
+   * to <a
+   * href="https://docs.cloud.google.com/docs/authentication/client-libraries#external-credentials">documentation</a>.
    *
    * @param credentialsStream the stream with the credential definition.
    * @param transportFactory HTTP transport factory, creates the transport used to get access
@@ -285,7 +287,7 @@ public class GdchCredentials extends GoogleCredentials {
   }
 
   /**
-   * This method is obsolete. Please use {@link #createWithGdchAudience(String)}} instead. Create a
+   * This method is obsolete. Please use {@link #createWithGdchAudience(String)} instead. Create a
    * copy of GDCH credentials with the specified audience.
    *
    * @param apiAudience The intended audience for GDCH credentials.
@@ -377,8 +379,9 @@ public class GdchCredentials extends GoogleCredentials {
    * Create a self-signed JWT for GDCH authentication flow.
    *
    * <p>The self-signed JWT is used to exchange access token from GDCH authentication
-   * (tokenServerUri), not for API call. It uses the serviceIdentityName as the `iss` and `sub`
-   * claim, and the tokenServerUri as the `aud` claim. The JWT is signed with the privateKey.
+   * (tokenServerUri), not for API call. It uses the serviceIdentityName as the {@code iss} and
+   * {@code sub} claim, and the tokenServerUri as the {@code aud} claim. The JWT is signed with the
+   * privateKey.
    */
   String createAssertion(JsonFactory jsonFactory, long currentTime) throws IOException {
     JsonWebSignature.Header header = new JsonWebSignature.Header();
@@ -407,8 +410,8 @@ public class GdchCredentials extends GoogleCredentials {
   /**
    * Get the issuer and subject value in the format GDCH token server required.
    *
-   * <p>This value is specific to GDCH and combined parameter used for both `iss` and `sub` fields
-   * in JWT claim.
+   * <p>This value is specific to GDCH and combined parameter used for both {@code iss} and {@code
+   * sub} fields in JWT claim.
    */
   @VisibleForTesting
   static String getIssuerSubjectValue(String projectId, String serviceIdentityName) {
@@ -737,14 +740,14 @@ public class GdchCredentials extends GoogleCredentials {
    * Signs the JWS header and payload using the ES256 algorithm (ECDSA with SHA-256).
    *
    * <p>The ES256 algorithm is defined in <a
-   * href="https://tools.ietf.org/html/rfc7518#section-3.4">RFC 7518 Section 3.4</a>. This method
-   * follows the JWS Compact Serialization format described in <a
-   * href="https://tools.ietf.org/html/rfc7515#section-3.1">RFC 7515 Section 3.1</a>.
+   * href="https://datatracker.ietf.org/doc/html/rfc7518#section-3.4">RFC 7518 Section 3.4</a>. This
+   * method follows the JWS Compact Serialization format described in <a
+   * href="https://datatracker.ietf.org/doc/html/rfc7515#section-3.1">RFC 7515 Section 3.1</a>.
    *
    * <p>Unlike RSA signatures, ECDSA signatures produced by the Java Cryptography Architecture (JCA)
    * are DER-encoded. This method transcodes the DER-encoded signature into the concatenated R|S
    * format required by the JWS standard, as specified in <a
-   * href="https://tools.ietf.org/html/rfc7515#appendix-A.3">RFC 7515 Appendix A.3</a>.
+   * href="https://datatracker.ietf.org/doc/html/rfc7515#appendix-A.3">RFC 7515 Appendix A.3</a>.
    *
    * @param privateKey The Elliptic Curve private key used for signing.
    * @param jsonFactory The JSON factory to serialize header and payload.

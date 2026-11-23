@@ -66,7 +66,7 @@ public class UserAuthorizer {
   /**
    * Represents the client authentication types as specified in RFC 7591.
    *
-   * <p>For more details, see <a href="https://tools.ietf.org/html/rfc7591">RFC 7591</a>.
+   * <p>For more details, see <a href="https://datatracker.ietf.org/doc/html/rfc7591">RFC 7591</a>.
    */
   public enum ClientAuthenticationType {
     CLIENT_SECRET_POST,
@@ -112,7 +112,7 @@ public class UserAuthorizer {
   }
 
   /**
-   * Returns the Client ID user to identify the OAuth2 consent prompt.
+   * Returns the Client ID used to identify the OAuth2 consent prompt.
    *
    * @return The Client ID.
    */

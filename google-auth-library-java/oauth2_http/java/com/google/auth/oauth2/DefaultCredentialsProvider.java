@@ -78,12 +78,12 @@ class DefaultCredentialsProvider {
       "You are authenticating using user credentials. "
           + "For production, we recommend using service account credentials.\n\n"
           + "To learn more about service account credentials, see "
-          + "http://cloud.google.com/docs/authentication/external/set-up-adc-on-cloud";
+          + "https://docs.cloud.google.com/docs/authentication/set-up-adc-attached-service-account";
 
   static final String CLOUDSDK_MISSING_CREDENTIALS =
       "Your default credentials were not found. To set up Application Default Credentials "
           + "for your environment, see "
-          + "https://cloud.google.com/docs/authentication/external/set-up-adc.";
+          + "https://docs.cloud.google.com/docs/authentication/provide-credentials-adc#how-to.";
   public static final String SUPPRESS_GCLOUD_CREDS_WARNING_ENV_VAR =
       "SUPPRESS_GCLOUD_CREDS_WARNING";
 
@@ -281,7 +281,7 @@ class DefaultCredentialsProvider {
     }
     throw new RuntimeException(
         String.format(
-            "Unexpected error trying to determine if runnning on Google App Engine: %s",
+            "Unexpected error trying to determine if running on Google App Engine: %s",
             cause.getMessage()),
         cause);
   }

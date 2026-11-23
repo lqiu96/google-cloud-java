@@ -62,7 +62,7 @@ import org.jspecify.annotations.Nullable;
  *     .setIssuer("some-issuer@example.com")
  *     .setSubject("some-subject@example.com")
  *     .build();
- * Credentials = JwtCredentials.newBuilder()
+ * Credentials credentials = JwtCredentials.newBuilder()
  *     .setPrivateKey(privateKey)
  *     .setPrivateKeyId("private-key-id")
  *     .setJwtClaims(claims)

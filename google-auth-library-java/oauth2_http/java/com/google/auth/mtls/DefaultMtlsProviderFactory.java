@@ -34,6 +34,9 @@ import com.google.api.core.InternalApi;
 import java.io.IOException;
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Factory for creating the default {@link MtlsProvider} from available client certificate sources.
+ */
 @NullMarked
 @InternalApi
 public class DefaultMtlsProviderFactory {
