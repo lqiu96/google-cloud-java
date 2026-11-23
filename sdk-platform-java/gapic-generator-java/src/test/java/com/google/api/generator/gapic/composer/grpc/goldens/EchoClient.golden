@@ -168,7 +168,7 @@ import org.jspecify.annotations.Nullable;
  *      <ul>
  *           <li><p> waitAsync(WaitRequest request)
  *      </ul>
- *      <p>Methods that return long-running operations have "Async" method variants that return `OperationFuture`, which is used to track polling of the service.</p>
+ *      <p>Methods that return long-running operations have "Async" method variants that return {@link com.google.api.gax.longrunning.OperationFuture}, which is used to track polling of the service.</p>
  *      <ul>
  *           <li><p> waitAsync(Duration ttl)
  *           <li><p> waitAsync(Timestamp endTime)

@@ -258,7 +258,8 @@ public class ServiceClientCommentComposer {
             + " object, which can be used to initiate calls to the service.</p>\n";
     String ASYNC_METHODS =
         "<p>Methods that return long-running operations have \"Async\" method variants that return"
-            + " `OperationFuture`, which is used to track polling of the service.</p>\n";
+            + " {@link com.google.api.gax.longrunning.OperationFuture}, which is used to track"
+            + " polling of the service.</p>\n";
 
     StringBuilder tableBuilder = new StringBuilder();
     tableBuilder
