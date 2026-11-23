@@ -19,7 +19,6 @@ package com.google.showcase.v1beta1.samples;
 // [START goldensample_generated_Echo_Create_SetEndpoint_sync]
 import com.google.showcase.v1beta1.EchoClient;
 import com.google.showcase.v1beta1.EchoSettings;
-import com.google.showcase.v1beta1.myEndpoint;
 
 public class SyncCreateSetEndpoint {
 
@@ -33,8 +32,11 @@ public class SyncCreateSetEndpoint {
     // - It may require correct/in-range values for request initialization.
     // - It may require specifying regional endpoints when creating the service client as shown in
     // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+    String myEndpoint = "my-endpoint:443";
     EchoSettings echoSettings = EchoSettings.newBuilder().setEndpoint(myEndpoint).build();
     EchoClient echoClient = EchoClient.create(echoSettings);
+    // Reuse the client across requests, and close it on application shutdown.
+    echoClient.close();
   }
 }
 // [END goldensample_generated_Echo_Create_SetEndpoint_sync]

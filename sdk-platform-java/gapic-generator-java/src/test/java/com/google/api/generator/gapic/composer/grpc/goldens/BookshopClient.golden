@@ -78,11 +78,14 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * GoogleCredentials myCredentials = GoogleCredentials.getApplicationDefault();
  * BookshopSettings bookshopSettings =
  *     BookshopSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * BookshopClient bookshopClient = BookshopClient.create(bookshopSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * bookshopClient.close();
  * }</pre>
  *
  * <p>To customize the endpoint:
@@ -93,9 +96,12 @@ import org.jspecify.annotations.Nullable;
  * // - It may require correct/in-range values for request initialization.
  * // - It may require specifying regional endpoints when creating the service client as shown in
  * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+ * String myEndpoint = "my-endpoint:443";
  * BookshopSettings bookshopSettings =
  *     BookshopSettings.newBuilder().setEndpoint(myEndpoint).build();
  * BookshopClient bookshopClient = BookshopClient.create(bookshopSettings);
+ * // Reuse the client across requests, and close it on application shutdown.
+ * bookshopClient.close();
  * }</pre>
  *
  * <p>Please refer to the GitHub repository's samples for more quickstart code snippets.

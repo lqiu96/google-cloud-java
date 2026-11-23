@@ -19,7 +19,6 @@ package com.google.showcase.v1beta1.samples;
 // [START goldensample_generated_Identity_Create_SetEndpoint_sync]
 import com.google.showcase.v1beta1.IdentityClient;
 import com.google.showcase.v1beta1.IdentitySettings;
-import com.google.showcase.v1beta1.myEndpoint;
 
 public class SyncCreateSetEndpoint {
 
@@ -33,9 +32,12 @@ public class SyncCreateSetEndpoint {
     // - It may require correct/in-range values for request initialization.
     // - It may require specifying regional endpoints when creating the service client as shown in
     // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
+    String myEndpoint = "my-endpoint:443";
     IdentitySettings identitySettings =
         IdentitySettings.newBuilder().setEndpoint(myEndpoint).build();
     IdentityClient identityClient = IdentityClient.create(identitySettings);
+    // Reuse the client across requests, and close it on application shutdown.
+    identityClient.close();
   }
 }
 // [END goldensample_generated_Identity_Create_SetEndpoint_sync]
