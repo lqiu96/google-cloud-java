@@ -69,14 +69,14 @@ import java.util.Objects;
  * }</pre>
  *
  * <p>A less trivial example of a projection query that returns the first 10 results of "age" and
- * "name" properties (sorted and grouped by "age") with an age greater than 18
+ * "name" properties (sorted and distinct on "age") with an age greater than 18
  *
  * <pre>{@code
  * Query<ProjectionEntity> query = Query.newProjectionEntityQueryBuilder()
  *     .setKind(kind)
- *     .setProjection(Projection.property("age"), Projection.first("name"))
+ *     .setProjection("age", "name")
  *     .setFilter(PropertyFilter.gt("age", 18))
- *     .setGroupBy("age")
+ *     .setDistinctOn("age")
  *     .setOrderBy(OrderBy.asc("age"))
  *     .setLimit(10)
  *     .build();
@@ -85,7 +85,7 @@ import java.util.Objects;
  * }</pre>
  *
  * @param <V> the type of the result values this query will produce
- * @see <a href="https://cloud.google.com/appengine/docs/java/datastore/queries">Datastore
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/concepts/queries">Datastore
  *     queries</a>
  */
 public abstract class StructuredQuery<V> extends Query<V> implements RecordQuery<V> {

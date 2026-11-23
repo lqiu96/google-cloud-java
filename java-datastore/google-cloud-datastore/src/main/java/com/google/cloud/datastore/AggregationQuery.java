@@ -42,7 +42,7 @@ import java.util.Set;
  *    .build();
  * AggregationResults aggregationResults = datastore.runAggregation(aggregationQuery);
  * for (AggregationResult aggregationResult : aggregationResults) {
- *     System.out.println(aggregationResult.get("total_count"));
+ *   System.out.println(aggregationResult.getLong("total_count"));
  * }
  * }</pre>
  *
@@ -59,13 +59,13 @@ import java.util.Set;
  *     .build();
  * AggregationResults aggregationResults = datastore.runAggregation(aggregationQuery);
  * for (AggregationResult aggregationResult : aggregationResults) {
- *   System.out.println(aggregationResult.get("total_count"));
- *   System.out.println(aggregationResult.get("count_upto_100"));
+ *   System.out.println(aggregationResult.getLong("total_count"));
+ *   System.out.println(aggregationResult.getLong("count_upto_100"));
  * }
  * }</pre>
  *
- * @see <a href="https://cloud.google.com/appengine/docs/java/datastore/queries">Datastore
- *     queries</a>
+ * @see <a href="https://docs.cloud.google.com/datastore/docs/aggregation-queries">Datastore
+ *     aggregation queries</a>
  */
 public class AggregationQuery extends Query<AggregationResults> {
 
@@ -97,16 +97,16 @@ public class AggregationQuery extends Query<AggregationResults> {
   }
 
   /**
-   * Returns the underlying {@link StructuredQuery for this Query}. Returns null if created with
-   * {@link GqlQuery}
+   * Returns the underlying {@link StructuredQuery} for this query, or {@code null} if created with
+   * a {@link GqlQuery}.
    */
   public StructuredQuery<?> getNestedStructuredQuery() {
     return nestedStructuredQuery;
   }
 
   /**
-   * Returns the underlying {@link GqlQuery for this Query}. Returns null if created with {@link
-   * StructuredQuery}
+   * Returns the underlying {@link GqlQuery} for this query, or {@code null} if created with a
+   * {@link StructuredQuery}.
    */
   public GqlQuery<?> getNestedGqlQuery() {
     return nestedGqlQuery;

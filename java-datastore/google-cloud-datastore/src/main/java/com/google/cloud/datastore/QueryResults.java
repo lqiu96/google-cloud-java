@@ -46,7 +46,7 @@ public interface QueryResults<V> extends Iterator<V> {
    * <p>A simple use case:
    *
    * <pre>{@code
-   * Query<Entity> query = Query.newEntityQueryBuilder()
+   * EntityQuery query = Query.newEntityQueryBuilder()
    *     .setKind("Person")
    *     .setFilter(PropertyFilter.eq("favoriteFood", "pizza"))
    *     .build();
@@ -61,15 +61,19 @@ public interface QueryResults<V> extends Iterator<V> {
   /**
    * Returns the number of results skipped, typically because of an offset.
    *
-   * <p>A simple use case to count entities:
+   * <p>Example of checking skipped results with an offset:
    *
    * <pre>{@code
-   * Query<Key> query = Query.newKeyQueryBuilder().setOffset(Integer.MAX_VALUE).build();
-   * QueryResults<Key> result = datasore.datastore.run(query);
-   * if (!result.hasNext()) {
-   *  int numberOfEntities = result.getSkippedResults();
-   * }
+   * Query<Entity> query = Query.newEntityQueryBuilder()
+   *     .setKind("Person")
+   *     .setOffset(10)
+   *     .build();
+   * QueryResults<Entity> results = datastore.run(query);
+   * int skipped = results.getSkippedResults();
    * }</pre>
+   *
+   * <p>To count matching entities without scanning or skipping them, use an {@link
+   * AggregationQuery} with {@link com.google.cloud.datastore.aggregation.Aggregation#count()}.
    */
   int getSkippedResults();
 

@@ -141,7 +141,7 @@ public abstract class BaseKey implements Serializable {
     return projectId;
   }
 
-  /** Returns the key's namespace or {@code null} if not provided. */
+  /** Returns the key's namespace, or an empty string ({@code ""}) for the default namespace. */
   public String getNamespace() {
     return namespace;
   }
