@@ -249,7 +249,8 @@ class IamUtils {
    * @return IdToken issed to the serviceAccount
    * @throws IOException if the IdToken cannot be issued.
    * @see <a
-   *     href="https://cloud.google.com/iam/credentials/reference/rest/v1/projects.serviceAccounts/generateIdToken">...</a>
+   *     href="https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/generateIdToken">IAM
+   *     Credentials API: generateIdToken</a>
    */
   static IdToken getIdToken(
       String serviceAccountEmail,

@@ -60,8 +60,9 @@ import org.jspecify.annotations.Nullable;
  * the upper bound of permissions that the credential can access. You must also provide a source
  * credential which will be used to acquire the downscoped credential.
  *
- * <p>See <a href='https://cloud.google.com/iam/docs/downscoping-short-lived-credentials'>for more
- * information.</a>
+ * <p>See <a
+ * href="https://docs.cloud.google.com/iam/docs/downscoping-short-lived-credentials">Downscoping
+ * with Credential Access Boundaries</a> for more information.
  *
  * <p>Usage:
  *

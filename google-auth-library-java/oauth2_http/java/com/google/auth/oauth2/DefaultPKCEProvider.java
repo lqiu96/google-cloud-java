@@ -38,9 +38,12 @@ import java.util.Base64;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * Implements PKCE using only the Java standard library. See https://www.rfc-editor.org/rfc/rfc7636.
+ * Implements PKCE using only the Java standard library. See <a
+ * href="https://datatracker.ietf.org/doc/html/rfc7636">RFC 7636</a>.
  *
- * <p>https://developers.google.com/identity/protocols/oauth2/native-app#step1-code-verifier.
+ * <p>See <a
+ * href="https://developers.google.com/identity/protocols/oauth2/native-app#step1-code-verifier">OAuth
+ * 2.0 for Mobile &amp; Desktop Apps</a>.
  */
 @NullMarked
 public class DefaultPKCEProvider implements PKCEProvider {

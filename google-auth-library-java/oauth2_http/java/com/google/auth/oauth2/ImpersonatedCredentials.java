@@ -143,7 +143,7 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @param scopes scopes to request during the authorization grant
    * @param lifetime number of seconds the delegated credential should be valid. By default this
    *     value should be at most 3600. However, you can follow <a
-   *     href='https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth'>these
+   *     href="https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct">these
    *     instructions</a> to set up the service account and extend the maximum lifetime to 43200 (12
    *     hours). If the given lifetime is 0, default value 3600 will be used instead when creating
    *     the credentials.
@@ -182,7 +182,7 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @param scopes scopes to request during the authorization grant
    * @param lifetime number of seconds the delegated credential should be valid. By default this
    *     value should be at most 3600. However, you can follow <a
-   *     href='https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth'>these
+   *     href="https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct">these
    *     instructions</a> to set up the service account and extend the maximum lifetime to 43200 (12
    *     hours). If the given lifetime is 0, default value 3600 will be used instead when creating
    *     the credentials.
@@ -229,7 +229,7 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @param scopes scopes to request during the authorization grant
    * @param lifetime number of seconds the delegated credential should be valid. By default this
    *     value should be at most 3600. However, you can follow <a
-   *     href='https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth'>these
+   *     href="https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct">these
    *     instructions</a> to set up the service account and extend the maximum lifetime to 43200 (12
    *     hours). If the given lifetime is 0, default value 3600 will be used instead when creating
    *     the credentials.
@@ -280,12 +280,10 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @param scopes scopes to request during the authorization grant
    * @param lifetime number of seconds the delegated credential should be valid. By default this
    *     value should be at most 3600. However, you can follow <a
-   *     href='https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth'>these
+   *     href="https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct">these
    *     instructions</a> to set up the service account and extend the maximum lifetime to 43200 (12
-   *     hours).
-   *     https://cloud.google.com/iam/docs/creating-short-lived-service-account-credentials#sa-credentials-oauth
-   *     If the given lifetime is 0, default value 3600 will be used instead when creating the
-   *     credentials.
+   *     hours). If the given lifetime is 0, default value 3600 will be used instead when creating
+   *     the credentials.
    * @return new credentials
    */
   public static ImpersonatedCredentials create(
@@ -360,7 +358,7 @@ public class ImpersonatedCredentials extends GoogleCredentials
    * @return signed bytes
    * @throws SigningException if the attempt to sign the provided bytes failed
    * @see <a
-   *     href="https://cloud.google.com/iam/credentials/reference/rest/v1/projects.serviceAccounts/signBlob">Blob
+   *     href="https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob">Blob
    *     Signing</a>
    */
   @Override

@@ -36,8 +36,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * The acting party as defined in <a href="https://tools.ietf.org/html/rfc8693">OAuth 2.0 Token
- * Exchange</a>.
+ * The acting party as defined in <a href="https://datatracker.ietf.org/doc/html/rfc8693">OAuth 2.0
+ * Token Exchange</a>.
  */
 @NullMarked
 final class ActingParty {

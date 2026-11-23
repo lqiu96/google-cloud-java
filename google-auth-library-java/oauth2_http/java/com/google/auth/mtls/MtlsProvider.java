@@ -38,9 +38,9 @@ import org.jspecify.annotations.NullMarked;
  * MtlsProvider is used by the Gax library for configuring mutual TLS in the HTTP and GRPC transport
  * layer. The source of the client certificate is up to the implementation.
  *
- * <p>Note: This interface will replace the identically named "MtlsProvider" implementation in the
- * Gax library. The Gax library version of MtlsProvider will be marked as deprecated. See
- * https://github.com/googleapis/google-auth-library-java/issues/1758
+ * <p>Note: This interface replaces the identically named {@code MtlsProvider} implementation in the
+ * Gax library, which is deprecated. See <a href="https://google.aip.dev/auth/4114">AIP-4114</a> for
+ * mutual TLS client certificate details.
  */
 @NullMarked
 public interface MtlsProvider {
