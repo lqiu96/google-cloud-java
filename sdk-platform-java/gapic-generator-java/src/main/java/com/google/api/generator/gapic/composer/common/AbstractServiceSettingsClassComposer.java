@@ -17,6 +17,7 @@ package com.google.api.generator.gapic.composer.common;
 import com.google.api.core.ApiFunction;
 import com.google.api.core.BetaApi;
 import com.google.api.core.InternalApi;
+import com.google.api.core.ObsoleteApi;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.api.gax.rpc.ApiClientHeaderProvider;
@@ -393,7 +394,14 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
             SettingsCommentComposer.DEFAULT_EXECUTOR_PROVIDER_BUILDER_METHOD_COMMENT));
     javaMethods.add(
         methodMakerFn.apply(
-            methodStarterFn.apply("getDefaultEndpoint", TypeNode.STRING),
+            methodStarterFn
+                .apply("getDefaultEndpoint", TypeNode.STRING)
+                .setAnnotations(
+                    ImmutableList.of(
+                        AnnotationNode.builder()
+                            .setType(FIXED_TYPESTORE.get(ObsoleteApi.class.getSimpleName()))
+                            .setDescription("Use getEndpoint() instead")
+                            .build())),
             SettingsCommentComposer.DEFAULT_SERVICE_ENDPOINT_METHOD_COMMENT));
     javaMethods.add(
         methodMakerFn.apply(
@@ -847,6 +855,7 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
             ApiFunction.class,
             BetaApi.class,
             InternalApi.class,
+            ObsoleteApi.class,
             ClientContext.class,
             ClientSettings.class,
             Generated.class,

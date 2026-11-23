@@ -38,12 +38,13 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public class ServiceClientCommentComposer {
   // Tokens.
-  private static final String EMPTY_STRING = "";
   private static final String API_EXCEPTION_TYPE_NAME = "com.google.api.gax.rpc.ApiException";
   private static final String EXCEPTION_CONDITION = "if the remote call fails";
   private static final String REQUEST_PARAM_NAME = "request";
   private static final String REQUEST_PARAM_DESCRIPTION =
       "The request object containing all of the parameters for the API call.";
+  private static final String PARAM_FALLBACK_DESCRIPTION_PATTERN =
+      "The %s parameter for the API call.";
   private static final String PAYLOAD_PARAM_NAME = "payload";
   private static final String PAYLOAD_PARAM_DESCRIPTION =
       "Supplies the payload data stream to upload. The stream is closed automatically when the"
@@ -208,9 +209,12 @@ public class ServiceClientCommentComposer {
     } else {
       for (MethodArgument argument : methodArguments) {
         // TODO(miraleung): Remove the newline replacement when we support CommonMark.
+        String paramName = JavaStyle.toLowerCamelCase(argument.name());
         String description =
-            argument.field().hasDescription() ? argument.field().description() : EMPTY_STRING;
-        methodJavadocBuilder.addParam(JavaStyle.toLowerCamelCase(argument.name()), description);
+            argument.field().hasDescription() && !argument.field().description().trim().isEmpty()
+                ? argument.field().description()
+                : String.format(PARAM_FALLBACK_DESCRIPTION_PATTERN, paramName);
+        methodJavadocBuilder.addParam(paramName, description);
       }
     }
 

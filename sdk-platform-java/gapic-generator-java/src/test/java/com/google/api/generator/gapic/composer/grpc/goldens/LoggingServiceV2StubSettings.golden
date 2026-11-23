@@ -445,7 +445,11 @@ public class LoggingServiceV2StubSettings extends StubSettings<LoggingServiceV2S
     return InstantiatingExecutorProvider.newBuilder();
   }
 
-  /** Returns the default service endpoint. */
+  /**
+   * Returns the default service endpoint. This value is static and does not reflect universe domain
+   * or custom endpoint overrides; prefer {@link #getEndpoint()} (and {@link #getUniverseDomain()})
+   * on a configured settings instance.
+   */
   @ObsoleteApi("Use getEndpoint() instead")
   public static String getDefaultEndpoint() {
     return "logging.googleapis.com:443";

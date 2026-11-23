@@ -245,9 +245,9 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param displayName
-   * @param email
+   * @param parent The parent parameter for the API call.
+   * @param displayName The displayName parameter for the API call.
+   * @param email The email parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User createUser(String parent, String displayName, String email) {
@@ -283,13 +283,13 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param displayName
-   * @param email
-   * @param age
-   * @param nickname
-   * @param enableNotifications
-   * @param heightFeet
+   * @param parent The parent parameter for the API call.
+   * @param displayName The displayName parameter for the API call.
+   * @param email The email parameter for the API call.
+   * @param age The age parameter for the API call.
+   * @param nickname The nickname parameter for the API call.
+   * @param enableNotifications The enableNotifications parameter for the API call.
+   * @param heightFeet The heightFeet parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User createUser(
@@ -352,16 +352,16 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param displayName
-   * @param email
-   * @param hobbyName
-   * @param songName
-   * @param weeklyFrequency
-   * @param companyName
-   * @param title
-   * @param subject
-   * @param artistName
+   * @param parent The parent parameter for the API call.
+   * @param displayName The displayName parameter for the API call.
+   * @param email The email parameter for the API call.
+   * @param hobbyName The hobbyName parameter for the API call.
+   * @param songName The songName parameter for the API call.
+   * @param weeklyFrequency The weeklyFrequency parameter for the API call.
+   * @param companyName The companyName parameter for the API call.
+   * @param title The title parameter for the API call.
+   * @param subject The subject parameter for the API call.
+   * @param artistName The artistName parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User createUser(
@@ -475,7 +475,7 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User getUser(@Nullable UserName name) {
@@ -500,7 +500,7 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final User getUser(String name) {
@@ -618,7 +618,7 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteUser(@Nullable UserName name) {
@@ -643,7 +643,7 @@ public class IdentityClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteUser(String name) {

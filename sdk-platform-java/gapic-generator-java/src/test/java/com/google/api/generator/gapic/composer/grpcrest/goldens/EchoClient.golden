@@ -398,7 +398,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(@Nullable ResourceName parent) {
@@ -423,7 +423,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param error
+   * @param error The error parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(Status error) {
@@ -447,7 +447,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(@Nullable FoobarName name) {
@@ -472,7 +472,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param content
+   * @param content The content parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(String content) {
@@ -496,7 +496,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(String name) {
@@ -520,7 +520,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(String parent) {
@@ -545,8 +545,8 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param content
-   * @param severity
+   * @param content The content parameter for the API call.
+   * @param severity The severity parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final EchoResponse echo(String content, Severity severity) {
@@ -873,7 +873,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param ttl
+   * @param ttl The ttl parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final OperationFuture<WaitResponse, WaitMetadata> waitAsync(Duration ttl) {
@@ -897,7 +897,7 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param endTime
+   * @param endTime The endTime parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final OperationFuture<WaitResponse, WaitMetadata> waitAsync(Timestamp endTime) {
@@ -1236,8 +1236,8 @@ public class EchoClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param case_
-   * @param updateMask
+   * @param case_ The case_ parameter for the API call.
+   * @param updateMask The updateMask parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Case updateCase(Case case_, FieldMask updateMask) {

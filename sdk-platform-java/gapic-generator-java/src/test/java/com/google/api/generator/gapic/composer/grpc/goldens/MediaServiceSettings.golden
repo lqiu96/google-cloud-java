@@ -2,6 +2,7 @@ package com.google.showcase.v1beta1;
 
 import com.google.api.core.ApiFunction;
 import com.google.api.core.BetaApi;
+import com.google.api.core.ObsoleteApi;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
@@ -93,7 +94,12 @@ public class MediaServiceSettings extends ClientSettings<MediaServiceSettings> {
     return MediaServiceStubSettings.defaultExecutorProviderBuilder();
   }
 
-  /** Returns the default service endpoint. */
+  /**
+   * Returns the default service endpoint. This value is static and does not reflect universe domain
+   * or custom endpoint overrides; prefer {@link #getEndpoint()} (and {@link #getUniverseDomain()})
+   * on a configured settings instance.
+   */
+  @ObsoleteApi("Use getEndpoint() instead")
   public static String getDefaultEndpoint() {
     return MediaServiceStubSettings.getDefaultEndpoint();
   }

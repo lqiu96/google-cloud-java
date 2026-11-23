@@ -405,8 +405,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param displayName
-   * @param description
+   * @param displayName The displayName parameter for the API call.
+   * @param description The description parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Room createRoom(String displayName, String description) {
@@ -481,7 +481,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Room getRoom(@Nullable RoomName name) {
@@ -506,7 +506,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Room getRoom(String name) {
@@ -624,7 +624,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteRoom(@Nullable RoomName name) {
@@ -649,7 +649,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteRoom(String name) {
@@ -813,8 +813,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param image
+   * @param parent The parent parameter for the API call.
+   * @param image The image parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(@Nullable ProfileName parent, ByteString image) {
@@ -843,8 +843,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param text
+   * @param parent The parent parameter for the API call.
+   * @param text The text parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(@Nullable ProfileName parent, String text) {
@@ -873,8 +873,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param image
+   * @param parent The parent parameter for the API call.
+   * @param image The image parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(@Nullable RoomName parent, ByteString image) {
@@ -903,8 +903,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param text
+   * @param parent The parent parameter for the API call.
+   * @param text The text parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(@Nullable RoomName parent, String text) {
@@ -933,8 +933,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param image
+   * @param parent The parent parameter for the API call.
+   * @param image The image parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(String parent, ByteString image) {
@@ -963,8 +963,8 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
-   * @param text
+   * @param parent The parent parameter for the API call.
+   * @param text The text parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb createBlurb(String parent, String text) {
@@ -1045,7 +1045,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb getBlurb(@Nullable BlurbName name) {
@@ -1071,7 +1071,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Blurb getBlurb(String name) {
@@ -1193,7 +1193,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteBlurb(@Nullable BlurbName name) {
@@ -1219,7 +1219,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param name
+   * @param name The name parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteBlurb(String name) {
@@ -1296,7 +1296,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListBlurbsPagedResponse listBlurbs(@Nullable ProfileName parent) {
@@ -1323,7 +1323,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListBlurbsPagedResponse listBlurbs(@Nullable RoomName parent) {
@@ -1350,7 +1350,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param parent
+   * @param parent The parent parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListBlurbsPagedResponse listBlurbs(String parent) {
@@ -1469,7 +1469,7 @@ public class MessagingClient implements BackgroundResource {
    * }
    * }</pre>
    *
-   * @param query
+   * @param query The query parameter for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final OperationFuture<SearchBlurbsResponse, SearchBlurbsMetadata> searchBlurbsAsync(

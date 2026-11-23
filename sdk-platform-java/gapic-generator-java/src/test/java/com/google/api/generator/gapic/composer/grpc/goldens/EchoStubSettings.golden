@@ -339,7 +339,11 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
     return InstantiatingExecutorProvider.newBuilder();
   }
 
-  /** Returns the default service endpoint. */
+  /**
+   * Returns the default service endpoint. This value is static and does not reflect universe domain
+   * or custom endpoint overrides; prefer {@link #getEndpoint()} (and {@link #getUniverseDomain()})
+   * on a configured settings instance.
+   */
   @ObsoleteApi("Use getEndpoint() instead")
   public static String getDefaultEndpoint() {
     return "localhost:7469";

@@ -5,6 +5,7 @@ import static com.google.showcase.v1beta1.EchoClient.SimplePagedExpandPagedRespo
 
 import com.google.api.core.ApiFunction;
 import com.google.api.core.BetaApi;
+import com.google.api.core.ObsoleteApi;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
@@ -177,7 +178,12 @@ public class EchoSettings extends ClientSettings<EchoSettings> {
     return EchoStubSettings.defaultExecutorProviderBuilder();
   }
 
-  /** Returns the default service endpoint. */
+  /**
+   * Returns the default service endpoint. This value is static and does not reflect universe domain
+   * or custom endpoint overrides; prefer {@link #getEndpoint()} (and {@link #getUniverseDomain()})
+   * on a configured settings instance.
+   */
+  @ObsoleteApi("Use getEndpoint() instead")
   public static String getDefaultEndpoint() {
     return EchoStubSettings.getDefaultEndpoint();
   }

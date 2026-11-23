@@ -75,7 +75,14 @@ public class SettingsCommentComposer {
   public static final CommentStatement DEFAULT_SERVICE_NAME_METHOD_COMMENT =
       toCommentStatement("Returns the default service name.");
   public static final CommentStatement DEFAULT_SERVICE_ENDPOINT_METHOD_COMMENT =
-      toCommentStatement("Returns the default service endpoint.");
+      CommentStatement.withComment(
+          JavaDocComment.builder()
+              .addUnescapedComment(
+                  "Returns the default service endpoint. This value is static and does not"
+                      + " reflect universe domain or custom endpoint overrides; prefer {@link"
+                      + " #getEndpoint()} (and {@link #getUniverseDomain()}) on a configured"
+                      + " settings instance.")
+              .build());
   public static final CommentStatement DEFAULT_SERVICE_MTLS_ENDPOINT_METHOD_COMMENT =
       toCommentStatement("Returns the default mTLS service endpoint.");
   public static final CommentStatement DEFAULT_SERVICE_SCOPES_METHOD_COMMENT =
