@@ -23,6 +23,4 @@ To use it in Maven, add the following to your `pom.xml`:
 
 ## License
 
-Apache 2.0 - See [LICENSE] for more information.
-
-[LICENSE]: https://github.com/googleapis/google-auth-library-java/blob/main/LICENSE
+BSD 3-Clause - See [BSD 3-Clause License](https://opensource.org/license/BSD-3-Clause) for more information.
