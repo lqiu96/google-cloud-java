@@ -22,8 +22,8 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 
 /**
- * The class implements {@see Iterator} interface over {@see LogEntry} by iterating through {@see
- * TailLogEntriesResponse} streamed by {@code BidiStream}. This class is instantiated by {@see
+ * The class implements {@link Iterator} interface over {@link LogEntry} by iterating through {@link
+ * TailLogEntriesResponse} streamed by {@code BidiStream}. This class is instantiated by {@link
  * LogEntryServerStream} and is not intended to be used explicitly.
  */
 public class LogEntryIterator implements Iterator<LogEntry> {

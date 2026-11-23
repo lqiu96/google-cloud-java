@@ -16,7 +16,7 @@
 
 package com.google.cloud.logging;
 
-/** Class provides a per-thread storage of the {@see Context} instances. */
+/** Class provides a per-thread storage of the {@link Context} instances. */
 public class ContextHandler {
 
   public enum ContextPriority {

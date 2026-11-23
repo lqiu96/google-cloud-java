@@ -929,7 +929,7 @@ class LoggingImpl extends BaseService<LoggingOptions> implements Logging {
    * Formats trace following resource name template if the resource metadata has project id.
    *
    * @param traceId A trace id string or {@code null} if trace info is missing.
-   * @param resource A {@see MonitoredResource} describing environment metadata.
+   * @param resource A {@link MonitoredResource} describing environment metadata.
    * @return A formatted trace id string.
    */
   private String getFormattedTrace(String traceId, MonitoredResource resource) {

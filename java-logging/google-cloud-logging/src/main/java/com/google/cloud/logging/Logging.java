@@ -128,7 +128,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
 
     /**
      * Returns an option to set partialSuccess flag. See <a
-     * href="https://cloud.google.com/logging/docs/reference/v2/rest/v2/entries/write#body.request_body.FIELDS.partial_success">the
+     * href="https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/entries/write#body.request_body.FIELDS.partial_success">the
      * API documentation</a> for more details.
      */
     public static WriteOption partialSuccess(boolean partialSuccess) {
@@ -205,7 +205,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
     /**
      * Returns an option to specify a filter to the log entries to be listed.
      *
-     * @see <a href= "https://cloud.google.com/logging/docs/view/advanced_filters">Advanced Logs
+     * @see <a href="https://docs.cloud.google.com/logging/docs/view/building-queries">Advanced Logs
      *     Filters</a>
      */
     public static EntryListOption filter(String filter) {
@@ -254,7 +254,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
     /**
      * Returns an option to specify a filter to the log entries to be tailed.
      *
-     * @see <a href= "https://cloud.google.com/logging/docs/view/advanced_filters">Advanced Logs
+     * @see <a href="https://docs.cloud.google.com/logging/docs/view/building-queries">Advanced Logs
      *     Filters</a>
      */
     public static TailOption filter(String filter) {
@@ -266,8 +266,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
      * being returned to prevent out of order results due to late arriving log entries. Valid values
      * are between 0-60000 ms. Default is 2000 ms.
      *
-     * @see <a href=
-     *     "https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.Duration">Duration
+     * @see <a href= "https://protobuf.dev/reference/protobuf/google.protobuf/#duration">Duration
      *     format</a>
      */
     public static TailOption bufferWindow(String duration) {
@@ -306,15 +305,11 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    * this method is called with any {@link Severity} value other than {@link Severity#NONE}. Logs
    * will be immediately written out for entries at or higher than flush severity.
    *
-   * <p>Enabling this can cause the leaking and hanging threads, see BUG(2796) BUG(3880). However
-   * you can explicitly call {@link #flush}.
-   *
-   * <p>TODO: Enable this by default once functionality to trigger rpc is available in generated
-   * code.
+   * <p>You can also explicitly call {@link #flush} to flush pending writes.
    */
   void setFlushSeverity(Severity flushSeverity);
 
-  /* Retrieves flush severity for asynchronous logging writes. */
+  /** Retrieves flush severity for asynchronous logging writes. */
   Severity getFlushSeverity();
 
   /**
@@ -323,15 +318,12 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    * <p>Example of creating a sink to export logs to a BigQuery dataset (in the {@link
    * LoggingOptions#getProjectId()} project).
    *
-   * <pre>
-   * {
-   *   &#64;code
-   *   String sinkName = "my_sink_name";
-   *   String datasetName = "my_dataset";
-   *   SinkInfo sinkInfo = SinkInfo.of(sinkName, DatasetDestination.of(datasetName));
-   *   Sink sink = logging.create(sinkInfo);
-   * }
-   * </pre>
+   * <pre>{@code
+   * String sinkName = "my_sink_name";
+   * String datasetName = "my_dataset";
+   * SinkInfo sinkInfo = SinkInfo.of(sinkName, DatasetDestination.of(datasetName));
+   * Sink sink = logging.create(sinkInfo);
+   * }</pre>
    *
    * @return the created sink
    * @throws LoggingException upon failure
@@ -343,14 +335,11 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    *
    * <p>Example of creating a metric for logs with severity higher or equal to ERROR.
    *
-   * <pre>
-   * {
-   *   &#64;code
-   *   String metricName = "my_metric_name";
-   *   MetricInfo metricInfo = MetricInfo.of(metricName, "severity>=ERROR");
-   *   Metric metric = logging.create(metricInfo);
-   * }
-   * </pre>
+   * <pre>{@code
+   * String metricName = "my_metric_name";
+   * MetricInfo metricInfo = MetricInfo.of(metricName, "severity>=ERROR");
+   * Metric metric = logging.create(metricInfo);
+   * }</pre>
    *
    * @return the created metric
    * @throws LoggingException upon failure
@@ -363,15 +352,12 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    *
    * <p>Example of creating the exclusion:
    *
-   * <pre>
-   * {
-   *   &#64;code
-   *   String exclusionName = "my_exclusion_name";
-   *   Exclusion exclusion = Exclusion.of(exclusionName,
-   *       "resource.type=gcs_bucket severity&lt;ERROR sample(insertId, 0.99)");
-   *   Exclusion exclusion = logging.create(exclusion);
-   * }
-   * </pre>
+   * <pre>{@code
+   * String exclusionName = "my_exclusion_name";
+   * Exclusion exclusion = Exclusion.of(exclusionName,
+   *     "resource.type=gcs_bucket severity<ERROR sample(insertId, 0.99)");
+   * Exclusion createdExclusion = logging.create(exclusion);
+   * }</pre>
    *
    * @return the created exclusion
    * @throws LoggingException upon failure
@@ -424,7 +410,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    *     "resource.type=gcs_bucket severity<ERROR sample(insertId, 0.99)");
    * ApiFuture<Exclusion> future = logging.createAsync(exclusion);
    * // ...
-   * Exclusion exclusion = future.get();
+   * Exclusion createdExclusion = future.get();
    * }</pre>
    */
   ApiFuture<Exclusion> createAsync(Exclusion exclusion);
@@ -442,7 +428,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    * Sink sink = logging.update(sinkInfo);
    * }</pre>
    *
-   * @return the created sink
+   * @return the updated or created sink
    * @throws LoggingException upon failure
    */
   Sink update(SinkInfo sink);
@@ -459,7 +445,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    * Metric metric = logging.update(metricInfo);
    * }</pre>
    *
-   * @return the created metric
+   * @return the updated or created metric
    * @throws LoggingException upon failure
    */
   Metric update(MetricInfo metric);
@@ -474,7 +460,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    * Exclusion exclusion = Exclusion
    *     .newBuilder(exclusionName, "resource.type=gcs_bucket severity<ERROR sample(insertId, 0.99)")
    *     .setDescription("new description").setIsDisabled(false).build();
-   * Exclusion exclusion = logging.update(exclusion);
+   * Exclusion updatedExclusion = logging.update(exclusion);
    * }</pre>
    *
    * @return the updated exclusion
@@ -484,8 +470,9 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
 
   /**
    * Sends a request for updating a sink (or creating it, if it does not exist). This method returns
-   * a {@code ApiFuture} object to consume the result. {@link ApiFuture#get()} returns the
-   * updated/created sink or {@code null} if not found.
+   * an {@code ApiFuture} object to consume the result. {@link ApiFuture#get()} returns the updated
+   * or created sink, or throws {@link java.util.concurrent.ExecutionException} wrapping a {@link
+   * LoggingException} upon failure.
    *
    * <p>Example of asynchronously updating a sink.
    *
@@ -503,8 +490,9 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
 
   /**
    * Sends a request for updating a metric (or creating it, if it does not exist). This method
-   * returns a {@code ApiFuture} object to consume the result. {@link ApiFuture#get()} returns the
-   * updated/created metric or {@code null} if not found.
+   * returns an {@code ApiFuture} object to consume the result. {@link ApiFuture#get()} returns the
+   * updated or created metric, or throws {@link java.util.concurrent.ExecutionException} wrapping a
+   * {@link LoggingException} upon failure.
    *
    * <p>Example of asynchronously updating a metric.
    *
@@ -522,7 +510,8 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
   /**
    * Sends a request to change one or more properties of an existing exclusion. This method returns
    * an {@code ApiFuture} object to consume the result. {@link ApiFuture#get()} returns the updated
-   * exclusion or {@code null} if not found.
+   * exclusion, or throws {@link java.util.concurrent.ExecutionException} wrapping a {@link
+   * LoggingException} upon failure.
    *
    * <p>Example of asynchronous exclusion update:
    *
@@ -533,7 +522,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    *     .setDescription("new description").setIsDisabled(false).build();
    * ApiFuture<Exclusion> future = logging.updateAsync(exclusion);
    * // ...
-   * Exclusion exclusion = future.get();
+   * Exclusion updatedExclusion = future.get();
    * }</pre>
    */
   ApiFuture<Exclusion> updateAsync(Exclusion exclusion);
@@ -556,8 +545,10 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
   Sink getSink(String sink);
 
   /**
-   * Sends a request for getting a sink. This method returns a {@code ApiFuture} object to consume
-   * the result. {@link ApiFuture#get()} returns the requested sink or {@code null} if not found.
+   * Sends a request for getting a sink. This method returns an {@code ApiFuture} object to consume
+   * the result. {@link ApiFuture#get()} returns the requested sink or {@code null} if not found, or
+   * throws {@link java.util.concurrent.ExecutionException} wrapping a {@link LoggingException} upon
+   * failure.
    *
    * <p>Example of asynchronously getting a sink.
    *
@@ -570,8 +561,6 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    *   // sink was not found
    * }
    * }</pre>
-   *
-   * @throws LoggingException upon failure
    */
   ApiFuture<Sink> getSinkAsync(String sink);
 
@@ -664,8 +653,8 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    * <p>Example of listing log names, specifying the page size.
    *
    * <pre>{@code
-   * Page<Log> logNames = logging.listLogs(ListOption.pageSize(100));
-   * Iterator<Log> logIterator = logNames.iterateAll().iterator();
+   * Page<String> logNames = logging.listLogs(ListOption.pageSize(100));
+   * Iterator<String> logIterator = logNames.iterateAll().iterator();
    * while (logIterator.hasNext()) {
    *   String logName = logIterator.next();
    *   // do something with the log name
@@ -688,10 +677,10 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    * <p>Example of asynchronously listing log names, specifying the page size.
    *
    * <pre>{@code
-   * ApiFuture<AsyncPage<Log>> future = logging.listLogsAsync(ListOption.pageSize(100));
+   * ApiFuture<AsyncPage<String>> future = logging.listLogsAsync(ListOption.pageSize(100));
    * // ...
-   * AsyncPage<Sink> logNames = future.get();
-   * Iterator<Sink> logIterator = logNames.iterateAll().iterator();
+   * AsyncPage<String> logNames = future.get();
+   * Iterator<String> logIterator = logNames.iterateAll().iterator();
    * while (logIterator.hasNext()) {
    *   String logName = logIterator.next();
    *   // do something with the log name
@@ -723,9 +712,10 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
   boolean deleteLog(String log);
 
   /**
-   * Deletes a log and all its log entries for given log destination (see 'logName' parameter in
-   * https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry). The log will reappear if
-   * new entries are written to it.
+   * Deletes a log and all its log entries for given log destination (see the {@code logName} field
+   * in <a
+   * href="https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry">LogEntry</a>).
+   * The log will reappear if new entries are written to it.
    *
    * <p>Example of deleting a log by folder destination.
    *
@@ -748,8 +738,9 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
   }
 
   /**
-   * Sends a request for deleting a log and all its log entries for given log destination (see
-   * 'logName' parameter in https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry).
+   * Sends a request for deleting a log and all its log entries for given log destination (see the
+   * {@code logName} field in <a
+   * href="https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry">LogEntry</a>).
    * This method returns a {@code ApiFuture} object to consume the result. {@link ApiFuture#get()}
    * returns {@code true} if the log was deleted, {@code false} if it was not found.
    *
@@ -857,8 +848,10 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
   Metric getMetric(String metric);
 
   /**
-   * Sends a request for getting a metric. This method returns a {@code ApiFuture} object to consume
-   * the result. {@link ApiFuture#get()} returns the requested metric or {@code null} if not found.
+   * Sends a request for getting a metric. This method returns an {@code ApiFuture} object to
+   * consume the result. {@link ApiFuture#get()} returns the requested metric or {@code null} if not
+   * found, or throws {@link java.util.concurrent.ExecutionException} wrapping a {@link
+   * LoggingException} upon failure.
    *
    * <p>Example of asynchronously getting a metric.
    *
@@ -871,8 +864,6 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    *   // metric was not found
    * }
    * }</pre>
-   *
-   * @throws LoggingException upon failure
    */
   ApiFuture<Metric> getMetricAsync(String metric);
 
@@ -975,9 +966,10 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
   Exclusion getExclusion(String exclusion);
 
   /**
-   * Sends a request to get the description of an exclusion . This method returns an {@code
+   * Sends a request to get the description of an exclusion. This method returns an {@code
    * ApiFuture} object to consume the result. {@link ApiFuture#get()} returns the requested
-   * exclusion or {@code null} if not found.
+   * exclusion or {@code null} if not found, or throws {@link
+   * java.util.concurrent.ExecutionException} wrapping a {@link LoggingException} upon failure.
    *
    * <p>Example of asynchronously getting the exclusion:
    *
@@ -990,8 +982,6 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    *   // exclusion was not found
    * }
    * }</pre>
-   *
-   * @throws LoggingException upon failure
    */
   ApiFuture<Exclusion> getExclusionAsync(String exclusion);
 
@@ -1023,7 +1013,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    *
    * <pre>{@code
    * String exclusionName = "my_exclusion_name";
-   * ApiFuture<Boolean> future = logging.deleteExclusionAsync(metricName);
+   * ApiFuture<Boolean> future = logging.deleteExclusionAsync(exclusionName);
    * // ...
    * boolean deleted = future.get();
    * if (deleted) {
@@ -1043,7 +1033,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    * <p>Example of listing exclusions, specifying the page size:
    *
    * <pre>{@code
-   * Page<Exclusion> exclusions = logging.listMetrics(ListOption.pageSize(100));
+   * Page<Exclusion> exclusions = logging.listExclusions(ListOption.pageSize(100));
    * Iterator<Exclusion> exclusionIterator = exclusions.iterateAll().iterator();
    * while (exclusionIterator.hasNext()) {
    *   Exclusion exclusion = exclusionIterator.next();
@@ -1078,10 +1068,10 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
 
   /**
    * Flushes any pending asynchronous logging writes. Logs are automatically flushed based on time
-   * and message count that be configured via {@link com.google.api.gax.batching.BatchingSettings},
-   * Logs are also flushed if enabled, at or above flush severity, see {@link #setFlushSeverity}.
-   * Logging frameworks require support for an explicit flush. See usage in the java.util.logging
-   * handler{@link LoggingHandler}.
+   * and message count that can be configured via {@link
+   * com.google.api.gax.batching.BatchingSettings}. Logs are also flushed if enabled, at or above
+   * flush severity, see {@link #setFlushSeverity}. Logging frameworks require support for an
+   * explicit flush. See usage in the java.util.logging handler {@link LoggingHandler}.
    */
   void flush();
 
@@ -1133,14 +1123,16 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
   Page<LogEntry> listLogEntries(EntryListOption... options);
 
   /**
-   * Sends a request for listing log entries. This method returns a {@code ApiFuture} object to
+   * Sends a request for listing log entries. This method returns an {@code ApiFuture} object to
    * consume the result. {@link ApiFuture#get()} returns an {@link AsyncPage} object that can be
-   * used to asynchronously handle paginated results. Use {@link EntryListOption#pageSize(int)} to
-   * specify the page size. Use {@link EntryListOption#pageToken(String)} to specify the page token
-   * from which to start listing entries. Use {@link EntryListOption#sortOrder(SortingField,
-   * SortingOrder)} to sort log entries according to your preferred order (default is most-recent
-   * last). Use {@link EntryListOption#filter(String)} to filter listed log entries. By default a 24
-   * hour filter is applied.
+   * used to asynchronously handle paginated results, or throws {@link
+   * java.util.concurrent.ExecutionException} wrapping a {@link LoggingException} upon failure. Use
+   * {@link EntryListOption#pageSize(int)} to specify the page size. Use {@link
+   * EntryListOption#pageToken(String)} to specify the page token from which to start listing
+   * entries. Use {@link EntryListOption#sortOrder(SortingField, SortingOrder)} to sort log entries
+   * according to your preferred order (default is most-recent last). Use {@link
+   * EntryListOption#filter(String)} to filter listed log entries. By default a 24 hour filter is
+   * applied.
    *
    * <p>Example of asynchronously listing log entries for a specific log.
    *
@@ -1155,17 +1147,15 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    *   // do something with the entry
    * }
    * }</pre>
-   *
-   * @throws LoggingException upon failure
    */
   ApiFuture<AsyncPage<LogEntry>> listLogEntriesAsync(EntryListOption... options);
 
   /**
    * Sends a request to stream fresh log entries. The method returns a {@code LogEntryServerStream}
-   * object to iterate through the returned stream of the log entries. Use
-   * EntryListOption#bufferWindow(String)} to specify amount of time to buffer log entries at the
-   * server before being returned. entries. Use {@link TailOption#filter(String)} to filter tailed
-   * log entries.
+   * object to iterate through the returned stream of the log entries. Use {@link
+   * TailOption#bufferWindow(String)} to specify the amount of time to buffer log entries at the
+   * server before being returned. Use {@link TailOption#filter(String)} to filter tailed log
+   * entries.
    *
    * <p>Example of streaming log entries for a specific project.
    *
@@ -1191,7 +1181,7 @@ public interface Logging extends AutoCloseable, Service<LoggingOptions> {
    * @param customResource a customized instance of the {@link MonitoredResource}. If this parameter
    *     is {@code null} then the new instance will be generated using {@link
    *     MonitoredResourceUtil#getResource(String, String)}.
-   * @param exclusionClassPaths a list of exclussion class path prefixes. If left empty then {@link
+   * @param exclusionClassPaths a list of exclusion class path prefixes. If left empty then {@link
    *     SourceLocation} instance is built based on the caller's stack trace information. Otherwise,
    *     the information from the first {@link StackTraceElement} along the call stack which class
    *     name does not start with any not {@code null} exclusion class paths is used.
