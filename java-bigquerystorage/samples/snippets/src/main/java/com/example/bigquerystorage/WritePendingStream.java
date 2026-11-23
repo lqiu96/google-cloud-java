@@ -36,12 +36,12 @@ import com.google.cloud.bigquery.storage.v1.WriteStream;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Phaser;
 import javax.annotation.concurrent.GuardedBy;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.threeten.bp.Duration;
 
 public class WritePendingStream {
 
@@ -57,58 +57,61 @@ public class WritePendingStream {
 
   public static void writePendingStream(String projectId, String datasetName, String tableName)
       throws DescriptorValidationException, InterruptedException, IOException {
-    BigQueryWriteClient client = BigQueryWriteClient.create();
-    TableName parentTable = TableName.of(projectId, datasetName, tableName);
+    try (BigQueryWriteClient client = BigQueryWriteClient.create()) {
+      TableName parentTable = TableName.of(projectId, datasetName, tableName);
 
-    DataWriter writer = new DataWriter();
-    // One time initialization.
-    writer.initialize(parentTable, client);
+      DataWriter writer = new DataWriter();
+      // One time initialization.
+      writer.initialize(parentTable, client);
 
-    try {
-      // Write two batches of fake data to the stream, each with 10 JSON records.  Data may be
-      // batched up to the maximum request size:
-      // https://cloud.google.com/bigquery/quotas#write-api-limits
-      long offset = 0;
-      for (int i = 0; i < 2; i++) {
-        // Create a JSON object that is compatible with the table schema.
-        JSONArray jsonArr = new JSONArray();
-        for (int j = 0; j < 10; j++) {
-          JSONObject record = new JSONObject();
-          record.put("col1", String.format("batch-record %03d-%03d", i, j));
-          jsonArr.put(record);
+      try {
+        // Write two batches of fake data to the stream, each with 10 JSON records.  Data may be
+        // batched up to the maximum request size:
+        // https://docs.cloud.google.com/bigquery/quotas#write-api-limits
+        long offset = 0;
+        for (int i = 0; i < 2; i++) {
+          // Create a JSON object that is compatible with the table schema.
+          JSONArray jsonArr = new JSONArray();
+          for (int j = 0; j < 10; j++) {
+            JSONObject record = new JSONObject();
+            record.put("col1", String.format("batch-record %03d-%03d", i, j));
+            jsonArr.put(record);
+          }
+          writer.append(jsonArr, offset);
+          offset += jsonArr.length();
         }
-        writer.append(jsonArr, offset);
-        offset += jsonArr.length();
+      } catch (ExecutionException e) {
+        // If the wrapped exception is a StatusRuntimeException, check the state of the operation.
+        // If the state is INTERNAL, CANCELLED, or ABORTED, you can retry. For more information,
+        // see:
+        // https://grpc.github.io/grpc-java/javadoc/io/grpc/StatusRuntimeException.html
+        System.out.println("Failed to append records. \n" + e);
       }
-    } catch (ExecutionException e) {
-      // If the wrapped exception is a StatusRuntimeException, check the state of the operation.
-      // If the state is INTERNAL, CANCELLED, or ABORTED, you can retry. For more information, see:
-      // https://grpc.github.io/grpc-java/javadoc/io/grpc/StatusRuntimeException.html
-      System.out.println("Failed to append records. \n" + e);
-    }
 
-    // Final cleanup for the stream.
-    writer.cleanup(client);
-    System.out.println("Appended records successfully.");
+      // Final cleanup for the stream.
+      writer.cleanup(client);
+      System.out.println("Appended records successfully.");
 
-    // Once all streams are done, if all writes were successful, commit all of them in one request.
-    // This example only has the one stream. If any streams failed, their workload may be
-    // retried on a new stream, and then only the successful stream should be included in the
-    // commit.
-    BatchCommitWriteStreamsRequest commitRequest =
-        BatchCommitWriteStreamsRequest.newBuilder()
-            .setParent(parentTable.toString())
-            .addWriteStreams(writer.getStreamName())
-            .build();
-    BatchCommitWriteStreamsResponse commitResponse = client.batchCommitWriteStreams(commitRequest);
-    // If the response does not have a commit time, it means the commit operation failed.
-    if (commitResponse.hasCommitTime() == false) {
-      for (StorageError err : commitResponse.getStreamErrorsList()) {
-        System.out.println(err.getErrorMessage());
+      // Once all streams are done, if all writes were successful, commit all of them in one
+      // request. This example only has the one stream. If any streams failed, their workload may be
+      // retried on a new stream, and then only the successful stream should be included in the
+      // commit.
+      BatchCommitWriteStreamsRequest commitRequest =
+          BatchCommitWriteStreamsRequest.newBuilder()
+              .setParent(parentTable.toString())
+              .addWriteStreams(writer.getStreamName())
+              .build();
+      BatchCommitWriteStreamsResponse commitResponse =
+          client.batchCommitWriteStreams(commitRequest);
+      // If the response does not have a commit time, it means the commit operation failed.
+      if (commitResponse.hasCommitTime() == false) {
+        for (StorageError err : commitResponse.getStreamErrorsList()) {
+          System.out.println(err.getErrorMessage());
+        }
+        throw new RuntimeException("Error committing the streams");
       }
-      throw new RuntimeException("Error committing the streams");
+      System.out.println("Appended and committed records successfully.");
     }
-    System.out.println("Appended and committed records successfully.");
   }
 
   // A simple wrapper object showing how the stateful stream writer should be used.
@@ -127,7 +130,7 @@ public class WritePendingStream {
         throws IOException, DescriptorValidationException, InterruptedException {
       // Initialize a write stream for the specified table.
       // For more information on WriteStream.Type, see:
-      // https://googleapis.dev/java/google-cloud-bigquerystorage/latest/com/google/cloud/bigquery/storage/v1/WriteStream.Type.html
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.WriteStream.Type
       WriteStream stream = WriteStream.newBuilder().setType(WriteStream.Type.PENDING).build();
 
       // Configure in-stream automatic retry settings.
@@ -137,10 +140,10 @@ public class WritePendingStream {
       // * RESOURCE_EXHAUSTED
       RetrySettings retrySettings =
           RetrySettings.newBuilder()
-              .setInitialRetryDelay(Duration.ofMillis(500))
+              .setInitialRetryDelayDuration(Duration.ofMillis(500))
               .setRetryDelayMultiplier(1.1)
               .setMaxAttempts(5)
-              .setMaxRetryDelay(Duration.ofMinutes(1))
+              .setMaxRetryDelayDuration(Duration.ofMinutes(1))
               .build();
 
       CreateWriteStreamRequest createWriteStreamRequest =
@@ -152,7 +155,7 @@ public class WritePendingStream {
 
       // Use the JSON stream writer to send records in JSON format.
       // For more information about JsonStreamWriter, see:
-      // https://cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.JsonStreamWriter
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.JsonStreamWriter
       streamWriter =
           JsonStreamWriter.newBuilder(writeStream.getName(), writeStream.getTableSchema())
               .setRetrySettings(retrySettings)
@@ -169,10 +172,11 @@ public class WritePendingStream {
       }
       // Append asynchronously for increased throughput.
       ApiFuture<AppendRowsResponse> future = streamWriter.append(data, offset);
+      // Increase the count of in-flight requests before registering the callback so a synchronous
+      // completion cannot deregister before registration.
+      inflightRequestCount.register();
       ApiFutures.addCallback(
           future, new AppendCompleteCallback(this), MoreExecutors.directExecutor());
-      // Increase the count of in-flight requests.
-      inflightRequestCount.register();
     }
 
     public void cleanup(BigQueryWriteClient client) {

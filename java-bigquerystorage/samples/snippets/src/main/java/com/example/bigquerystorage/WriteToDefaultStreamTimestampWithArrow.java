@@ -36,11 +36,13 @@ import com.google.cloud.bigquery.storage.v1.TableName;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.concurrent.GuardedBy;
 import org.apache.arrow.memory.BufferAllocator;
@@ -57,7 +59,6 @@ import org.apache.arrow.vector.types.pojo.ArrowType;
 import org.apache.arrow.vector.types.pojo.Field;
 import org.apache.arrow.vector.types.pojo.FieldType;
 import org.apache.arrow.vector.types.pojo.Schema;
-import org.threeten.bp.Duration;
 
 /**
  * This class demonstrates how to ingest data using Arrow format into BigQuery via the default
@@ -198,6 +199,7 @@ public class WriteToDefaultStreamTimestampWithArrow {
     private static final int MAX_RECREATE_COUNT = 3;
 
     private BigQueryWriteClient client;
+    private ScheduledExecutorService executor;
 
     // Track the number of in-flight requests to wait for all responses before shutting down.
     private final Phaser inflightRequestCount = new Phaser(1);
@@ -220,22 +222,22 @@ public class WriteToDefaultStreamTimestampWithArrow {
       // * RESOURCE_EXHAUSTED
       RetrySettings retrySettings =
           RetrySettings.newBuilder()
-              .setInitialRetryDelay(Duration.ofMillis(500))
+              .setInitialRetryDelayDuration(Duration.ofMillis(500))
               .setRetryDelayMultiplier(1.1)
               .setMaxAttempts(5)
-              .setMaxRetryDelay(Duration.ofMinutes(1))
+              .setMaxRetryDelayDuration(Duration.ofMinutes(1))
               .build();
 
       // Use the Stream writer to send records in Arrow format. Specify the table name to write
       // to the default stream.
       // For more information about StreamWriter, see:
-      // https://cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.StreamWriter
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.StreamWriter
       return StreamWriter.newBuilder(streamName, client)
-          .setExecutorProvider(FixedExecutorProvider.create(Executors.newScheduledThreadPool(10)))
+          .setExecutorProvider(FixedExecutorProvider.create(executor))
           .setChannelProvider(
               BigQueryWriteSettings.defaultGrpcTransportProviderBuilder()
-                  .setKeepAliveTime(org.threeten.bp.Duration.ofMinutes(1))
-                  .setKeepAliveTimeout(org.threeten.bp.Duration.ofMinutes(1))
+                  .setKeepAliveTimeDuration(Duration.ofMinutes(1))
+                  .setKeepAliveTimeoutDuration(Duration.ofMinutes(1))
                   .setKeepAliveWithoutCalls(true)
                   .build())
           .setEnableConnectionPool(true)
@@ -243,7 +245,7 @@ public class WriteToDefaultStreamTimestampWithArrow {
           // bigquery column, apply the default value to the missing value field.
           .setDefaultMissingValueInterpretation(
               AppendRowsRequest.MissingValueInterpretation.DEFAULT_VALUE)
-          .setMaxRetryDuration(java.time.Duration.ofSeconds(5))
+          .setMaxRetryDuration(Duration.ofSeconds(5))
           // Set the StreamWriter with Arrow Schema, this would only allow the StreamWriter to
           // append data in Arrow format.
           .setWriterSchema(arrowSchema)
@@ -255,6 +257,7 @@ public class WriteToDefaultStreamTimestampWithArrow {
       // Initialize client without settings, internally within stream writer a new client will be
       // created with full settings.
       client = BigQueryWriteClient.create();
+      executor = Executors.newScheduledThreadPool(10);
 
       streamWriter = createStreamWriter(parentTable.toString() + "/_default", arrowSchema);
     }
@@ -273,12 +276,13 @@ public class WriteToDefaultStreamTimestampWithArrow {
         }
       }
       // Append asynchronously for increased throughput.
+      // Note: StreamWriter.append(ArrowRecordBatch) closes arrowData.data once serialized.
       ApiFuture<AppendRowsResponse> future = streamWriter.append(arrowData.data);
+      // Increase the count of in-flight requests before registering the callback so a synchronous
+      // completion cannot deregister before registration.
+      inflightRequestCount.register();
       ApiFutures.addCallback(
           future, new AppendCompleteCallback(this, arrowData), MoreExecutors.directExecutor());
-
-      // Increase the count of in-flight requests.
-      inflightRequestCount.register();
     }
 
     public void cleanup() {
@@ -288,6 +292,9 @@ public class WriteToDefaultStreamTimestampWithArrow {
       client.close();
       // Close the connection to the server.
       streamWriter.close();
+      if (executor != null) {
+        executor.shutdown();
+      }
 
       // Verify that no error occurred in the stream.
       synchronized (this.lock) {
@@ -336,15 +343,12 @@ public class WriteToDefaultStreamTimestampWithArrow {
           }
         }
         if (resendRequest) {
-          // Retry this request.
-          try {
-            this.parent.append(new ArrowData(arrowData.arrowSchema, arrowData.data));
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-          // Mark the existing attempt as done since we got a response for it
-          done();
-          return;
+          // StreamWriter.append(ArrowRecordBatch) unconditionally closes arrowData.data once
+          // serialized, so callers must build a fresh ArrowRecordBatch from source data rather than
+          // reusing the closed batch when retrying after a transient writer closure.
+          System.out.format(
+              "Transient writer failure on %s; rebuild a fresh ArrowRecordBatch to retry.%n",
+              arrowData.arrowSchema);
         }
 
         synchronized (this.parent.lock) {
