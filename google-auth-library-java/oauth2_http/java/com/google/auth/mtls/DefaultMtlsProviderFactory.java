@@ -34,6 +34,14 @@ import com.google.api.core.InternalApi;
 import java.io.IOException;
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * Internal API. This class is public only due to Java's visibility settings. Direct use by
+ * customers is not recommended, as it may be updated without any backwards compatibility
+ * guarantees.
+ *
+ * <p>Factory for creating the default {@link MtlsProvider} from available client certificate
+ * sources.
+ */
 @NullMarked
 @InternalApi
 public class DefaultMtlsProviderFactory {

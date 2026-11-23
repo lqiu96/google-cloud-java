@@ -174,8 +174,12 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    * <ol>
    *   <li>Credentials file pointed to by the {@code GOOGLE_APPLICATION_CREDENTIALS} environment
    *       variable
-   *   <li>Credentials provided by the Google Cloud SDK {@code gcloud auth application-default
-   *       login} command
+   *   <li>Credentials provided by the Google Cloud SDK.
+   *       <ol>
+   *         <li>{@code gcloud auth application-default login} for user account credentials.
+   *         <li>{@code gcloud auth application-default login --impersonate-service-account} for
+   *             impersonated service account credentials.
+   *       </ol>
    *   <li>Google App Engine built-in credentials
    *   <li>Google Cloud Shell built-in credentials
    *   <li>Google Compute Engine built-in credentials
@@ -222,8 +226,12 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    *
    * <p>Returns credentials defined by a JSON file stream.
    *
-   * <p>The stream can contain a Service Account key file in JSON format from the Google Developers
-   * Console or a stored user credential using the format supported by the Cloud SDK.
+   * <p>The stream can contain a JSON credential configuration for any supported type: {@link
+   * ServiceAccountCredentials} ({@code service_account}), {@link UserCredentials} ({@code
+   * authorized_user}), {@link ExternalAccountCredentials} ({@code external_account}), {@link
+   * ExternalAccountAuthorizedUserCredentials} ({@code external_account_authorized_user}), {@link
+   * ImpersonatedCredentials} ({@code impersonated_service_account}), or {@link GdchCredentials}
+   * ({@code gdch_service_account}).
    *
    * @param credentialsStream the stream with the credential definition.
    * @return the credential defined by the credentialsStream.
@@ -289,8 +297,12 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    *
    * <p>Returns credentials defined by a JSON file stream.
    *
-   * <p>The stream can contain a Service Account key file in JSON format from the Google Developers
-   * Console or a stored user credential using the format supported by the Cloud SDK.
+   * <p>The stream can contain a JSON credential configuration for any supported type: {@link
+   * ServiceAccountCredentials} ({@code service_account}), {@link UserCredentials} ({@code
+   * authorized_user}), {@link ExternalAccountCredentials} ({@code external_account}), {@link
+   * ExternalAccountAuthorizedUserCredentials} ({@code external_account_authorized_user}), {@link
+   * ImpersonatedCredentials} ({@code impersonated_service_account}), or {@link GdchCredentials}
+   * ({@code gdch_service_account}).
    *
    * @param credentialsStream the stream with the credential definition.
    * @return the credential defined by the credentialsStream.

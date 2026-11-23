@@ -87,7 +87,7 @@ public class ApiKeyCredentials extends Credentials {
     return true;
   }
 
-  /** There is no concept of refreshing an API tokens, this method is a no-op. */
+  /** There is no concept of refreshing an API key, so this method is a no-op. */
   @Override
   public void refresh() throws IOException {}
 }
