@@ -54,7 +54,9 @@ public class VerifyGoogleIdToken {
         TokenVerifier.newBuilder()
             .setAudience(audience)
             // Optional, when verifying a Google ID token, the jwk url is set by default.
-            .setIssuer(jwkUrl)
+            // See:
+            // https://docs.cloud.google.com/java/docs/reference/google-auth-library/latest/com.google.auth.oauth2.TokenVerifier.Builder#com_google_auth_oauth2_TokenVerifier_Builder_setCertificatesLocation_java_lang_String_
+            .setCertificatesLocation(jwkUrl)
             .build();
 
     try {
