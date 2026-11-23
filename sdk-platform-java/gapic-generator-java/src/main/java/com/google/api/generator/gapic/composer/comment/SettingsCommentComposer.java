@@ -41,9 +41,7 @@ public class SettingsCommentComposer {
   private static final String CLASS_HEADER_DEFAULT_ADDRESS_PORT_PATTERN =
       "The default service address (%s) and default port (%d) are used.";
   private static final String CLASS_HEADER_SAMPLE_CODE_PATTERN =
-      "For example, to set the"
-          + " [RetrySettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.retrying.RetrySettings)"
-          + " of %s:";
+      "<p> For example, to set the {@link com.google.api.gax.retrying.RetrySettings} of %s:";
 
   private static final String CLASS_HEADER_LRO_SAMPLE_CODE_PATTERN =
       "To configure the RetrySettings of a Long Running Operation method, create an"
@@ -51,9 +49,8 @@ public class SettingsCommentComposer {
           + " example, to configure the RetrySettings for %s:";
 
   private static final String CLASS_HEADER_SAMPLE_CODE_SUFFIX =
-      "Please refer to the [Client Side Retry"
-          + " Guide](https://docs.cloud.google.com/java/docs/client-retries) for additional support"
-          + " in setting retries.";
+      "<p> Please refer to the <a href=\"https://docs.cloud.google.com/java/docs/client-retries\">"
+          + "Client Side Retry Guide</a> for additional support in setting retries.";
 
   private static final String CLASS_HEADER_BUILDER_DESCRIPTION =
       "The builder of this class is recursive, so contained classes are themselves builders. When"
@@ -185,12 +182,12 @@ public class SettingsCommentComposer {
     if (methodNameOpt.isPresent() && sampleCodeOpt.isPresent()) {
       javaDocCommentBuilder =
           javaDocCommentBuilder
-              .addParagraph(
+              .addUnescapedComment(
                   String.format(
                       CLASS_HEADER_SAMPLE_CODE_PATTERN,
                       JavaStyle.toLowerCamelCase(methodNameOpt.get())))
               .addSampleCode(sampleCodeOpt.get())
-              .addComment(CLASS_HEADER_SAMPLE_CODE_SUFFIX);
+              .addUnescapedComment(CLASS_HEADER_SAMPLE_CODE_SUFFIX);
     }
 
     if (lroMethodNameOpt.isPresent() && lroSampleCodeOpt.isPresent()) {

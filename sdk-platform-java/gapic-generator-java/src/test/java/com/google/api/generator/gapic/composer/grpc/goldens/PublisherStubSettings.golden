@@ -78,9 +78,7 @@ import org.jspecify.annotations.Nullable;
  * <p>The builder of this class is recursive, so contained classes are themselves builders. When
  * build() is called, the tree of builders is called to create the complete settings object.
  *
- * <p>For example, to set the
- * [RetrySettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.retrying.RetrySettings)
- * of createTopic:
+ * <p>For example, to set the {@link com.google.api.gax.retrying.RetrySettings} of createTopic:
  *
  * <pre>{@code
  * // This snippet has been automatically generated and should be regarded as a code template only.
@@ -108,9 +106,8 @@ import org.jspecify.annotations.Nullable;
  * PublisherStubSettings publisherSettings = publisherSettingsBuilder.build();
  * }</pre>
  *
- * Please refer to the [Client Side Retry
- * Guide](https://docs.cloud.google.com/java/docs/client-retries) for additional support in setting
- * retries.
+ * <p>Please refer to the <a href="https://docs.cloud.google.com/java/docs/client-retries">Client
+ * Side Retry Guide</a> for additional support in setting retries.
  */
 @NullMarked
 @Generated("by gapic-generator-java")
