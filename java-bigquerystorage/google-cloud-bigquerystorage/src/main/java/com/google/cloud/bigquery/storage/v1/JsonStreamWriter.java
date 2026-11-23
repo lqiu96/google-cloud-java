@@ -140,9 +140,9 @@ public class JsonStreamWriter implements AutoCloseable {
   }
 
   /**
-   * Gets the location of the destination
+   * Gets the location of the destination.
    *
-   * @return Descriptor
+   * @return the location of the destination
    */
   public String getLocation() {
     return this.schemaAwareStreamWriter.getLocation();
@@ -152,8 +152,8 @@ public class JsonStreamWriter implements AutoCloseable {
    * Returns the wait of a request in Client side before sending to the Server. Request could wait
    * in Client because it reached the client side inflight request limit (adjustable when
    * constructing the Writer). The value is the wait time for the last sent request. A constant high
-   * wait value indicates a need for more throughput, you can create a new Stream for to increase
-   * the throughput in exclusive stream case, or create a new Writer in the default stream case.
+   * wait value indicates a need for more throughput; you can create a new Stream to increase the
+   * throughput in exclusive stream case, or create a new Writer in the default stream case.
    */
   public long getInflightWaitSeconds() {
     return this.schemaAwareStreamWriter.getInflightWaitSeconds();
@@ -171,14 +171,16 @@ public class JsonStreamWriter implements AutoCloseable {
    * newBuilder that constructs a JsonStreamWriter builder with BigQuery client being initialized by
    * StreamWriter by default.
    *
-   * <p>The table schema passed in will be updated automatically when there is a schema update
-   * event. When used for Writer creation, it should be the latest schema. So when you are trying to
-   * reuse a stream, you should use Builder newBuilder( String streamOrTableName,
-   * BigQueryWriteClient client) instead, so the created Writer will be based on a fresh schema.
+   * <p>Automatic schema updates are disabled when an explicit {@link TableSchema} is passed in; the
+   * caller is responsible for providing the latest schema and recreating the writer if the table
+   * schema changes. To enable automatic schema refresh on schema update events, use {@link
+   * #newBuilder(String, BigQueryWriteClient)} instead.
    *
-   * @param streamOrTableName name of the stream that must follow
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+" or table name
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+"
+   * @param streamOrTableName name of the stream ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}} or {@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/_default}) or bare table name ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}}, which writes to the table's {@code
+   *     _default} stream)
    * @param tableSchema The schema of the table when the stream was created, which is passed back
    *     through {@code WriteStream}
    * @return Builder
@@ -192,16 +194,19 @@ public class JsonStreamWriter implements AutoCloseable {
   /**
    * newBuilder that constructs a JsonStreamWriter builder.
    *
-   * <p>The table schema passed in will be updated automatically when there is a schema update
-   * event. When used for Writer creation, it should be the latest schema. So when you are trying to
-   * reuse a stream, you should use Builder newBuilder( String streamOrTableName,
-   * BigQueryWriteClient client) instead, so the created Writer will be based on a fresh schema.
+   * <p>Automatic schema updates are disabled when an explicit {@link TableSchema} is passed in; the
+   * caller is responsible for providing the latest schema and recreating the writer if the table
+   * schema changes. To enable automatic schema refresh on schema update events, use {@link
+   * #newBuilder(String, BigQueryWriteClient)} instead.
    *
-   * @param streamOrTableName name of the stream that must follow
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+"
+   * @param streamOrTableName name of the stream ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}} or {@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/_default}) or bare table name ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}}, which writes to the table's {@code
+   *     _default} stream)
    * @param tableSchema The schema of the table when the stream was created, which is passed back
    *     through {@code WriteStream}
-   * @param client
+   * @param client the {@link BigQueryWriteClient} to use
    * @return Builder
    */
   public static Builder newBuilder(
@@ -215,8 +220,11 @@ public class JsonStreamWriter implements AutoCloseable {
    * newBuilder that constructs a JsonStreamWriter builder with TableSchema being initialized by
    * StreamWriter by default.
    *
-   * @param streamOrTableName name of the stream that must follow
-   *     "projects/[^/]+/datasets/[^/]+/tables/[^/]+/streams/[^/]+"
+   * @param streamOrTableName name of the stream ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/streams/{stream}} or {@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}/_default}) or bare table name ({@code
+   *     projects/{project}/datasets/{dataset}/tables/{table}}, which writes to the table's {@code
+   *     _default} stream)
    * @param client BigQueryWriteClient
    * @return Builder
    */
@@ -226,10 +234,9 @@ public class JsonStreamWriter implements AutoCloseable {
   }
 
   /**
-   * Sets the maximum time a request is allowed to be waiting in request waiting queue. Under very
-   * low chance, it's possible for append request to be waiting indefintely for request callback
-   * when Google networking SDK does not detect the networking breakage. The default timeout is 15
-   * minutes. We are investigating the root cause for callback not triggered by networking SDK.
+   * Sets the maximum time a request is allowed to wait in the request waiting queue. Under rare
+   * conditions, an append request may wait indefinitely for a callback when the underlying network
+   * layer does not detect a broken connection. The default timeout is 5 minutes.
    */
   public static void setMaxRequestCallbackWaitTime(Duration waitTime) {
     ConnectionWorker.MAXIMUM_REQUEST_CALLBACK_WAIT_TIME = waitTime;
@@ -266,8 +273,8 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's TransportChannelProvider.
      *
-     * @param channelProvider
-     * @return Builder
+     * @param channelProvider the transport channel provider to use
+     * @return this builder
      */
     public Builder setChannelProvider(TransportChannelProvider channelProvider) {
       this.schemaAwareStreamWriterBuilder.setChannelProvider(channelProvider);
@@ -277,8 +284,8 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's CredentialsProvider.
      *
-     * @param credentialsProvider
-     * @return Builder
+     * @param credentialsProvider the credentials provider to use
+     * @return this builder
      */
     public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
       this.schemaAwareStreamWriterBuilder.setCredentialsProvider(credentialsProvider);
@@ -288,8 +295,8 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's ExecutorProvider.
      *
-     * @param executorProvider
-     * @return
+     * @param executorProvider the executor provider to use
+     * @return this builder
      */
     public Builder setExecutorProvider(ExecutorProvider executorProvider) {
       this.schemaAwareStreamWriterBuilder.setExecutorProvider(executorProvider);
@@ -299,8 +306,8 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's FlowControlSettings.
      *
-     * @param flowControlSettings
-     * @return Builder
+     * @param flowControlSettings the flow control settings to apply
+     * @return this builder
      */
     public Builder setFlowControlSettings(FlowControlSettings flowControlSettings) {
       this.schemaAwareStreamWriterBuilder.setFlowControlSettings(flowControlSettings);
@@ -310,7 +317,7 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Stream name on the builder.
      *
-     * @return Builder
+     * @return the stream name on the builder
      */
     public String getStreamName() {
       return this.schemaAwareStreamWriterBuilder.getStreamName();
@@ -319,8 +326,8 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Setter for the underlying StreamWriter's Endpoint.
      *
-     * @param endpoint
-     * @return Builder
+     * @param endpoint the service endpoint to connect to
+     * @return this builder
      */
     public Builder setEndpoint(String endpoint) {
       this.schemaAwareStreamWriterBuilder.setEndpoint(endpoint);
@@ -330,8 +337,8 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Setter for a traceId to help identify traffic origin.
      *
-     * @param traceId
-     * @return Builder
+     * @param traceId the trace identifier to attach to requests
+     * @return this builder
      */
     public Builder setTraceId(String traceId) {
       this.schemaAwareStreamWriterBuilder.setTraceId(traceId);
@@ -339,18 +346,23 @@ public class JsonStreamWriter implements AutoCloseable {
     }
 
     /**
-     * Setter for a ignoreUnkownFields, if true, unknown Json fields to BigQuery will be ignored
-     * instead of error out.
+     * Setter for ignoreUnknownFields; if true, unknown JSON fields to BigQuery will be ignored
+     * instead of causing an error.
      *
-     * @param ignoreUnknownFields
-     * @return Builder
+     * @param ignoreUnknownFields whether unknown JSON fields should be ignored
+     * @return this builder
      */
     public Builder setIgnoreUnknownFields(boolean ignoreUnknownFields) {
       this.schemaAwareStreamWriterBuilder.setIgnoreUnknownFields(ignoreUnknownFields);
       return this;
     }
 
-    /** This parameter is not used. It will be removed soon. */
+    /**
+     * This parameter is not used. It will be removed soon.
+     *
+     * @deprecated This method is a no-op and has no effect.
+     */
+    @Deprecated
     public Builder setReconnectAfter10M(boolean reconnectAfter10M) {
       return this;
     }
@@ -358,22 +370,25 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Enables a static shared bidi-streaming connection pool that would dynamically scale up
      * connections based on backlog within each individual connection. A single table's traffic
-     * might be splitted into multiple connections if needed. Different tables' traffic can also be
+     * might be split into multiple connections if needed. Different tables' traffic can also be
      * multiplexed within the same connection.
      *
-     * <pre>
-     * Each connection pool would have a upper limit (default to 20) and lower limit (default to
-     * 2) for the number of active connections. This parameter can be tuned via a static method
-     * exposed on {@link ConnectionWorkerPool}.
+     * <p>Each connection pool has an upper limit (default 20) and lower limit (default 2) for the
+     * number of active connections. This parameter can be tuned via {@link
+     * ConnectionWorkerPool#setOptions(ConnectionWorkerPool.Settings)}.
      *
-     * Example:
+     * <p>Example:
+     *
+     * <pre>{@code
      * ConnectionWorkerPool.setOptions(
-     *     Settings.builder().setMinConnectionsPerRegion(4).setMaxConnectionsPerRegion(10).build());
+     *     ConnectionWorkerPool.Settings.builder()
+     *         .setMinConnectionsPerRegion(4)
+     *         .setMaxConnectionsPerRegion(10)
+     *         .build());
+     * }</pre>
      *
-     * </pre>
-     *
-     * @param enableConnectionPool
-     * @return Builder
+     * @param enableConnectionPool whether to enable the shared connection pool
+     * @return this builder
      */
     public Builder setEnableConnectionPool(boolean enableConnectionPool) {
       this.schemaAwareStreamWriterBuilder.setEnableConnectionPool(enableConnectionPool);
@@ -384,8 +399,8 @@ public class JsonStreamWriter implements AutoCloseable {
      * Location of the table this stream writer is targeting. Connection pools are shared by
      * location.
      *
-     * @param location
-     * @return Builder
+     * @param location the geographic location of the destination table
+     * @return this builder
      */
     public Builder setLocation(String location) {
       this.schemaAwareStreamWriterBuilder.setLocation(location);
@@ -395,8 +410,8 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Sets the compression to use for the calls. The compressor must be of type gzip.
      *
-     * @param compressorName
-     * @return Builder
+     * @param compressorName the name of the compressor to use (must be {@code "gzip"})
+     * @return this builder
      */
     public Builder setCompressorName(String compressorName) {
       this.schemaAwareStreamWriterBuilder.setCompressorName(compressorName);
@@ -406,22 +421,24 @@ public class JsonStreamWriter implements AutoCloseable {
     /**
      * Enable client lib automatic retries on request level errors.
      *
-     * <pre>
-     * Immediate Retry code:
-     * ABORTED, UNAVAILABLE, CANCELLED, INTERNAL, DEADLINE_EXCEEDED
-     * Backoff Retry code:
-     * RESOURCE_EXHAUSTED
+     * <p>Immediate Retry codes: ABORTED, UNAVAILABLE, CANCELLED, INTERNAL, DEADLINE_EXCEEDED.
      *
-     * Example:
-     * RetrySettings retrySettings = RetrySettings.newBuilder()
-     *      .setInitialRetryDelay(Duration.ofMillis(500)) // applies to backoff retry
-     *      .setRetryDelayMultiplier(1.1) // applies to backoff retry
-     *      .setMaxAttempts(5) // applies to both retries
-     *      .setMaxRetryDelay(Duration.ofMinutes(1)) // applies to backoff retry .build();
-     * </pre>
+     * <p>Backoff Retry code: RESOURCE_EXHAUSTED.
      *
-     * @param retrySettings
-     * @return
+     * <p>Example:
+     *
+     * <pre>{@code
+     * RetrySettings retrySettings =
+     *     RetrySettings.newBuilder()
+     *         .setInitialRetryDelayDuration(java.time.Duration.ofMillis(500)) // applies to backoff retry
+     *         .setRetryDelayMultiplier(1.1) // applies to backoff retry
+     *         .setMaxAttempts(5) // applies to both retries
+     *         .setMaxRetryDelayDuration(java.time.Duration.ofMinutes(1)) // applies to backoff retry
+     *         .build();
+     * }</pre>
+     *
+     * @param retrySettings the retry settings to apply to request-level retries
+     * @return this builder
      */
     public Builder setRetrySettings(RetrySettings retrySettings) {
       this.schemaAwareStreamWriterBuilder.setRetrySettings(retrySettings);
@@ -447,10 +464,10 @@ public class JsonStreamWriter implements AutoCloseable {
      * Sets the default missing value interpretation value if the column is not presented in the
      * missing_value_interpretations map.
      *
-     * <p>If this value is set to `DEFAULT_VALUE`, we will always populate default value if the
-     * field is missing from json and default value is defined in the column.
+     * <p>If this value is set to {@code DEFAULT_VALUE}, we will always populate default value if
+     * the field is missing from json and default value is defined in the column.
      *
-     * <p>If this value is set to `NULL_VALUE`, we will always not populate default value.
+     * <p>If this value is set to {@code NULL_VALUE}, we will always not populate default value.
      */
     public Builder setDefaultMissingValueInterpretation(
         AppendRowsRequest.MissingValueInterpretation defaultMissingValueInterpretation) {

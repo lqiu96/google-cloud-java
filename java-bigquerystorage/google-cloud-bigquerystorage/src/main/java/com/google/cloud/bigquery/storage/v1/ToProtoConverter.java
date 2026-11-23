@@ -19,7 +19,24 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.DynamicMessage;
 import java.util.List;
 
+/**
+ * Converts a batch of input records into protobuf {@link DynamicMessage} instances for {@link
+ * SchemaAwareStreamWriter}.
+ *
+ * @param <T> the input record type
+ */
 public interface ToProtoConverter<T> {
+  /**
+   * Converts the given input records into protobuf {@link DynamicMessage} instances matching the
+   * target descriptor and BigQuery table schema.
+   *
+   * @param protoSchema the protobuf descriptor for the target message
+   * @param tableSchema the BigQuery {@link TableSchema} used for type-specific conversions
+   * @param inputObject the batch of input records to convert
+   * @param ignoreUnknownFields whether to ignore fields in the input that are absent from the
+   *     schema
+   * @return the converted list of protobuf {@link DynamicMessage} instances
+   */
   List<DynamicMessage> convertToProtoMessage(
       Descriptors.Descriptor protoSchema,
       TableSchema tableSchema,

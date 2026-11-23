@@ -40,6 +40,10 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>The BigQuery storage API can be used to read data stored in BigQuery.
  *
+ * <p><strong>Note:</strong> New code should prefer the generally available {@link
+ * com.google.cloud.bigquery.storage.v1.BigQueryReadClient} in {@code
+ * com.google.cloud.bigquery.storage.v1}.
+ *
  * <p>This class provides the ability to make remote calls to the backing service through method
  * calls that map to API methods. Sample code to get started:
  *

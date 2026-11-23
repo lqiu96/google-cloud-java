@@ -15,62 +15,20 @@
  */
 
 /**
- * A client to BigQuery Storage API
+ * Legacy {@code v1beta2} client for the BigQuery Storage API.
  *
- * <p>The interfaces provided are listed below, along with usage samples.
+ * <p><strong>Prefer {@code com.google.cloud.bigquery.storage.v1}:</strong> Both the BigQuery
+ * Storage Read API and Write API are generally available in {@code
+ * com.google.cloud.bigquery.storage.v1}. New code should use {@link
+ * com.google.cloud.bigquery.storage.v1.BigQueryReadClient} for reads and {@link
+ * com.google.cloud.bigquery.storage.v1.StreamWriter}, {@link
+ * com.google.cloud.bigquery.storage.v1.JsonStreamWriter}, and {@link
+ * com.google.cloud.bigquery.storage.v1.BigQueryWriteClient} for writes rather than {@code v1beta2}
+ * surfaces.
  *
- * <p>======================= BaseBigQueryReadClient =======================
- *
- * <p>Service Description: BigQuery Read API.
- *
- * <p>The Read API can be used to read data from BigQuery.
- *
- * <p>New code should use the v1 Read API going forward, if they don't use Write API at the same
- * time.
- *
- * <p>Sample for BaseBigQueryReadClient:
- *
- * <pre>{@code
- * // This snippet has been automatically generated and should be regarded as a code template only.
- * // It will require modifications to work:
- * // - It may require correct/in-range values for request initialization.
- * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
- * try (BaseBigQueryReadClient baseBigQueryReadClient = BaseBigQueryReadClient.create()) {
- *   ProjectName parent = ProjectName.of("[PROJECT]");
- *   ReadSession readSession = ReadSession.newBuilder().build();
- *   int maxStreamCount = 940837515;
- *   ReadSession response =
- *       baseBigQueryReadClient.createReadSession(parent, readSession, maxStreamCount);
- * }
- * }</pre>
- *
- * <p>======================= BigQueryWriteClient =======================
- *
- * <p>Service Description: BigQuery Write API.
- *
- * <p>The Write API can be used to write data to BigQuery.
- *
- * <p>The [google.cloud.bigquery.storage.v1
- * API](/bigquery/docs/reference/storage/rpc/google.cloud.bigquery.storage.v1) should be used
- * instead of the v1beta2 API for BigQueryWrite operations.
- *
- * <p>Sample for BigQueryWriteClient:
- *
- * <pre>{@code
- * // This snippet has been automatically generated and should be regarded as a code template only.
- * // It will require modifications to work:
- * // - It may require correct/in-range values for request initialization.
- * // - It may require specifying regional endpoints when creating the service client as shown in
- * // https://cloud.google.com/java/docs/setup#configure_endpoints_for_the_client_library
- * try (BigQueryWriteClient bigQueryWriteClient = BigQueryWriteClient.create()) {
- *   TableName parent = TableName.of("[PROJECT]", "[DATASET]", "[TABLE]");
- *   WriteStream writeStream = WriteStream.newBuilder().build();
- *   WriteStream response = bigQueryWriteClient.createWriteStream(parent, writeStream);
- * }
- * }</pre>
+ * @see com.google.cloud.bigquery.storage.v1.BigQueryReadClient
+ * @see com.google.cloud.bigquery.storage.v1.BigQueryWriteClient
+ * @see com.google.cloud.bigquery.storage.v1.StreamWriter
+ * @see com.google.cloud.bigquery.storage.v1.JsonStreamWriter
  */
-@Generated("by gapic-generator-java")
 package com.google.cloud.bigquery.storage.v1beta2;
-
-import javax.annotation.Generated;

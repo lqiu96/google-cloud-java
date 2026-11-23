@@ -26,10 +26,10 @@ public class BigQuerySchemaUtil {
   private static final String PLACEHOLDER_FILED_NAME_PREFIX = "col_";
 
   /**
-   * * Checks if the field name is compatible with proto field naming convention.
+   * Checks if the field name is compatible with proto field naming convention.
    *
    * @param fieldName name for the field
-   * @return true if the field name is comptaible with proto naming convention, otherwise, returns
+   * @return true if the field name is compatible with proto naming convention, otherwise, returns
    *     false.
    */
   public static boolean isProtoCompatible(String fieldName) {
@@ -55,8 +55,8 @@ public class BigQuerySchemaUtil {
   }
 
   /**
-   * * Generates a placeholder name that consists of a prefix + base64 encoded field name. We
-   * replace all dashes with underscores as they are not allowed for proto field names.
+   * Generates a placeholder name that consists of a prefix + base64 encoded field name. We replace
+   * all dashes with underscores as they are not allowed for proto field names.
    *
    * @param fieldName name for the field
    * @return the generated placeholder field name
@@ -70,9 +70,9 @@ public class BigQuerySchemaUtil {
   }
 
   /**
-   * * Gets the user-facing field name from the descriptor
+   * Gets the user-facing field name from the descriptor.
    *
-   * @param fieldDescriptor
+   * @param fieldDescriptor the protobuf field descriptor
    * @return columnName annotation if present, otherwise return the field name.
    */
   public static String getFieldName(FieldDescriptor fieldDescriptor) {

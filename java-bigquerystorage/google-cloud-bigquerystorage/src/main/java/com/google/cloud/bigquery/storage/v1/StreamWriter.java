@@ -63,11 +63,7 @@ import org.apache.arrow.vector.ipc.WriteChannel;
 import org.apache.arrow.vector.ipc.message.MessageSerializer;
 import org.apache.arrow.vector.types.pojo.Schema;
 
-/**
- * A BigQuery Stream Writer that can be used to write data into BigQuery Table.
- *
- * <p>TODO: Support batching.
- */
+/** A BigQuery Stream Writer that can be used to write data into BigQuery Table. */
 public class StreamWriter implements AutoCloseable {
   private static final Logger log = Logger.getLogger(StreamWriter.class.getName());
 
@@ -465,7 +461,7 @@ public class StreamWriter implements AutoCloseable {
    * Schedules the writing of Arrow record batch at the end of current stream. Since the
    * StreamWriter doesn't know how many rows are in the batch, the OpenTelemetry row count metric
    * will report 0 rows for the append. Please use the version of append method that accepts
-   * org.apache.arrow.vector.ipc.message.ArrowRecordBatch if OpenTelemetry row count is requried.
+   * org.apache.arrow.vector.ipc.message.ArrowRecordBatch if OpenTelemetry row count is required.
    * Arrow schema is required to be set for the StreamWriter to use this method.
    *
    * @param recordBatch the Arrow record batch in serialized format to write to BigQuery.
@@ -496,14 +492,11 @@ public class StreamWriter implements AutoCloseable {
    * ApiFuture<AppendRowsResponse> future = writer.append(rows, 0);
    * ApiFutures.addCallback(future, new ApiFutureCallback<AppendRowsResponse>() {
    *   public void onSuccess(AppendRowsResponse response) {
-   *     if (!response.hasError()) {
-   *       System.out.println("written with offset: " + response.getAppendResult().getOffset());
-   *     } else {
-   *       System.out.println("received an in stream error: " + response.getError().toString());
-   *     }
+   *     System.out.println("written with offset: " + response.getAppendResult().getOffset());
    *   }
    *
    *   public void onFailure(Throwable t) {
+   *     // Server-side in-stream errors and RPC errors are delivered to onFailure.
    *     System.out.println("failed to write: " + t);
    *   }
    * }, MoreExecutors.directExecutor());
@@ -521,7 +514,7 @@ public class StreamWriter implements AutoCloseable {
    * Schedules the writing of Arrow record batch at given offset. Since the StreamWriter doesn't
    * know how many rows are in the batch, the OpenTelemetry row count metric will report 0 rows for
    * the append. Please use the version of append method that accepts
-   * org.apache.arrow.vector.ipc.message.ArrowRecordBatch if OpenTelemetry row count is requried.
+   * org.apache.arrow.vector.ipc.message.ArrowRecordBatch if OpenTelemetry row count is required.
    * Arrow schema is required to be set for the StreamWriter to use this method.
    *
    * <p>Example of writing Arrow record batch with specific offset.
@@ -530,14 +523,11 @@ public class StreamWriter implements AutoCloseable {
    * ApiFuture<AppendRowsResponse> future = writer.append(recordBatch, 0);
    * ApiFutures.addCallback(future, new ApiFutureCallback<AppendRowsResponse>() {
    *   public void onSuccess(AppendRowsResponse response) {
-   *     if (!response.hasError()) {
-   *       System.out.println("written with offset: " + response.getAppendResult().getOffset());
-   *     } else {
-   *       System.out.println("received an in stream error: " + response.getError().toString());
-   *     }
+   *     System.out.println("written with offset: " + response.getAppendResult().getOffset());
    *   }
    *
    *   public void onFailure(Throwable t) {
+   *     // Server-side in-stream errors and RPC errors are delivered to onFailure.
    *     System.out.println("failed to write: " + t);
    *   }
    * }, MoreExecutors.directExecutor());
@@ -655,9 +645,9 @@ public class StreamWriter implements AutoCloseable {
    * Returns the wait of a request in Client side before sending to the Server. Request could wait
    * in Client because it reached the client side inflight request limit (adjustable when
    * constructing the StreamWriter). The value is the wait time for the last sent request. A
-   * constant high wait value indicates a need for more throughput, you can create a new Stream for
-   * to increase the throughput in exclusive stream case, or create a new Writer in the default
-   * stream case.
+   * constant high wait value indicates a need for more throughput; you can create a new Stream to
+   * increase the throughput in exclusive stream case, or create a new Writer in the default stream
+   * case.
    */
   public long getInflightWaitSeconds() {
     return singleConnectionOrConnectionPool.getInflightWaitSeconds(this);
@@ -678,14 +668,19 @@ public class StreamWriter implements AutoCloseable {
   }
 
   /**
-   * @return the passed in user schema.
+   * Returns the user-provided schema in a general {@link AppendRowsSchema}.
+   *
+   * @return the user-provided schema in a general {@link AppendRowsSchema}
    */
-  /** {@return the user provided schema in a general AppendRowsSchema} */
   AppendRowsSchema getWriterSchema() {
     return writerSchema;
   }
 
-  /** {@return the passed in Proto user schema} */
+  /**
+   * Returns the passed-in Proto user schema.
+   *
+   * @return the passed-in Proto user schema
+   */
   public ProtoSchema getProtoSchema() {
     if (writerSchema.format() == AppendFormats.DataFormat.PROTO) {
       return writerSchema.protoSchema();
@@ -694,7 +689,11 @@ public class StreamWriter implements AutoCloseable {
     }
   }
 
-  /** {@return the passed in Arrow user schema} */
+  /**
+   * Returns the passed-in Arrow user schema.
+   *
+   * @return the passed-in Arrow user schema
+   */
   public ArrowSchema getArrowSchema() {
     if (writerSchema.format() == AppendFormats.DataFormat.ARROW) {
       return writerSchema.arrowSchema();
@@ -775,10 +774,9 @@ public class StreamWriter implements AutoCloseable {
   }
 
   /**
-   * Sets the maximum time a request is allowed to be waiting in request waiting queue. Under very
-   * low chance, it's possible for append request to be waiting indefintely for request callback
-   * when Google networking SDK does not detect the networking breakage. The default timeout is 15
-   * minutes. We are investigating the root cause for callback not triggered by networking SDK.
+   * Sets the maximum time a request is allowed to wait in the request waiting queue. Under rare
+   * conditions, an append request may wait indefinitely for a callback when the underlying network
+   * layer does not detect a broken connection. The default timeout is 5 minutes.
    */
   public static void setMaxRequestCallbackWaitTime(Duration waitTime) {
     ConnectionWorker.MAXIMUM_REQUEST_CALLBACK_WAIT_TIME = waitTime;
@@ -926,11 +924,24 @@ public class StreamWriter implements AutoCloseable {
       return this;
     }
 
+    /**
+     * Sets the maximum number of inflight append requests allowed before flow control applies.
+     *
+     * @param value maximum number of inflight requests
+     * @return this builder
+     */
     public Builder setMaxInflightRequests(long value) {
       this.maxInflightRequest = value;
       return this;
     }
 
+    /**
+     * Sets the maximum total size in bytes of inflight append requests allowed before flow control
+     * applies.
+     *
+     * @param value maximum inflight bytes
+     * @return this builder
+     */
     public Builder setMaxInflightBytes(long value) {
       this.maxInflightBytes = value;
       return this;
@@ -945,22 +956,25 @@ public class StreamWriter implements AutoCloseable {
     /**
      * Enables a static shared bidi-streaming connection pool that would dynamically scale up
      * connections based on backlog within each individual connection. A single table's traffic
-     * might be splitted into multiple connections if needed. Different tables' traffic can also be
+     * might be split into multiple connections if needed. Different tables' traffic can also be
      * multiplexed within the same connection.
      *
-     * <pre>
-     * Each connection pool would have a upper limit (default to 20) and lower limit (default to
-     * 2) for the number of active connections. This parameter can be tuned via a static method
-     * exposed on {@link ConnectionWorkerPool}.
+     * <p>Each connection pool has an upper limit (default 20) and lower limit (default 2) for the
+     * number of active connections. This parameter can be tuned via {@link
+     * ConnectionWorkerPool#setOptions(ConnectionWorkerPool.Settings)}.
      *
-     * Example:
+     * <p>Example:
+     *
+     * <pre>{@code
      * ConnectionWorkerPool.setOptions(
-     *     Settings.builder().setMinConnectionsPerRegion(4).setMaxConnectionsPerRegion(10).build());
+     *     ConnectionWorkerPool.Settings.builder()
+     *         .setMinConnectionsPerRegion(4)
+     *         .setMaxConnectionsPerRegion(10)
+     *         .build());
+     * }</pre>
      *
-     * </pre>
-     *
-     * @param enableConnectionPool
-     * @return Builder
+     * @param enableConnectionPool whether to enable the shared connection pool
+     * @return this builder
      */
     public Builder setEnableConnectionPool(boolean enableConnectionPool) {
       this.enableConnectionPool = enableConnectionPool;
@@ -995,7 +1009,7 @@ public class StreamWriter implements AutoCloseable {
     }
 
     /**
-     * Sets traceId for debuging purpose. TraceId must follow the format of
+     * Sets traceId for debugging purpose. TraceId must follow the format of
      * CustomerDomain:DebugString, e.g. DATAFLOW:job_id_x.
      */
     public Builder setTraceId(String traceId) {
@@ -1026,8 +1040,8 @@ public class StreamWriter implements AutoCloseable {
     /**
      * Sets the limit exceeded behavior.
      *
-     * @param limitExceededBehavior
-     * @return
+     * @param limitExceededBehavior the behavior when inflight limits are exceeded
+     * @return this builder
      */
     public Builder setLimitExceededBehavior(
         FlowController.LimitExceededBehavior limitExceededBehavior) throws StatusRuntimeException {
@@ -1040,7 +1054,7 @@ public class StreamWriter implements AutoCloseable {
       return this;
     }
 
-    /*
+    /**
      * Max duration to retry on retryable errors. Default is 5 minutes. You can allow unlimited
      * retry by setting the value to be 0.
      */
@@ -1049,6 +1063,13 @@ public class StreamWriter implements AutoCloseable {
       return this;
     }
 
+    /**
+     * Sets the gRPC compression algorithm to use for append requests. Only {@code "gzip"} is
+     * supported.
+     *
+     * @param compressorName the compressor name (must be {@code "gzip"})
+     * @return this builder
+     */
     public Builder setCompressorName(String compressorName) {
       Preconditions.checkNotNull(compressorName);
       Preconditions.checkArgument(
@@ -1101,29 +1122,31 @@ public class StreamWriter implements AutoCloseable {
     /**
      * Enable client lib automatic retries on request level errors.
      *
-     * <pre>
-     * Immeidate Retry code:
-     * ABORTED, UNAVAILABLE, CANCELLED, INTERNAL, DEADLINE_EXCEEDED
-     * Backoff Retry code:
-     * RESOURCE_EXHAUSTED
+     * <p>Immediate Retry codes: ABORTED, UNAVAILABLE, CANCELLED, INTERNAL, DEADLINE_EXCEEDED.
      *
-     * Example:
-     * RetrySettings retrySettings = RetrySettings.newBuilder()
-     *      .setInitialRetryDelay(Duration.ofMillis(500)) // applies to backoff retry
-     *      .setRetryDelayMultiplier(1.1) // applies to backoff retry
-     *      .setMaxAttempts(5) // applies to both retries
-     *      .setMaxRetryDelay(Duration.ofMinutes(1)) // applies to backoff retry .build();
-     * </pre>
+     * <p>Backoff Retry code: RESOURCE_EXHAUSTED.
      *
-     * @param retrySettings
-     * @return
+     * <p>Example:
+     *
+     * <pre>{@code
+     * RetrySettings retrySettings =
+     *     RetrySettings.newBuilder()
+     *         .setInitialRetryDelayDuration(java.time.Duration.ofMillis(500)) // applies to backoff retry
+     *         .setRetryDelayMultiplier(1.1) // applies to backoff retry
+     *         .setMaxAttempts(5) // applies to both retries
+     *         .setMaxRetryDelayDuration(java.time.Duration.ofMinutes(1)) // applies to backoff retry
+     *         .build();
+     * }</pre>
+     *
+     * @param retrySettings the retry settings to apply to request-level retries
+     * @return this builder
      */
     public Builder setRetrySettings(RetrySettings retrySettings) {
       this.retrySettings = retrySettings;
       return this;
     }
 
-    /** Builds the {@code StreamWriterV2}. */
+    /** Builds the {@code StreamWriter}. */
     public StreamWriter build() throws IOException {
       return new StreamWriter(this);
     }

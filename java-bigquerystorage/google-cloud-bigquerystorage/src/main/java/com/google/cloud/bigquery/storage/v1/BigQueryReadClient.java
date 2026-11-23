@@ -35,16 +35,15 @@ import java.util.concurrent.TimeUnit;
  * <p>This class provides the ability to make remote calls to the backing service through method
  * calls that map to API methods. Sample code to get started:
  *
- * <pre>
- * <code>
- * try (BigQueryReadClient BigQueryReadClient = BigQueryReadClient.create()) {
+ * <pre>{@code
+ * try (BigQueryReadClient bigQueryReadClient = BigQueryReadClient.create()) {
  *   String parent = "";
  *   ReadSession readSession = ReadSession.newBuilder().build();
  *   int maxStreamCount = 0;
- *   ReadSession response = BigQueryReadClient.createReadSession(parent, readSession, maxStreamCount);
+ *   ReadSession response =
+ *       bigQueryReadClient.createReadSession(parent, readSession, maxStreamCount);
  * }
- * </code>
- * </pre>
+ * }</pre>
  *
  * <p>Note: close() needs to be called on the BigQueryReadClient object to clean up resources such
  * as threads. In the example above, try-with-resources is used, which automatically calls close().
@@ -65,36 +64,32 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>See the individual methods for example code.
  *
- * <p>Many parameters require resource names to be formatted in a particular way. To assist with
- * these names, this class includes a format method for each type of name, and additionally a parse
- * method to extract the individual identifiers contained within names that are returned.
+ * <p>Many parameters require resource names to be formatted in a particular way. Use the generated
+ * resource-name helper classes (such as {@link ProjectName}, {@link TableName}, and {@link
+ * ReadStreamName}) to format and parse resource names.
  *
  * <p>This class can be customized by passing in a custom instance of BigQueryReadSettings to
  * create(). For example:
  *
  * <p>To customize credentials:
  *
- * <pre>
- * <code>
- * BigQueryReadSettings BigQueryReadSettings =
+ * <pre>{@code
+ * BigQueryReadSettings bigQueryReadSettings =
  *     BigQueryReadSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
- * BigQueryReadClient BigQueryReadClient =
- *     BigQueryReadClient.create(BigQueryReadSettings);
- * </code>
- * </pre>
+ * BigQueryReadClient bigQueryReadClient =
+ *     BigQueryReadClient.create(bigQueryReadSettings);
+ * }</pre>
  *
  * To customize the endpoint:
  *
- * <pre>
- * <code>
- * BigQueryReadSettings BigQueryReadSettings =
+ * <pre>{@code
+ * BigQueryReadSettings bigQueryReadSettings =
  *     BigQueryReadSettings.newBuilder().setEndpoint(myEndpoint).build();
- * BigQueryReadClient BigQueryReadClient =
- *     BigQueryReadClient.create(BigQueryReadSettings);
- * </code>
- * </pre>
+ * BigQueryReadClient bigQueryReadClient =
+ *     BigQueryReadClient.create(bigQueryReadSettings);
+ * }</pre>
  */
 @BetaApi
 public class BigQueryReadClient implements BackgroundResource {
@@ -116,7 +111,7 @@ public class BigQueryReadClient implements BackgroundResource {
 
   /**
    * Constructs an instance of BigQueryReadClient, using the given stub for making calls. This is
-   * for advanced usage - prefer to use BigQueryReadSettings}.
+   * for advanced usage - prefer to use {@link BigQueryReadSettings}.
    */
   @BetaApi("A restructuring of stub classes is planned, so this may break in the future")
   public static final BigQueryReadClient create(EnhancedBigQueryReadStub stub) {
@@ -168,22 +163,23 @@ public class BigQueryReadClient implements BackgroundResource {
    * limits are enforced based on the number of pre-filtered rows, so some filters can lead to
    * lopsided assignments.
    *
-   * <p>Read sessions automatically expire 24 hours after they are created and do not require manual
+   * <p>Read sessions automatically expire 6 hours after they are created and do not require manual
    * clean-up by the caller.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (BigQueryReadClient BigQueryReadClient = BigQueryReadClient.create()) {
+   * <pre>{@code
+   * try (BigQueryReadClient bigQueryReadClient = BigQueryReadClient.create()) {
    *   String parent = "";
    *   ReadSession readSession = ReadSession.newBuilder().build();
    *   int maxStreamCount = 0;
-   *   ReadSession response = BigQueryReadClient.createReadSession(parent, readSession, maxStreamCount);
+   *   ReadSession response =
+   *       bigQueryReadClient.createReadSession(parent, readSession, maxStreamCount);
    * }
-   * </code></pre>
+   * }</pre>
    *
-   * @param parent Required. The request project that owns the session, in the form of
-   *     `projects/{project_id}`.
+   * @param parent Required. The request project that owns the session, in the form of {@code
+   *     projects/{project_id}}.
    * @param readSession Required. Session to be created.
    * @param maxStreamCount Max initial number of streams. If unset or zero, the server will provide
    *     a value of streams so as to produce reasonable throughput. Must be non-negative. The number
@@ -220,17 +216,17 @@ public class BigQueryReadClient implements BackgroundResource {
    * limits are enforced based on the number of pre-filtered rows, so some filters can lead to
    * lopsided assignments.
    *
-   * <p>Read sessions automatically expire 24 hours after they are created and do not require manual
+   * <p>Read sessions automatically expire 6 hours after they are created and do not require manual
    * clean-up by the caller.
    *
    * <p>Sample code:
    *
-   * <pre><code>
-   * try (BigQueryReadClient BigQueryReadClient = BigQueryReadClient.create()) {
+   * <pre>{@code
+   * try (BigQueryReadClient bigQueryReadClient = BigQueryReadClient.create()) {
    *   CreateReadSessionRequest request = CreateReadSessionRequest.newBuilder().build();
-   *   ReadSession response = BigQueryReadClient.createReadSession(request);
+   *   ReadSession response = bigQueryReadClient.createReadSession(request);
    * }
-   * </code></pre>
+   * }</pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
@@ -279,19 +275,20 @@ public class BigQueryReadClient implements BackgroundResource {
    * limits are enforced based on the number of pre-filtered rows, so some filters can lead to
    * lopsided assignments.
    *
-   * <p>Read sessions automatically expire 24 hours after they are created and do not require manual
+   * <p>Read sessions automatically expire 6 hours after they are created and do not require manual
    * clean-up by the caller.
    *
    * <p>Sample code:
    *
-   * <pre><code>
+   * <pre>{@code
    * try (BigQueryReadClient bigQueryReadClient = BigQueryReadClient.create()) {
    *   CreateReadSessionRequest request = CreateReadSessionRequest.newBuilder().build();
-   *   ApiFuture&lt;ReadSession&gt; future = BigQueryReadClient.createReadSessionCallable().futureCall(request);
+   *   ApiFuture<ReadSession> future =
+   *       bigQueryReadClient.createReadSessionCallable().futureCall(request);
    *   // Do something
    *   ReadSession response = future.get();
    * }
-   * </code></pre>
+   * }</pre>
    */
   public final UnaryCallable<CreateReadSessionRequest, ReadSession> createReadSessionCallable() {
     Span createReadSessionCallable = null;
@@ -314,8 +311,8 @@ public class BigQueryReadClient implements BackgroundResource {
 
   /**
    * Reads rows from the stream in the format prescribed by the ReadSession. Each response contains
-   * one or more table rows, up to a maximum of 100 MiB per response; read requests which attempt to
-   * read individual rows larger than 100 MiB will fail.
+   * one or more table rows, up to a maximum of 128 MB per response; read requests which attempt to
+   * read individual rows larger than 128 MB will fail.
    *
    * <p>Each request also returns a set of stream statistics reflecting the current state of the
    * stream.
@@ -353,16 +350,16 @@ public class BigQueryReadClient implements BackgroundResource {
   }
 
   /**
-   * Splits a given `ReadStream` into two `ReadStream` objects. These `ReadStream` objects are
-   * referred to as the primary and the residual streams of the split. The original `ReadStream` can
-   * still be read from in the same manner as before. Both of the returned `ReadStream` objects can
-   * also be read from, and the rows returned by both child streams will be the same as the rows
-   * read from the original stream.
+   * Splits a given {@code ReadStream} into two {@code ReadStream} objects. These {@code ReadStream}
+   * objects are referred to as the primary and the residual streams of the split. The original
+   * {@code ReadStream} can still be read from in the same manner as before. Both of the returned
+   * {@code ReadStream} objects can also be read from, and the rows returned by both child streams
+   * will be the same as the rows read from the original stream.
    *
-   * <p>Moreover, the two child streams will be allocated back-to-back in the original `ReadStream`.
-   * Concretely, it is guaranteed that for streams original, primary, and residual, that
-   * original[0-j] = primary[0-j] and original[j-n] = residual[0-m] once the streams have been read
-   * to completion.
+   * <p>Moreover, the two child streams will be allocated back-to-back in the original {@code
+   * ReadStream}. Concretely, it is guaranteed that for streams original, primary, and residual,
+   * that original[0-j] = primary[0-j] and original[j-n] = residual[0-m] once the streams have been
+   * read to completion.
    *
    * <p>Sample code:
    *
@@ -397,16 +394,16 @@ public class BigQueryReadClient implements BackgroundResource {
   }
 
   /**
-   * Splits a given `ReadStream` into two `ReadStream` objects. These `ReadStream` objects are
-   * referred to as the primary and the residual streams of the split. The original `ReadStream` can
-   * still be read from in the same manner as before. Both of the returned `ReadStream` objects can
-   * also be read from, and the rows returned by both child streams will be the same as the rows
-   * read from the original stream.
+   * Splits a given {@code ReadStream} into two {@code ReadStream} objects. These {@code ReadStream}
+   * objects are referred to as the primary and the residual streams of the split. The original
+   * {@code ReadStream} can still be read from in the same manner as before. Both of the returned
+   * {@code ReadStream} objects can also be read from, and the rows returned by both child streams
+   * will be the same as the rows read from the original stream.
    *
-   * <p>Moreover, the two child streams will be allocated back-to-back in the original `ReadStream`.
-   * Concretely, it is guaranteed that for streams original, primary, and residual, that
-   * original[0-j] = primary[0-j] and original[j-n] = residual[0-m] once the streams have been read
-   * to completion.
+   * <p>Moreover, the two child streams will be allocated back-to-back in the original {@code
+   * ReadStream}. Concretely, it is guaranteed that for streams original, primary, and residual,
+   * that original[0-j] = primary[0-j] and original[j-n] = residual[0-m] once the streams have been
+   * read to completion.
    *
    * <p>Sample code:
    *
@@ -528,14 +525,25 @@ public class BigQueryReadClient implements BackgroundResource {
     }
   }
 
+  /** Disables OpenTelemetry tracing for this client. */
   public void disableOpenTelemetryTracing() {
     settings.setEnableOpenTelemetryTracing(false, null);
   }
 
+  /**
+   * Enables OpenTelemetry tracing for this client using the global OpenTelemetry {@link
+   * TracerProvider}.
+   */
   public void enableDefaultOpenTelemetryTracing() {
     settings.setEnableOpenTelemetryTracing(true, null);
   }
 
+  /**
+   * Enables OpenTelemetry tracing for this client using the given {@link TracerProvider}.
+   *
+   * @param tracerProvider the {@link TracerProvider} to use, or {@code null} to use the global
+   *     default
+   */
   public void enableOpenTelemetryTracing(TracerProvider tracerProvider) {
     settings.setEnableOpenTelemetryTracing(true, tracerProvider);
   }

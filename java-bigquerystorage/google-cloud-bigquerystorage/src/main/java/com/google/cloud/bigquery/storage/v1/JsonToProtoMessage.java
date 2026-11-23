@@ -189,8 +189,8 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
    * <p>WARNING: it's much more efficient to call the other APIs accepting json array if the jsons
    * share the same table schema.
    *
-   * @param protoSchema the schema of the output Protobuf schems.
-   * @param tableSchema tha underlying table schema for which Protobuf is being built.
+   * @param protoSchema the schema of the output Protobuf schema.
+   * @param tableSchema the underlying table schema for which Protobuf is being built.
    * @param json the input JSON object converted to Protobuf.
    * @param ignoreUnknownFields flag indicating that the additional fields not present in the output
    *     schema should be accepted.
@@ -202,14 +202,14 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
   }
 
   /**
-   * Converts Json array to list of Protobuf
+   * Converts Json array to list of Protobuf.
    *
-   * @param protoSchema the schema of the output Protobuf schems.
-   * @param tableSchema tha underlying table schema for which Protobuf is being built.
+   * @param protoSchema the schema of the output Protobuf schema.
+   * @param tableSchema the underlying table schema for which Protobuf is being built.
    * @param jsonArray the input JSON array converted to Protobuf.
    * @param ignoreUnknownFields flag indicating that the additional fields not present in the output
    *     schema should be accepted.
-   * @return Converted message in Protobuf format.
+   * @return Converted messages in Protobuf format.
    */
   @Override
   public List<DynamicMessage> convertToProtoMessage(
@@ -227,8 +227,8 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
    * <p>WARNING: it's much more efficient to call the other APIs accepting json array if the jsons
    * share the same table schema.
    *
-   * @param protoSchema
-   * @param json
+   * @param protoSchema the protobuf descriptor for the target message
+   * @param json the input JSON object
    * @throws IllegalArgumentException when JSON data is not compatible with proto descriptor.
    */
   public DynamicMessage convertToProtoMessage(Descriptor protoSchema, JSONObject json)
@@ -246,10 +246,10 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
    * <p>WARNING: it's much more efficient to call the other APIs accepting json array if the jsons
    * share the same table schema.
    *
-   * @param protoSchema
-   * @param tableSchema bigquery table schema is needed for type conversion of DATETIME, TIME,
-   *     NUMERIC, BIGNUMERIC
-   * @param json
+   * @param protoSchema the protobuf descriptor for the target message
+   * @param tableSchema bigquery table schema is needed for type conversion of DATE, DATETIME, TIME,
+   *     TIMESTAMP, NUMERIC, BIGNUMERIC, and RANGE
+   * @param json the input JSON object
    * @throws IllegalArgumentException when JSON data is not compatible with proto descriptor.
    */
   public DynamicMessage convertToProtoMessage(
@@ -269,10 +269,10 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
    * <p>WARNING: it's much more efficient to call the other APIs accepting json array if the jsons
    * share the same table schema.
    *
-   * @param protoSchema
-   * @param tableSchema bigquery table schema is needed for type conversion of DATETIME, TIME,
-   *     NUMERIC, BIGNUMERIC
-   * @param json
+   * @param protoSchema the protobuf descriptor for the target message
+   * @param tableSchema bigquery table schema is needed for type conversion of DATE, DATETIME, TIME,
+   *     TIMESTAMP, NUMERIC, BIGNUMERIC, and RANGE
+   * @param json the input JSON object
    * @param ignoreUnknownFields allows unknown fields in JSON input to be ignored.
    * @throws IllegalArgumentException when JSON data is not compatible with proto descriptor.
    */
@@ -290,10 +290,10 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
   /**
    * Converts Json array to list of protocol buffer messages given the protocol buffer descriptor.
    *
-   * @param protoSchema
-   * @param tableSchema bigquery table schema is needed for type conversion of DATETIME, TIME,
-   *     NUMERIC, BIGNUMERIC
-   * @param jsonArray
+   * @param protoSchema the protobuf descriptor for the target message
+   * @param tableSchema bigquery table schema is needed for type conversion of DATE, DATETIME, TIME,
+   *     TIMESTAMP, NUMERIC, BIGNUMERIC, and RANGE
+   * @param jsonArray the input JSON array
    * @param ignoreUnknownFields allows unknown fields in JSON input to be ignored.
    * @throws IllegalArgumentException when JSON data is not compatible with proto descriptor.
    */
@@ -328,8 +328,8 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
   /**
    * Converts Json data to protocol buffer messages given the protocol buffer descriptor.
    *
-   * @param protoSchema
-   * @param json
+   * @param protoSchema the protobuf descriptor for the target message
+   * @param jsonArray the input JSON array
    * @param jsonScope Debugging purposes
    * @throws IllegalArgumentException when JSON data is not compatible with proto descriptor.
    */
@@ -525,13 +525,13 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
   }
 
   /**
-   * Fills a non-repetaed protoField with the json data.
+   * Fills a non-repeated protoField with the json data.
    *
    * @param protoMsg The protocol buffer message being constructed
    * @param fieldDescriptor Proto format to be transmitted over the wire (derived from table schema
-   *     via BQTableSchemaToProtoDescriptor.BQTableSchemaModeMap)
+   *     via {@link BQTableSchemaToProtoDescriptor})
    * @param fieldSchema Actual table column schema type if available
-   * @param json
+   * @param json the input JSON object
    * @param exactJsonKeyName Exact key name in JSONObject instead of lowercased version
    * @param currentScope Debugging purposes
    * @throws IllegalArgumentException when JSON data is not compatible with proto descriptor.
@@ -768,7 +768,7 @@ public class JsonToProtoMessage implements ToProtoConverter<Object> {
    *
    * @param protoMsg The protocol buffer message being constructed
    * @param fieldDescriptor Proto format to be transmitted over the wire (derived from table schema
-   *     via BQTableSchemaToProtoDescriptor.BQTableSchemaModeMap)
+   *     via {@link BQTableSchemaToProtoDescriptor})
    * @param fieldSchema Actual table column schema type if available
    * @param json If root level has no matching fields, throws exception.
    * @param exactJsonKeyName Exact key name in JSONObject instead of lowercased version

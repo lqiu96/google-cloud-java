@@ -51,15 +51,19 @@ import java.util.List;
  *
  * <p>For example, to set the total timeout of createReadSession to 30 seconds:
  *
- * <pre>
- * <code>
- * BigQueryReadSettings.Builder BigQueryReadSettingsBuilder =
- *     BigQueryReadSettings.newBuilder();
- * BigQueryReadSettingsBuilder.createReadSessionSettings().getRetrySettings().toBuilder()
- *     .setTotalTimeout(Duration.ofSeconds(30));
- * BigQueryReadSettings BigQueryReadSettings = BigQueryReadSettingsBuilder.build();
- * </code>
- * </pre>
+ * <pre>{@code
+ * BigQueryReadSettings.Builder bigQueryReadSettingsBuilder = BigQueryReadSettings.newBuilder();
+ * bigQueryReadSettingsBuilder
+ *     .createReadSessionSettings()
+ *     .setRetrySettings(
+ *         bigQueryReadSettingsBuilder
+ *             .createReadSessionSettings()
+ *             .getRetrySettings()
+ *             .toBuilder()
+ *             .setTotalTimeoutDuration(java.time.Duration.ofSeconds(30))
+ *             .build());
+ * BigQueryReadSettings bigQueryReadSettings = bigQueryReadSettingsBuilder.build();
+ * }</pre>
  */
 @BetaApi
 public class BigQueryReadSettings extends ClientSettings<BigQueryReadSettings> {
@@ -73,7 +77,19 @@ public class BigQueryReadSettings extends ClientSettings<BigQueryReadSettings> {
     return getTypedStubSettings().readRowsSettings();
   }
 
+  /**
+   * Listener invoked before a failed {@code ReadRows} request is retried.
+   *
+   * <p>Callers can use this callback as a negative-feedback signal (for example, to avoid splitting
+   * streams when retries are caused by resource exhaustion).
+   */
   public static interface RetryAttemptListener {
+    /**
+     * Called before a retry attempt is issued.
+     *
+     * @param prevStatus the gRPC status from the failed attempt
+     * @param prevMetadata the trailing metadata from the failed attempt, if available
+     */
     public void onRetryAttempt(Status prevStatus, Metadata prevMetadata);
   }
 
@@ -239,17 +255,38 @@ public class BigQueryReadSettings extends ClientSettings<BigQueryReadSettings> {
     private boolean enableOpenTelemetryTracing = false;
     private TracerProvider openTelemetryTracerProvider = null;
 
+    /**
+     * Sets a {@link RetryAttemptListener} to be notified before failed {@code ReadRows} requests
+     * are retried.
+     *
+     * @param readRowsRetryAttemptListener the listener to invoke before retry attempts, or {@code
+     *     null} to disable notifications
+     * @return this builder
+     */
     public Builder setReadRowsRetryAttemptListener(
         RetryAttemptListener readRowsRetryAttemptListener) {
       this.readRowsRetryAttemptListener = readRowsRetryAttemptListener;
       return this;
     }
 
+    /**
+     * Enables or disables OpenTelemetry tracing for {@link BigQueryReadClient} operations.
+     *
+     * @param enableOpenTelemetryTracing whether to enable OpenTelemetry tracing
+     * @return this builder
+     */
     public Builder setEnableOpenTelemetryTracing(boolean enableOpenTelemetryTracing) {
       this.enableOpenTelemetryTracing = enableOpenTelemetryTracing;
       return this;
     }
 
+    /**
+     * Sets a custom OpenTelemetry {@link TracerProvider} to use when tracing is enabled.
+     *
+     * @param tracerProvider the {@link TracerProvider} to use, or {@code null} to use the global
+     *     default
+     * @return this builder
+     */
     public Builder setOpenTelemetryTracerProvider(TracerProvider tracerProvider) {
       this.openTelemetryTracerProvider = tracerProvider;
       return this;

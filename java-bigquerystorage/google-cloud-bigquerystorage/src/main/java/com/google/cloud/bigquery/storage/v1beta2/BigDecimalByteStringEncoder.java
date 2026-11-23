@@ -26,6 +26,13 @@ import com.google.protobuf.ByteString;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * Encodes and decodes {@link BigDecimal} values to and from the little-endian two's-complement
+ * {@link ByteString} wire format used by BigQuery {@code NUMERIC} columns.
+ *
+ * @deprecated Use {@link com.google.cloud.bigquery.storage.v1.BigDecimalByteStringEncoder} instead.
+ */
+@Deprecated
 public class BigDecimalByteStringEncoder {
   private static int NumericScale = 9;
   private static final BigDecimal MAX_NUMERIC_VALUE =

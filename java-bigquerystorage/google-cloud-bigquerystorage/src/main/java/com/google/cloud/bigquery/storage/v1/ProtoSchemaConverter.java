@@ -26,9 +26,10 @@ import io.grpc.Status;
 import java.util.HashSet;
 import java.util.Set;
 
-// A Converter class that turns a native protobuf::DescriptorProto to a self contained
-// protobuf::DescriptorProto
-// that can be reconstructed by the backend.
+/**
+ * Converts a protobuf {@link Descriptor} into a self-contained {@link ProtoSchema} that can be
+ * reconstructed by the BigQuery Storage Write API backend.
+ */
 public class ProtoSchemaConverter {
   private static String getNameFromFullName(String fullName) {
     return fullName.replace('.', '_');
@@ -120,6 +121,15 @@ public class ProtoSchemaConverter {
     return ProtoSchema.newBuilder().setProtoDescriptor(resultProto.build()).build();
   }
 
+  /**
+   * Converts the given protobuf {@link Descriptor} into a self-contained {@link ProtoSchema} by
+   * inlining nested message and enum dependencies and normalizing proto3-only field descriptors for
+   * server-side proto2 decoding.
+   *
+   * @param descriptor the protobuf message descriptor to convert
+   * @return a self-contained {@link ProtoSchema} suitable for {@link StreamWriter}
+   * @throws InvalidArgumentException if the descriptor contains a recursive message type
+   */
   public static ProtoSchema convert(Descriptor descriptor) {
     Set<String> visitedTypes = new HashSet<String>();
     Set<String> enumTypes = new HashSet<String>();

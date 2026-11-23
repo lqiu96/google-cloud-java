@@ -63,7 +63,7 @@ public class Errors {
   }
 
   /**
-   * Returns true iff the Status indicates and internal error that is retryable.
+   * Returns true iff the Status indicates an internal error that is retryable.
    *
    * <p>Generally, internal errors are not considered retryable, however there are certain transient
    * network issues that appear as internal but are in fact retryable.
