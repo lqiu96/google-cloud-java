@@ -64,7 +64,8 @@ public class SettingsCommentComposer {
   private static final String CLASS_HEADER_DEFAULTS_CREDENTIALS_DESCRIPTION =
       "Credentials are acquired automatically through Application Default Credentials.";
   private static final String CLASS_HEADER_DEFAULTS_RETRIES_DESCRIPTION =
-      "Retries are configured for idempotent methods but not for non-idempotent methods.";
+      "Default retry and timeout settings are configured per RPC from the service's retry"
+          + " configuration.";
 
   public static final CommentStatement DEFAULT_SCOPES_COMMENT =
       toCommentStatement("The default scopes of the service.");
@@ -102,9 +103,12 @@ public class SettingsCommentComposer {
               JavaDocComment.builder()
                   .addComment(
                       "Applies the given settings updater function to all of the unary API methods"
-                          + " in this service.")
-                  .addParagraph(
-                      "Note: This method does not support applying settings to streaming methods.")
+                          + " in this service, including unary, paged, batching, and long-running"
+                          + " operation initial-call settings.")
+                  .addUnescapedComment(
+                      "<p> Note: This method does not apply settings to streaming methods or"
+                          + " long-running operation polling settings (configured via {@code"
+                          + " <method>OperationSettings()}).")
                   .build())
           .stream()
           .map(c -> CommentStatement.withComment(c))

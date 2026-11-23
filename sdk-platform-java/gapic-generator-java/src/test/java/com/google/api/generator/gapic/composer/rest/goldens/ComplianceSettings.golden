@@ -27,7 +27,8 @@ import org.jspecify.annotations.Nullable;
  * <ul>
  *   <li>The default service address (localhost) and default port (7469) are used.
  *   <li>Credentials are acquired automatically through Application Default Credentials.
- *   <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ *   <li>Default retry and timeout settings are configured per RPC from the service's retry
+ *       configuration.
  * </ul>
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders. When
@@ -213,9 +214,11 @@ public class ComplianceSettings extends ClientSettings<ComplianceSettings> {
     }
 
     /**
-     * Applies the given settings updater function to all of the unary API methods in this service.
+     * Applies the given settings updater function to all of the unary API methods in this service,
+     * including unary, paged, batching, and long-running operation initial-call settings.
      *
-     * <p>Note: This method does not support applying settings to streaming methods.
+     * <p>Note: This method does not apply settings to streaming methods or long-running operation
+     * polling settings (configured via {@code <method>OperationSettings()}).
      */
     public Builder applyToAllUnaryMethods(
         ApiFunction<UnaryCallSettings.Builder<?, ?>, Void> settingsUpdater) {
