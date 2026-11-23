@@ -1,7 +1,7 @@
 {
   "api_shortname": "google-auth-library",
   "name_pretty": "Google Auth Library",
-  "client_documentation": "https://googleapis.dev/java/google-auth-library/latest/",
+  "client_documentation": "https://docs.cloud.google.com/java/docs/reference/google-auth-library/latest/overview",
   "release_level": "stable",
   "language": "java",
   "repo": "googleapis/google-cloud-java",
