@@ -162,6 +162,7 @@ public class ComplianceStubSettings extends StubSettings<ComplianceStubSettings>
     return repeatDataCustomQuerySettings;
   }
 
+  /** Creates and returns a new {@link ComplianceStub} instance using the configured transport. */
   public ComplianceStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -207,10 +208,12 @@ public class ComplianceStubSettings extends StubSettings<ComplianceStubSettings>
     return InstantiatingHttpJsonChannelProvider.newBuilder();
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultHttpJsonTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken(
@@ -512,6 +515,7 @@ public class ComplianceStubSettings extends StubSettings<ComplianceStubSettings>
       return repeatDataCustomQuerySettings;
     }
 
+    /** Builds and returns a new {@link ComplianceStubSettings} instance. */
     @Override
     public ComplianceStubSettings build() throws IOException {
       return new ComplianceStubSettings(this);

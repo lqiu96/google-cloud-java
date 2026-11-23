@@ -423,6 +423,9 @@ public class LoggingServiceV2StubSettings extends StubSettings<LoggingServiceV2S
     return tailLogEntriesSettings;
   }
 
+  /**
+   * Creates and returns a new {@link LoggingServiceV2Stub} instance using the configured transport.
+   */
   public LoggingServiceV2Stub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -474,10 +477,12 @@ public class LoggingServiceV2StubSettings extends StubSettings<LoggingServiceV2S
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken(
@@ -750,6 +755,7 @@ public class LoggingServiceV2StubSettings extends StubSettings<LoggingServiceV2S
       return tailLogEntriesSettings;
     }
 
+    /** Builds and returns a new {@link LoggingServiceV2StubSettings} instance. */
     @Override
     public LoggingServiceV2StubSettings build() throws IOException {
       return new LoggingServiceV2StubSettings(this);

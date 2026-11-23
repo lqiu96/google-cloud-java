@@ -137,6 +137,10 @@ public class EchoServiceShouldGeneratePartialUsualStubSettings
     return echoShouldGenerateAsInternalSettings;
   }
 
+  /**
+   * Creates and returns a new {@link EchoServiceShouldGeneratePartialUsualStub} instance using the
+   * configured transport.
+   */
   public EchoServiceShouldGeneratePartialUsualStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -182,10 +186,12 @@ public class EchoServiceShouldGeneratePartialUsualStubSettings
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken(
@@ -381,6 +387,9 @@ public class EchoServiceShouldGeneratePartialUsualStubSettings
       return echoShouldGenerateAsInternalSettings;
     }
 
+    /**
+     * Builds and returns a new {@link EchoServiceShouldGeneratePartialUsualStubSettings} instance.
+     */
     @Override
     public EchoServiceShouldGeneratePartialUsualStubSettings build() throws IOException {
       return new EchoServiceShouldGeneratePartialUsualStubSettings(this);

@@ -150,15 +150,25 @@ public class MediaServiceClient implements BackgroundResource {
     this.stub = ((MediaServiceStubSettings) settings.getStubSettings()).createStub();
   }
 
+  /**
+   * Constructs an instance of MediaServiceClient, using the given stub for making calls. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
   protected MediaServiceClient(MediaServiceStub stub) {
     this.settings = null;
     this.stub = stub;
   }
 
+  /**
+   * Returns the settings used to configure this client, or {@code null} if the client was
+   * constructed from a stub.
+   */
   public final @Nullable MediaServiceSettings getSettings() {
     return settings;
   }
 
+  /** Returns the underlying stub used to make calls to the service. */
   public MediaServiceStub getStub() {
     return stub;
   }

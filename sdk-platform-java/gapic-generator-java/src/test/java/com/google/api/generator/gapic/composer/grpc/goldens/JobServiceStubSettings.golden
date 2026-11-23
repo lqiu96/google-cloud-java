@@ -176,6 +176,7 @@ public class JobServiceStubSettings extends StubSettings<JobServiceStubSettings>
     return listJobsSettings;
   }
 
+  /** Creates and returns a new {@link JobServiceStub} instance using the configured transport. */
   public JobServiceStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -227,10 +228,12 @@ public class JobServiceStubSettings extends StubSettings<JobServiceStubSettings>
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken(
@@ -378,6 +381,7 @@ public class JobServiceStubSettings extends StubSettings<JobServiceStubSettings>
       return listJobsSettings;
     }
 
+    /** Builds and returns a new {@link JobServiceStubSettings} instance. */
     @Override
     public JobServiceStubSettings build() throws IOException {
       return new JobServiceStubSettings(this);

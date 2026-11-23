@@ -88,6 +88,7 @@ public class WickedSettings extends ClientSettings<WickedSettings> {
     return ((WickedStubSettings) getStubSettings()).persuadeEvilPlanSettings();
   }
 
+  /** Constructs an instance of WickedSettings from the given stub settings. */
   public static final WickedSettings create(WickedStubSettings stub) throws IOException {
     return new WickedSettings.Builder(stub.toBuilder()).build();
   }
@@ -117,10 +118,12 @@ public class WickedSettings extends ClientSettings<WickedSettings> {
     return WickedStubSettings.defaultGrpcTransportProviderBuilder();
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return WickedStubSettings.defaultTransportChannelProvider();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return WickedStubSettings.defaultApiClientHeaderProviderBuilder();
   }
@@ -140,6 +143,7 @@ public class WickedSettings extends ClientSettings<WickedSettings> {
     return new Builder(this);
   }
 
+  /** Constructs an instance of WickedSettings from the given builder. */
   protected WickedSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
   }
@@ -167,6 +171,7 @@ public class WickedSettings extends ClientSettings<WickedSettings> {
       return new Builder(WickedStubSettings.newBuilder());
     }
 
+    /** Returns the underlying stub settings builder. */
     public WickedStubSettings.Builder getStubSettingsBuilder() {
       return ((WickedStubSettings.Builder) getStubSettings());
     }
@@ -198,6 +203,7 @@ public class WickedSettings extends ClientSettings<WickedSettings> {
       return getStubSettingsBuilder().persuadeEvilPlanSettings();
     }
 
+    /** Builds and returns a new {@link WickedSettings} instance. */
     @Override
     public WickedSettings build() throws IOException {
       return new WickedSettings(this);

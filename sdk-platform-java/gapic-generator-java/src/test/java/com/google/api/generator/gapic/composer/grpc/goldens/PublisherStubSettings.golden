@@ -432,6 +432,7 @@ public class PublisherStubSettings extends StubSettings<PublisherStubSettings> {
     return detachSubscriptionSettings;
   }
 
+  /** Creates and returns a new {@link PublisherStub} instance using the configured transport. */
   public PublisherStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -483,10 +484,12 @@ public class PublisherStubSettings extends StubSettings<PublisherStubSettings> {
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(PublisherStubSettings.class))
@@ -820,6 +823,7 @@ public class PublisherStubSettings extends StubSettings<PublisherStubSettings> {
       return detachSubscriptionSettings;
     }
 
+    /** Builds and returns a new {@link PublisherStubSettings} instance. */
     @Override
     public PublisherStubSettings build() throws IOException {
       return new PublisherStubSettings(this);

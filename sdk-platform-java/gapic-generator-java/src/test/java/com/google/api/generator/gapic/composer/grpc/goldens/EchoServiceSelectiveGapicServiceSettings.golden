@@ -118,6 +118,10 @@ public class EchoServiceShouldGeneratePartialUsualSettings
         .echoShouldGenerateAsInternalSettings();
   }
 
+  /**
+   * Constructs an instance of EchoServiceShouldGeneratePartialUsualSettings from the given stub
+   * settings.
+   */
   public static final EchoServiceShouldGeneratePartialUsualSettings create(
       EchoServiceShouldGeneratePartialUsualStubSettings stub) throws IOException {
     return new EchoServiceShouldGeneratePartialUsualSettings.Builder(stub.toBuilder()).build();
@@ -148,10 +152,12 @@ public class EchoServiceShouldGeneratePartialUsualSettings
     return EchoServiceShouldGeneratePartialUsualStubSettings.defaultGrpcTransportProviderBuilder();
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return EchoServiceShouldGeneratePartialUsualStubSettings.defaultTransportChannelProvider();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return EchoServiceShouldGeneratePartialUsualStubSettings
         .defaultApiClientHeaderProviderBuilder();
@@ -172,6 +178,9 @@ public class EchoServiceShouldGeneratePartialUsualSettings
     return new Builder(this);
   }
 
+  /**
+   * Constructs an instance of EchoServiceShouldGeneratePartialUsualSettings from the given builder.
+   */
   protected EchoServiceShouldGeneratePartialUsualSettings(Builder settingsBuilder)
       throws IOException {
     super(settingsBuilder);
@@ -201,6 +210,7 @@ public class EchoServiceShouldGeneratePartialUsualSettings
       return new Builder(EchoServiceShouldGeneratePartialUsualStubSettings.newBuilder());
     }
 
+    /** Returns the underlying stub settings builder. */
     public EchoServiceShouldGeneratePartialUsualStubSettings.Builder getStubSettingsBuilder() {
       return ((EchoServiceShouldGeneratePartialUsualStubSettings.Builder) getStubSettings());
     }
@@ -257,6 +267,7 @@ public class EchoServiceShouldGeneratePartialUsualSettings
       return getStubSettingsBuilder().echoShouldGenerateAsInternalSettings();
     }
 
+    /** Builds and returns a new {@link EchoServiceShouldGeneratePartialUsualSettings} instance. */
     @Override
     public EchoServiceShouldGeneratePartialUsualSettings build() throws IOException {
       return new EchoServiceShouldGeneratePartialUsualSettings(this);

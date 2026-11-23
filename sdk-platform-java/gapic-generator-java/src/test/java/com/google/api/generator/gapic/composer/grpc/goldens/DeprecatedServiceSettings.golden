@@ -90,6 +90,7 @@ public class DeprecatedServiceSettings extends ClientSettings<DeprecatedServiceS
     return ((DeprecatedServiceStubSettings) getStubSettings()).slowFibonacciSettings();
   }
 
+  /** Constructs an instance of DeprecatedServiceSettings from the given stub settings. */
   public static final DeprecatedServiceSettings create(DeprecatedServiceStubSettings stub)
       throws IOException {
     return new DeprecatedServiceSettings.Builder(stub.toBuilder()).build();
@@ -120,10 +121,12 @@ public class DeprecatedServiceSettings extends ClientSettings<DeprecatedServiceS
     return DeprecatedServiceStubSettings.defaultGrpcTransportProviderBuilder();
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return DeprecatedServiceStubSettings.defaultTransportChannelProvider();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return DeprecatedServiceStubSettings.defaultApiClientHeaderProviderBuilder();
   }
@@ -143,6 +146,7 @@ public class DeprecatedServiceSettings extends ClientSettings<DeprecatedServiceS
     return new Builder(this);
   }
 
+  /** Constructs an instance of DeprecatedServiceSettings from the given builder. */
   protected DeprecatedServiceSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
   }
@@ -170,6 +174,7 @@ public class DeprecatedServiceSettings extends ClientSettings<DeprecatedServiceS
       return new Builder(DeprecatedServiceStubSettings.newBuilder());
     }
 
+    /** Returns the underlying stub settings builder. */
     public DeprecatedServiceStubSettings.Builder getStubSettingsBuilder() {
       return ((DeprecatedServiceStubSettings.Builder) getStubSettings());
     }
@@ -201,6 +206,7 @@ public class DeprecatedServiceSettings extends ClientSettings<DeprecatedServiceS
       return getStubSettingsBuilder().slowFibonacciSettings();
     }
 
+    /** Builds and returns a new {@link DeprecatedServiceSettings} instance. */
     @Override
     public DeprecatedServiceSettings build() throws IOException {
       return new DeprecatedServiceSettings(this);

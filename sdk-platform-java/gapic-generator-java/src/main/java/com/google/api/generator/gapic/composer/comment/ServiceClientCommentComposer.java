@@ -105,10 +105,31 @@ public class ServiceClientCommentComposer {
           + " should be preferred.";
 
   // Comments.
+  private static final String PROTECTED_CONSTRUCTOR_STUB_ARG_PATTERN =
+      "Constructs an instance of %s, using the given stub for making calls. This is protected so"
+          + " that it is easy to make a subclass, but otherwise, the static factory methods"
+          + " should be preferred.";
+
+  public static final CommentStatement GET_SETTINGS_METHOD_COMMENT =
+      CommentStatement.withComment(
+          JavaDocComment.builder()
+              .addUnescapedComment(
+                  "Returns the settings used to configure this client, or {@code null} if the"
+                      + " client was constructed from a stub.")
+              .build());
+
+  public static final CommentStatement GET_STUB_METHOD_COMMENT =
+      toSimpleComment("Returns the underlying stub used to make calls to the service.");
+
   public static final CommentStatement GET_OPERATIONS_CLIENT_METHOD_COMMENT =
       toSimpleComment(
-          "Returns the OperationsClient that can be used to query the status of a long-running"
-              + " operation returned by another API method call.");
+          "Returns the gRPC OperationsClient that can be used to query the status of a"
+              + " long-running operation returned by another API method call.");
+
+  public static final CommentStatement GET_HTTP_JSON_OPERATIONS_CLIENT_METHOD_COMMENT =
+      toSimpleComment(
+          "Returns the HTTP/JSON OperationsClient that can be used to query the status of a"
+              + " long-running operation returned by another API method call.");
 
   public static List<CommentStatement> createClassHeaderComments(
       Map<String, List<String>> methodVariantsForClientHeader,
@@ -351,6 +372,10 @@ public class ServiceClientCommentComposer {
 
   public static CommentStatement createProtectedCtorSettingsArgComment(String serviceName) {
     return toSimpleComment(String.format(PROTECTED_CONSTRUCTOR_SETTINGS_ARG_PATTERN, serviceName));
+  }
+
+  public static CommentStatement createProtectedCtorStubArgComment(String serviceName) {
+    return toSimpleComment(String.format(PROTECTED_CONSTRUCTOR_STUB_ARG_PATTERN, serviceName));
   }
 
   public static CommentStatement createMethodSettingsArgComment(String serviceName) {

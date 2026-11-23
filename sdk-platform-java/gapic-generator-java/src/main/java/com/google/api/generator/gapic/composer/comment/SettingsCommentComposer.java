@@ -32,8 +32,26 @@ public class SettingsCommentComposer {
   private static final String BUILDER_CLASS_DOC_PATTERN = "Builder for %s.";
   private static final String CALL_SETTINGS_METHOD_DOC_PATTERN =
       "Returns the object with the settings used for calls to %s.";
+  private static final String LRO_INITIAL_CALL_SETTINGS_METHOD_DOC_PATTERN =
+      "Returns the object with the settings used for initial calls to %s.";
+  private static final String OPERATION_CALL_SETTINGS_METHOD_DOC_PATTERN =
+      "Returns the object with the polling and initial-call settings used for long-running calls"
+          + " to %s.";
   private static final String CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN =
       "Returns the builder for the settings used for calls to %s.";
+  private static final String LRO_INITIAL_CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN =
+      "Returns the builder for the settings used for initial calls to %s.";
+  private static final String OPERATION_CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN =
+      "Returns the builder for the polling and initial-call settings used for long-running calls"
+          + " to %s.";
+  private static final String CREATE_FROM_STUB_SETTINGS_METHOD_DOC_PATTERN =
+      "Constructs an instance of %s from the given stub settings.";
+  private static final String PROTECTED_CONSTRUCTOR_BUILDER_ARG_DOC_PATTERN =
+      "Constructs an instance of %s from the given builder.";
+  private static final String BUILD_METHOD_DOC_PATTERN =
+      "Builds and returns a new {@link %s} instance.";
+  private static final String CREATE_STUB_METHOD_DOC_PATTERN =
+      "Creates and returns a new {@link %s} instance using the configured transport.";
 
   // Class header patterns.
   private static final String CLASS_HEADER_SUMMARY_PATTERN =
@@ -91,6 +109,16 @@ public class SettingsCommentComposer {
   public static final CommentStatement DEFAULT_TRANSPORT_PROVIDER_BUILDER_METHOD_COMMENT =
       toCommentStatement("Returns a builder for the default ChannelProvider for this service.");
 
+  public static final CommentStatement DEFAULT_TRANSPORT_CHANNEL_PROVIDER_METHOD_COMMENT =
+      toCommentStatement("Returns the default TransportChannelProvider for this service.");
+
+  public static final CommentStatement DEFAULT_API_CLIENT_HEADER_PROVIDER_BUILDER_METHOD_COMMENT =
+      toCommentStatement(
+          "Returns a builder for the default ApiClientHeaderProvider for this service.");
+
+  public static final CommentStatement GET_STUB_SETTINGS_BUILDER_METHOD_COMMENT =
+      toCommentStatement("Returns the underlying stub settings builder.");
+
   public static final CommentStatement NEW_BUILDER_METHOD_COMMENT =
       toCommentStatement("Returns a new builder for this class.");
 
@@ -140,14 +168,76 @@ public class SettingsCommentComposer {
         isMethodInternal);
   }
 
+  public static CommentStatement createLroInitialCallSettingsGetterComment(
+      String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
+    return toCommentStatement(
+        String.format(LRO_INITIAL_CALL_SETTINGS_METHOD_DOC_PATTERN, javaMethodName),
+        isMethodDeprecated,
+        isMethodInternal);
+  }
+
+  public static CommentStatement createOperationCallSettingsGetterComment(
+      String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
+    return toCommentStatement(
+        String.format(OPERATION_CALL_SETTINGS_METHOD_DOC_PATTERN, javaMethodName),
+        isMethodDeprecated,
+        isMethodInternal);
+  }
+
   public static CommentStatement createBuilderClassComment(String outerClassName) {
     return toCommentStatement(String.format(BUILDER_CLASS_DOC_PATTERN, outerClassName));
+  }
+
+  public static CommentStatement createCreateFromStubSettingsComment(String settingsClassName) {
+    return toCommentStatement(
+        String.format(CREATE_FROM_STUB_SETTINGS_METHOD_DOC_PATTERN, settingsClassName));
+  }
+
+  public static CommentStatement createProtectedCtorBuilderArgComment(String settingsClassName) {
+    return toCommentStatement(
+        String.format(PROTECTED_CONSTRUCTOR_BUILDER_ARG_DOC_PATTERN, settingsClassName));
+  }
+
+  public static CommentStatement createBuildMethodComment(String settingsClassName) {
+    return CommentStatement.withComment(
+        JavaDocComment.builder()
+            .addUnescapedComment(String.format(BUILD_METHOD_DOC_PATTERN, settingsClassName))
+            .build());
+  }
+
+  public static CommentStatement createCreateStubMethodComment(String stubClassName) {
+    return CommentStatement.withComment(
+        JavaDocComment.builder()
+            .addUnescapedComment(String.format(CREATE_STUB_METHOD_DOC_PATTERN, stubClassName))
+            .build());
   }
 
   public static CommentStatement createCallSettingsBuilderGetterComment(
       String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
     String methodComment = String.format(CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN, javaMethodName);
     return toCommentStatement(methodComment, isMethodDeprecated, isMethodInternal);
+  }
+
+  public static CommentStatement createLroInitialCallSettingsBuilderGetterComment(
+      String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
+    String methodComment =
+        String.format(LRO_INITIAL_CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN, javaMethodName);
+    return toCommentStatement(methodComment, isMethodDeprecated, isMethodInternal);
+  }
+
+  public static CommentStatement createOperationCallSettingsBuilderGetterComment(
+      String javaMethodName, boolean isMethodDeprecated, boolean isMethodInternal) {
+    String methodComment =
+        String.format(OPERATION_CALL_SETTINGS_BUILDER_METHOD_DOC_PATTERN, javaMethodName);
+    return toCommentStatement(methodComment, isMethodDeprecated, isMethodInternal);
+  }
+
+  public static CommentStatement createTransportApiClientHeaderProviderBuilderComment(
+      String transportName) {
+    return toCommentStatement(
+        String.format(
+            "Returns a builder for the default %s ApiClientHeaderProvider for this service.",
+            transportName));
   }
 
   public static List<CommentStatement> createClassHeaderComments(

@@ -204,16 +204,26 @@ public class EchoServiceShouldGeneratePartialUsualClient implements BackgroundRe
             .createStub();
   }
 
+  /**
+   * Constructs an instance of EchoServiceShouldGeneratePartialUsualClient, using the given stub for
+   * making calls. This is protected so that it is easy to make a subclass, but otherwise, the
+   * static factory methods should be preferred.
+   */
   protected EchoServiceShouldGeneratePartialUsualClient(
       EchoServiceShouldGeneratePartialUsualStub stub) {
     this.settings = null;
     this.stub = stub;
   }
 
+  /**
+   * Returns the settings used to configure this client, or {@code null} if the client was
+   * constructed from a stub.
+   */
   public final @Nullable EchoServiceShouldGeneratePartialUsualSettings getSettings() {
     return settings;
   }
 
+  /** Returns the underlying stub used to make calls to the service. */
   public EchoServiceShouldGeneratePartialUsualStub getStub() {
     return stub;
   }

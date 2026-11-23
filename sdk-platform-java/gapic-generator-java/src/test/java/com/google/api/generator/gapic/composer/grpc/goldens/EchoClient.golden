@@ -301,23 +301,33 @@ public class EchoClient implements BackgroundResource {
     this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 
+  /**
+   * Constructs an instance of EchoClient, using the given stub for making calls. This is protected
+   * so that it is easy to make a subclass, but otherwise, the static factory methods should be
+   * preferred.
+   */
   protected EchoClient(EchoStub stub) {
     this.settings = null;
     this.stub = stub;
     this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 
+  /**
+   * Returns the settings used to configure this client, or {@code null} if the client was
+   * constructed from a stub.
+   */
   public final @Nullable EchoSettings getSettings() {
     return settings;
   }
 
+  /** Returns the underlying stub used to make calls to the service. */
   public EchoStub getStub() {
     return stub;
   }
 
   /**
-   * Returns the OperationsClient that can be used to query the status of a long-running operation
-   * returned by another API method call.
+   * Returns the gRPC OperationsClient that can be used to query the status of a long-running
+   * operation returned by another API method call.
    */
   public final OperationsClient getOperationsClient() {
     return operationsClient;

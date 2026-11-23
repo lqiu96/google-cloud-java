@@ -152,15 +152,25 @@ public class WickedClient implements BackgroundResource {
     this.stub = ((WickedStubSettings) settings.getStubSettings()).createStub();
   }
 
+  /**
+   * Constructs an instance of WickedClient, using the given stub for making calls. This is
+   * protected so that it is easy to make a subclass, but otherwise, the static factory methods
+   * should be preferred.
+   */
   protected WickedClient(WickedStub stub) {
     this.settings = null;
     this.stub = stub;
   }
 
+  /**
+   * Returns the settings used to configure this client, or {@code null} if the client was
+   * constructed from a stub.
+   */
   public final @Nullable WickedSettings getSettings() {
     return settings;
   }
 
+  /** Returns the underlying stub used to make calls to the service. */
   public WickedStub getStub() {
     return stub;
   }

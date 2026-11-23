@@ -83,6 +83,7 @@ public class MediaServiceSettings extends ClientSettings<MediaServiceSettings> {
     return ((MediaServiceStubSettings) getStubSettings()).getMediaMetadataSettings();
   }
 
+  /** Constructs an instance of MediaServiceSettings from the given stub settings. */
   public static final MediaServiceSettings create(MediaServiceStubSettings stub)
       throws IOException {
     return new MediaServiceSettings.Builder(stub.toBuilder()).build();
@@ -113,10 +114,12 @@ public class MediaServiceSettings extends ClientSettings<MediaServiceSettings> {
     return MediaServiceStubSettings.defaultGrpcTransportProviderBuilder();
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return MediaServiceStubSettings.defaultTransportChannelProvider();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return MediaServiceStubSettings.defaultApiClientHeaderProviderBuilder();
   }
@@ -136,6 +139,7 @@ public class MediaServiceSettings extends ClientSettings<MediaServiceSettings> {
     return new Builder(this);
   }
 
+  /** Constructs an instance of MediaServiceSettings from the given builder. */
   protected MediaServiceSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
   }
@@ -163,6 +167,7 @@ public class MediaServiceSettings extends ClientSettings<MediaServiceSettings> {
       return new Builder(MediaServiceStubSettings.newBuilder());
     }
 
+    /** Returns the underlying stub settings builder. */
     public MediaServiceStubSettings.Builder getStubSettingsBuilder() {
       return ((MediaServiceStubSettings.Builder) getStubSettings());
     }
@@ -191,6 +196,7 @@ public class MediaServiceSettings extends ClientSettings<MediaServiceSettings> {
       return getStubSettingsBuilder().getMediaMetadataSettings();
     }
 
+    /** Builds and returns a new {@link MediaServiceSettings} instance. */
     @Override
     public MediaServiceSettings build() throws IOException {
       return new MediaServiceSettings(this);

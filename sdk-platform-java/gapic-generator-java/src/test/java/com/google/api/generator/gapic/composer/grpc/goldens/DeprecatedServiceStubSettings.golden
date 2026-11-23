@@ -109,6 +109,10 @@ public class DeprecatedServiceStubSettings extends StubSettings<DeprecatedServic
     return slowFibonacciSettings;
   }
 
+  /**
+   * Creates and returns a new {@link DeprecatedServiceStub} instance using the configured
+   * transport.
+   */
   public DeprecatedServiceStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -154,10 +158,12 @@ public class DeprecatedServiceStubSettings extends StubSettings<DeprecatedServic
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken(
@@ -308,6 +314,7 @@ public class DeprecatedServiceStubSettings extends StubSettings<DeprecatedServic
       return slowFibonacciSettings;
     }
 
+    /** Builds and returns a new {@link DeprecatedServiceStubSettings} instance. */
     @Override
     public DeprecatedServiceStubSettings build() throws IOException {
       return new DeprecatedServiceStubSettings(this);

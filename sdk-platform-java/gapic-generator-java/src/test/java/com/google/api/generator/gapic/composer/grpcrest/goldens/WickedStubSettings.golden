@@ -107,6 +107,7 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
     return persuadeEvilPlanSettings;
   }
 
+  /** Creates and returns a new {@link WickedStub} instance using the configured transport. */
   public WickedStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -152,10 +153,12 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default gRPC ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultGrpcApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(WickedStubSettings.class))
@@ -163,6 +166,7 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
             GaxGrpcProperties.getGrpcTokenName(), GaxGrpcProperties.getGrpcVersion());
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return WickedStubSettings.defaultGrpcApiClientHeaderProviderBuilder();
   }
@@ -303,6 +307,7 @@ public class WickedStubSettings extends StubSettings<WickedStubSettings> {
       return persuadeEvilPlanSettings;
     }
 
+    /** Builds and returns a new {@link WickedStubSettings} instance. */
     @Override
     public WickedStubSettings build() throws IOException {
       return new WickedStubSettings(this);

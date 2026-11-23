@@ -250,6 +250,9 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
                 .build());
     TypeNode thisClassType = typeStore.get(ClassNames.getServiceSettingsClassName(service));
     return MethodDefinition.constructorBuilder()
+        .setHeaderCommentStatements(
+            SettingsCommentComposer.createProtectedCtorBuilderArgComment(
+                ClassNames.getServiceSettingsClassName(service)))
         .setScope(ScopeNode.PROTECTED)
         .setReturnType(thisClassType)
         .setArguments(Arrays.asList(settingsBuilderVarExpr.toBuilder().setIsDecl(true).build()))
@@ -311,12 +314,23 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
   // Add method header comment statements and annotations.
   private static MethodDefinition methodBuilderHelper(
       Method protoMethod, MethodDefinition.Builder methodBuilder, String javaMethodName) {
+    String rpcMethodName = getMethodNameFromSettingsVarName(javaMethodName);
+    CommentStatement headerComment;
+    if (javaMethodName.endsWith(CommonStrings.OPERATION_SETTINGS_LITERAL)) {
+      headerComment =
+          SettingsCommentComposer.createOperationCallSettingsGetterComment(
+              rpcMethodName, protoMethod.isDeprecated(), protoMethod.isInternalApi());
+    } else if (protoMethod.hasLro()) {
+      headerComment =
+          SettingsCommentComposer.createLroInitialCallSettingsGetterComment(
+              rpcMethodName, protoMethod.isDeprecated(), protoMethod.isInternalApi());
+    } else {
+      headerComment =
+          SettingsCommentComposer.createCallSettingsGetterComment(
+              rpcMethodName, protoMethod.isDeprecated(), protoMethod.isInternalApi());
+    }
     return methodBuilder
-        .setHeaderCommentStatements(
-            SettingsCommentComposer.createCallSettingsGetterComment(
-                getMethodNameFromSettingsVarName(javaMethodName),
-                protoMethod.isDeprecated(),
-                protoMethod.isInternalApi()))
+        .setHeaderCommentStatements(headerComment)
         .setAnnotations(createMethodAnnotations(protoMethod))
         .build();
   }
@@ -353,6 +367,9 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
             .setReturnType(thisClassType)
             .build();
     return MethodDefinition.builder()
+        .setHeaderCommentStatements(
+            SettingsCommentComposer.createCreateFromStubSettingsComment(
+                ClassNames.getServiceSettingsClassName(service)))
         .setScope(ScopeNode.PUBLIC)
         .setIsStatic(true)
         .setIsFinal(true)
@@ -455,19 +472,19 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
     }
 
     javaMethods.add(
-        methodStarterFn
-            .apply(
+        methodMakerFn.apply(
+            methodStarterFn.apply(
                 "defaultTransportChannelProvider",
-                typeMakerFn.apply(TransportChannelProvider.class))
-            .build());
+                typeMakerFn.apply(TransportChannelProvider.class)),
+            SettingsCommentComposer.DEFAULT_TRANSPORT_CHANNEL_PROVIDER_METHOD_COMMENT));
 
     javaMethods.add(
-        methodStarterFn
-            .apply(
+        methodMakerFn.apply(
+            methodStarterFn.apply(
                 "defaultApiClientHeaderProviderBuilder",
                 TypeNode.withReference(
-                    ConcreteReference.withClazz(ApiClientHeaderProvider.Builder.class)))
-            .build());
+                    ConcreteReference.withClazz(ApiClientHeaderProvider.Builder.class))),
+            SettingsCommentComposer.DEFAULT_API_CLIENT_HEADER_PROVIDER_BUILDER_METHOD_COMMENT));
     return javaMethods;
   }
 
@@ -698,6 +715,8 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
       Service service, TypeStore typeStore) {
     TypeNode retType = getStubSettingsBuilderType(service);
     return MethodDefinition.builder()
+        .setHeaderCommentStatements(
+            SettingsCommentComposer.GET_STUB_SETTINGS_BUILDER_METHOD_COMMENT)
         .setScope(ScopeNode.PUBLIC)
         .setReturnType(retType)
         .setName("getStubSettingsBuilder")
@@ -794,13 +813,19 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
       String javaMethodName = String.format("%sSettings", javaStyleName);
       MethodDefinition.Builder methodBuilder =
           methodMakerFn.apply(getCallSettingsBuilderType(protoMethod, typeStore), javaMethodName);
+      CommentStatement callSettingsBuilderComment =
+          protoMethod.hasLro()
+              ? SettingsCommentComposer.createLroInitialCallSettingsBuilderGetterComment(
+                  getMethodNameFromSettingsVarName(javaMethodName),
+                  protoMethod.isDeprecated(),
+                  protoMethod.isInternalApi())
+              : SettingsCommentComposer.createCallSettingsBuilderGetterComment(
+                  getMethodNameFromSettingsVarName(javaMethodName),
+                  protoMethod.isDeprecated(),
+                  protoMethod.isInternalApi());
       javaMethods.add(
           methodBuilder
-              .setHeaderCommentStatements(
-                  SettingsCommentComposer.createCallSettingsBuilderGetterComment(
-                      getMethodNameFromSettingsVarName(javaMethodName),
-                      protoMethod.isDeprecated(),
-                      protoMethod.isInternalApi()))
+              .setHeaderCommentStatements(callSettingsBuilderComment)
               .setAnnotations(createMethodAnnotations(protoMethod))
               .build());
 
@@ -811,7 +836,7 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
         javaMethods.add(
             methodBuilder
                 .setHeaderCommentStatements(
-                    SettingsCommentComposer.createCallSettingsBuilderGetterComment(
+                    SettingsCommentComposer.createOperationCallSettingsBuilderGetterComment(
                         getMethodNameFromSettingsVarName(javaMethodName),
                         protoMethod.isDeprecated(),
                         protoMethod.isInternalApi()))
@@ -827,6 +852,9 @@ public abstract class AbstractServiceSettingsClassComposer implements ClassCompo
     TypeNode builderType = typeStore.get(BUILDER_CLASS_NAME);
     TypeNode returnType = typeStore.get(ClassNames.getServiceSettingsClassName(service));
     return MethodDefinition.builder()
+        .setHeaderCommentStatements(
+            SettingsCommentComposer.createBuildMethodComment(
+                ClassNames.getServiceSettingsClassName(service)))
         .setIsOverride(true)
         .setScope(ScopeNode.PUBLIC)
         .setReturnType(returnType)

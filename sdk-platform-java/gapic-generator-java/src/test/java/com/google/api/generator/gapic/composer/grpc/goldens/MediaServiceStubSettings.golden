@@ -107,6 +107,7 @@ public class MediaServiceStubSettings extends StubSettings<MediaServiceStubSetti
     return getMediaMetadataSettings;
   }
 
+  /** Creates and returns a new {@link MediaServiceStub} instance using the configured transport. */
   public MediaServiceStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -152,10 +153,12 @@ public class MediaServiceStubSettings extends StubSettings<MediaServiceStubSetti
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken(
@@ -305,6 +308,7 @@ public class MediaServiceStubSettings extends StubSettings<MediaServiceStubSetti
       return getMediaMetadataSettings;
     }
 
+    /** Builds and returns a new {@link MediaServiceStubSettings} instance. */
     @Override
     public MediaServiceStubSettings build() throws IOException {
       return new MediaServiceStubSettings(this);

@@ -128,6 +128,7 @@ public class ComplianceSettings extends ClientSettings<ComplianceSettings> {
     return ((ComplianceStubSettings) getStubSettings()).repeatDataCustomQuerySettings();
   }
 
+  /** Constructs an instance of ComplianceSettings from the given stub settings. */
   public static final ComplianceSettings create(ComplianceStubSettings stub) throws IOException {
     return new ComplianceSettings.Builder(stub.toBuilder()).build();
   }
@@ -158,10 +159,12 @@ public class ComplianceSettings extends ClientSettings<ComplianceSettings> {
     return ComplianceStubSettings.defaultHttpJsonTransportProviderBuilder();
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return ComplianceStubSettings.defaultTransportChannelProvider();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ComplianceStubSettings.defaultApiClientHeaderProviderBuilder();
   }
@@ -181,6 +184,7 @@ public class ComplianceSettings extends ClientSettings<ComplianceSettings> {
     return new Builder(this);
   }
 
+  /** Constructs an instance of ComplianceSettings from the given builder. */
   protected ComplianceSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder);
   }
@@ -208,6 +212,7 @@ public class ComplianceSettings extends ClientSettings<ComplianceSettings> {
       return new Builder(ComplianceStubSettings.newBuilder());
     }
 
+    /** Returns the underlying stub settings builder. */
     public ComplianceStubSettings.Builder getStubSettingsBuilder() {
       return ((ComplianceStubSettings.Builder) getStubSettings());
     }
@@ -284,6 +289,7 @@ public class ComplianceSettings extends ClientSettings<ComplianceSettings> {
       return getStubSettingsBuilder().repeatDataCustomQuerySettings();
     }
 
+    /** Builds and returns a new {@link ComplianceSettings} instance. */
     @Override
     public ComplianceSettings build() throws IOException {
       return new ComplianceSettings(this);

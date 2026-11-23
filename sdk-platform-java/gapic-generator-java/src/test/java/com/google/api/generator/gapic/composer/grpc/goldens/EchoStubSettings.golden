@@ -297,12 +297,15 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
     return simplePagedExpandSettings;
   }
 
-  /** Returns the object with the settings used for calls to wait. */
+  /** Returns the object with the settings used for initial calls to wait. */
   public UnaryCallSettings<WaitRequest, Operation> waitSettings() {
     return waitSettings;
   }
 
-  /** Returns the object with the settings used for calls to wait. */
+  /**
+   * Returns the object with the polling and initial-call settings used for long-running calls to
+   * wait.
+   */
   public OperationCallSettings<WaitRequest, WaitResponse, WaitMetadata> waitOperationSettings() {
     return waitOperationSettings;
   }
@@ -323,6 +326,7 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
     return pagedExpandLegacySettings;
   }
 
+  /** Creates and returns a new {@link EchoStub} instance using the configured transport. */
   public EchoStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -368,10 +372,12 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
         .setMaxInboundMessageSize(Integer.MAX_VALUE);
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultGrpcTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken("gapic", GaxProperties.getLibraryVersion(EchoStubSettings.class))
@@ -675,12 +681,15 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
       return simplePagedExpandSettings;
     }
 
-    /** Returns the builder for the settings used for calls to wait. */
+    /** Returns the builder for the settings used for initial calls to wait. */
     public UnaryCallSettings.Builder<WaitRequest, Operation> waitSettings() {
       return waitSettings;
     }
 
-    /** Returns the builder for the settings used for calls to wait. */
+    /**
+     * Returns the builder for the polling and initial-call settings used for long-running calls to
+     * wait.
+     */
     public OperationCallSettings.Builder<WaitRequest, WaitResponse, WaitMetadata>
         waitOperationSettings() {
       return waitOperationSettings;
@@ -702,6 +711,7 @@ public class EchoStubSettings extends StubSettings<EchoStubSettings> {
       return pagedExpandLegacySettings;
     }
 
+    /** Builds and returns a new {@link EchoStubSettings} instance. */
     @Override
     public EchoStubSettings build() throws IOException {
       return new EchoStubSettings(this);

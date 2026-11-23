@@ -93,6 +93,9 @@ public class EchoWithVersionStubSettings extends StubSettings<EchoWithVersionStu
     return echoWithVersionMethodSettings;
   }
 
+  /**
+   * Creates and returns a new {@link EchoWithVersionStub} instance using the configured transport.
+   */
   public EchoWithVersionStub createStub() throws IOException {
     if (getTransportChannelProvider()
         .getTransportName()
@@ -138,10 +141,12 @@ public class EchoWithVersionStubSettings extends StubSettings<EchoWithVersionStu
     return InstantiatingHttpJsonChannelProvider.newBuilder();
   }
 
+  /** Returns the default TransportChannelProvider for this service. */
   public static TransportChannelProvider defaultTransportChannelProvider() {
     return defaultHttpJsonTransportProviderBuilder().build();
   }
 
+  /** Returns a builder for the default ApiClientHeaderProvider for this service. */
   public static ApiClientHeaderProvider.Builder defaultApiClientHeaderProviderBuilder() {
     return ApiClientHeaderProvider.newBuilder()
         .setGeneratedLibToken(
@@ -267,6 +272,7 @@ public class EchoWithVersionStubSettings extends StubSettings<EchoWithVersionStu
       return echoWithVersionMethodSettings;
     }
 
+    /** Builds and returns a new {@link EchoWithVersionStubSettings} instance. */
     @Override
     public EchoWithVersionStubSettings build() throws IOException {
       return new EchoWithVersionStubSettings(this);
