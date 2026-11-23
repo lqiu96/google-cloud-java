@@ -29,7 +29,7 @@ import java.util.Objects;
 /**
  * A base class for log entry payloads.
  *
- * @see <a href="https://cloud.google.com/logging/docs/view/logs_index">Log Entries and Logs</a>
+ * @see <a href="https://docs.cloud.google.com/logging/docs/overview">Log Entries and Logs</a>
  */
 public abstract class Payload<T> implements Serializable {
 

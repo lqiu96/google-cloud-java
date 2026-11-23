@@ -30,12 +30,12 @@ public class TailLogEntries {
     String logName = args.length > 0 ? args[0] : "";
 
     LoggingOptions options = LoggingOptions.getDefaultInstance();
-    try (Logging logging = options.getService()) {
-
+    Logging logging = options.getService();
+    try {
       // Optionally compose a filter to tail log entries only from specific log
       LogEntryServerStream stream;
 
-      if (logName != "") {
+      if (!logName.isEmpty()) {
         stream =
             logging.tailLogEntries(
                 TailOption.filter(
@@ -49,6 +49,8 @@ public class TailLogEntries {
         // cancel infinite streaming after receiving first entry
         stream.cancel();
       }
+    } finally {
+      logging.close();
     }
   }
 }

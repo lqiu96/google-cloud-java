@@ -32,16 +32,22 @@ public class GetSinkMetadata {
   }
 
   public static void getSinkMetadata(String sinkName) throws Exception {
-    // Instantiates a logging client
-    try (Logging logging = LoggingOptions.getDefaultInstance().getService()) {
-
+    // Instantiates a logging client (create once and reuse across requests; close on shutdown)
+    Logging logging = LoggingOptions.getDefaultInstance().getService();
+    try {
       Sink sink = logging.getSink(sinkName);
+      if (sink == null) {
+        System.out.println("Sink " + sinkName + " not found.");
+        return;
+      }
 
       // print sink metadata
       System.out.println("Name:" + sink.getName());
       System.out.println("Version Format:" + sink.getVersionFormat());
       System.out.println("Filter:" + sink.getFilter());
       System.out.println("Destination:" + sink.getDestination());
+    } finally {
+      logging.close();
     }
   }
 }

@@ -64,7 +64,7 @@ public final class MetadataLoader {
   /**
    * Loads metadata value for the {@code label} argument.
    *
-   * @param label A resource metadata label of type {@see MonitoredResourceUtil.Label}
+   * @param label A resource metadata label of type {@link MonitoredResourceUtil.Label}
    * @return A string with metadata value or {@code null} if the label is not supported.
    */
   public String getValue(MonitoredResourceUtil.Label label) {
@@ -94,10 +94,10 @@ public final class MetadataLoader {
    * environment. The path to the startup-script in the metadata attribute was selected as one of
    * the new values that explicitly mentioning "flex" and cannot be altered by user (e.g.
    * environment variable). The method assumes that the resource type is already identified as
-   * {@link Resource.AppEngine}.
+   * {@code AppEngine}.
    *
-   * @return {@link MetadataLoader.ENV_FLEXIBLE} for the Flexible environment and {@link
-   *     MetadataLoader.ENV_STANDARD} for the Standard environment.
+   * @return {@link #ENV_FLEXIBLE} for the Flexible environment and {@link #ENV_STANDARD} for the
+   *     Standard environment.
    */
   private String getEnv() {
     String value = getter.getAttribute("instance/attributes/startup-script");
@@ -156,9 +156,9 @@ public final class MetadataLoader {
 
   /**
    * Heuristic to discover the namespace name of the current environment. There is no deterministic
-   * way to discover the namespace name of the process. The name is read from the {@link
-   * K8S_POD_NAMESPACE_PATH} when available or read from a user defined environment variable
-   * "NAMESPACE_NAME"
+   * way to discover the namespace name of the process. The name is read from {@code
+   * /var/run/secrets/kubernetes.io/serviceaccount/namespace} when available or read from a user
+   * defined environment variable {@code NAMESPACE_NAME}.
    *
    * @return Namespace string or null if the name could not be discovered
    */

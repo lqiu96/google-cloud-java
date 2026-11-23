@@ -135,7 +135,8 @@ public class MonitoredResourceUtil {
    * @param projectId A string defining the project id
    * @param resourceType A custom resource type
    * @return the created {@link MonitoredResource}
-   * @see <a href="https://cloud.google.com/monitoring/api/resources">Monitored resource Types</a>
+   * @see <a href="https://docs.cloud.google.com/monitoring/api/resources">Monitored resource
+   *     Types</a>
    */
   public static MonitoredResource getResource(String projectId, String resourceType) {
     if (projectId == null || projectId.trim().isEmpty()) {
@@ -242,7 +243,8 @@ public class MonitoredResourceUtil {
    * MonitoredResource.Builder#addLabel(String, String)} are restricted to a supported set per
    * resource.
    *
-   * @see <a href= "https://cloud.google.com/logging/docs/api/v2/resource-list">Logging Labels</a>
+   * @see <a href="https://docs.cloud.google.com/logging/docs/api/v2/resource-list">Logging
+   *     Labels</a>
    */
   private static class LabelLoggingEnhancer implements LoggingEnhancer {
 

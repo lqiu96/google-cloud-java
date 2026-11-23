@@ -28,7 +28,7 @@ import java.util.Objects;
  * Cloud Logging metrics describe logs-based metric. The value of the metric is the number of log
  * entries that match a logs filter (see {@link #getFilter()}).
  *
- * @see <a href="https://cloud.google.com/logging/docs/view/logs_based_metrics">Logs-based Metrics
+ * @see <a href="https://docs.cloud.google.com/logging/docs/logs-based-metrics">Logs-based Metrics
  *     </a>
  */
 public class MetricInfo implements Serializable {
@@ -60,7 +60,7 @@ public class MetricInfo implements Serializable {
      * Sets an advanced logs filter. The value of the metric is the number of log entries that match
      * this filter. Example: {@code logName=projects/my-projectid/logs/syslog AND severity>=ERROR}.
      *
-     * @see <a href="https://cloud.google.com/logging/docs/view/advanced_filters">Advanced Log
+     * @see <a href="https://docs.cloud.google.com/logging/docs/view/building-queries">Advanced Log
      *     Filters</a>
      */
     public abstract Builder setFilter(String filter);
@@ -140,7 +140,7 @@ public class MetricInfo implements Serializable {
    * match this filter. Example: {@code logName=projects/my-projectid/logs/syslog AND
    * severity>=ERROR}.
    *
-   * @see <a href="https://cloud.google.com/logging/docs/view/advanced_filters">Advanced Log
+   * @see <a href="https://docs.cloud.google.com/logging/docs/view/building-queries">Advanced Log
    *     Filters</a>
    */
   public String getFilter() {

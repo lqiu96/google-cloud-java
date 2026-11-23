@@ -29,7 +29,7 @@ import java.util.Objects;
  * associated.
  *
  * @see <a href=
- *     "https://cloud.google.com/logging/docs/api/ref_v2beta1/rest/v2beta1/LogEntry#LogEntryOperation">
+ *     "https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#LogEntryOperation">
  *     Log Entry Operation</a>
  */
 public final class Operation implements Serializable {

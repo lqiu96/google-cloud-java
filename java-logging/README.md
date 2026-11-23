@@ -41,7 +41,7 @@ If you are using Maven without the BOM, add this to your dependencies:
 <dependency>
   <groupId>com.google.cloud</groupId>
   <artifactId>google-cloud-logging</artifactId>
-  <version>3.43.0</version>
+  <version>3.44.0</version>
 </dependency>
 ```
 
@@ -56,13 +56,13 @@ implementation 'com.google.cloud:google-cloud-logging'
 If you are using Gradle without BOM, add this to your dependencies:
 
 ```Groovy
-implementation 'com.google.cloud:google-cloud-logging:3.43.0'
+implementation 'com.google.cloud:google-cloud-logging:3.44.0'
 ```
 
 If you are using SBT, add this to your dependencies:
 
 ```Scala
-libraryDependencies += "com.google.cloud" % "google-cloud-logging" % "3.43.0"
+libraryDependencies += "com.google.cloud" % "google-cloud-logging" % "3.44.0"
 ```
 
 ## Authentication
@@ -101,25 +101,28 @@ use this Cloud Logging Client Library.
 
 To make requests to Cloud Logging, you must create a service object with valid credentials.
 You can then make API calls by calling methods on the Logging service object. 
-You can obtain credentials by using [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials).
-Or you can use a [Service Account](https://cloud.google.com/iam/docs/service-accounts) which is a recommended way to obtain credentials.
-The credentials can be automatically inferred from your [environment](https://cloud.google.com/docs/authentication/getting-started#setting_the_environment_variable).
-Then you only need the following code to create your service object:
+You can obtain credentials by using [Application Default Credentials](https://docs.cloud.google.com/docs/authentication/application-default-credentials).
+Or you can use a [Service Account](https://docs.cloud.google.com/iam/docs/service-account-overview) which is a recommended way to obtain credentials.
+The credentials can be automatically inferred from your [environment](https://docs.cloud.google.com/docs/authentication/client-libraries).
+Create a single `Logging` instance, reuse it across requests, and close it once during application shutdown:
 
 ```java
 import com.google.cloud.logging.Logging;
 import com.google.cloud.logging.LoggingOptions;
 
 LoggingOptions options = LoggingOptions.getDefaultInstance();
-try(Logging logging = options.getService()) {
-  // use logging here
+Logging logging = options.getService();
+try {
+  // reuse logging across requests
+} finally {
+  logging.close();
 }
 ```
 
 For other options, see the [Authentication](https://github.com/googleapis/google-cloud-java#authentication) page.
 The service object should be granted permissions to make API calls.
 Each API call describes the permissions under Authorized Scopes section.
-See [Logging API](https://cloud.google.com/logging/docs/reference/v2/rest) to find the required list of permissions or consult with [Access control guide](https://cloud.google.com/logging/docs/access-control) for predefined IAM roles that can be granted to the Logging service object.
+See [Logging API](https://docs.cloud.google.com/logging/docs/reference/v2/rest) to find the required list of permissions or consult with [Access control guide](https://docs.cloud.google.com/logging/docs/access-control) for predefined IAM roles that can be granted to the Logging service object.
 
 #### Creating a metric
 With Logging you can create logs-based metrics. Logs-based metrics allow to keep track of the number
@@ -172,7 +175,7 @@ The library supports writing log entries synchronously and asynchronously.
 In the synchronous mode each call to `write()` method results in a consequent call to Logging API to write a log entry.
 In the asynchronous mode the call(s) to Logging API takes place asynchronously and few calls to `write()` method may be batched together to compose a single call to Logging API.
 The default mode of writing is asynchronous.
-It can be configured in the `java.util.logging` handler [configuration file](https://cloud.google.com/logging/docs/setup/java#javautillogging_configuration):
+It can be configured in the `java.util.logging` handler [configuration file](https://docs.cloud.google.com/logging/docs/setup/java#jul_config):
 
 ```
 com.google.cloud.logging.LoggingHandler.synchronicity=SYNC
@@ -186,7 +189,7 @@ logging.setWriteSynchronicity(Synchronicity.SYNC);
 
 NOTE:
 > Writing log entries asynchronously in some Google Cloud managed environments (e.g. Cloud Functions)
-> may lead to unexpected results such as absense of expected log entries or abnormal program execution.
+> may lead to unexpected results such as absence of expected log entries or abnormal program execution.
 > To avoid these unexpected results, it is recommended to use synchronous mode.
 
 #### Controlling the batching settings
@@ -198,6 +201,7 @@ is enhanced with `BatchingSettings` which can be set as shown in example below:
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
+import java.time.Duration;
 
 LoggingOptions actual =
     LoggingOptions.newBuilder()
@@ -206,7 +210,7 @@ LoggingOptions actual =
                 .setIsEnabled(true)
                 .setElementCountThreshold(1000L)
                 .setRequestByteThreshold(1048576L)
-                .setDelayThreshold(Duration.ofMillis(50L))
+                .setDelayThresholdDuration(Duration.ofMillis(50L))
                 .setFlowControlSettings(
                     FlowControlSettings.newBuilder()
                         .setMaxOutstandingElementCount(100000L)
@@ -215,11 +219,11 @@ LoggingOptions actual =
                             FlowController.LimitExceededBehavior.ThrowException)
                         .build())
                 .build())
-        .setProjectId('Your project ID')
-        .build();  
+        .setProjectId("Your project ID")
+        .build();
 ```
 
-You can find more information about batching parameters see [BatchingSettings](https://cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings).
+You can find more information about batching parameters in [BatchingSettings](https://docs.cloud.google.com/java/docs/reference/gax/latest/com.google.api.gax.batching.BatchingSettings).
 
 #### Listing log entries
 
@@ -234,14 +238,11 @@ import com.google.cloud.logging.Logging.EntryListOption;
 
 Then, to list the log entries, use the following code:
 
-``` java
+```java
 Page<LogEntry> entries = logging.listLogEntries(
     EntryListOption.filter("logName=projects/" + options.getProjectId() + "/logs/test-log"));
-while (entries != null) {
-  for (LogEntry logEntry : entries.iterateAll()) {
-    System.out.println(logEntry);
-  }
-  entries = entries.getNextPage();
+for (LogEntry logEntry : entries.iterateAll()) {
+  System.out.println(logEntry);
 }
 ```
 #### Add a Cloud Logging handler to a logger
@@ -265,24 +266,24 @@ Notice that you can also register a `LoggingHandler` via the `logging.properties
 file. Adding, for instance, the following line:
 
 ```
-com.google.cloud.examples.logging.snippets.AddLoggingHandler.handlers=com.google.cloud.logging.LoggingHandler
+com.example.logging.jul.Quickstart.handlers=com.google.cloud.logging.LoggingHandler
 ```
 
 #### Alternative way to ingest logs in Google Cloud managed environments
 
 If you use Java logger with the Cloud Logging Handler, you can configure the handler to output logs to `stdout` using
-the [structured logging Json format](https://cloud.google.com/logging/docs/structured-logging#special-payload-fields).
+the [structured logging Json format](https://docs.cloud.google.com/logging/docs/structured-logging#special-payload-fields).
 To do this, add `com.google.cloud.logging.LoggingHandler.redirectToStdout=true` to the logger configuration file.
 You can use this configuration when running applications in Google Cloud managed environments such as AppEngine, Cloud Run,
 Cloud Function or GKE. The logger agent installed on these environments can capture STDOUT and ingest it into Cloud Logging.
 The agent can parse structured logs printed to STDOUT and capture additional log metadata beside the log payload.
 The parsed information includes severity, source location, user labels, http request and tracing information.
 
-#### Auto-population of log entrys' metadata
+#### Auto-population of log entries' metadata
 
-LogEntry object metadata information such as [monitored resource](https://cloud.google.com/logging/docs/reference/v2/rest/v2/MonitoredResource), 
-[Http request](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#HttpRequest) or 
-[source location](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#LogEntrySourceLocation)
+LogEntry object metadata information such as [monitored resource](https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/MonitoredResource), 
+[Http request](https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#HttpRequest) or 
+[source location](https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#LogEntrySourceLocation)
 are automatically populated with information that the library retrieves from the execution context.
 The library populates only empty (set to `null`) LogEntry fields.
 This behavior in the `Logging` instance can be opted out via `LoggingOptions`.
@@ -301,18 +302,18 @@ The library provides two methods to update the context:
 
 * Manually set the context. You can use the following methods of the `Context.Builder` to set the context information.
 Use the method `setRequest()` to setup the `HttpRequest` instance or `setRequestUrl()`, `setRequestMethod()`,
-`setReferer() `, `setRemoteIp()` and `setServerIp()` to setup the fields of the `HttpRequest`.
+`setReferer()`, `setRemoteIp()` and `setServerIp()` to setup the fields of the `HttpRequest`.
 The trace and span Ids can be set directly using `setTraceId()` and `setSpanId()` respectively.
 Alternatively it can be parsed from the W3C tracing context header using `loadW3CTraceParentContext()` or
 from the Google Cloud tracing context header using `loadCloudTraceContext()`.
 
     ```java
-    Context context = Context.newBuilder().setHttpRequest(request).setTrace(traceId).setSpanId(spanId).build();
+    Context context = Context.newBuilder().setRequest(request).setTraceId(traceId).setSpanId(spanId).build();
     (new ContextHandler()).setCurrentContext(context);
     ```
 
 * Using [servlet initializer](https://github.com/googleapis/java-logging-servlet-initializer).
-If your application uses a Web server based on Jakarta servlets (e.g. Jetty or Tomcat), you can add the servlet initializer
+If your application uses a Java EE (`javax.servlet`) Web server (e.g. Jetty or Tomcat), you can add the servlet initializer
 package to your WAR. The package implements a service provider interface (SPI) for
 [javax.servlet.ServletContainerInitializer](https://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html)
 and filters all servlet requests to automatically capture the execution context of the servlet request and store it using
@@ -326,38 +327,38 @@ If you use Maven, to use the servlet initializer add the following dependency to
     </dependency>      
     ```
 #### Population of Trace/Span ID fields in a LogEntry
-Cloud Logging libraries use [trace fields within LogEntry](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.trace) to capture trace contexts, which enables the [correlation of logs and traces](https://cloud.google.com/logging/docs/view/correlate-logs), and distributed tracing troubleshooting. 
-These tracing fields, including [trace](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.trace), [spanId](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.span_id), and [traceSampled](https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.trace_sampled), define the trace context for a `LogEntry`.
+Cloud Logging libraries use [trace fields within LogEntry](https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.trace) to capture trace contexts, which enables the [correlation of logs and traces](https://docs.cloud.google.com/logging/docs/view/correlate-logs), and distributed tracing troubleshooting. 
+These tracing fields, including [trace](https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.trace), [spanId](https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.span_id), and [traceSampled](https://docs.cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.trace_sampled), define the trace context for a `LogEntry`.
 
-Tracing information set manually takes precedence over information set by the following methods:
+Tracing information set directly on a `LogEntry.Builder` takes precedence over auto-population. For thread-local context managed by `ContextHandler`, an active OpenTelemetry span (`ContextPriority.OTEL_EXTRACTED`) takes precedence over lower-priority context sources (such as `XCLOUD_HEADER`, `W3C_HEADER`, or default `NO_INPUT`):
 
 * Auto-populate Trace/Span ID from OpenTelemetry Context
 If you are using OpenTelemetry and there is an active span in the OpenTelemetry Context, the `trace`, `span_id`, and `trace_sampled` fields in the log entry are populated from the active span. More information about OpenTelemetry can be found [here](https://opentelemetry.io/docs/languages/java/).
 
 * Use the [servlet initializer](https://github.com/googleapis/java-logging-servlet-initializer) to Populate Trace/Span ID from HTTP Headers
-If trace/span Id are not manually set or auto-populated from OpenTelemetry context, you can use the [servlet initializer](https://github.com/googleapis/java-logging-servlet-initializer) to populate trace/span Id from HTTP headers.
+If trace/span Id are not manually set on the `LogEntry` or auto-populated from OpenTelemetry context, you can use the [servlet initializer](https://github.com/googleapis/java-logging-servlet-initializer) to populate trace/span Id from HTTP headers.
 This package filters all servlet requests to automatically capture the execution context of the servlet request and stores it by using ContextHandler class. Http request and trace/span Id information are populated from the stored Context class instances.  
-Using this method, trace/span Id can be automatically populated from either the [W3C Traceparent](https://www.w3.org/TR/trace-context) or [X-Cloud-Trace-Context](https://cloud.google.com/trace/docs/trace-context#legacy-http-header) headers.
+Using this method, trace/span Id can be automatically populated from either the [W3C Traceparent](https://www.w3.org/TR/trace-context) or [X-Cloud-Trace-Context](https://docs.cloud.google.com/trace/docs/trace-context#legacy-http-header) headers.
 
 
 
 
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-java/tree/main/samples) directory.
+Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-java/tree/main/java-logging/samples) directory.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-| Native Image Logging Sample | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/native-image-sample/src/main/java/com/example/logging/NativeImageLoggingSample.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/native-image-sample/src/main/java/com/example/logging/NativeImageLoggingSample.java) |
-| Get Sink Metadata | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/logging/GetSinkMetadata.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/GetSinkMetadata.java) |
-| List Log Entries | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/logging/ListLogEntries.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/ListLogEntries.java) |
-| List Logs | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/logging/ListLogs.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/ListLogs.java) |
-| Log Entry Write Http Request | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/logging/LogEntryWriteHttpRequest.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/LogEntryWriteHttpRequest.java) |
-| Quickstart Sample | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/logging/QuickstartSample.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/QuickstartSample.java) |
-| Tail Log Entries | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/logging/TailLogEntries.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/TailLogEntries.java) |
-| Write Log Entry | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/logging/WriteLogEntry.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/WriteLogEntry.java) |
-| Quickstart | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/logging/jul/Quickstart.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/jul/Quickstart.java) |
-| Example Enhancer | [source code](https://github.com/googleapis/google-cloud-java/blob/main/samples/snippets/src/main/java/com/example/logging/jul/enhancers/ExampleEnhancer.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=samples/snippets/src/main/java/com/example/logging/jul/enhancers/ExampleEnhancer.java) |
+| Native Image Logging Sample | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/native-image-sample/src/main/java/com/example/logging/NativeImageLoggingSample.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/native-image-sample/src/main/java/com/example/logging/NativeImageLoggingSample.java) |
+| Get Sink Metadata | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/snippets/src/main/java/com/example/logging/GetSinkMetadata.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/snippets/src/main/java/com/example/logging/GetSinkMetadata.java) |
+| List Log Entries | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/snippets/src/main/java/com/example/logging/ListLogEntries.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/snippets/src/main/java/com/example/logging/ListLogEntries.java) |
+| List Logs | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/snippets/src/main/java/com/example/logging/ListLogs.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/snippets/src/main/java/com/example/logging/ListLogs.java) |
+| Log Entry Write Http Request | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/snippets/src/main/java/com/example/logging/LogEntryWriteHttpRequest.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/snippets/src/main/java/com/example/logging/LogEntryWriteHttpRequest.java) |
+| Quickstart Sample | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/snippets/src/main/java/com/example/logging/QuickstartSample.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/snippets/src/main/java/com/example/logging/QuickstartSample.java) |
+| Tail Log Entries | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/snippets/src/main/java/com/example/logging/TailLogEntries.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/snippets/src/main/java/com/example/logging/TailLogEntries.java) |
+| Write Log Entry | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/snippets/src/main/java/com/example/logging/WriteLogEntry.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/snippets/src/main/java/com/example/logging/WriteLogEntry.java) |
+| Quickstart | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/snippets/src/main/java/com/example/logging/jul/Quickstart.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/snippets/src/main/java/com/example/logging/jul/Quickstart.java) |
+| Example Enhancer | [source code](https://github.com/googleapis/google-cloud-java/blob/main/java-logging/samples/snippets/src/main/java/com/example/logging/jul/enhancers/ExampleEnhancer.java) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-java&page=editor&open_in_editor=java-logging/samples/snippets/src/main/java/com/example/logging/jul/enhancers/ExampleEnhancer.java) |
 
 
 
@@ -436,11 +437,11 @@ Apache 2.0 - See [LICENSE][license] for more information.
 
 Java is a registered trademark of Oracle and/or its affiliates.
 
-[product-docs]: https://cloud.google.com/logging/docs
+[product-docs]: https://docs.cloud.google.com/logging/docs
 [javadocs]: https://cloud.google.com/java/docs/reference/google-cloud-logging/latest/history
 [stability-image]: https://img.shields.io/badge/stability-stable-green
 [maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-logging.svg
-[maven-version-link]: https://central.sonatype.com/artifact/com.google.cloud/google-cloud-logging/3.43.0
+[maven-version-link]: https://central.sonatype.com/artifact/com.google.cloud/google-cloud-logging/3.44.0
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
 [auth-scopes]: https://developers.google.com/identity/protocols/oauth2/scopes
 [predefined-iam-roles]: https://cloud.google.com/iam/docs/understanding-roles#predefined_roles
