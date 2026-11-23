@@ -59,10 +59,10 @@ public class ServiceClientCommentComposer {
   private static final String SERVICE_DESCRIPTION_SURFACE_CODA_STRING =
       "See the individual methods for example code.";
   private static final String SERVICE_DESCRIPTION_RESOURCE_NAMES_FORMATTING_STRING =
-      "Many parameters require resource names to be formatted in a particular way. To assist with"
-          + " these names, this class includes a format method for each type of name, and"
-          + " additionally a parse  method to extract the individual identifiers contained within"
-          + " names that are returned.";
+      "<p> Many parameters require resource names to be formatted in a particular way. To assist"
+          + " with these names, generated resource name classes (ending in {@code Name}) provide"
+          + " static {@code of}, {@code format}, {@code parse}, and {@code isParsableFrom} methods"
+          + " to construct, validate, and extract individual identifiers from resource names.";
   private static final String SERVICE_DESCRIPTION_CREDENTIALS_SUMMARY_STRING =
       "To customize credentials:";
   private static final String SERVICE_DESCRIPTION_ENDPOINT_SUMMARY_STRING =
@@ -96,7 +96,7 @@ public class ServiceClientCommentComposer {
 
   private static final String CREATE_METHOD_SETTINGS_ARG_PATTERN =
       "Constructs an instance of %s, using the given settings. The channels are"
-          + " created based  on the settings passed in, or defaults for any settings that are"
+          + " created based on the settings passed in, or defaults for any settings that are"
           + " not set.";
 
   private static final String PROTECTED_CONSTRUCTOR_SETTINGS_ARG_PATTERN =
@@ -152,7 +152,8 @@ public class ServiceClientCommentComposer {
     classHeaderJavadocBuilder.addParagraph(SERVICE_DESCRIPTION_SURFACE_CODA_STRING);
 
     // Formatting resource names.
-    classHeaderJavadocBuilder.addParagraph(SERVICE_DESCRIPTION_RESOURCE_NAMES_FORMATTING_STRING);
+    classHeaderJavadocBuilder.addUnescapedComment(
+        SERVICE_DESCRIPTION_RESOURCE_NAMES_FORMATTING_STRING);
 
     // Customization examples.
     classHeaderJavadocBuilder.addParagraph(
