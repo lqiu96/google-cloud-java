@@ -1,9 +1,9 @@
 {
   "api_shortname": "datastore",
   "name_pretty": "Cloud Datastore",
-  "product_documentation": "https://cloud.google.com/datastore",
-  "api_description": "is a fully managed, schemaless database for\\nstoring non-relational data. Cloud Datastore automatically scales with\\nyour users and supports ACID transactions, high availability of reads and\\nwrites, strong consistency for reads and ancestor queries, and eventual\\nconsistency for all other queries.",
-  "client_documentation": "https://cloud.google.com/java/docs/reference/google-cloud-datastore/latest/history",
+  "product_documentation": "https://docs.cloud.google.com/datastore/docs",
+  "api_description": "(Firestore in Datastore mode) is a fully managed, schemaless database for storing non-relational data. Cloud Datastore automatically scales with your users and supports ACID transactions, high availability of reads and writes, and strong consistency by default for reads and queries (with optional eventual consistency or stale reads via ReadOption).",
+  "client_documentation": "https://docs.cloud.google.com/java/docs/reference/google-cloud-datastore/latest/overview",
   "release_level": "stable",
   "transport": "grpc+rest",
   "language": "java",

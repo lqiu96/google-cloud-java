@@ -1,9 +1,9 @@
 {
   "api_shortname": "bigquerystorage",
   "name_pretty": "BigQuery Storage",
-  "product_documentation": "https://cloud.google.com/bigquery/docs/reference/storage/",
-  "api_description": "is an API for reading data stored in BigQuery. This API provides direct, high-throughput read access to existing BigQuery tables, supports parallel access with automatic liquid sharding, and allows fine-grained control over what data is returned.",
-  "client_documentation": "https://cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/history",
+  "product_documentation": "https://docs.cloud.google.com/bigquery/docs/reference/storage",
+  "api_description": "provides high-throughput gRPC APIs for reading data from and writing data to BigQuery. The Storage Read API provides direct, parallel read access to BigQuery tables with automatic liquid sharding and column/row filtering, and the Storage Write API provides high-throughput streaming and batch data ingestion with exactly-once delivery semantics.",
+  "client_documentation": "https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/overview",
   "release_level": "stable",
   "transport": "grpc",
   "language": "java",

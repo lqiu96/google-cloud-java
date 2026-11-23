@@ -760,14 +760,14 @@ libraries:
       - google-cloud-bigquerystorage/src/test/proto/test.proto
     java:
       api_id_override: bigquerystorage.googleapis.com
-      api_description_override: is an API for reading data stored in BigQuery. This API provides direct, high-throughput read access to existing BigQuery tables, supports parallel access with automatic liquid sharding, and allows fine-grained control over what data is returned.
-      client_documentation_override: https://cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/history
+      api_description_override: provides high-throughput gRPC APIs for reading data from and writing data to BigQuery. The Storage Read API provides direct, parallel read access to BigQuery tables with automatic liquid sharding and column/row filtering, and the Storage Write API provides high-throughput streaming and batch data ingestion with exactly-once delivery semantics.
+      client_documentation_override: https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/overview
       codeowner_team: '@googleapis/bigquery-team'
       issue_tracker_override: https://issuetracker.google.com/savedsearches/559654
       released_version: 3.39.0
       library_type_override: GAPIC_COMBO
       name_pretty_override: BigQuery Storage
-      product_documentation_override: https://cloud.google.com/bigquery/docs/reference/storage/
+      product_documentation_override: https://docs.cloud.google.com/bigquery/docs/reference/storage
       recommended_package: com.google.cloud.bigquery.storage.v1
       transport_override: grpc
   - name: bigtable
@@ -1477,14 +1477,14 @@ libraries:
           samples: false
     java:
       api_id_override: datastore.googleapis.com
-      api_description_override: is a fully managed, schemaless database for\nstoring non-relational data. Cloud Datastore automatically scales with\nyour users and supports ACID transactions, high availability of reads and\nwrites, strong consistency for reads and ancestor queries, and eventual\nconsistency for all other queries.
-      client_documentation_override: https://cloud.google.com/java/docs/reference/google-cloud-datastore/latest/history
+      api_description_override: (Firestore in Datastore mode) is a fully managed, schemaless database for storing non-relational data. Cloud Datastore automatically scales with your users and supports ACID transactions, high availability of reads and writes, and strong consistency by default for reads and queries (with optional eventual consistency or stale reads via ReadOption).
+      client_documentation_override: https://docs.cloud.google.com/java/docs/reference/google-cloud-datastore/latest/overview
       excluded_poms:
         - grpc-google-cloud-datastore-v1
       released_version: 3.11.0
       library_type_override: GAPIC_COMBO
       name_pretty_override: Cloud Datastore
-      product_documentation_override: https://cloud.google.com/datastore
+      product_documentation_override: https://docs.cloud.google.com/datastore/docs
       recommended_package: com.google.cloud.datastore
   - name: datastream
     version: 1.102.0
@@ -2863,12 +2863,12 @@ libraries:
     java:
       api_id_override: logging.googleapis.com
       api_description_override: allows you to store, search, analyze, monitor, and alert on log data and events from Google Cloud and Amazon Web Services. Using the BindPlane service, you can also collect this data from over 150 common application components, on-premises systems, and hybrid cloud systems. BindPlane is included with your Google Cloud project at no additional cost.
-      client_documentation_override: https://cloud.google.com/java/docs/reference/google-cloud-logging/latest/history
+      client_documentation_override: https://docs.cloud.google.com/java/docs/reference/google-cloud-logging/latest/overview
       codeowner_team: '@googleapis/cloud-sdk-java-team'
       released_version: 3.44.0
       library_type_override: GAPIC_COMBO
       name_pretty_override: Cloud Logging
-      product_documentation_override: https://cloud.google.com/logging/docs
+      product_documentation_override: https://docs.cloud.google.com/logging/docs
       recommended_package: com.google.cloud.logging
       transport_override: grpc
   - name: lustre
