@@ -224,7 +224,7 @@ public final class Exceptions {
 
   /**
    * This class has a typo in the name. It will be removed soon. Please use {@link
-   * AppendSerializationError}
+   * AppendSerializationError}.
    */
   public static class AppendSerializtionError extends StatusRuntimeException {
     private final Map<Integer, String> rowIndexToErrorMessage;
@@ -397,7 +397,7 @@ public final class Exceptions {
 
   /**
    * This class is replaced by a generic one. It will be removed soon. Please use {@link
-   * DataHasUnknownFieldException}
+   * DataHasUnknownFieldException}.
    */
   public static final class JsonDataHasUnknownFieldException extends DataHasUnknownFieldException {
     protected JsonDataHasUnknownFieldException(String jsonFieldName) {
