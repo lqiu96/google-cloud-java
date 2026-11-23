@@ -41,13 +41,12 @@ public class ClientLibraryPackageInfoComposer {
   private static final Logger LOGGER =
       Logger.getLogger(ClientLibraryPackageInfoComposer.class.getName());
 
-  private static final String DIVIDER = "=======================";
-
   private static final String PACKAGE_INFO_DESCRIPTION =
-      "The interfaces provided are listed below, along with usage samples.";
+      "The service clients provided in this package are listed below, along with usage samples.";
 
   private static final String PACKAGE_INFO_TITLE_PATTERN = "A client to %s";
-  private static final String SAMPLE_CODE_HEADER_PATTERN = "Sample for %s:";
+  private static final String SERVICE_HEADING_PATTERN = "<h2>{@link %s}</h2>";
+  private static final String SAMPLE_CODE_HEADER_PATTERN = "<p> Sample for {@link %s}:";
   private static final String SERVICE_DESCRIPTION_HEADER_PATTERN = "Service Description: %s";
 
   public static @Nullable GapicPackageInfo generatePackageInfo(GapicContext context) {
@@ -85,8 +84,8 @@ public class ClientLibraryPackageInfoComposer {
     for (Service service : context.services()) {
       String javaClientName = ClassNames.getServiceClientClassName(service);
       javaDocCommentBuilder =
-          javaDocCommentBuilder.addParagraph(
-              String.format("%s %s %s", DIVIDER, javaClientName, DIVIDER));
+          javaDocCommentBuilder.addUnescapedComment(
+              String.format(SERVICE_HEADING_PATTERN, javaClientName));
 
       if (service.hasDescription()) {
         String descriptionComment =
@@ -96,7 +95,7 @@ public class ClientLibraryPackageInfoComposer {
       }
 
       javaDocCommentBuilder =
-          javaDocCommentBuilder.addParagraph(
+          javaDocCommentBuilder.addUnescapedComment(
               String.format(SAMPLE_CODE_HEADER_PATTERN, javaClientName));
       TypeNode clientType =
           TypeNode.withReference(

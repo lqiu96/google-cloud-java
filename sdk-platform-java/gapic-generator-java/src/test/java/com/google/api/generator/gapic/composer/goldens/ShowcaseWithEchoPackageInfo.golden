@@ -1,14 +1,14 @@
 /**
- * The interfaces provided are listed below, along with usage samples.
+ * The service clients provided in this package are listed below, along with usage samples.
  *
- * <p>======================= EchoClient =======================
+ * <h2>{@link EchoClient}</h2>
  *
  * <p>Service Description: This service is used showcase the four main types of rpcs - unary, server
  * side streaming, client side streaming, and bidirectional streaming. This service also exposes
  * methods that explicitly implement server delay, and paginated calls. Set the 'showcase-trailer'
  * metadata key on any method to have the values echoed in the response trailers.
  *
- * <p>Sample for EchoClient:
+ * <p>Sample for {@link EchoClient}:
  *
  * <pre>{@code
  * // This snippet has been automatically generated and should be regarded as a code template only.
