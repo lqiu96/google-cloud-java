@@ -38,6 +38,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -46,7 +47,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.concurrent.GuardedBy;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.threeten.bp.Duration;
 
 public class WriteToDefaultStreamTimestampJson {
 
@@ -76,7 +76,7 @@ public class WriteToDefaultStreamTimestampJson {
 
     // Write two batches of fake data to the stream, each with 10 JSON records.  Data may be
     // batched up to the maximum request size:
-    // https://cloud.google.com/bigquery/quotas#write-api-limits
+    // https://docs.cloud.google.com/bigquery/quotas#write-api-limits
     for (int i = 0; i < 2; i++) {
       JSONArray jsonArr = new JSONArray();
       for (int j = 0; j < 10; j++) {
@@ -146,22 +146,22 @@ public class WriteToDefaultStreamTimestampJson {
       // * RESOURCE_EXHAUSTED
       RetrySettings retrySettings =
           RetrySettings.newBuilder()
-              .setInitialRetryDelay(Duration.ofMillis(500))
+              .setInitialRetryDelayDuration(Duration.ofMillis(500))
               .setRetryDelayMultiplier(1.1)
               .setMaxAttempts(5)
-              .setMaxRetryDelay(Duration.ofMinutes(1))
+              .setMaxRetryDelayDuration(Duration.ofMinutes(1))
               .build();
 
       // Use the JSON stream writer to send records in JSON format. Specify the table name to write
       // to the default stream.
       // For more information about JsonStreamWriter, see:
-      // https://googleapis.dev/java/google-cloud-bigquerystorage/latest/com/google/cloud/bigquery/storage/v1/JsonStreamWriter.html
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.JsonStreamWriter
       return JsonStreamWriter.newBuilder(tableName, client)
           .setExecutorProvider(FixedExecutorProvider.create(Executors.newScheduledThreadPool(10)))
           .setChannelProvider(
               BigQueryWriteSettings.defaultGrpcTransportProviderBuilder()
-                  .setKeepAliveTime(org.threeten.bp.Duration.ofMinutes(1))
-                  .setKeepAliveTimeout(org.threeten.bp.Duration.ofMinutes(1))
+                  .setKeepAliveTimeDuration(Duration.ofMinutes(1))
+                  .setKeepAliveTimeoutDuration(Duration.ofMinutes(1))
                   .setKeepAliveWithoutCalls(true)
                   .build())
           .setEnableConnectionPool(true)

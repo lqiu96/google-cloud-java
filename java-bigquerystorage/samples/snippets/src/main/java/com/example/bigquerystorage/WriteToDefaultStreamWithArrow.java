@@ -41,6 +41,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -61,7 +62,6 @@ import org.apache.arrow.vector.types.pojo.ArrowType;
 import org.apache.arrow.vector.types.pojo.Field;
 import org.apache.arrow.vector.types.pojo.FieldType;
 import org.apache.arrow.vector.types.pojo.Schema;
-import org.threeten.bp.Duration;
 
 /**
  * This class demonstrates how to ingest data using Arrow format into BigQuery via the default
@@ -225,22 +225,22 @@ public class WriteToDefaultStreamWithArrow {
       // * RESOURCE_EXHAUSTED
       RetrySettings retrySettings =
           RetrySettings.newBuilder()
-              .setInitialRetryDelay(Duration.ofMillis(500))
+              .setInitialRetryDelayDuration(Duration.ofMillis(500))
               .setRetryDelayMultiplier(1.1)
               .setMaxAttempts(5)
-              .setMaxRetryDelay(Duration.ofMinutes(1))
+              .setMaxRetryDelayDuration(Duration.ofMinutes(1))
               .build();
 
       // Use the Stream writer to send records in Arrow format. Specify the table name to write
       // to the default stream.
       // For more information about StreamWriter, see:
-      // https://cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.StreamWriter
+      // https://docs.cloud.google.com/java/docs/reference/google-cloud-bigquerystorage/latest/com.google.cloud.bigquery.storage.v1.StreamWriter
       return StreamWriter.newBuilder(streamName, client)
           .setExecutorProvider(FixedExecutorProvider.create(Executors.newScheduledThreadPool(10)))
           .setChannelProvider(
               BigQueryWriteSettings.defaultGrpcTransportProviderBuilder()
-                  .setKeepAliveTime(org.threeten.bp.Duration.ofMinutes(1))
-                  .setKeepAliveTimeout(org.threeten.bp.Duration.ofMinutes(1))
+                  .setKeepAliveTimeDuration(Duration.ofMinutes(1))
+                  .setKeepAliveTimeoutDuration(Duration.ofMinutes(1))
                   .setKeepAliveWithoutCalls(true)
                   .setChannelsPerCpu(2)
                   .build())
@@ -249,7 +249,7 @@ public class WriteToDefaultStreamWithArrow {
           // bigquery column, apply the default value to the missing value field.
           .setDefaultMissingValueInterpretation(
               AppendRowsRequest.MissingValueInterpretation.DEFAULT_VALUE)
-          .setMaxRetryDuration(java.time.Duration.ofSeconds(5))
+          .setMaxRetryDuration(Duration.ofSeconds(5))
           // Set the StreamWriter with Arrow Schema, this would only allow the StreamWriter to
           // append data in Arrow format.
           .setWriterSchema(arrowSchema)
