@@ -18,6 +18,7 @@ package com.google.cloud.bigquery.spi.v2;
 import static com.google.cloud.bigquery.spi.v2.HttpBigQueryRpc.RESOURCE_PROJECT_PREFIX;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,14 +46,19 @@ import com.google.api.services.bigquery.model.RoutineReference;
 import com.google.api.services.bigquery.model.Table;
 import com.google.api.services.bigquery.model.TableDataInsertAllRequest;
 import com.google.api.services.bigquery.model.TableReference;
+import com.google.auth.Credentials;
 import com.google.cloud.NoCredentials;
+import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.DataFormatOptions;
 import com.google.cloud.bigquery.DataFormatOptions.TimestampFormatOptions;
+import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.WriteChannelConfiguration;
 import com.google.cloud.bigquery.telemetry.BigQueryTelemetryTracer;
 import com.google.cloud.bigquery.telemetry.HttpTracingRequestInitializer;
 import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.testing.exporter.InMemorySpanExporter;
@@ -60,11 +66,13 @@ import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -1819,21 +1827,67 @@ public class HttpBigQueryRpcTest {
   @Nested
   class UniverseDomainValidationTests {
 
+    private static final String CUSTOM_UNIVERSE_DOMAIN = "custom-universe.com";
+
     private HttpBigQueryRpc rpcWithMismatchedUniverseDomain;
+
+    private class FakeUniverseCredentials extends Credentials {
+      private final String universeDomain;
+      private final AtomicInteger universeDomainCalls = new AtomicInteger();
+      private final AtomicInteger requestMetadataCalls = new AtomicInteger();
+
+      FakeUniverseCredentials(String universeDomain) {
+        this.universeDomain = universeDomain;
+      }
+
+      @Override
+      public String getAuthenticationType() {
+        return "Fake";
+      }
+
+      @Override
+      public Map<String, List<String>> getRequestMetadata(URI uri) {
+        requestMetadataCalls.incrementAndGet();
+        return Collections.singletonMap("Authorization", Collections.singletonList("Bearer fake"));
+      }
+
+      @Override
+      public boolean hasRequestMetadata() {
+        return true;
+      }
+
+      @Override
+      public boolean hasRequestMetadataOnly() {
+        return true;
+      }
+
+      @Override
+      public void refresh() {}
+
+      @Override
+      public String getUniverseDomain() {
+        universeDomainCalls.incrementAndGet();
+        return universeDomain;
+      }
+    }
+
+    private BigQueryOptions.Builder newOptionsBuilder() {
+      return BigQueryOptions.newBuilder()
+          .setProjectId(PROJECT_ID)
+          .setTransportOptions(
+              BigQueryOptions.getDefaultHttpTransportOptions().toBuilder()
+                  .setHttpTransportFactory(() -> mockTransport)
+                  .build());
+    }
 
     /** Initializes an {@link HttpBigQueryRpc} with a mismatched universe domain configuration. */
     @BeforeEach
     public void setUp() {
       setUpServer();
       BigQueryOptions options =
-          BigQueryOptions.newBuilder()
-              .setProjectId(PROJECT_ID)
-              .setUniverseDomain("custom-universe.com")
+          newOptionsBuilder()
+              .setUniverseDomain(CUSTOM_UNIVERSE_DOMAIN)
               .setCredentials(NoCredentials.getInstance())
-              .setTransportOptions(
-                  BigQueryOptions.getDefaultHttpTransportOptions().toBuilder()
-                      .setHttpTransportFactory(() -> mockTransport)
-                      .build())
               .build();
       rpcWithMismatchedUniverseDomain = new HttpBigQueryRpc(options);
     }
@@ -1845,6 +1899,11 @@ public class HttpBigQueryRpcTest {
               BigQueryException.class, () -> rpcWithMismatchedUniverseDomain.open(new Job()));
 
       assertEquals(401, exception.getCode());
+      assertFalse(exception.isRetryable());
+      assertThat(exception.getMessage())
+          .startsWith(
+              "The configured universe domain (custom-universe.com) does not match the universe"
+                  + " domain found in the credentials (googleapis.com).");
       assertNull(lastRequestUrl);
     }
 
@@ -1856,6 +1915,7 @@ public class HttpBigQueryRpcTest {
               () -> rpcWithMismatchedUniverseDomain.openSkipExceptionTranslation(new Job()));
 
       assertEquals(401, exception.getCode());
+      assertFalse(exception.isRetryable());
       assertNull(lastRequestUrl);
     }
 
@@ -1876,6 +1936,7 @@ public class HttpBigQueryRpcTest {
                       true));
 
       assertEquals(401, exception.getCode());
+      assertFalse(exception.isRetryable());
       assertNull(lastRequestUrl);
     }
 
@@ -1896,6 +1957,216 @@ public class HttpBigQueryRpcTest {
                       true));
 
       assertEquals(401, exception.getCode());
+      assertFalse(exception.isRetryable());
+      assertNull(lastRequestUrl);
+    }
+
+    @Test
+    public void testDefaultUniverseDomainWithMismatchedCredentialsBlocksBeforeAuth() {
+      FakeUniverseCredentials credentials = new FakeUniverseCredentials(CUSTOM_UNIVERSE_DOMAIN);
+      BigQueryOptions options = newOptionsBuilder().setCredentials(credentials).build();
+      HttpBigQueryRpc rpc = new HttpBigQueryRpc(options);
+
+      // Validation must be deferred until the first RPC invocation.
+      assertEquals(0, credentials.universeDomainCalls.get());
+
+      BigQueryException exception =
+          assertThrows(
+              BigQueryException.class,
+              () -> rpc.getDataset(PROJECT_ID, DATASET_ID, Collections.emptyMap()));
+
+      assertEquals(401, exception.getCode());
+      assertFalse(exception.isRetryable());
+      assertThat(exception.getMessage())
+          .startsWith(
+              "The configured universe domain (googleapis.com) does not match the universe domain"
+                  + " found in the credentials (custom-universe.com).");
+      assertEquals(1, credentials.universeDomainCalls.get());
+      assertEquals(0, credentials.requestMetadataCalls.get());
+      assertNull(lastRequestUrl);
+    }
+
+    @Test
+    public void testUniverseDomainRoutingForDiscoveryUploadAndDefault() {
+      FakeUniverseCredentials customCredentials =
+          new FakeUniverseCredentials(CUSTOM_UNIVERSE_DOMAIN);
+      BigQueryOptions customOptions =
+          newOptionsBuilder()
+              .setUniverseDomain(CUSTOM_UNIVERSE_DOMAIN)
+              .setCredentials(customCredentials)
+              .setEnableOpenTelemetryTracing(true)
+              .setOpenTelemetryTracer(tracer)
+              .build();
+      HttpBigQueryRpc customRpc = new HttpBigQueryRpc(customOptions);
+
+      setMockResponse("{\"id\": \"test-dataset\"}");
+      assertNotNull(customRpc.getDataset(PROJECT_ID, DATASET_ID, Collections.emptyMap()));
+      assertEquals(
+          "https://bigquery.custom-universe.com/bigquery/v2/projects/test-project/datasets/test-dataset?prettyPrint=false",
+          lastRequestUrl);
+      assertEquals(1, customCredentials.requestMetadataCalls.get());
+      assertEquals(
+          "bigquery.custom-universe.com",
+          spanExporter
+              .getFinishedSpanItems()
+              .get(0)
+              .getAttributes()
+              .get(BigQueryTelemetryTracer.URL_DOMAIN));
+
+      mockResponse = new MockLowLevelHttpResponse();
+      mockResponse.setStatusCode(200);
+      mockResponse.setContent("");
+      mockResponse.addHeader("Location", "https://bigquery.custom-universe.com/upload/session-1");
+      assertEquals(
+          "https://bigquery.custom-universe.com/upload/session-1", customRpc.open(new Job()));
+      assertEquals(
+          "https://bigquery.custom-universe.com/upload/bigquery/v2/projects/test-project/jobs?uploadType=resumable",
+          lastRequestUrl);
+      // Successful validation is cached across RPCs on the same HttpBigQueryRpc instance.
+      assertEquals(1, customCredentials.universeDomainCalls.get());
+
+      // Default universe domain routes to bigquery.googleapis.com and supports toBuilder()
+      // switching universe domain without pinning the previous default host.
+      spanExporter.reset();
+      BigQueryOptions defaultOptions =
+          newOptionsBuilder()
+              .setCredentials(new FakeUniverseCredentials(Credentials.GOOGLE_DEFAULT_UNIVERSE))
+              .setEnableOpenTelemetryTracing(true)
+              .setOpenTelemetryTracer(tracer)
+              .build();
+      setMockResponse("{\"id\": \"test-dataset\"}");
+      assertNotNull(
+          new HttpBigQueryRpc(defaultOptions)
+              .getDataset(PROJECT_ID, DATASET_ID, Collections.emptyMap()));
+      assertEquals(
+          "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test-dataset?prettyPrint=false",
+          lastRequestUrl);
+      assertEquals(
+          "bigquery.googleapis.com",
+          spanExporter
+              .getFinishedSpanItems()
+              .get(0)
+              .getAttributes()
+              .get(BigQueryTelemetryTracer.URL_DOMAIN));
+
+      BigQueryOptions reconfiguredOptions =
+          defaultOptions.toBuilder()
+              .setUniverseDomain(CUSTOM_UNIVERSE_DOMAIN)
+              .setCredentials(new FakeUniverseCredentials(CUSTOM_UNIVERSE_DOMAIN))
+              .build();
+      setMockResponse("{\"id\": \"test-dataset\"}");
+      assertNotNull(
+          new HttpBigQueryRpc(reconfiguredOptions)
+              .getDataset(PROJECT_ID, DATASET_ID, Collections.emptyMap()));
+      assertEquals(
+          "https://bigquery.custom-universe.com/bigquery/v2/projects/test-project/datasets/test-dataset?prettyPrint=false",
+          lastRequestUrl);
+    }
+
+    @Test
+    public void testExplicitHostOverridePreservedWithCustomUniverseDomain() {
+      FakeUniverseCredentials credentials = new FakeUniverseCredentials(CUSTOM_UNIVERSE_DOMAIN);
+      BigQueryOptions emulatorOptions =
+          newOptionsBuilder()
+              .setHost("http://localhost:9050")
+              .setUniverseDomain(CUSTOM_UNIVERSE_DOMAIN)
+              .setCredentials(credentials)
+              .build();
+      HttpBigQueryRpc emulatorRpc = new HttpBigQueryRpc(emulatorOptions);
+
+      setMockResponse("{\"id\": \"test-dataset\"}");
+      assertNotNull(emulatorRpc.getDataset(PROJECT_ID, DATASET_ID, Collections.emptyMap()));
+      assertEquals(
+          "http://localhost:9050/bigquery/v2/projects/test-project/datasets/test-dataset?prettyPrint=false",
+          lastRequestUrl);
+
+      mockResponse = new MockLowLevelHttpResponse();
+      mockResponse.setStatusCode(200);
+      mockResponse.setContent("");
+      mockResponse.addHeader("Location", "http://localhost:9050/upload/session-2");
+      assertEquals("http://localhost:9050/upload/session-2", emulatorRpc.open(new Job()));
+      assertEquals(
+          "http://localhost:9050/upload/bigquery/v2/projects/test-project/jobs?uploadType=resumable",
+          lastRequestUrl);
+
+      BigQueryOptions explicitDefaultHostOptions =
+          newOptionsBuilder()
+              .setHost("https://www.googleapis.com")
+              .setUniverseDomain(CUSTOM_UNIVERSE_DOMAIN)
+              .setCredentials(new FakeUniverseCredentials(CUSTOM_UNIVERSE_DOMAIN))
+              .build();
+      setMockResponse("{\"id\": \"test-dataset\"}");
+      assertNotNull(
+          new HttpBigQueryRpc(explicitDefaultHostOptions)
+              .getDataset(PROJECT_ID, DATASET_ID, Collections.emptyMap()));
+      assertEquals(
+          "https://www.googleapis.com/bigquery/v2/projects/test-project/datasets/test-dataset?prettyPrint=false",
+          lastRequestUrl);
+    }
+
+    @Test
+    public void testEmptyUniverseDomainThrowsIllegalArgumentException() {
+      BigQueryOptions options =
+          newOptionsBuilder()
+              .setUniverseDomain("")
+              .setCredentials(NoCredentials.getInstance())
+              .build();
+
+      IllegalArgumentException exception =
+          assertThrows(IllegalArgumentException.class, () -> new HttpBigQueryRpc(options));
+      assertThat(exception.getMessage()).contains("universe domain");
+    }
+
+    @Test
+    public void testOpenTelemetrySpanEndsCleanlyOnUniverseDomainMismatch() {
+      BigQueryOptions options =
+          newOptionsBuilder()
+              .setUniverseDomain(CUSTOM_UNIVERSE_DOMAIN)
+              .setCredentials(NoCredentials.getInstance())
+              .setEnableOpenTelemetryTracing(true)
+              .setOpenTelemetryTracer(tracer)
+              .build();
+      HttpBigQueryRpc rpc = new HttpBigQueryRpc(options);
+
+      BigQueryException exception =
+          assertThrows(
+              BigQueryException.class,
+              () -> rpc.getDataset(PROJECT_ID, DATASET_ID, Collections.emptyMap()));
+
+      assertEquals(401, exception.getCode());
+      assertFalse(exception.isRetryable());
+      assertThat(exception.getMessage())
+          .startsWith(
+              "The configured universe domain (custom-universe.com) does not match the universe"
+                  + " domain found in the credentials (googleapis.com).");
+      assertNull(lastRequestUrl);
+      List<SpanData> spans = spanExporter.getFinishedSpanItems();
+      assertEquals(1, spans.size());
+      assertEquals(StatusCode.ERROR, spans.get(0).getStatus().getStatusCode());
+    }
+
+    @Test
+    public void testBigQueryClientAndWriteChannelFailWith401WithoutRetrying() {
+      FakeUniverseCredentials credentials = new FakeUniverseCredentials(CUSTOM_UNIVERSE_DOMAIN);
+      BigQueryOptions options = newOptionsBuilder().setCredentials(credentials).build();
+      BigQuery bigQuery = options.getService();
+
+      BigQueryException getDatasetException =
+          assertThrows(BigQueryException.class, () -> bigQuery.getDataset(DATASET_ID));
+      assertEquals(401, getDatasetException.getCode());
+      assertFalse(getDatasetException.isRetryable());
+      assertEquals(1, credentials.universeDomainCalls.get());
+      assertEquals(0, credentials.requestMetadataCalls.get());
+      assertNull(lastRequestUrl);
+
+      WriteChannelConfiguration writeConfig =
+          WriteChannelConfiguration.of(TableId.of(PROJECT_ID, DATASET_ID, TABLE_ID));
+      BigQueryException writerException =
+          assertThrows(BigQueryException.class, () -> bigQuery.writer(writeConfig));
+      assertEquals(401, writerException.getCode());
+      assertFalse(writerException.isRetryable());
+      assertEquals(2, credentials.universeDomainCalls.get());
+      assertEquals(0, credentials.requestMetadataCalls.get());
       assertNull(lastRequestUrl);
     }
   }
