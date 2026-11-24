@@ -1023,6 +1023,12 @@ public abstract class ExternalAccountCredentials extends GoogleCredentials {
     /**
      * Sets the optional universe domain.
      *
+     * <p>If unset, {@code null}, or blank, defaults to {@link
+     * com.google.auth.Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code googleapis.com}), which resolves
+     * an omitted {@code tokenUrl} to {@code https://sts.googleapis.com/v1/token}. Callers
+     * constructing external account credentials programmatically for a non-default universe domain
+     * should set this explicitly.
+     *
      * @param universeDomain the universe domain to set
      * @return this {@code Builder} object
      */
