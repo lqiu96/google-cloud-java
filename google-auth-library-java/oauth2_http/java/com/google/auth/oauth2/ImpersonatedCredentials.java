@@ -455,6 +455,7 @@ public class ImpersonatedCredentials extends GoogleCredentials
       Map<String, Object> json, HttpTransportFactory transportFactory) throws IOException {
     checkNotNull(json);
     checkNotNull(transportFactory);
+    extractUniverseDomainFromJson(json);
 
     List<String> delegates = null;
     Map<String, Object> sourceCredentialsJson;

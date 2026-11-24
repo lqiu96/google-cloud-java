@@ -220,6 +220,7 @@ public class GdchCredentials extends GoogleCredentials {
     String tokenServerUriStringFromCreds =
         validateField((String) json.get("token_uri"), "token_uri");
     String caCertPath = (String) json.get("ca_cert_path");
+    extractUniverseDomainFromJson(json);
 
     if (!SUPPORTED_JSON_FORMAT_VERSION.equals(formatVersion)) {
       throw new IOException(

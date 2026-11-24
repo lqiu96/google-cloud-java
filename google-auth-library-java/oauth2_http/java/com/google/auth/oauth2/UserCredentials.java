@@ -137,6 +137,7 @@ public class UserCredentials extends GoogleCredentials implements IdTokenProvide
     // currently "token_uri" is not a default field and needs to be added to json file manually
     String tokenUrl = (String) json.get("token_uri");
     URI tokenUri = (tokenUrl == null || tokenUrl.isEmpty()) ? null : URI.create(tokenUrl);
+    extractUniverseDomainFromJson(json);
     String account = null;
     if (json.containsKey("account")) {
       account = (String) json.get("account");

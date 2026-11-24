@@ -346,7 +346,7 @@ public class ExternalAccountAuthorizedUserCredentials extends GoogleCredentials 
     String clientId = (String) json.get("client_id");
     String clientSecret = (String) json.get("client_secret");
     String quotaProjectId = (String) json.get("quota_project_id");
-    String universeDomain = (String) json.get("universe_domain");
+    String universeDomain = extractUniverseDomainFromJson(json);
 
     return ExternalAccountAuthorizedUserCredentials.newBuilder()
         .setAudience(audience)
@@ -557,7 +557,13 @@ public class ExternalAccountAuthorizedUserCredentials extends GoogleCredentials 
     }
 
     /**
-     * Sets the optional universe domain. The Google Default Universe is used when not provided.
+     * Sets the optional universe domain.
+     *
+     * <p>If unset, {@code null}, or blank, defaults to {@link
+     * com.google.auth.Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code googleapis.com}). Credential
+     * builders intentionally do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment
+     * variable, so callers constructing credentials programmatically for a custom universe domain
+     * must set this explicitly.
      *
      * @param universeDomain the universe domain to set
      * @return this {@code Builder} object

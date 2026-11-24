@@ -181,7 +181,7 @@ public class ServiceAccountJwtAccessCredentials extends Credentials
     String privateKeyPkcs8 = (String) json.get("private_key");
     String privateKeyId = (String) json.get("private_key_id");
     String quoataProjectId = (String) json.get("quota_project_id");
-    String rawUniverseDomain = (String) json.get("universe_domain");
+    String rawUniverseDomain = GoogleCredentials.extractUniverseDomainFromJson(json);
     String resolvedUniverseDomain =
         (rawUniverseDomain == null) ? Credentials.GOOGLE_DEFAULT_UNIVERSE : rawUniverseDomain;
 
@@ -206,6 +206,11 @@ public class ServiceAccountJwtAccessCredentials extends Credentials
   /**
    * Factory using PKCS#8 for the private key.
    *
+   * <p>The returned credentials default to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable.
+   * To configure a custom universe domain programmatically, use {@link #newBuilder()} with {@link
+   * Builder#setUniverseDomain(String)}.
+   *
    * @param clientId Client ID of the service account from the console. May be null.
    * @param clientEmail Client email address of the service account from the console.
    * @param privateKeyPkcs8 RSA private key object for the service account in PKCS#8 format.
@@ -221,6 +226,11 @@ public class ServiceAccountJwtAccessCredentials extends Credentials
 
   /**
    * Factory using PKCS#8 for the private key.
+   *
+   * <p>The returned credentials default to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable.
+   * To configure a custom universe domain programmatically, use {@link #newBuilder()} with {@link
+   * Builder#setUniverseDomain(String)}.
    *
    * @param clientId Client ID of the service account from the console. May be null.
    * @param clientEmail Client email address of the service account from the console.
@@ -595,8 +605,18 @@ public class ServiceAccountJwtAccessCredentials extends Credentials
       return this;
     }
 
+    /**
+     * Sets the universe domain (for example, {@code googleapis.com}).
+     *
+     * <p>If unset, {@code null}, or blank, defaults to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE}
+     * ({@code googleapis.com}). This builder intentionally does not read the {@code
+     * GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable, so callers constructing credentials
+     * programmatically for a custom universe domain must set this explicitly.
+     *
+     * @param universeDomain the universe domain
+     * @return this builder
+     */
     @CanIgnoreReturnValue
-    /** Sets the universe domain (example, googleapis.com). */
     public Builder setUniverseDomain(String universeDomain) {
       this.universeDomain = universeDomain;
       return this;

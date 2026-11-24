@@ -180,7 +180,7 @@ public class ServiceAccountCredentials extends GoogleCredentials
     String projectId = (String) json.get("project_id");
     String tokenServerUriStringFromCreds = (String) json.get("token_uri");
     String quotaProjectId = (String) json.get("quota_project_id");
-    String universeDomain = (String) json.get("universe_domain");
+    String universeDomain = extractUniverseDomainFromJson(json);
     URI tokenServerUriFromCreds = null;
     try {
       if (tokenServerUriStringFromCreds != null) {
@@ -216,6 +216,11 @@ public class ServiceAccountCredentials extends GoogleCredentials
   /**
    * Factory with minimum identifying information using PKCS#8 for the private key.
    *
+   * <p>The returned credentials default to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable.
+   * To configure a custom universe domain programmatically, use {@link #newBuilder()} with {@link
+   * Builder#setPrivateKeyString(String)} and {@link Builder#setUniverseDomain(String)}.
+   *
    * @param clientId Client ID of the service account from the console. May be null.
    * @param clientEmail Client email address of the service account from the console.
    * @param privateKeyPkcs8 RSA private key object for the service account in PKCS#8 format.
@@ -244,6 +249,11 @@ public class ServiceAccountCredentials extends GoogleCredentials
 
   /**
    * Factory with minimum identifying information using PKCS#8 for the private key.
+   *
+   * <p>The returned credentials default to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable.
+   * To configure a custom universe domain programmatically, use {@link #newBuilder()} with {@link
+   * Builder#setPrivateKeyString(String)} and {@link Builder#setUniverseDomain(String)}.
    *
    * @param clientId client ID of the service account from the console. May be null.
    * @param clientEmail client email address of the service account from the console
@@ -275,6 +285,11 @@ public class ServiceAccountCredentials extends GoogleCredentials
   /**
    * Factory with minimum identifying information and custom transport using PKCS#8 for the private
    * key.
+   *
+   * <p>The returned credentials default to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable.
+   * To configure a custom universe domain programmatically, use {@link #newBuilder()} with {@link
+   * Builder#setPrivateKeyString(String)} and {@link Builder#setUniverseDomain(String)}.
    *
    * @param clientId Client ID of the service account from the console. May be null.
    * @param clientEmail Client email address of the service account from the console.
@@ -313,6 +328,11 @@ public class ServiceAccountCredentials extends GoogleCredentials
   /**
    * Factory with minimum identifying information and custom transport using PKCS#8 for the private
    * key.
+   *
+   * <p>The returned credentials default to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable.
+   * To configure a custom universe domain programmatically, use {@link #newBuilder()} with {@link
+   * Builder#setPrivateKeyString(String)} and {@link Builder#setUniverseDomain(String)}.
    *
    * @param clientId client ID of the service account from the console. May be null.
    * @param clientEmail client email address of the service account from the console
@@ -355,6 +375,11 @@ public class ServiceAccountCredentials extends GoogleCredentials
    * Factory with minimum identifying information and custom transport using PKCS#8 for the private
    * key.
    *
+   * <p>The returned credentials default to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable.
+   * To configure a custom universe domain programmatically, use {@link #newBuilder()} with {@link
+   * Builder#setPrivateKeyString(String)} and {@link Builder#setUniverseDomain(String)}.
+   *
    * @param clientId Client ID of the service account from the console. May be null.
    * @param clientEmail Client email address of the service account from the console.
    * @param privateKeyPkcs8 RSA private key object for the service account in PKCS#8 format.
@@ -396,6 +421,11 @@ public class ServiceAccountCredentials extends GoogleCredentials
   /**
    * Factory with minimum identifying information and custom transport using PKCS#8 for the private
    * key.
+   *
+   * <p>The returned credentials default to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable.
+   * To configure a custom universe domain programmatically, use {@link #newBuilder()} with {@link
+   * Builder#setPrivateKeyString(String)} and {@link Builder#setUniverseDomain(String)}.
    *
    * @param clientId client ID of the service account from the console. May be null.
    * @param clientEmail client email address of the service account from the console
@@ -1298,6 +1328,17 @@ public class ServiceAccountCredentials extends GoogleCredentials
       return this;
     }
 
+    /**
+     * Sets the universe domain for the service account credential.
+     *
+     * <p>If unset, {@code null}, or blank, defaults to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE}
+     * ({@code googleapis.com}). This builder intentionally does not read the {@code
+     * GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable, so callers constructing credentials
+     * programmatically for a custom universe domain must set this explicitly.
+     *
+     * @param universeDomain the universe domain (for example, {@code googleapis.com})
+     * @return this builder
+     */
     @Override
     @CanIgnoreReturnValue
     public Builder setUniverseDomain(String universeDomain) {

@@ -33,6 +33,7 @@ package com.google.auth.oauth2;
 
 import com.google.api.client.json.GenericJson;
 import com.google.api.client.json.JsonObjectParser;
+import com.google.api.client.util.Data;
 import com.google.api.core.ObsoleteApi;
 import com.google.auth.Credentials;
 import com.google.auth.http.HttpTransportFactory;
@@ -114,6 +115,11 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
 
   /**
    * Returns the credentials instance from the given access token.
+   *
+   * <p>The returned credentials default to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable.
+   * To avoid sending a non-default universe access token to {@code googleapis.com}, callers using a
+   * custom universe domain should use {@link #create(String, AccessToken)} instead.
    *
    * @param accessToken the access token
    * @return the credentials instance
@@ -260,6 +266,31 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
   }
 
   /**
+   * Extracts an optional {@code universe_domain} field from parsed credential JSON.
+   *
+   * <p>Returns {@code null} when the field is absent or JSON {@code null}. Throws an {@link
+   * IOException} when the field is present with an empty, whitespace-only, or non-string value.
+   */
+  static @Nullable String extractUniverseDomainFromJson(Map<String, Object> json)
+      throws IOException {
+    Object rawValue = json.get("universe_domain");
+    if (rawValue == null || Data.isNull(rawValue)) {
+      return null;
+    }
+    if (!(rawValue instanceof String)) {
+      throw new IOException(
+          "Error reading credentials from stream, 'universe_domain' field must be a non-empty"
+              + " string.");
+    }
+    String universeDomain = (String) rawValue;
+    if (universeDomain.trim().isEmpty()) {
+      throw new IOException(
+          "Error reading credentials from stream, 'universe_domain' field cannot be empty.");
+    }
+    return universeDomain;
+  }
+
+  /**
    * This method is obsolete because of a potential security risk. Use the credential specific load
    * method instead
    *
@@ -307,6 +338,7 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
     if (fileType == null) {
       throw new IOException("Error reading credentials from stream, 'type' field not specified.");
     }
+    extractUniverseDomainFromJson(fileContents);
 
     if (fileType.equals(GoogleCredentialsInfo.USER_CREDENTIALS.getFileType())) {
       return UserCredentials.fromJson(fileContents, transportFactory);
@@ -420,7 +452,10 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
    * Constructor with an explicit access token and quotaProjectId.
    *
    * <p>Deprecated, please use the {@link GoogleCredentials#GoogleCredentials(Builder)} constructor
-   * whenever possible.
+   * whenever possible. Defaults to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code
+   * googleapis.com}) and does not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment
+   * variable. Callers using a custom universe domain should use {@link #newBuilder()} with {@link
+   * Builder#setUniverseDomain(String)} or {@link #create(String, AccessToken)}.
    *
    * @param accessToken initial or temporary access token
    * @param quotaProjectId a quotaProjectId, a project id to be used for billing purposes
@@ -435,6 +470,10 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
 
   /**
    * Constructor with explicit access token.
+   *
+   * <p>Defaults to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code googleapis.com}) and does
+   * not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable. Callers using a custom
+   * universe domain should use {@link #create(String, AccessToken)} instead.
    *
    * @param accessToken initial or temporary access token
    */
@@ -686,6 +725,17 @@ public class GoogleCredentials extends OAuth2Credentials implements QuotaProject
       return this;
     }
 
+    /**
+     * Sets the universe domain for the credential.
+     *
+     * <p>If unset, {@code null}, or blank, defaults to {@link Credentials#GOOGLE_DEFAULT_UNIVERSE}
+     * ({@code googleapis.com}). Credential builders intentionally do not read the {@code
+     * GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable, so callers constructing credentials
+     * programmatically for a custom universe domain must set this explicitly.
+     *
+     * @param universeDomain the universe domain (for example, {@code googleapis.com})
+     * @return this builder
+     */
     public Builder setUniverseDomain(String universeDomain) {
       this.universeDomain = universeDomain;
       return this;

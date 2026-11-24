@@ -448,6 +448,10 @@ public abstract class ExternalAccountCredentials extends GoogleCredentials {
     String quotaProjectId = getOptional(json, "quota_project_id", String.class);
     String userProject = getOptional(json, "workforce_pool_user_project", String.class);
     String universeDomain = getOptional(json, "universe_domain", String.class);
+    if (universeDomain != null && universeDomain.trim().isEmpty()) {
+      throw new IllegalArgumentException(
+          "The 'universe_domain' field in external account credentials cannot be empty.");
+    }
     Map<String, Object> impersonationOptionsMap =
         getOptional(json, "service_account_impersonation", Map.class);
 
@@ -1022,6 +1026,13 @@ public abstract class ExternalAccountCredentials extends GoogleCredentials {
 
     /**
      * Sets the optional universe domain.
+     *
+     * <p>If unset, {@code null}, or blank, defaults to {@link
+     * com.google.auth.Credentials#GOOGLE_DEFAULT_UNIVERSE} ({@code googleapis.com}), which resolves
+     * an omitted {@code tokenUrl} to {@code https://sts.googleapis.com/v1/token}. Credential
+     * builders intentionally do not read the {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment
+     * variable, so callers constructing external account credentials programmatically for a custom
+     * universe domain must set this explicitly.
      *
      * @param universeDomain the universe domain to set
      * @return this {@code Builder} object
