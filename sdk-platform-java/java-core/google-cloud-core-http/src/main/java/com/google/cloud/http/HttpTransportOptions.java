@@ -149,10 +149,21 @@ public class HttpTransportOptions implements TransportOptions {
   /**
    * Returns a request initializer responsible for initializing requests according to service
    * options.
+   *
+   * <p>The returned initializer validates that the resolved universe domain on {@code
+   * serviceOptions} matches the credentials' universe domain lazily on the first request, before
+   * attaching authorization headers or timeouts. Once validation succeeds, the result is cached for
+   * subsequent requests made with the returned initializer; mismatches throw {@link
+   * UnauthenticatedException} and are not cached, and transient {@link IOException}s from
+   * credential universe domain lookup are retried on the next request.
+   *
+   * <p>Subclasses that override this method should delegate to {@code
+   * super.getHttpRequestInitializer(serviceOptions)} to preserve authentication, timeouts, headers,
+   * and universe domain validation.
    */
   public HttpRequestInitializer getHttpRequestInitializer(
       final ServiceOptions<?, ?> serviceOptions) {
-    Credentials scopedCredentials = serviceOptions.getScopedCredentials();
+    final Credentials scopedCredentials = serviceOptions.getScopedCredentials();
     final HttpRequestInitializer delegate =
         scopedCredentials != null && scopedCredentials != NoCredentials.getInstance()
             ? new HttpCredentialsAdapter(scopedCredentials)
@@ -163,44 +174,42 @@ public class HttpTransportOptions implements TransportOptions {
         serviceOptions.getMergedHeaderProvider(internalHeaderProvider);
 
     return new HttpRequestInitializer() {
+      // Cached per initializer once validation succeeds; mismatches and transient I/O errors
+      // leave this false so subsequent calls re-validate.
+      private volatile boolean universeDomainValidated;
 
-      /**
-       * Helper method to resolve the Universe Domain. First checks the user configuration from
-       * ServiceOptions, then the Environment Variable. If both haven't been set, resolve the value
-       * to be the Google Default Universe.
-       */
-      private String determineUniverseDomain() {
-        String universeDomain = serviceOptions.getUniverseDomain();
-        if (universeDomain == null) {
-          universeDomain = System.getenv(EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN);
+      private void validateUniverseDomain() throws IOException {
+        if (universeDomainValidated) {
+          return;
         }
-        return universeDomain == null ? Credentials.GOOGLE_DEFAULT_UNIVERSE : universeDomain;
+        String configuredUniverseDomain = serviceOptions.getResolvedUniverseDomain();
+        // Default to GDU when credentials are absent or NoCredentials; otherwise query credentials.
+        String credentialsUniverseDomain = Credentials.GOOGLE_DEFAULT_UNIVERSE;
+        if (delegate != null) {
+          credentialsUniverseDomain = scopedCredentials.getUniverseDomain();
+        }
+
+        if (!configuredUniverseDomain.equals(credentialsUniverseDomain)) {
+          String errorMessage =
+              String.format(
+                  EndpointContext.INVALID_UNIVERSE_DOMAIN_ERROR_TEMPLATE,
+                  configuredUniverseDomain,
+                  credentialsUniverseDomain);
+          // Pass errorMessage as both message and cause so getMessage() is clean while preserving
+          // compatibility for callers inspecting getCause().getMessage().
+          throw new UnauthenticatedException(
+              errorMessage,
+              new Throwable(errorMessage),
+              HttpJsonStatusCode.of(StatusCode.Code.UNAUTHENTICATED),
+              false);
+        }
+        universeDomainValidated = true;
       }
 
       @Override
       public void initialize(HttpRequest httpRequest) throws IOException {
-        String configuredUniverseDomain = determineUniverseDomain();
-        // Default to the GDU. Override with value in the Credentials if needed
-        String credentialsUniverseDomain = Credentials.GOOGLE_DEFAULT_UNIVERSE;
-
-        // delegate is always HttpCredentialsAdapter or null (NoCredentials)
-        if (delegate != null) {
-          HttpCredentialsAdapter httpCredentialsAdapter = (HttpCredentialsAdapter) delegate;
-          credentialsUniverseDomain = httpCredentialsAdapter.getCredentials().getUniverseDomain();
-        }
-
-        // Validate the universe domain before initializing the request
-        if (!configuredUniverseDomain.equals(credentialsUniverseDomain)) {
-          throw new UnauthenticatedException(
-              new Throwable(
-                  String.format(
-                      EndpointContext.INVALID_UNIVERSE_DOMAIN_ERROR_TEMPLATE,
-                      configuredUniverseDomain,
-                      credentialsUniverseDomain)),
-              HttpJsonStatusCode.of(StatusCode.Code.UNAUTHENTICATED),
-              false);
-        }
-
+        // Validate before delegate.initialize() so tokens are never attached on a mismatch.
+        validateUniverseDomain();
         if (delegate != null) {
           delegate.initialize(httpRequest);
         }
