@@ -850,4 +850,51 @@ class EndpointContextTest {
             .build();
     Truth.assertThat(endpointContext.resolvedEndpoint()).isEqualTo(DEFAULT_ENDPOINT);
   }
+
+  @Test
+  void endpointContextBuild_emptyUniverseDomainEnvVar_fallsBackToDefaultUniverse()
+      throws IOException {
+    EnvironmentProvider envProvider =
+        name -> EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN.equals(name) ? "" : null;
+    EndpointContext endpointContext =
+        defaultEndpointContextBuilder
+            .setEnvProvider(envProvider)
+            .setUniverseDomain(null)
+            .setClientSettingsEndpoint(null)
+            .build();
+    Truth.assertThat(endpointContext.resolvedUniverseDomain())
+        .isEqualTo(Credentials.GOOGLE_DEFAULT_UNIVERSE);
+    Truth.assertThat(endpointContext.resolvedEndpoint()).isEqualTo(DEFAULT_ENDPOINT);
+  }
+
+  @Test
+  void endpointContextBuild_nonEmptyUniverseDomainEnvVar_usesEnvVarValue() throws IOException {
+    EnvironmentProvider envProvider =
+        name -> EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN.equals(name) ? "env.com" : null;
+    EndpointContext endpointContext =
+        defaultEndpointContextBuilder
+            .setEnvProvider(envProvider)
+            .setUniverseDomain(null)
+            .setClientSettingsEndpoint(null)
+            .build();
+    Truth.assertThat(endpointContext.resolvedUniverseDomain()).isEqualTo("env.com");
+    Truth.assertThat(endpointContext.resolvedEndpoint()).isEqualTo("test.env.com:443");
+  }
+
+  @Test
+  void endpointContextBuild_explicitEmptyUniverseDomain_throwsEvenWithEnvVar() {
+    EnvironmentProvider envProvider =
+        name -> EndpointContext.GOOGLE_CLOUD_UNIVERSE_DOMAIN.equals(name) ? "env.com" : null;
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class,
+            () ->
+                defaultEndpointContextBuilder
+                    .setEnvProvider(envProvider)
+                    .setUniverseDomain("")
+                    .setClientSettingsEndpoint(null)
+                    .build());
+    Truth.assertThat(exception.getMessage())
+        .isEqualTo("The universe domain value cannot be empty.");
+  }
 }

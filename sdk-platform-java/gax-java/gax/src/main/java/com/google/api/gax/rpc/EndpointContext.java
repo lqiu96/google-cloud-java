@@ -276,6 +276,15 @@ public abstract class EndpointContext {
 
     abstract EndpointContext autoBuild();
 
+    /**
+     * Resolves the client universe domain using the precedence: explicit {@link #universeDomain()},
+     * a non-empty {@code GOOGLE_CLOUD_UNIVERSE_DOMAIN} environment variable (read via {@link
+     * #envProvider()}), and finally {@link Credentials#GOOGLE_DEFAULT_UNIVERSE}.
+     *
+     * <p>An explicit empty string ({@code ""}) throws {@link IllegalArgumentException}, whereas an
+     * empty environment variable is treated as unset and falls back to {@link
+     * Credentials#GOOGLE_DEFAULT_UNIVERSE}. Under GDC-H, any explicit value is rejected.
+     */
     private String determineUniverseDomain() {
       String universeDomain = universeDomain();
       if (usingGDCH()) {
@@ -293,11 +302,16 @@ public abstract class EndpointContext {
       // If the universe domain wasn't configured explicitly in the settings, check the
       // environment variable for the value
       if (universeDomain == null) {
-        universeDomain = System.getenv(GOOGLE_CLOUD_UNIVERSE_DOMAIN);
+        EnvironmentProvider envProvider = envProvider();
+        universeDomain =
+            envProvider != null
+                ? envProvider.getenv(GOOGLE_CLOUD_UNIVERSE_DOMAIN)
+                : System.getenv(GOOGLE_CLOUD_UNIVERSE_DOMAIN);
       }
-      // If the universe domain is configured by the user, the universe domain will either be
-      // from the settings or from the env var. The value from ClientSettings has priority.
-      return universeDomain != null ? universeDomain : Credentials.GOOGLE_DEFAULT_UNIVERSE;
+      // Treat an unset or empty environment variable as the default universe domain.
+      return !Strings.isNullOrEmpty(universeDomain)
+          ? universeDomain
+          : Credentials.GOOGLE_DEFAULT_UNIVERSE;
     }
 
     /** Determines the fully resolved endpoint and universe domain values */
